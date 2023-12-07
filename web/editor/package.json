@@ -1,0 +1,68 @@
+{
+  "name": "youdeyiwu-editor",
+  "description": "youdeyiwu is an open-source lightweight forum",
+  "author": "dafengzhen",
+  "version": "1.0.0",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "main": "./build/ckeditor.js",
+  "types": "./build/ckeditor.d.ts",
+  "dependencies": {
+    "@ckeditor/ckeditor5-alignment": "40.1.0",
+    "@ckeditor/ckeditor5-autoformat": "40.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "40.1.0",
+    "@ckeditor/ckeditor5-block-quote": "40.1.0",
+    "@ckeditor/ckeditor5-code-block": "40.1.0",
+    "@ckeditor/ckeditor5-editor-balloon": "40.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "40.1.0",
+    "@ckeditor/ckeditor5-essentials": "40.1.0",
+    "@ckeditor/ckeditor5-font": "40.1.0",
+    "@ckeditor/ckeditor5-horizontal-line": "40.1.0",
+    "@ckeditor/ckeditor5-image": "40.1.0",
+    "@ckeditor/ckeditor5-indent": "40.1.0",
+    "@ckeditor/ckeditor5-link": "40.1.0",
+    "@ckeditor/ckeditor5-list": "40.1.0",
+    "@ckeditor/ckeditor5-media-embed": "40.1.0",
+    "@ckeditor/ckeditor5-page-break": "40.1.0",
+    "@ckeditor/ckeditor5-paragraph": "40.1.0",
+    "@ckeditor/ckeditor5-paste-from-office": "40.1.0",
+    "@ckeditor/ckeditor5-remove-format": "40.1.0",
+    "@ckeditor/ckeditor5-table": "40.1.0",
+    "@ckeditor/ckeditor5-typing": "40.1.0",
+    "@ckeditor/ckeditor5-upload": "40.1.0",
+    "@ckeditor/ckeditor5-watchdog": "40.1.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-translations": "^39.2.1",
+    "@ckeditor/ckeditor5-dev-utils": "^39.2.1",
+    "@ckeditor/ckeditor5-theme-lark": "^40.1.0",
+    "css-loader": "^6.8.1",
+    "postcss": "^8.4.31",
+    "postcss-loader": "^7.3.3",
+    "raw-loader": "^4.0.2",
+    "style-loader": "^3.3.3",
+    "terser-webpack-plugin": "^5.3.9",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "postbuild": "tsc --declaration --declarationDir build --stripInternal --emitDeclarationOnly"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dafengzhen/youdeyiwu.git"
+  },
+  "keywords": [
+    "youdeyiwu",
+    "forum",
+    "blog",
+    "note",
+    "seo"
+  ],
+  "bugs": {
+    "url": "https://github.com/dafengzhen/youdeyiwu/issues"
+  },
+  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme"
+}

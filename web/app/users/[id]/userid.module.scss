@@ -1,0 +1,39 @@
+.box {
+  width: 14.5rem;
+  direction: rtl;
+}
+
+.boxMarginLeft {
+  margin-left: 14.5rem;
+}
+
+.box::-webkit-scrollbar {
+  width: 6px;
+  display: none;
+}
+
+.box:hover::-webkit-scrollbar {
+  display: block;
+}
+
+.box::-webkit-scrollbar-thumb {
+  background: #a1a1aa80;
+  border-radius: 9999px;
+}
+
+.item {
+  width: 10.75rem;
+  color: black;
+}
+
+.itemHover:hover {
+  color: rgb(var(--bs-secondary-rgb)) !important;
+}
+
+.itemInfoHover:hover {
+  color: rgb(var(--bs-info-rgb)) !important;
+}
+
+.tagBg {
+  background: var(--bs-list-group-action-hover-bg);
+}

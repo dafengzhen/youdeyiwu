@@ -1,0 +1,39 @@
+.box {
+  top: 4.625rem;
+}
+
+.emptyBox {
+  height: 6.25rem;
+}
+
+.left {
+  top: 4.625rem;
+  height: calc(100vh - 4.625rem);
+}
+
+.right {
+  top: 4.625rem;
+  height: calc(100vh - 4.625rem);
+}
+
+.left::-webkit-scrollbar {
+  width: 0.625rem;
+  border-radius: 9999px;
+}
+
+.left::-webkit-scrollbar-thumb {
+  background: #a1a1aa80;
+  //background: #71717A7F;
+  border-radius: 9999px;
+}
+
+.right::-webkit-scrollbar {
+  width: 0.625rem;
+  border-radius: 9999px;
+}
+
+.right::-webkit-scrollbar-thumb {
+  background: #a1a1aa80;
+  //background: #71717A7F;
+  border-radius: 9999px;
+}

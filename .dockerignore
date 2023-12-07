@@ -1,0 +1,14 @@
+Dockerfile
+.dockerignore
+README.md
+.git
+.mvn
+mvnw
+mvnw.cmd
+compose.yaml
+google_checks.xml
+HELP.md
+LICENSE
+web
+.idea
+target
