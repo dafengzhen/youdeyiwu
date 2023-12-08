@@ -2,13 +2,7 @@
 
 import styles from '@/app/users/[id]/userid.module.scss';
 import clsx from 'clsx';
-import {
-  cloneElement,
-  isValidElement,
-  type ReactNode,
-  useRef,
-  useState,
-} from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import MyHomepage from '@/app/users/[id]/my-homepage';
 import EditProfile from '@/app/users/[id]/edit-profile';
 import ChangePassword from '@/app/users/[id]/change-password';
@@ -19,7 +13,7 @@ import RelatedTags from '@/app/users/[id]/related-tags';
 import RelatedStatistics from '@/app/users/[id]/related-statistics';
 import Logout from '@/app/users/[id]/logout';
 import Link from 'next/link';
-import { IUser, IUserDetails } from '@/app/interfaces/users';
+import type { IUser, IUserDetails } from '@/app/interfaces/users';
 import { UserIdContext } from '@/app/contexts/userid';
 
 export type TTabId =
@@ -36,7 +30,6 @@ export type TTabId =
 interface ITab {
   id: TTabId;
   name: string;
-  content: string | ReactNode;
 }
 
 export default function UserId({
@@ -54,54 +47,45 @@ export default function UserId({
     {
       id: 'MyHomepage',
       name: 'My Homepage',
-      content: <MyHomepage details={details} />,
     },
     self
       ? {
           id: 'EditProfile',
           name: 'Edit Profile',
-          content: <EditProfile details={details} />,
         }
       : null,
     self
       ? {
           id: 'ChangePassword',
           name: 'Change Password',
-          content: <ChangePassword details={details} />,
         }
       : null,
     {
       id: 'MyArticles',
       name: 'My Articles',
-      content: <MyArticles details={details} />,
     },
     self
       ? {
           id: 'MyFavourites',
           name: 'My Favourites',
-          content: <MyFavourites details={details} />,
         }
       : null,
     {
       id: 'RelatedContent',
       name: 'Related Content',
-      content: <RelatedContent details={details} />,
     },
     {
       id: 'RelatedTags',
       name: 'Related Tags',
-      content: <RelatedTags details={details} />,
     },
     {
       id: 'RelatedStatistics',
       name: 'Related Statistics',
-      content: <RelatedStatistics details={details} />,
     },
     self
       ? {
           id: 'Logout',
           name: 'Logout',
-          content: <Logout details={details} />,
         }
       : null,
   ];
@@ -171,13 +155,81 @@ export default function UserId({
             className={clsx('d-flex flex-column gap-4', styles.boxMarginLeft)}
           >
             {tabs
-              .filter((item) => item && item.content)
+              .filter((item) => item)
               .map((item) => {
                 const _item = item!;
+                const id = _item.id;
+                let renderItem: ReactNode;
+
+                if (id === 'MyHomepage') {
+                  renderItem = (
+                    <MyHomepage
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'EditProfile') {
+                  renderItem = (
+                    <EditProfile
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'ChangePassword') {
+                  renderItem = (
+                    <ChangePassword
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'MyArticles') {
+                  renderItem = (
+                    <MyArticles
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'MyFavourites') {
+                  renderItem = (
+                    <MyFavourites
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'RelatedContent') {
+                  renderItem = (
+                    <RelatedContent
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'RelatedTags') {
+                  renderItem = (
+                    <RelatedTags
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'RelatedStatistics') {
+                  renderItem = (
+                    <RelatedStatistics
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'Logout') {
+                  renderItem = (
+                    <Logout
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                }
+
                 return (
                   <div
-                    key={_item.id}
-                    id={_item.id}
+                    key={id}
+                    id={id}
                     ref={handleRef}
                     className="d-flex flex-column gap-4"
                   >
@@ -185,11 +237,7 @@ export default function UserId({
                       <i className="bi bi-signpost me-2"></i>
                       {_item.name}
                     </div>
-                    {isValidElement(_item.content) &&
-                      cloneElement(_item.content, {
-                        selectedTabIndex,
-                        details,
-                      } as any)}
+                    {renderItem}
                   </div>
                 );
               })}

@@ -23,6 +23,7 @@ import CreateReplyAction, {
   ICreateReplyActionVariables,
 } from '@/app/actions/replies/create-reply-action';
 import { IUser } from '@/app/interfaces/users';
+import Content from '@/app/components/content/content';
 
 export default function Comments({ details }: { details: IPostDetails }) {
   const data = details.comments;
@@ -192,11 +193,7 @@ const Reply = ({
       </div>
       <div className="card-body d-flex flex-column gap-3 py-2">
         <div className="mt-2 overflow-hidden position-relative">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: item.content,
-            }}
-          ></div>
+          <Content html={item.content} />
         </div>
 
         {!openReplyBox && (
@@ -279,11 +276,7 @@ const QuotedReply = ({
           <div className="mt-2 border-start border-0 border-3 ps-3">
             <figure>
               <blockquote className="blockquote fs-6 mb-2">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: quotedItem.content,
-                  }}
-                ></div>
+                <Content html={quotedItem.content} />
               </blockquote>
               <figcaption className="blockquote-footer mt-0">
                 <cite title="Source Title">

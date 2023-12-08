@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import '@/styles/global.scss';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Providers } from '@/app/providers';
 import Navbar from '@/app/navbar';
 import Footer from '@/app/footer';

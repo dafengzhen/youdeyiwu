@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 /**
  * config.
@@ -22,6 +23,21 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 @Import(ValidatorConfig.class)
 @Configuration
 public class Config {
+
+  /**
+   * commonsRequestLoggingFilter.
+   *
+   * @return CommonsRequestLoggingFilter
+   */
+  @Bean
+  public CommonsRequestLoggingFilter commonsRequestLoggingFilter() {
+    CommonsRequestLoggingFilter commonsRequestLoggingFilter = new CommonsRequestLoggingFilter();
+    commonsRequestLoggingFilter.setIncludeQueryString(true);
+    commonsRequestLoggingFilter.setIncludeClientInfo(true);
+    commonsRequestLoggingFilter.setIncludeHeaders(true);
+    commonsRequestLoggingFilter.setIncludePayload(true);
+    return commonsRequestLoggingFilter;
+  }
 
   /**
    * auditorProvider.

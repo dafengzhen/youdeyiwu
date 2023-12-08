@@ -4,6 +4,7 @@ import { useState } from 'react';
 import clsx from 'clsx';
 import { ISectionDetails } from '@/app/interfaces/sections';
 import { getUserAlias, isHttpOrHttps } from '@/app/common/client';
+import Content from '@/app/components/content/content';
 
 export default function Navbar({ details }: { details: ISectionDetails }) {
   const content = details.content ?? '';
@@ -63,11 +64,7 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
           >
             {content && (
               <>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: content,
-                  }}
-                ></div>
+                {content && <Content html={content} />}
 
                 {content.length > 600 && (
                   <>

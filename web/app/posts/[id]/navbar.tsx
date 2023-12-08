@@ -10,14 +10,16 @@ import {
   isHttpOrHttps,
 } from '@/app/common/client';
 import Nodata from '@/app/common/nodata';
+import Content from '@/app/components/content/content';
 
 export default function Navbar({ details }: { details: IPostDetails }) {
-  const [continueReading, setContinueReading] = useState(false);
   const user = details.user;
   const content = details.content ?? '';
   let uid;
   let avatar;
   let alias = getUserAlias(user);
+
+  const [continueReading, setContinueReading] = useState(false);
 
   if (user) {
     uid = user.id;
@@ -74,15 +76,7 @@ export default function Navbar({ details }: { details: IPostDetails }) {
                 continueReading || content.length < 600 ? 'auto' : '12rem',
             }}
           >
-            {content ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: content,
-                }}
-              ></div>
-            ) : (
-              <Nodata />
-            )}
+            {content ? <Content html={content} /> : <Nodata />}
 
             {content.length > 600 && (
               <>

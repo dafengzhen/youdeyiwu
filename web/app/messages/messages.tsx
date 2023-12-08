@@ -28,7 +28,7 @@ export default function Messages() {
                 {/*      <div className="d-flex flex-column gap-2 flex-grow-1">*/}
                 {/*        <div className="d-flex justify-content-between gap-4">*/}
                 {/*          <Link href="">*/}
-                {/*            <Image*/}
+                {/*            <Img*/}
                 {/*              className="rounded-circle object-fit-contain image-hover"*/}
                 {/*              src="/avatar.png"*/}
                 {/*              alt=""*/}
@@ -73,7 +73,7 @@ export default function Messages() {
                 {/*      <div className="d-flex flex-column gap-2 flex-grow-1">*/}
                 {/*        <div className="d-flex justify-content-between gap-4">*/}
                 {/*          <Link href="">*/}
-                {/*            <Image*/}
+                {/*            <Img*/}
                 {/*              className="rounded-circle object-fit-contain image-hover"*/}
                 {/*              src="/avatar.png"*/}
                 {/*              alt=""*/}

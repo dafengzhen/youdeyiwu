@@ -49,3 +49,14 @@
   outline: 0 !important;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
 }
+
+.ck-content .image {
+  display: inline-block !important;
+  margin: 0 !important;
+}
+
+.ck-content .image img {
+  max-width: 100% !important;
+  height: auto !important;
+  line-height: 1 !important;
+}

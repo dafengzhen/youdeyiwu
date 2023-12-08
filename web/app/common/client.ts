@@ -1,7 +1,7 @@
 'use client';
 
 import format from 'date-fns/format';
-import { IUser } from '@/app/interfaces/users';
+import type { IUser } from '@/app/interfaces/users';
 import { formatDistanceStrict } from 'date-fns';
 
 export const isHttpOrHttps = (value?: string) => {
