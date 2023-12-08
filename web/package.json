@@ -27,7 +27,7 @@
     "react": "^18",
     "react-dom": "^18",
     "sanitize-html": "^2.11.0",
-    "sharp": "^0.33.0"
+    "sharp": "^0.32.6"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.12.1",
