@@ -58,7 +58,7 @@ export default function SectionId({
           )}
         >
           <div className="d-flex flex-column gap-4">
-            <RelatedActions />
+            <RelatedActions isLogin={!!currentUser} />
             <RelatedPosts randomData={randomData} />
           </div>
         </div>

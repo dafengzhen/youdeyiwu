@@ -53,6 +53,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,6 +94,8 @@ public class UserServiceImpl implements UserService {
   private final SectionMapper sectionMapper;
 
   private final TagMapper tagMapper;
+
+  private final UserCache userCache;
 
   @Transactional
   @Override
@@ -377,6 +380,7 @@ public class UserServiceImpl implements UserService {
     tokenVo.setAlias(userEntity.getAlias());
     tokenVo.setToken(token);
     tokenVo.setExpDays(expDays);
+    userCache.removeUserFromCache(String.valueOf(userEntity.getId()));
     return tokenVo;
   }
 

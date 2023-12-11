@@ -7,6 +7,7 @@ import SelectAllTagAction from '@/app/actions/tags/select-all-tag-action';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
 import { parseNum } from '@/app/common/server';
 import { TQueryParams } from '@/app/interfaces';
+import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 
 export interface ISearchParamsHomePage {
   sgid?: string;
@@ -64,6 +65,7 @@ export default async function Page({
       data={await SelectAllPostAction(queryParams)}
       randomData={await QueryRandomPostAction()}
       queryParams={queryParams}
+      currentUser={await LoginInfoUserAction()}
     />
   );
 }

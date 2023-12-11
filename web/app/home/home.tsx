@@ -14,6 +14,7 @@ import { ISectionGroup } from '@/app/interfaces/section-groups';
 import { ISection } from '@/app/interfaces/sections';
 import { ITag } from '@/app/interfaces/tags';
 import { IPage, TQueryParams } from '@/app/interfaces';
+import { IUser } from '@/app/interfaces/users';
 
 export default function Home({
   sectionGroups,
@@ -22,6 +23,7 @@ export default function Home({
   data,
   randomData,
   queryParams,
+  currentUser,
 }: {
   sectionGroups: ISectionGroup[];
   sections: ISection[];
@@ -29,6 +31,7 @@ export default function Home({
   data: IPage<IPost[]>;
   randomData: IPost[];
   queryParams: TQueryParams;
+  currentUser?: IUser | null;
 }) {
   return (
     <div className={clsx('row mx-0 position-sticky', styles.box)}>
@@ -60,7 +63,7 @@ export default function Home({
         )}
       >
         <div className="d-flex flex-column gap-4">
-          <RelatedActions />
+          <RelatedActions isLogin={!!currentUser} />
           <RelatedPosts randomData={randomData} />
         </div>
       </div>

@@ -34,7 +34,7 @@ export default function PostId({
   currentUser?: IUser | null;
 }) {
   const [openReplyBox, setOpenReplyBox] = useState(false);
-  const isLogin = !!currentUser?.id;
+  const isLogin = !!currentUser;
   const self = isLogin && details.user?.id === currentUser.id;
 
   const viewPagePostActionMutation = useMutation({
