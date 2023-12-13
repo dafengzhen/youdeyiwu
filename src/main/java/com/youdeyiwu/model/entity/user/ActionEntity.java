@@ -35,6 +35,18 @@ public class ActionEntity extends AbstractEntity {
   private String name;
 
   /**
+   * alias (The alias defaults to the name).
+   */
+  @Column(nullable = false)
+  private String alias;
+
+  /**
+   * sort.
+   */
+  @Column(nullable = false)
+  private Integer sort = 0;
+
+  /**
    * menu.
    */
   @ManyToOne

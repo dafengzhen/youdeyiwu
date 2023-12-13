@@ -13,3 +13,11 @@ export interface ISubmenu extends IBase {
   sort: number;
   menu?: IMenu;
 }
+
+export interface IAction extends IBase {
+  name: string;
+  alias: string;
+  sort: number;
+  menu?: IMenu;
+  submenu?: ISubmenu;
+}

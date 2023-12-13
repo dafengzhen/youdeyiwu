@@ -1,14 +1,10 @@
 package com.youdeyiwu.service.user;
 
-import com.youdeyiwu.model.dto.user.AssignPermissionsDto;
-import com.youdeyiwu.model.dto.user.CreateRoleDto;
-import com.youdeyiwu.model.dto.user.UpdatePermissionsRoleDto;
-import com.youdeyiwu.model.dto.user.UpdateRoleDto;
-import com.youdeyiwu.model.entity.user.RoleEntity;
-import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.user.RoleEntityVo;
-import com.youdeyiwu.model.vo.user.RolePermissionsVo;
-import org.springframework.data.domain.Pageable;
+import com.youdeyiwu.model.dto.user.CreateSubmenuDto;
+import com.youdeyiwu.model.dto.user.UpdateSubmenuDto;
+import com.youdeyiwu.model.entity.user.SubmenuEntity;
+import com.youdeyiwu.model.vo.user.SubmenuEntityVo;
+import java.util.Set;
 
 /**
  * submenu.
@@ -21,33 +17,9 @@ public interface SubmenuService {
    * create.
    *
    * @param dto dto
-   * @return RoleEntity
+   * @return SubmenuEntity
    */
-  RoleEntity create(CreateRoleDto dto);
-
-  /**
-   * addPermissions.
-   *
-   * @param id  id
-   * @param dto dto
-   */
-  void addPermissions(Long id, AssignPermissionsDto dto);
-
-  /**
-   * removePermissions.
-   *
-   * @param id  id
-   * @param dto dto
-   */
-  void removePermissions(Long id, AssignPermissionsDto dto);
-
-  /**
-   * update permissions (The difference with this method is that it updates the entire permissions list).
-   *
-   * @param id  id
-   * @param dto dto
-   */
-  void updatePermissions(Long id, UpdatePermissionsRoleDto dto);
+  SubmenuEntity create(CreateSubmenuDto dto);
 
   /**
    * update.
@@ -55,31 +27,22 @@ public interface SubmenuService {
    * @param id  id
    * @param dto dto
    */
-  void update(Long id, UpdateRoleDto dto);
-
-  /**
-   * getPermissions.
-   *
-   * @param id id
-   * @return RolePermissionsVo
-   */
-  RolePermissionsVo getPermissions(Long id);
+  void update(Long id, UpdateSubmenuDto dto);
 
   /**
    * query.
    *
    * @param id id
-   * @return RoleEntityVo
+   * @return SubmenuEntityVo
    */
-  RoleEntityVo query(Long id);
+  SubmenuEntityVo query(Long id);
 
   /**
    * query all.
    *
-   * @param pageable pageable
-   * @return PageVo
+   * @return Set
    */
-  PageVo<RoleEntityVo> queryAll(Pageable pageable);
+  Set<SubmenuEntityVo> queryAll();
 
   /**
    * delete.

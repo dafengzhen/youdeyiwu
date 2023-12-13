@@ -8,13 +8,16 @@ import java.io.Serializable;
  * @param name name
  * @param link link
  * @param sort sort
+ * @param menu menu
  */
 public record UpdateSubmenuDto(
     String name,
 
     String link,
 
-    Integer sort
+    Integer sort,
+
+    Long menu
 ) implements Serializable {
 
 }

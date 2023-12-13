@@ -1,28 +1,23 @@
 package com.youdeyiwu.service.user.impl;
 
-import com.youdeyiwu.exception.CustomException;
-import com.youdeyiwu.exception.PermissionNotFoundException;
-import com.youdeyiwu.exception.RoleNotFoundException;
-import com.youdeyiwu.mapper.user.PermissionMapper;
-import com.youdeyiwu.mapper.user.RoleMapper;
-import com.youdeyiwu.model.dto.user.AssignPermissionsDto;
-import com.youdeyiwu.model.dto.user.CreateRoleDto;
-import com.youdeyiwu.model.dto.user.UpdatePermissionsRoleDto;
-import com.youdeyiwu.model.dto.user.UpdateRoleDto;
-import com.youdeyiwu.model.entity.user.PermissionEntity;
-import com.youdeyiwu.model.entity.user.RoleEntity;
-import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.user.PermissionEntityVo;
-import com.youdeyiwu.model.vo.user.RoleEntityVo;
-import com.youdeyiwu.model.vo.user.RolePermissionsVo;
-import com.youdeyiwu.repository.user.PermissionRepository;
-import com.youdeyiwu.repository.user.RoleRepository;
+import com.youdeyiwu.exception.MenuNotFoundException;
+import com.youdeyiwu.exception.SubmenuNotFoundException;
+import com.youdeyiwu.mapper.user.MenuMapper;
+import com.youdeyiwu.mapper.user.SubmenuMapper;
+import com.youdeyiwu.model.dto.user.CreateSubmenuDto;
+import com.youdeyiwu.model.dto.user.UpdateSubmenuDto;
+import com.youdeyiwu.model.entity.user.MenuEntity;
+import com.youdeyiwu.model.entity.user.SubmenuEntity;
+import com.youdeyiwu.model.vo.user.SubmenuEntityVo;
+import com.youdeyiwu.repository.user.MenuRepository;
+import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.service.user.SubmenuService;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,134 +31,76 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class SubmenuServiceImpl implements SubmenuService {
 
-  private final RoleMapper roleMapper;
+  private final MenuRepository menuRepository;
 
-  private final RoleRepository roleRepository;
+  private final SubmenuRepository submenuRepository;
 
-  private final PermissionRepository permissionRepository;
+  private final SubmenuMapper submenuMapper;
 
-  private final PermissionMapper permissionMapper;
+  private final MenuMapper menuMapper;
 
   @Transactional
   @Override
-  public RoleEntity create(CreateRoleDto dto) {
-    RoleEntity roleEntity = new RoleEntity();
-    roleMapper.dtoToEntity(dto, roleEntity);
-    roleRepository.save(roleEntity);
-    return roleEntity;
+  public SubmenuEntity create(CreateSubmenuDto dto) {
+    SubmenuEntity submenuEntity = new SubmenuEntity();
+    submenuMapper.dtoToEntity(dto, submenuEntity);
+    submenuRepository.save(submenuEntity);
+    return submenuEntity;
   }
 
   @Transactional
   @Override
-  public void addPermissions(Long id, AssignPermissionsDto dto) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(RoleNotFoundException::new);
+  public void update(Long id, UpdateSubmenuDto dto) {
+    SubmenuEntity submenuEntity = submenuRepository.findById(id)
+        .orElseThrow(SubmenuNotFoundException::new);
+    submenuMapper.dtoToEntity(dto, submenuEntity);
 
-    List<PermissionEntity> permissions = dto.ids().stream()
-        .map(pid -> permissionRepository.findById(pid)
-            .orElseThrow(PermissionNotFoundException::new)
-        )
-        .toList();
-
-    roleEntity.getPermissions().addAll(permissions);
-  }
-
-  @Transactional
-  @Override
-  public void removePermissions(Long id, AssignPermissionsDto dto) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(RoleNotFoundException::new);
-
-    List<PermissionEntity> permissions = dto.ids().stream()
-        .map(pid -> permissionRepository.findById(pid)
-            .orElseThrow(PermissionNotFoundException::new)
-        )
-        .toList();
-
-    permissions.forEach(roleEntity.getPermissions()::remove);
-  }
-
-  @Transactional
-  @Override
-  public void updatePermissions(Long id, UpdatePermissionsRoleDto dto) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(RoleNotFoundException::new);
-
-    if (Objects.nonNull(dto.permissions())) {
-      roleEntity.setPermissions(
-          dto.permissions()
-              .stream()
-              .map(pid -> permissionRepository.findById(pid)
-                  .orElseThrow(PermissionNotFoundException::new)
-              )
-              .collect(Collectors.toSet())
-      );
+    if (Objects.nonNull(dto.menu())) {
+      MenuEntity menuEntity = menuRepository.findById(dto.menu())
+          .orElseThrow(MenuNotFoundException::new);
+      submenuEntity.setMenu(menuEntity);
     }
   }
 
-  @Transactional
   @Override
-  public void update(Long id, UpdateRoleDto dto) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(RoleNotFoundException::new);
-    roleMapper.dtoToEntity(dto, roleEntity);
-  }
-
-  @Override
-  public RolePermissionsVo getPermissions(Long id) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(() -> new CustomException("The role does not exist"));
-
-    List<PermissionEntityVo> permissions =
-        roleEntity.getPermissions().stream()
-            .map(permissionMapper::entityToVo)
-            .toList();
-
-    RolePermissionsVo vo = new RolePermissionsVo();
-    vo.setRole(roleMapper.entityToVo(roleEntity));
-    vo.setPermissions(permissions);
+  public SubmenuEntityVo query(Long id) {
+    SubmenuEntity submenuEntity = submenuRepository.findById(id)
+        .orElseThrow(SubmenuNotFoundException::new);
+    SubmenuEntityVo vo = submenuMapper.entityToVo(submenuEntity);
+    setMenu(vo, submenuEntity);
     return vo;
   }
 
   @Override
-  public RoleEntityVo query(Long id) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(RoleNotFoundException::new);
-
-    RoleEntityVo vo = roleMapper.entityToVo(roleEntity);
-    setPermissions(vo, roleEntity);
-    return vo;
-  }
-
-  @Override
-  public PageVo<RoleEntityVo> queryAll(Pageable pageable) {
-    return new PageVo<>(roleRepository.findAll(pageable).map(roleEntity -> {
-      RoleEntityVo vo = roleMapper.entityToVo(roleEntity);
-      setPermissions(vo, roleEntity);
-      return vo;
-    }));
+  public Set<SubmenuEntityVo> queryAll() {
+    return StreamSupport.stream(
+            submenuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+                .spliterator(),
+            false
+        )
+        .map(submenuEntity -> {
+          SubmenuEntityVo vo = submenuMapper.entityToVo(submenuEntity);
+          setMenu(vo, submenuEntity);
+          return vo;
+        })
+        .collect(Collectors.toSet());
   }
 
   @Transactional
   @Override
   public void delete(Long id) {
-    RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(RoleNotFoundException::new);
-    roleRepository.delete(roleEntity);
+    SubmenuEntity submenuEntity = submenuRepository.findById(id)
+        .orElseThrow(SubmenuNotFoundException::new);
+    submenuRepository.delete(submenuEntity);
   }
 
   /**
-   * set permissions.
+   * set menu.
    *
-   * @param vo         vo
-   * @param roleEntity roleEntity
+   * @param vo            vo
+   * @param submenuEntity submenuEntity
    */
-  private void setPermissions(RoleEntityVo vo, RoleEntity roleEntity) {
-    vo.setPermissions(
-        roleEntity.getPermissions()
-            .stream()
-            .map(permissionMapper::entityToVo)
-            .collect(Collectors.toSet())
-    );
+  private void setMenu(SubmenuEntityVo vo, SubmenuEntity submenuEntity) {
+    vo.setMenu(menuMapper.entityToVo(submenuEntity.getMenu()));
   }
 }

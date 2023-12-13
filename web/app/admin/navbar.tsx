@@ -19,7 +19,9 @@ export type TTabId =
   | 'Permissions'
   | 'Messages'
   | 'Configs'
-  | 'Menus';
+  | 'Menus'
+  | 'Submenus'
+  | 'Actions';
 
 interface ITab {
   id: TTabId;
@@ -77,6 +79,14 @@ export default function Navbar({ user }: { user: IUser | null }) {
     {
       id: 'Menus',
       name: 'Menus',
+    },
+    {
+      id: 'Submenus',
+      name: 'Submenus',
+    },
+    {
+      id: 'Actions',
+      name: 'Actions',
     },
   ];
 

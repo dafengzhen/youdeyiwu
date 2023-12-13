@@ -5,7 +5,7 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import CreateMenuAction from '@/app/actions/menus/create-menu-action';
+import CreateSubmenuAction from '@/app/actions/submenus/create-submenu-action';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -19,8 +19,8 @@ export default function Create() {
     sort: 0,
   });
 
-  const createMenuActionMutation = useMutation({
-    mutationFn: CreateMenuAction,
+  const createSubmenuActionMutation = useMutation({
+    mutationFn: CreateSubmenuAction,
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -32,19 +32,19 @@ export default function Create() {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'The menu name cannot be empty',
+          message: 'The submenu name cannot be empty',
         });
         return;
       }
       if (!variables.link) {
         toast.current.show({
           type: 'danger',
-          message: 'The menu link cannot be empty',
+          message: 'The submenu link cannot be empty',
         });
         return;
       }
 
-      await createMenuActionMutation.mutateAsync(variables);
+      await createSubmenuActionMutation.mutateAsync(variables);
       setForm({ ...form, name: '', link: '', sort: 0 });
 
       toast.current.show({
@@ -52,7 +52,7 @@ export default function Create() {
         message: 'Successfully created',
       });
     } catch (e: any) {
-      createMenuActionMutation.reset();
+      createSubmenuActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -81,11 +81,11 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the menu name"
+            placeholder="Please enter the submenu name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">The menu name cannot be empty</div>
+          <div className="form-text">The submenu name cannot be empty</div>
         </div>
 
         <div>
@@ -100,11 +100,11 @@ export default function Create() {
             name="link"
             value={form.link}
             onChange={onChangeForm}
-            placeholder="Please enter the menu link"
+            placeholder="Please enter the submenu link"
             aria-describedby="link"
             minLength={1}
           />
-          <div className="form-text">The menu link cannot be empty</div>
+          <div className="form-text">The submenu link cannot be empty</div>
           <div className="form-text">
             The link can be either a page path or a regular access link
           </div>
@@ -123,22 +123,24 @@ export default function Create() {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the menu sort"
+            placeholder="Please enter the submenu sort"
             aria-describedby="sort"
           />
           <div className="form-text">
-            Please enter the sorting value for the menu, with a minimum value of
-            0
+            Please enter the sorting value for the submenu, with a minimum value
+            of 0
           </div>
         </div>
 
         <div>
           <button
-            disabled={createMenuActionMutation.isPending}
+            disabled={createSubmenuActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
-            {createMenuActionMutation.isPending ? 'Creating' : 'Create Menu'}
+            {createSubmenuActionMutation.isPending
+              ? 'Creating'
+              : 'Create Submenu'}
           </button>
         </div>
       </form>

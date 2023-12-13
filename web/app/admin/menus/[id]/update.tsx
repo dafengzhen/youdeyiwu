@@ -4,23 +4,30 @@ import Box from '@/app/admin/common/box';
 import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { trimObjectStrings } from '@/app/common/client';
-import CreateMenuAction from '@/app/actions/menus/create-menu-action';
+import { nonNum, trimObjectStrings } from '@/app/common/client';
+import { IMenu } from '@/app/interfaces/menus';
+import UpdateMenuAction, {
+  IUpdateMenuActionVariables,
+} from '@/app/actions/menus/update-menu-action';
+import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
-export default function Create() {
+export default function Update({ menu }: { menu: IMenu }) {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
     name: string;
     link: string;
     sort: number;
   }>({
-    name: '',
-    link: '',
-    sort: 0,
+    name: menu.name ?? '',
+    link: menu.link ?? '',
+    sort: menu.sort ?? 0,
   });
+  const [submenus, setSubmenus] = useState<string[]>(
+    menu.submenus.map((item) => item.id + ''),
+  );
 
-  const createMenuActionMutation = useMutation({
-    mutationFn: CreateMenuAction,
+  const updateMenuActionMutation = useMutation({
+    mutationFn: UpdateMenuAction,
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -28,7 +35,9 @@ export default function Create() {
       e.stopPropagation();
       e.preventDefault();
 
-      const variables = trimObjectStrings({ ...form });
+      const variables = trimObjectStrings({
+        ...form,
+      }) as IUpdateMenuActionVariables;
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
@@ -44,15 +53,19 @@ export default function Create() {
         return;
       }
 
-      await createMenuActionMutation.mutateAsync(variables);
-      setForm({ ...form, name: '', link: '', sort: 0 });
+      variables.submenus = submenus
+        .filter((item) => item !== '' && !nonNum(item))
+        .map((item) => parseInt(item));
+
+      const id = menu.id;
+      await updateMenuActionMutation.mutateAsync({ id, variables });
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: 'Successfully updated',
       });
     } catch (e: any) {
-      createMenuActionMutation.reset();
+      updateMenuActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -60,7 +73,7 @@ export default function Create() {
     }
   }
 
-  function onChangeForm(e: ChangeEvent<HTMLInputElement>) {
+  function onChangeForm(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const name = e.target.name;
     const value = e.target.value;
     setForm({ ...form, [name]: value });
@@ -116,7 +129,6 @@ export default function Create() {
             Sort
           </label>
           <input
-            required
             min={0}
             type="number"
             className="form-control"
@@ -126,19 +138,33 @@ export default function Create() {
             placeholder="Please enter the menu sort"
             aria-describedby="sort"
           />
+          <div className="form-text">The minimum value for sorting is 0</div>
+        </div>
+
+        <div>
+          <label className="form-label">Submenus</label>
+          <div className="card rounded-2">
+            <div className="card-body">
+              <SimpleDynamicInput
+                items={submenus}
+                setItems={setSubmenus}
+                showSourceInfo={menu.submenus}
+              />
+            </div>
+          </div>
           <div className="form-text">
-            Please enter the sorting value for the menu, with a minimum value of
-            0
+            Please enter the submenu ID. If you haven&apos;t created a tag group
+            yet, please create one first
           </div>
         </div>
 
         <div>
           <button
-            disabled={createMenuActionMutation.isPending}
+            disabled={updateMenuActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
-            {createMenuActionMutation.isPending ? 'Creating' : 'Create Menu'}
+            {updateMenuActionMutation.isPending ? 'Updating' : 'Update Menu'}
           </button>
         </div>
       </form>

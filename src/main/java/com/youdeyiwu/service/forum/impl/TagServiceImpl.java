@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -81,7 +82,11 @@ public class TagServiceImpl implements TagService {
 
   @Override
   public Set<TagEntityVo> selectAll() {
-    return StreamSupport.stream(tagRepository.findAll().spliterator(), true)
+    return StreamSupport.stream(
+            tagRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+                .spliterator(),
+            false
+        )
         .map(tagMapper::entityToVo)
         .collect(Collectors.toSet());
   }

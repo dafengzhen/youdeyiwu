@@ -31,6 +31,7 @@ public interface MenuMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "submenus", ignore = true)
   void dtoToEntity(UpdateMenuDto dto, @MappingTarget MenuEntity entity);
 
   /**

@@ -4,7 +4,7 @@ import com.youdeyiwu.model.dto.user.CreateMenuDto;
 import com.youdeyiwu.model.dto.user.UpdateMenuDto;
 import com.youdeyiwu.model.entity.user.MenuEntity;
 import com.youdeyiwu.model.vo.user.MenuEntityVo;
-import java.util.List;
+import java.util.Set;
 
 /**
  * menu.
@@ -40,9 +40,9 @@ public interface MenuService {
   /**
    * query all.
    *
-   * @return List
+   * @return Set
    */
-  List<MenuEntityVo> queryAll();
+  Set<MenuEntityVo> queryAll();
 
   /**
    * delete.

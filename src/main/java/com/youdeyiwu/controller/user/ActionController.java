@@ -1,9 +1,9 @@
 package com.youdeyiwu.controller.user;
 
-import com.youdeyiwu.model.dto.user.CreateMenuDto;
-import com.youdeyiwu.model.dto.user.UpdateMenuDto;
-import com.youdeyiwu.model.vo.user.MenuEntityVo;
-import com.youdeyiwu.service.user.MenuService;
+import com.youdeyiwu.model.dto.user.CreateActionDto;
+import com.youdeyiwu.model.dto.user.UpdateActionDto;
+import com.youdeyiwu.model.vo.user.ActionEntityVo;
+import com.youdeyiwu.service.user.ActionService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Set;
@@ -19,44 +19,52 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * menu.
+ * action.
  *
  * @author dafengzhen
  */
 @RequiredArgsConstructor
-@RequestMapping(value = "/menus")
+@RequestMapping(value = "/actions")
 @RestController
-public class MenuController {
+public class ActionController {
 
-  private final MenuService menuService;
+  private final ActionService actionService;
 
+  /**
+   * create.
+   *
+   * @param dto dto
+   * @return ResponseEntity
+   */
   @PostMapping
-  public ResponseEntity<Void> create(@Valid @RequestBody CreateMenuDto dto) {
-    return ResponseEntity.created(URI.create("/menus/" + menuService.create(dto).getId())).build();
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateActionDto dto) {
+    return ResponseEntity
+        .created(URI.create("/actions/" + actionService.create(dto).getId()))
+        .build();
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<Void> update(
       @PathVariable Long id,
-      @Valid @RequestBody UpdateMenuDto dto
+      @Valid @RequestBody UpdateActionDto dto
   ) {
-    menuService.update(id, dto);
+    actionService.update(id, dto);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping(value = "/{id}")
-  public ResponseEntity<MenuEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(menuService.query(id));
+  public ResponseEntity<ActionEntityVo> query(@PathVariable Long id) {
+    return ResponseEntity.ok().body(actionService.query(id));
   }
 
   @GetMapping
-  public ResponseEntity<Set<MenuEntityVo>> queryAll() {
-    return ResponseEntity.ok().body(menuService.queryAll());
+  public ResponseEntity<Set<ActionEntityVo>> queryAll() {
+    return ResponseEntity.ok().body(actionService.queryAll());
   }
 
   @DeleteMapping(value = "/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
-    menuService.delete(id);
+    actionService.delete(id);
     return ResponseEntity.noContent().build();
   }
 }

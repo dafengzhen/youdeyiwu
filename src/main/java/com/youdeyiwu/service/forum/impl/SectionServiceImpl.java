@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -206,7 +207,11 @@ public class SectionServiceImpl implements SectionService {
 
   @Override
   public Set<SectionEntityVo> selectAll() {
-    return StreamSupport.stream(sectionRepository.findAll().spliterator(), false)
+    return StreamSupport.stream(
+            sectionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+                .spliterator(),
+            false
+        )
         .map(sectionEntity -> {
           SectionEntityVo vo = sectionMapper.entityToVo(sectionEntity);
           setAdmins(vo, sectionEntity);

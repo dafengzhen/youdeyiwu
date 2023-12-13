@@ -4,8 +4,8 @@ import Menus from '@/app/admin/menus/menus';
 import QueryAllMenuAction from '@/app/actions/menus/query-all-menu-action';
 
 export const metadata: Metadata = {
-  title: 'tags - youdeyiwu',
-  description: 'query all tag page',
+  title: 'menus - youdeyiwu',
+  description: 'query all menu page',
 };
 
 export default async function Page({
