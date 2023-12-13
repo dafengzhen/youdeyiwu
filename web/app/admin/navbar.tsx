@@ -16,7 +16,10 @@ export type TTabId =
   | 'Section Groups'
   | 'Users'
   | 'Roles'
-  | 'Permissions';
+  | 'Permissions'
+  | 'Messages'
+  | 'Configs'
+  | 'Menus';
 
 interface ITab {
   id: TTabId;
@@ -62,6 +65,18 @@ export default function Navbar({ user }: { user: IUser | null }) {
     {
       id: 'Permissions',
       name: 'Permissions',
+    },
+    {
+      id: 'Messages',
+      name: 'Messages',
+    },
+    {
+      id: 'Configs',
+      name: 'Configs',
+    },
+    {
+      id: 'Menus',
+      name: 'Menus',
     },
   ];
 

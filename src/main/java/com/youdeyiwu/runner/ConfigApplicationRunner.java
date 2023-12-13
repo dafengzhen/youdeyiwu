@@ -45,8 +45,8 @@ public class ConfigApplicationRunner implements ApplicationRunner {
       configEntity.setValue(JwtTool.encodeSecret());
       configRepository.save(configEntity);
       log.info("=== Config === Create jwt.secret option");
-      log.info("=== Config === Initial configuration completed");
     }
-  }
 
+    log.info("=== Config === Initial configuration completed");
+  }
 }

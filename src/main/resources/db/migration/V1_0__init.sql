@@ -40,6 +40,14 @@ create table if not exists config_entity_seq
 INSERT INTO config_entity_seq (next_val)
 VALUES (1);
 
+create table if not exists global_message_entity_seq
+(
+    next_val bigint null
+);
+
+INSERT INTO global_message_entity_seq (next_val)
+VALUES (1);
+
 create table if not exists menu_entity
 (
     id         bigint       not null
@@ -491,6 +499,46 @@ create table if not exists user_entity
         unique (email),
     constraint UK_dn94k3s93vqlu1ufqus4t6y13
         unique (token)
+);
+
+create table if not exists global_message_entity
+(
+    id         bigint       not null
+        primary key,
+    created_by bigint       null,
+    created_on datetime(6)  not null,
+    deleted    bit          not null,
+    updated_by bigint       null,
+    updated_on datetime(6)  null,
+    version    smallint     null,
+    content    json         null,
+    name       varchar(255) not null,
+    overview   varchar(255) not null,
+    sender_id  bigint       null,
+    sort       int          not null,
+    constraint UK_pt1jenvifwkmyypi8m8856td5
+        unique (sender_id),
+    constraint FKm68afdpt9e6ycxdmvgjq9nln6
+        foreign key (sender_id) references user_entity (id)
+);
+
+create table if not exists global_message_user_entity
+(
+    created_by        bigint      null,
+    created_on        datetime(6) not null,
+    deleted           bit         not null,
+    updated_by        bigint      null,
+    updated_on        datetime(6) null,
+    version           smallint    null,
+    state             smallint    not null,
+    global_message_id bigint      not null,
+    user_id           bigint      not null,
+    primary key (global_message_id, user_id),
+    constraint FK2k75kgso1d45sm28yv35oop6f
+        foreign key (global_message_id) references global_message_entity (id),
+    constraint FKihfxiaiq17vyldcyotrn65i1t
+        foreign key (user_id) references user_entity (id),
+    check (`state` between 0 and 1)
 );
 
 create table if not exists message_entity

@@ -7,7 +7,7 @@ import com.youdeyiwu.model.dto.user.UpdateRoleDto;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.user.RoleEntityVo;
 import com.youdeyiwu.model.vo.user.RolePermissionsVo;
-import com.youdeyiwu.service.user.RoleService;
+import com.youdeyiwu.service.user.SubmenuService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -26,20 +26,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * role.
+ * submenu.
  *
  * @author dafengzhen
  */
 @RequiredArgsConstructor
-@RequestMapping(value = "/roles")
+@RequestMapping(value = "/submenus")
 @RestController
-public class RoleController {
+public class SubmenuController {
 
-  private final RoleService roleService;
+  private final SubmenuService submenuService;
 
   @PostMapping
   public ResponseEntity<Void> create(@Valid @RequestBody CreateRoleDto dto) {
-    return ResponseEntity.created(URI.create("/roles/" + roleService.create(dto).getId())).build();
+    return ResponseEntity.created(URI.create("/roles/" + submenuService.create(dto).getId())).build();
   }
 
   @PostMapping("/{id}/add-permissions")
@@ -47,7 +47,7 @@ public class RoleController {
       @PathVariable Long id,
       @Valid @RequestBody AssignPermissionsDto dto
   ) {
-    roleService.addPermissions(id, dto);
+    submenuService.addPermissions(id, dto);
     return ResponseEntity.noContent().build();
   }
 
@@ -56,7 +56,7 @@ public class RoleController {
       @PathVariable Long id,
       @Valid @RequestBody AssignPermissionsDto dto
   ) {
-    roleService.removePermissions(id, dto);
+    submenuService.removePermissions(id, dto);
     return ResponseEntity.noContent().build();
   }
 
@@ -65,7 +65,7 @@ public class RoleController {
       @PathVariable Long id,
       @Valid @RequestBody UpdatePermissionsRoleDto dto
   ) {
-    roleService.updatePermissions(id, dto);
+    submenuService.updatePermissions(id, dto);
     return ResponseEntity.noContent().build();
   }
 
@@ -74,18 +74,18 @@ public class RoleController {
       @PathVariable Long id,
       @Valid @RequestBody UpdateRoleDto dto
   ) {
-    roleService.update(id, dto);
+    submenuService.update(id, dto);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/{id}/permissions")
   public ResponseEntity<RolePermissionsVo> getPermissions(@PathVariable Long id) {
-    return ResponseEntity.ok().body(roleService.getPermissions(id));
+    return ResponseEntity.ok().body(submenuService.getPermissions(id));
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<RoleEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(roleService.query(id));
+    return ResponseEntity.ok().body(submenuService.query(id));
   }
 
   @GetMapping
@@ -94,12 +94,12 @@ public class RoleController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(roleService.queryAll(pageable));
+    return ResponseEntity.ok().body(submenuService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
-    roleService.delete(id);
+    submenuService.delete(id);
     return ResponseEntity.noContent().build();
   }
 }

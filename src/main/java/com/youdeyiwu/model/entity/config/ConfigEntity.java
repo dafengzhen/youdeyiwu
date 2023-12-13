@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.entity.config;
 
+import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import jakarta.persistence.Column;
@@ -35,6 +36,7 @@ public class ConfigEntity extends AbstractEntity {
 
   /**
    * name.
+   * {@link JwtConfigConstant}
    */
   @Column(nullable = false)
   private String name;

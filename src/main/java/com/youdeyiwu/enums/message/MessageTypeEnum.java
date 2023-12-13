@@ -11,6 +11,11 @@ import lombok.Getter;
 public enum MessageTypeEnum {
 
   /**
+   * system.
+   */
+  SYSTEM,
+
+  /**
    * user.
    */
   USER,

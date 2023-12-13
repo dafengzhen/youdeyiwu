@@ -7,6 +7,7 @@ import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
+import com.youdeyiwu.model.entity.message.GlobalMessageUserEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -241,6 +242,18 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   @JsonIgnore
   @ToString.Exclude
   private Set<MessageEntity> receivedMessages = new HashSet<>();
+
+  /**
+   * user global messages.
+   */
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<GlobalMessageUserEntity> userGlobalMessages = new HashSet<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
