@@ -27,7 +27,9 @@ import com.youdeyiwu.model.dto.user.UpdateUserStatesDto;
 import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.user.ActionEntity;
 import com.youdeyiwu.model.entity.user.RoleEntity;
+import com.youdeyiwu.model.entity.user.SubmenuEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.TokenVo;
@@ -54,7 +56,9 @@ import com.youdeyiwu.service.user.UserService;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -522,32 +526,45 @@ public class UserServiceImpl implements UserService {
                 menuEntity.getActions()
                     .stream()
                     .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
+                    .sorted(
+                        Comparator.comparing(ActionEntity::getSort).reversed()
+                            .thenComparing(ActionEntity::getId).reversed()
+                    )
                     .map(actionMapper::entityToVo)
-                    .collect(Collectors.toSet())
+                    .collect(Collectors.toCollection(LinkedHashSet::new))
             );
             vo.setSubmenus(new HashSet<>());
           } else {
             Set<SubmenuEntityVo> submenuEntityVos =
-                menuEntity.getSubmenus().stream()
+                menuEntity.getSubmenus()
+                    .stream()
                     .filter(submenuEntity -> submenuEntity.getRoles().isEmpty())
+                    .sorted(
+                        Comparator.comparing(SubmenuEntity::getSort).reversed()
+                            .thenComparing(SubmenuEntity::getId).reversed()
+                    )
                     .map(submenuEntity -> {
                       SubmenuEntityVo submenuEntityVo = submenuMapper.entityToVo(submenuEntity);
                       submenuEntityVo.setActions(
                           submenuEntity.getActions()
                               .stream()
                               .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
+                              .sorted(
+                                  Comparator.comparing(ActionEntity::getSort).reversed()
+                                      .thenComparing(ActionEntity::getId).reversed()
+                              )
                               .map(actionMapper::entityToVo)
-                              .collect(Collectors.toSet())
+                              .collect(Collectors.toCollection(LinkedHashSet::new))
                       );
                       return submenuEntityVo;
                     })
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
             vo.setActions(new HashSet<>());
             vo.setSubmenus(submenuEntityVos);
           }
           return vo;
         })
-        .collect(Collectors.toSet());
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   /**
@@ -571,14 +588,22 @@ public class UserServiceImpl implements UserService {
                         .stream()
                         .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
                             roleEntity))
+                        .sorted(
+                            Comparator.comparing(ActionEntity::getSort).reversed()
+                                .thenComparing(ActionEntity::getId).reversed()
+                        )
                         .map(actionMapper::entityToVo)
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toCollection(LinkedHashSet::new))
                 );
                 vo.setSubmenus(new HashSet<>());
               } else {
                 Set<SubmenuEntityVo> submenuEntityVos = menuEntity.getSubmenus()
                     .stream()
                     .filter(submenuEntity -> submenuEntity.getRoles().contains(roleEntity))
+                    .sorted(
+                        Comparator.comparing(SubmenuEntity::getSort).reversed()
+                            .thenComparing(SubmenuEntity::getId).reversed()
+                    )
                     .map(submenuEntity -> {
                       SubmenuEntityVo submenuEntityVo = submenuMapper.entityToVo(submenuEntity);
                       submenuEntityVo.setActions(
@@ -586,20 +611,22 @@ public class UserServiceImpl implements UserService {
                               .stream()
                               .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
                                   roleEntity))
+                              .sorted(
+                                  Comparator.comparing(ActionEntity::getSort).reversed()
+                                      .thenComparing(ActionEntity::getId).reversed()
+                              )
                               .map(actionMapper::entityToVo)
-                              .collect(Collectors.toSet())
+                              .collect(Collectors.toCollection(LinkedHashSet::new))
                       );
                       return submenuEntityVo;
                     })
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
                 vo.setActions(new HashSet<>());
                 vo.setSubmenus(submenuEntityVos);
               }
               return vo;
             })
-            .collect(Collectors.toSet())
-            .stream()
         )
-        .collect(Collectors.toSet());
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 }

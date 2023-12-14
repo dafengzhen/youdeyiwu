@@ -49,10 +49,13 @@ export default function Delete({ action }: { action: IAction }) {
         <h4 className="alert-heading">
           <span className="me-2 text-danger">Delete</span>
           <span className="text-danger">
-            {action.name}&nbsp;(ID. {action.id})
+            {action.alias ?? action.name.split('_').join(' ')}&nbsp;(ID.{' '}
+            {action.id})
           </span>
         </h4>
-        <p className="fw-medium">{`{ @Alias ${action.alias} }`}</p>
+        <p className="fw-medium">{`{ @Page ${
+          action.name.split('_')[0]
+        }, @Action ${action.name.split('_')[1]} }`}</p>
         <ul className="list-unstyled fw-medium">
           <li>
             Irreversible deletion! All data related to the action will be

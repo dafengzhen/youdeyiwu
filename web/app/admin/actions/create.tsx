@@ -6,15 +6,23 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
 import CreateActionAction from '@/app/actions/actions/create-action-action';
+import {
+  TActionName,
+  TActionPage,
+  TActionPageButton,
+} from '@/app/interfaces/menus';
+import { ACTION_PAGE_BUTTONS, ACTION_PAGES } from '@/app/constants';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
-    name: string;
+    page: string;
+    button: string;
     alias: string;
     sort: number;
   }>({
-    name: '',
+    page: ACTION_PAGES[0] ?? '',
+    button: ACTION_PAGE_BUTTONS[0] ?? '',
     alias: '',
     sort: 0,
   });
@@ -29,19 +37,29 @@ export default function Create() {
       e.preventDefault();
 
       const variables = trimObjectStrings({ ...form });
-      if (!variables.name) {
+      if (!variables.page) {
         toast.current.show({
           type: 'danger',
-          message: 'The action name cannot be empty',
+          message: 'Please select a specific page',
+        });
+        return;
+      } else if (!variables.button) {
+        toast.current.show({
+          type: 'danger',
+          message: 'Then choose an action within that page',
         });
         return;
       }
-      if (!variables.alias) {
-        variables.alias = variables.name;
-      }
+
+      variables.name = `${variables.page as TActionPage}_${
+        variables.button as TActionPageButton
+      }` as TActionName;
+
+      delete variables.page;
+      delete variables.button;
 
       await createActionActionMutation.mutateAsync(variables);
-      setForm({ ...form, name: '', alias: '', sort: 0 });
+      setForm({ ...form, page: '', button: '', alias: '', sort: 0 });
 
       toast.current.show({
         type: 'success',
@@ -56,7 +74,7 @@ export default function Create() {
     }
   }
 
-  function onChangeForm(e: ChangeEvent<HTMLInputElement>) {
+  function onChangeForm(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const name = e.target.name;
     const value = e.target.value;
     setForm({ ...form, [name]: value });
@@ -68,20 +86,51 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            Page
           </label>
-          <input
+          <select
             required
-            type="text"
-            className="form-control"
-            name="name"
-            value={form.name}
+            name="page"
             onChange={onChangeForm}
-            placeholder="Please enter the action name"
-            aria-describedby="name"
-            minLength={1}
-          />
-          <div className="form-text">The action name cannot be empty</div>
+            className="form-select"
+            value={form.page}
+            aria-label="page"
+          >
+            {ACTION_PAGES.map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+          <div className="form-text">Please select a specific page</div>
+        </div>
+
+        <div>
+          <label className="form-label">
+            <span className="text-danger fw-bold">*</span>
+            Action
+          </label>
+          <select
+            required
+            name="button"
+            onChange={onChangeForm}
+            className="form-select"
+            value={form.button}
+            aria-label="button"
+          >
+            {ACTION_PAGE_BUTTONS.map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+          <div className="form-text">
+            Then choose an action within that page
+          </div>
         </div>
 
         <div>
@@ -95,9 +144,7 @@ export default function Create() {
             placeholder="Please enter the action alias"
             aria-describedby="link"
           />
-          <div className="form-text">
-            If the alias is empty, it defaults to the name
-          </div>
+          <div className="form-text">Give this action a different name</div>
         </div>
 
         <div>

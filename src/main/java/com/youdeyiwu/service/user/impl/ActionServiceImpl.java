@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 /**
  * action.
@@ -59,11 +58,6 @@ public class ActionServiceImpl implements ActionService {
   public ActionEntity create(CreateActionDto dto) {
     ActionEntity actionEntity = new ActionEntity();
     actionMapper.dtoToEntity(dto, actionEntity);
-
-    if (!StringUtils.hasText(dto.alias())) {
-      actionEntity.setAlias(dto.name());
-    }
-
     actionRepository.save(actionEntity);
     return actionEntity;
   }
@@ -83,10 +77,6 @@ public class ActionServiceImpl implements ActionService {
   public void update(Long id, UpdateActionDto dto) {
     ActionEntity actionEntity = findAction(id);
     actionMapper.dtoToEntity(dto, actionEntity);
-
-    if (!StringUtils.hasText(dto.alias())) {
-      actionEntity.setAlias(dto.name());
-    }
 
     if (Objects.nonNull(dto.menu())) {
       actionEntity.setMenu(

@@ -41,7 +41,8 @@ export default function Actions({ data }: { data: IAction[] }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
+              <th scope="col">Page</th>
+              <th scope="col">Action</th>
               <th scope="col">Alias</th>
               <th scope="col">Sort</th>
               <th scope="col">Operate</th>
@@ -49,10 +50,12 @@ export default function Actions({ data }: { data: IAction[] }) {
           </thead>
           <tbody>
             {content.map((item) => {
+              const actionNames = item.name.split('_');
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
-                  <td>{item.name}</td>
+                  <td>{actionNames[0]}</td>
+                  <td>{actionNames[1]}</td>
                   <td>{item.alias}</td>
                   <td>{item.sort}</td>
                   <td>

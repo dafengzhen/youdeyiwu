@@ -2,8 +2,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { IUser } from '@/app/interfaces/users';
 import { getUserAlias, processFirstCharacter } from '@/app/common/server';
+import { IMenu } from '@/app/interfaces/menus';
 
-export default async function Navbar({ user }: { user: IUser | null }) {
+export default async function Navbar({
+  user,
+  menus,
+}: {
+  user: IUser | null;
+  menus: IMenu[];
+}) {
   let id;
   let avatar;
   let alias = getUserAlias(user);
@@ -58,28 +65,34 @@ export default async function Navbar({ user }: { user: IUser | null }) {
               </a>
               <ul className="dropdown-menu">
                 <li>
-                  <Link className="dropdown-item" href="/posts/new">
-                    Create Post
-                  </Link>
-                </li>
-                <li>
                   <Link className="dropdown-item" href="/messages">
                     Messages
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" href="/users/1">
+                  <Link
+                    className="dropdown-item"
+                    href={id ? `/users/${id}` : '/users'}
+                  >
                     My Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" href="/posts/new">
+                    Create Article
                   </Link>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
-                <li>
-                  <Link className="dropdown-item" href="/admin">
-                    Dashboard
-                  </Link>
-                </li>
+
+                {menus.length > 0 && (
+                  <li>
+                    <Link className="dropdown-item" href="/admin">
+                      Dashboard
+                    </Link>
+                  </li>
+                )}
               </ul>
             </li>
           </ul>

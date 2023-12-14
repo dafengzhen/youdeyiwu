@@ -6,16 +6,20 @@ import Link from 'next/link';
 import { useContext } from 'react';
 import { AdminContext } from '@/app/contexts/admin';
 import MyAdmin from '@/app/admin/my-admin';
-import { IMenu } from '@/app/interfaces/menus';
+import { ISubmenu } from '@/app/interfaces/menus';
+import { useSelectedLayoutSegments } from 'next/navigation';
 
 export default function SubmenuNavbar() {
-  const { selectedMenu, setSelectedMenu } = useContext(AdminContext);
+  const { selectedMenu, selectedSubmenu, setSelectedSubmenu } =
+    useContext(AdminContext);
+  const segments = useSelectedLayoutSegments();
+  const path = '/admin/' + segments.join('/');
 
-  function onClickItem(item: IMenu) {
-    if (selectedMenu?.id === item.id) {
-      setSelectedMenu!(undefined);
+  function onClickItem(item: ISubmenu) {
+    if (selectedSubmenu?.id === item.id) {
+      setSelectedSubmenu!(undefined);
     } else {
-      setSelectedMenu!(item);
+      setSelectedSubmenu!(item);
     }
   }
 
@@ -30,20 +34,23 @@ export default function SubmenuNavbar() {
       <div className="d-flex flex-column gap-4">
         <MyAdmin hidden={true} />
 
-        {[].map((item, index) => {
+        {(selectedMenu?.submenus ?? []).map((item, index) => {
+          const matching =
+            path === '/admin' ? false : path.startsWith(item.link);
+
           return (
             <Link
               key={item.id}
-              href=""
+              href={item.link}
               onClick={() => onClickItem(item)}
               className={clsx(
-                'cursor-pointer hstack gap-3 me-4 text-decoration-none',
+                'hstack gap-3 me-4 text-decoration-none',
                 styles.item,
-                // selectedTabIndex === item.id
-                //   ? styles.itemInfoHover
-                //   : styles.itemHover,
+                selectedSubmenu?.id === item.id || matching
+                  ? styles.itemInfoHover
+                  : styles.itemHover,
                 {
-                  // 'link-info': selectedTabIndex === item.id,
+                  'link-info': selectedSubmenu?.id === item.id,
                 },
               )}
             >
@@ -51,7 +58,7 @@ export default function SubmenuNavbar() {
               <i
                 className={clsx(
                   'bi',
-                  selectedMenu?.id === item.id ? 'bi-star-fill' : 'bi-star',
+                  selectedSubmenu?.id === item.id ? 'bi-star-fill' : 'bi-star',
                 )}
               ></i>
             </Link>

@@ -19,7 +19,7 @@ public class ActionEntityVo extends AbstractEntityVo {
   private String name;
 
   /**
-   * alias (The alias defaults to the name).
+   * alias.
    */
   private String alias;
 

@@ -7,6 +7,7 @@ import Footer from '@/app/footer';
 import { JetBrains_Mono, Open_Sans, Raleway } from 'next/font/google';
 import clsx from 'clsx';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
+import MenusUserAction from '@/app/actions/users/menus-user-action';
 
 import('@popperjs/core');
 
@@ -39,6 +40,7 @@ export default async function RootLayout({
   children: ReactNode;
 }) {
   const user = await LoginInfoUserAction();
+  const menus = await MenusUserAction();
 
   return (
     <html data-bs-theme="auto" lang="en">
@@ -51,7 +53,7 @@ export default async function RootLayout({
         )}
       >
         <Providers>
-          <Navbar user={user} />
+          <Navbar user={user} menus={menus} />
           {children}
           {process.env.SHOW_FOOTER === 'true' && <Footer />}
         </Providers>

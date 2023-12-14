@@ -98,7 +98,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Post
+              Create Article
             </Link>
           </div>
         </div>

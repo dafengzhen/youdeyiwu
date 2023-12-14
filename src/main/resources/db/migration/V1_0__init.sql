@@ -352,7 +352,7 @@ create table if not exists action_entity
     menu_id    bigint       null,
     role_id    bigint       null,
     submenu_id bigint       null,
-    alias      varchar(255) not null,
+    alias      varchar(255) null,
     sort       int          not null,
     constraint UK_c4yrem3jw4rbreob0v0lsbkp1
         unique (role_id),

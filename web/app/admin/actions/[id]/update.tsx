@@ -5,21 +5,30 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { nonNum, trimObjectStrings } from '@/app/common/client';
-import { IAction } from '@/app/interfaces/menus';
+import {
+  IAction,
+  TActionName,
+  TActionPage,
+  TActionPageButton,
+} from '@/app/interfaces/menus';
 import UpdateActionAction, {
   IUpdateActionActionVariables,
 } from '@/app/actions/actions/update-action-action';
+import { ACTION_PAGE_BUTTONS, ACTION_PAGES } from '@/app/constants';
 
 export default function Update({ action }: { action: IAction }) {
+  const actionNames = (action.name ?? '').split('_');
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
-    name: string;
+    page: string;
+    button: string;
     alias: string;
     sort: number;
     menu: string;
     submenu: string;
   }>({
-    name: action.name ?? '',
+    page: actionNames[0] ?? ACTION_PAGES[0] ?? '',
+    button: actionNames[1] ?? ACTION_PAGE_BUTTONS[0] ?? '',
     alias: action.alias ?? '',
     sort: action.sort ?? 0,
     menu: (action.menu?.id ?? '') + '' ?? '',
@@ -37,17 +46,31 @@ export default function Update({ action }: { action: IAction }) {
 
       const variables = trimObjectStrings({
         ...form,
-      }) as IUpdateActionActionVariables;
-      if (!variables.name) {
+      }) as IUpdateActionActionVariables & {
+        page?: TActionPage;
+        button?: TActionPageButton;
+      };
+
+      if (!variables.page) {
         toast.current.show({
           type: 'danger',
-          message: 'The action name cannot be empty',
+          message: 'Please select a specific page',
+        });
+        return;
+      } else if (!variables.button) {
+        toast.current.show({
+          type: 'danger',
+          message: 'Then choose an action within that page',
         });
         return;
       }
-      if (!variables.alias) {
-        variables.alias = variables.name;
-      }
+
+      variables.name = `${variables.page as TActionPage}_${
+        variables.button as TActionPageButton
+      }` as TActionName;
+
+      delete variables.page;
+      delete variables.button;
 
       const menu = variables.menu;
       if (menu && nonNum(menu + '')) {
@@ -87,20 +110,51 @@ export default function Update({ action }: { action: IAction }) {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            Page
           </label>
-          <input
+          <select
             required
-            type="text"
-            className="form-control"
-            name="name"
-            value={form.name}
+            name="page"
             onChange={onChangeForm}
-            placeholder="Please enter the action name"
-            aria-describedby="name"
-            minLength={1}
-          />
-          <div className="form-text">The action name cannot be empty</div>
+            className="form-select"
+            value={form.page}
+            aria-label="page"
+          >
+            {ACTION_PAGES.map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+          <div className="form-text">Please select a specific page</div>
+        </div>
+
+        <div>
+          <label className="form-label">
+            <span className="text-danger fw-bold">*</span>
+            Action
+          </label>
+          <select
+            required
+            name="button"
+            onChange={onChangeForm}
+            className="form-select"
+            value={form.button}
+            aria-label="button"
+          >
+            {ACTION_PAGE_BUTTONS.map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+          <div className="form-text">
+            Then choose an action within that page
+          </div>
         </div>
 
         <div>
@@ -114,9 +168,7 @@ export default function Update({ action }: { action: IAction }) {
             placeholder="Please enter the action alias"
             aria-describedby="link"
           />
-          <div className="form-text">
-            If the alias is empty, it defaults to the name
-          </div>
+          <div className="form-text">Give this action a different name</div>
         </div>
 
         <div>

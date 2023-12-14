@@ -26,7 +26,7 @@ export default function RelatedActions({
                     style={{ width: 140 }}
                   >
                     <i className="bi bi-pencil-square me-2"></i>
-                    Edit Post
+                    Edit Article
                   </div>
                 </Link>
               ) : (
@@ -39,7 +39,7 @@ export default function RelatedActions({
                     style={{ width: 140 }}
                   >
                     <i className="bi bi-pen me-2"></i>
-                    Create Post
+                    Create Article
                   </div>
                 </Link>
               )}

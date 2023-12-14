@@ -5,9 +5,10 @@ import FetchDataException from '@/app/exception/fetch-data-exception';
 import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
 import { checkResponseStatus } from '@/app/common/server';
+import { TActionName } from '@/app/interfaces/menus';
 
 export interface ICreateActionActionVariables {
-  name?: string;
+  name?: TActionName;
   alias?: string;
   sort?: number;
 }

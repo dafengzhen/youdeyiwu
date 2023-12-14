@@ -1,4 +1,5 @@
 import { obtainCredentials } from '@/app/common/server';
+import { TActionPage, TActionPageButton } from '@/app/interfaces/menus';
 
 export const GET = 'GET';
 export const POST = 'POST';
@@ -37,3 +38,28 @@ export const TEST_AUTHENTICATION_HEADER = (tk = '') => {
     [AUTHORIZATION]: tk,
   };
 };
+
+export const ACTION_PAGES: TActionPage[] = [
+  'Dashboard',
+  'Sections',
+  'Posts',
+  'Tags',
+  'Tag Groups',
+  'Section Groups',
+  'Users',
+  'Roles',
+  'Permissions',
+  'Messages',
+  'Configs',
+  'Menus',
+  'Submenus',
+  'Actions',
+];
+
+export const ACTION_PAGE_BUTTONS: TActionPageButton[] = [
+  'Create',
+  'Delete',
+  'Update',
+  'Query',
+  'Query All',
+];

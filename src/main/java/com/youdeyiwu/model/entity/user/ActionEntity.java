@@ -35,9 +35,8 @@ public class ActionEntity extends AbstractEntity {
   private String name;
 
   /**
-   * alias (The alias defaults to the name).
+   * alias.
    */
-  @Column(nullable = false)
   private String alias;
 
   /**
