@@ -2,37 +2,13 @@
 
 import styles from '@/app/admin/admin.module.scss';
 import clsx from 'clsx';
-import MyAdmin from '@/app/admin/my-admin';
-import { IUser } from '@/app/interfaces/users';
-import { IMenu } from '@/app/interfaces/menus';
+import Link from 'next/link';
 import { useContext } from 'react';
 import { AdminContext } from '@/app/contexts/admin';
-import Nodata from '@/app/common/nodata';
-import Link from 'next/link';
+import MyAdmin from '@/app/admin/my-admin';
+import { IMenu } from '@/app/interfaces/menus';
 
-export type TTabId =
-  | 'Dashboard'
-  | 'Sections'
-  | 'Posts'
-  | 'Tags'
-  | 'Tag Groups'
-  | 'Section Groups'
-  | 'Users'
-  | 'Roles'
-  | 'Permissions'
-  | 'Messages'
-  | 'Configs'
-  | 'Menus'
-  | 'Submenus'
-  | 'Actions';
-
-export default function Navbar({
-  user,
-  menus,
-}: {
-  user: IUser | null;
-  menus: IMenu[];
-}) {
+export default function SubmenuNavbar() {
   const { selectedMenu, setSelectedMenu } = useContext(AdminContext);
 
   function onClickItem(item: IMenu) {
@@ -48,12 +24,13 @@ export default function Navbar({
       className={clsx(
         'vh-100 position-fixed overflow-y-auto overflow-x-hidden',
         styles.box,
+        styles.boxMarginLeft,
       )}
     >
       <div className="d-flex flex-column gap-4">
-        <MyAdmin user={user} />
+        <MyAdmin hidden={true} />
 
-        {menus.map((item, index) => {
+        {[].map((item, index) => {
           return (
             <Link
               key={item.id}
@@ -80,8 +57,6 @@ export default function Navbar({
             </Link>
           );
         })}
-
-        {menus.length === 0 && <Nodata message="The menu is not available" />}
       </div>
     </div>
   );

@@ -11,10 +11,12 @@ import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.TokenVo;
+import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
 import com.youdeyiwu.model.vo.user.UserRolesPermissionsVo;
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -103,6 +105,13 @@ public interface UserService {
    * @param dto dto
    */
   void updateStates(Long id, UpdateUserStatesDto dto);
+
+  /**
+   * get menus.
+   *
+   * @return Set
+   */
+  Set<MenuEntityVo> getMenus();
 
   /**
    * get login info.

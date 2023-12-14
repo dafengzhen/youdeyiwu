@@ -74,6 +74,20 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
                           </Link>
                         </li>
                         <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
+                                `/admin/submenus/${item.id}?type=roles`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/submenus/${item.id}?type=roles`}
+                          >
+                            Update Roles
+                          </Link>
+                        </li>
+                        <li>
                           <hr className="dropdown-divider" />
                         </li>
                         <li>

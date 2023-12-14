@@ -1,6 +1,5 @@
 package com.youdeyiwu.auditing;
 
-import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.security.SecurityService;
 import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
@@ -10,7 +9,7 @@ import org.springframework.data.domain.AuditorAware;
  *
  * @author dafengzhen
  */
-public class SpringSecurityAuditorAware implements AuditorAware<UserEntity> {
+public class SpringSecurityAuditorAware implements AuditorAware<Long> {
 
   private final SecurityService securityService;
 
@@ -19,10 +18,10 @@ public class SpringSecurityAuditorAware implements AuditorAware<UserEntity> {
   }
 
   @Override
-  public Optional<UserEntity> getCurrentAuditor() {
+  public Optional<Long> getCurrentAuditor() {
     if (securityService.isAnonymous()) {
       return Optional.empty();
     }
-    return Optional.of(securityService.getAuthenticatedUser());
+    return Optional.of(securityService.getUserId());
   }
 }

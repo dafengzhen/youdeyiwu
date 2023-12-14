@@ -5,18 +5,18 @@ import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
-import { getUserAlias, nonNum } from '@/app/common/client';
-import { IUser } from '@/app/interfaces/users';
-import UpdateRolesUserAction from '@/app/actions/users/update-roles-user-action';
+import { nonNum } from '@/app/common/client';
+import { IMenu } from '@/app/interfaces/menus';
+import UpdateRolesMenuAction from '@/app/actions/menus/update-roles-menu-action';
 
-export default function UpdateRoles({ user }: { user: IUser }) {
+export default function UpdateRoles({ menu }: { menu: IMenu }) {
   const { toast } = useContext(GlobalContext);
   const [roles, setRoles] = useState<string[]>(
-    user.roles.map((item) => item.id + ''),
+    menu.roles.map((item) => item.id + ''),
   );
 
-  const updateRolesUserGroupActionMutation = useMutation({
-    mutationFn: UpdateRolesUserAction,
+  const updateRolesMenuActionMutation = useMutation({
+    mutationFn: UpdateRolesMenuAction,
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -28,8 +28,8 @@ export default function UpdateRoles({ user }: { user: IUser }) {
         .filter((item) => item !== '' && !nonNum(item))
         .map((item) => parseInt(item));
 
-      const id = user.id;
-      await updateRolesUserGroupActionMutation.mutateAsync({
+      const id = menu.id;
+      await updateRolesMenuActionMutation.mutateAsync({
         id,
         variables: {
           roles: _roles,
@@ -41,7 +41,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
         message: 'Roles updated successfully',
       });
     } catch (e: any) {
-      updateRolesUserGroupActionMutation.reset();
+      updateRolesMenuActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -50,7 +50,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
   }
 
   return (
-    <Box title={`${getUserAlias(user)} (ID. ${user.id})`}>
+    <Box title={`${menu.name} (ID. ${menu.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
           <label className="form-label">Roles</label>
@@ -59,7 +59,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
               <SimpleDynamicInput
                 items={roles}
                 setItems={setRoles}
-                showSourceInfo={user.roles}
+                showSourceInfo={menu.roles}
               />
             </div>
           </div>
@@ -71,13 +71,13 @@ export default function UpdateRoles({ user }: { user: IUser }) {
 
         <div>
           <button
-            disabled={updateRolesUserGroupActionMutation.isPending}
+            disabled={updateRolesMenuActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
-            {updateRolesUserGroupActionMutation.isPending
+            {updateRolesMenuActionMutation.isPending
               ? 'Updating'
-              : 'Update User Roles'}
+              : 'Update Menu Roles'}
           </button>
         </div>
       </form>

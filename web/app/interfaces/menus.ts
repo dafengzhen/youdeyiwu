@@ -1,10 +1,13 @@
 import { IBase } from '@/app/interfaces/index';
+import { IRole } from '@/app/interfaces/roles';
 
 export interface IMenu extends IBase {
   name: string;
   link: string;
   sort: number;
   submenus: ISubmenu[];
+  actions: IAction[];
+  roles: IRole[];
 }
 
 export interface ISubmenu extends IBase {
@@ -12,6 +15,8 @@ export interface ISubmenu extends IBase {
   link: string;
   sort: number;
   menu?: IMenu;
+  actions: IAction[];
+  roles: IRole[];
 }
 
 export interface IAction extends IBase {
@@ -20,4 +25,5 @@ export interface IAction extends IBase {
   sort: number;
   menu?: IMenu;
   submenu?: ISubmenu;
+  role?: IRole;
 }

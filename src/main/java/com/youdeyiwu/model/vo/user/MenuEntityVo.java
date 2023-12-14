@@ -34,4 +34,14 @@ public class MenuEntityVo extends AbstractEntityVo {
    */
   private Set<SubmenuEntityVo> submenus;
 
+  /**
+   * actions.
+   */
+  private Set<ActionEntityVo> actions;
+
+  /**
+   * roles.
+   */
+  private Set<RoleEntityVo> roles;
+
 }

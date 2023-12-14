@@ -1,7 +1,6 @@
 package com.youdeyiwu.config;
 
 import com.youdeyiwu.auditing.SpringSecurityAuditorAware;
-import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.security.SecurityService;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +44,7 @@ public class Config {
    * @return AuditorAware
    */
   @Bean
-  public AuditorAware<UserEntity> auditorProvider(SecurityService securityService) {
+  public AuditorAware<Long> auditorProvider(SecurityService securityService) {
     return new SpringSecurityAuditorAware(securityService);
   }
 }

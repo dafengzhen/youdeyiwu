@@ -2,6 +2,7 @@ package com.youdeyiwu.service.user;
 
 import com.youdeyiwu.model.dto.user.CreateMenuDto;
 import com.youdeyiwu.model.dto.user.UpdateMenuDto;
+import com.youdeyiwu.model.dto.user.UpdateRolesMenuDto;
 import com.youdeyiwu.model.entity.user.MenuEntity;
 import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import java.util.Set;
@@ -20,6 +21,14 @@ public interface MenuService {
    * @return MenuEntity
    */
   MenuEntity create(CreateMenuDto dto);
+
+  /**
+   * update roles menu.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void updateRoles(Long id, UpdateRolesMenuDto dto);
 
   /**
    * update.

@@ -2,6 +2,7 @@ package com.youdeyiwu.controller.user;
 
 import com.youdeyiwu.model.dto.user.CreateMenuDto;
 import com.youdeyiwu.model.dto.user.UpdateMenuDto;
+import com.youdeyiwu.model.dto.user.UpdateRolesMenuDto;
 import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import com.youdeyiwu.service.user.MenuService;
 import jakarta.validation.Valid;
@@ -33,6 +34,15 @@ public class MenuController {
   @PostMapping
   public ResponseEntity<Void> create(@Valid @RequestBody CreateMenuDto dto) {
     return ResponseEntity.created(URI.create("/menus/" + menuService.create(dto).getId())).build();
+  }
+
+  @PutMapping(value = "/{id}/roles")
+  public ResponseEntity<Void> updateRoles(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateRolesMenuDto dto
+  ) {
+    menuService.updateRoles(id, dto);
+    return ResponseEntity.noContent().build();
   }
 
   @PutMapping("/{id}")

@@ -11,13 +11,14 @@ import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.TokenVo;
-import com.youdeyiwu.model.vo.forum.PostEntityVo;
+import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
 import com.youdeyiwu.model.vo.user.UserRolesPermissionsVo;
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import com.youdeyiwu.service.user.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -121,6 +122,11 @@ public class UserController {
   @GetMapping("/{id}/roles-permissions")
   public ResponseEntity<UserRolesPermissionsVo> getRolesPermissions(@PathVariable Long id) {
     return ResponseEntity.ok().body(userService.getRolesPermissions(id));
+  }
+
+  @GetMapping("/menus")
+  public ResponseEntity<Set<MenuEntityVo>> getMenus() {
+    return ResponseEntity.ok().body(userService.getMenus());
   }
 
   @GetMapping("/login-info")

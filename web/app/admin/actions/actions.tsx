@@ -74,6 +74,20 @@ export default function Actions({ data }: { data: IAction[] }) {
                           </Link>
                         </li>
                         <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
+                                `/admin/actions/${item.id}?type=role`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/actions/${item.id}?type=role`}
+                          >
+                            Update Role
+                          </Link>
+                        </li>
+                        <li>
                           <hr className="dropdown-divider" />
                         </li>
                         <li>

@@ -13,7 +13,7 @@ export default function Configs() {
         <table className="table align-middle table-striped">
           <thead>
             <tr>
-              <th scope="col">ID</th>
+              <th scope="col">Config</th>
               <th scope="col">Operate</th>
             </tr>
           </thead>
@@ -21,7 +21,7 @@ export default function Configs() {
             {items.map((item) => {
               return (
                 <tr key={item}>
-                  <th scope="row">{item}</th>
+                  <td scope="row">{item}</td>
                   <td>
                     <Link
                       className="link-dark text-decoration-none user-select-none"

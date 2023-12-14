@@ -6,18 +6,18 @@ import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
 import { checkResponseStatus } from '@/app/common/server';
 
-export interface IUpdateRolesUserGroupActionVariables {
+export interface IUpdateRolesSubmenuActionVariables {
   roles?: number[];
 }
 
-export default async function UpdateRolesUserGroupAction({
+export default async function UpdateRolesSubmenuAction({
   id,
   variables,
 }: {
   id: number;
-  variables: IUpdateRolesUserGroupActionVariables;
+  variables: IUpdateRolesSubmenuActionVariables;
 }) {
-  const response = await fetch(process.env.API_SERVER + `/users/${id}/roles`, {
+  const response = await fetch(process.env.API_SERVER + `/menus/${id}/roles`, {
     method: PUT,
     headers: {
       ...AUTHENTICATION_HEADER(),
@@ -33,6 +33,6 @@ export default async function UpdateRolesUserGroupAction({
     throw FetchDataException(data.message);
   }
 
-  revalidateTag('/admin/users');
-  revalidateTag(`/admin/users/${id}`);
+  revalidateTag('/admin/menus');
+  revalidateTag(`/admin/menus/${id}`);
 }

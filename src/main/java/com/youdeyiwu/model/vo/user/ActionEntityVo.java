@@ -38,4 +38,9 @@ public class ActionEntityVo extends AbstractEntityVo {
    */
   private SubmenuEntityVo submenu;
 
+  /**
+   * role.
+   */
+  private RoleEntityVo role;
+
 }

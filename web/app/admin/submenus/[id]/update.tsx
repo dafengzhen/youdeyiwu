@@ -9,6 +9,7 @@ import { ISubmenu } from '@/app/interfaces/menus';
 import UpdateSubmenuAction, {
   IUpdateSubmenuActionVariables,
 } from '@/app/actions/submenus/update-submenu-action';
+import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
 export default function Update({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
@@ -23,6 +24,9 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
     sort: submenu.sort ?? 0,
     menu: (submenu.menu?.id ?? '') + '' ?? '',
   });
+  const [actions, setActions] = useState<string[]>(
+    submenu.actions.map((item) => item.id + ''),
+  );
 
   const updateSubmenuActionMutation = useMutation({
     mutationFn: UpdateSubmenuAction,
@@ -55,6 +59,10 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
       if (menu && nonNum(menu + '')) {
         delete variables.menu;
       }
+
+      variables.actions = actions
+        .filter((item) => item !== '' && !nonNum(item))
+        .map((item) => parseInt(item));
 
       const id = submenu.id;
       await updateSubmenuActionMutation.mutateAsync({ id, variables });
@@ -154,6 +162,31 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
           <div className="form-text">
             Please enter the menu ID. If you don&apos;t have a menu yet, please
             create one first
+          </div>
+        </div>
+
+        <div>
+          <label className="form-label">Actions</label>
+          <div className="card rounded-2">
+            <div className="card-body">
+              <SimpleDynamicInput
+                items={actions}
+                setItems={setActions}
+                showSourceInfo={submenu.actions}
+              />
+            </div>
+          </div>
+          <div className="form-text">
+            Please enter the action ID. If you haven&apos;t created a tag group
+            yet, please create one first
+          </div>
+          <div className="form-text">
+            The note to remove the action means that the action will also be
+            deleted
+          </div>
+          <div className="form-text">
+            The action corresponds to a menu or submenu, and if the action is
+            already used by another menu, you should create a new action
           </div>
         </div>
 

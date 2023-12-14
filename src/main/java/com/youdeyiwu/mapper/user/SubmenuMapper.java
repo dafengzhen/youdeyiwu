@@ -32,6 +32,7 @@ public interface SubmenuMapper {
    * @param entity entity
    */
   @Mapping(target = "menu", ignore = true)
+  @Mapping(target = "actions", ignore = true)
   void dtoToEntity(UpdateSubmenuDto dto, @MappingTarget SubmenuEntity entity);
 
   /**
@@ -41,6 +42,8 @@ public interface SubmenuMapper {
    * @return SubmenuEntityVo
    */
   @Mapping(target = "menu", ignore = true)
+  @Mapping(target = "actions", ignore = true)
+  @Mapping(target = "roles", ignore = true)
   SubmenuEntityVo entityToVo(SubmenuEntity entity);
 
 }

@@ -25,6 +25,9 @@ export default function Update({ menu }: { menu: IMenu }) {
   const [submenus, setSubmenus] = useState<string[]>(
     menu.submenus.map((item) => item.id + ''),
   );
+  const [actions, setActions] = useState<string[]>(
+    menu.actions.map((item) => item.id + ''),
+  );
 
   const updateMenuActionMutation = useMutation({
     mutationFn: UpdateMenuAction,
@@ -54,6 +57,9 @@ export default function Update({ menu }: { menu: IMenu }) {
       }
 
       variables.submenus = submenus
+        .filter((item) => item !== '' && !nonNum(item))
+        .map((item) => parseInt(item));
+      variables.actions = actions
         .filter((item) => item !== '' && !nonNum(item))
         .map((item) => parseInt(item));
 
@@ -155,6 +161,35 @@ export default function Update({ menu }: { menu: IMenu }) {
           <div className="form-text">
             Please enter the submenu ID. If you haven&apos;t created a tag group
             yet, please create one first
+          </div>
+          <div className="form-text">
+            The note to remove the submenu means that the submenu will also be
+            deleted
+          </div>
+        </div>
+
+        <div>
+          <label className="form-label">Actions</label>
+          <div className="card rounded-2">
+            <div className="card-body">
+              <SimpleDynamicInput
+                items={actions}
+                setItems={setActions}
+                showSourceInfo={menu.actions}
+              />
+            </div>
+          </div>
+          <div className="form-text">
+            Please enter the action ID. If you haven&apos;t created a tag group
+            yet, please create one first
+          </div>
+          <div className="form-text">
+            The note to remove the action means that the action will also be
+            deleted
+          </div>
+          <div className="form-text">
+            The action corresponds to a menu or submenu, and if the action is
+            already used by another menu, you should create a new action
           </div>
         </div>
 

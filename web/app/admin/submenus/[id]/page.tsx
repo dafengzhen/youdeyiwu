@@ -4,6 +4,7 @@ import Delete from '@/app/admin/submenus/[id]/delete';
 import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QuerySubmenuAction from '@/app/actions/submenus/query-submenu-action';
+import UpdateRoles from '@/app/admin/submenus/[id]/update-roles';
 
 export const metadata: Metadata = {
   title: 'update submenu - youdeyiwu',
@@ -18,7 +19,7 @@ export default async function Page({
     id: string;
   };
   searchParams: {
-    type?: 'del';
+    type?: 'del' | 'roles';
   };
 }) {
   const id = params.id;
@@ -31,6 +32,8 @@ export default async function Page({
   switch (type) {
     case 'del':
       return <Delete submenu={submenu} />;
+    case 'roles':
+      return <UpdateRoles submenu={submenu} />;
     default:
       return <Update submenu={submenu} />;
   }

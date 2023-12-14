@@ -11,6 +11,7 @@ export interface IUpdateSubmenuActionVariables {
   link?: string;
   sort?: number;
   menu?: number;
+  actions?: number[];
 }
 
 export default async function UpdateSubmenuAction({

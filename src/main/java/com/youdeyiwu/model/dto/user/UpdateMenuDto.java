@@ -6,10 +6,11 @@ import java.util.Set;
 /**
  * update menu.
  *
- * @param name name
- * @param link link
- * @param sort sort
+ * @param name     name
+ * @param link     link
+ * @param sort     sort
  * @param submenus submenus
+ * @param actions  actions
  */
 public record UpdateMenuDto(
     String name,
@@ -18,7 +19,9 @@ public record UpdateMenuDto(
 
     Integer sort,
 
-    Set<Long> submenus
+    Set<Long> submenus,
+
+    Set<Long> actions
 ) implements Serializable {
 
 }

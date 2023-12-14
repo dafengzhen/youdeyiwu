@@ -11,8 +11,11 @@ import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.PostMapper;
 import com.youdeyiwu.mapper.forum.SectionMapper;
 import com.youdeyiwu.mapper.forum.TagMapper;
+import com.youdeyiwu.mapper.user.ActionMapper;
+import com.youdeyiwu.mapper.user.MenuMapper;
 import com.youdeyiwu.mapper.user.PermissionMapper;
 import com.youdeyiwu.mapper.user.RoleMapper;
+import com.youdeyiwu.mapper.user.SubmenuMapper;
 import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.user.AssignRolesDto;
 import com.youdeyiwu.model.dto.user.LoginDto;
@@ -30,8 +33,10 @@ import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.TokenVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostFavoriteEntityVo;
+import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import com.youdeyiwu.model.vo.user.PermissionEntityVo;
 import com.youdeyiwu.model.vo.user.RoleEntityVo;
+import com.youdeyiwu.model.vo.user.SubmenuEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
 import com.youdeyiwu.model.vo.user.UserRolesPermissionsVo;
 import com.youdeyiwu.model.vo.user.UserStatisticsVo;
@@ -39,7 +44,10 @@ import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostFavoriteRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
+import com.youdeyiwu.repository.user.ActionRepository;
+import com.youdeyiwu.repository.user.MenuRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
+import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.user.UserService;
@@ -51,8 +59,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -96,6 +106,18 @@ public class UserServiceImpl implements UserService {
   private final TagMapper tagMapper;
 
   private final UserCache userCache;
+
+  private final MenuMapper menuMapper;
+
+  private final SubmenuMapper submenuMapper;
+
+  private final ActionMapper actionMapper;
+
+  private final MenuRepository menuRepository;
+
+  private final SubmenuRepository submenuRepository;
+
+  private final ActionRepository actionRepository;
 
   @Transactional
   @Override
@@ -265,6 +287,14 @@ public class UserServiceImpl implements UserService {
     if (Objects.nonNull(dto.enabled())) {
       userEntity.setEnabled(Boolean.TRUE.equals(dto.enabled()));
     }
+  }
+
+  @Override
+  public Set<MenuEntityVo> getMenus() {
+    if (securityService.isAnonymous()) {
+      return getAnonymousUserMenus();
+    }
+    return getAuthenticatedUserMenus();
   }
 
   @Override
@@ -472,5 +502,104 @@ public class UserServiceImpl implements UserService {
             .count()
     );
     vo.setRelatedStatistics(userStatisticsVo);
+  }
+
+  /**
+   * get anonymous user menus.
+   *
+   * @return Set
+   */
+  private Set<MenuEntityVo> getAnonymousUserMenus() {
+    return StreamSupport.stream(
+            menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id")).spliterator(),
+            false
+        )
+        .filter(menuEntity -> menuEntity.getRoles().isEmpty())
+        .map(menuEntity -> {
+          MenuEntityVo vo = menuMapper.entityToVo(menuEntity);
+          if (menuEntity.getSubmenus().isEmpty()) {
+            vo.setActions(
+                menuEntity.getActions()
+                    .stream()
+                    .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
+                    .map(actionMapper::entityToVo)
+                    .collect(Collectors.toSet())
+            );
+            vo.setSubmenus(new HashSet<>());
+          } else {
+            Set<SubmenuEntityVo> submenuEntityVos =
+                menuEntity.getSubmenus().stream()
+                    .filter(submenuEntity -> submenuEntity.getRoles().isEmpty())
+                    .map(submenuEntity -> {
+                      SubmenuEntityVo submenuEntityVo = submenuMapper.entityToVo(submenuEntity);
+                      submenuEntityVo.setActions(
+                          submenuEntity.getActions()
+                              .stream()
+                              .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
+                              .map(actionMapper::entityToVo)
+                              .collect(Collectors.toSet())
+                      );
+                      return submenuEntityVo;
+                    })
+                    .collect(Collectors.toSet());
+            vo.setActions(new HashSet<>());
+            vo.setSubmenus(submenuEntityVos);
+          }
+          return vo;
+        })
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * get authenticated user menu.
+   *
+   * @return Set
+   */
+  private Set<MenuEntityVo> getAuthenticatedUserMenus() {
+    return userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new)
+        .getRoles()
+        .stream()
+        .filter(roleEntity -> !roleEntity.getMenus().isEmpty())
+        .flatMap(roleEntity -> roleEntity.getMenus()
+            .stream()
+            .map(menuEntity -> {
+              MenuEntityVo vo = new MenuEntityVo();
+              if (menuEntity.getSubmenus().isEmpty()) {
+                vo.setActions(
+                    menuEntity.getActions()
+                        .stream()
+                        .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
+                            roleEntity))
+                        .map(actionMapper::entityToVo)
+                        .collect(Collectors.toSet())
+                );
+                vo.setSubmenus(new HashSet<>());
+              } else {
+                Set<SubmenuEntityVo> submenuEntityVos = menuEntity.getSubmenus()
+                    .stream()
+                    .filter(submenuEntity -> submenuEntity.getRoles().contains(roleEntity))
+                    .map(submenuEntity -> {
+                      SubmenuEntityVo submenuEntityVo = submenuMapper.entityToVo(submenuEntity);
+                      submenuEntityVo.setActions(
+                          submenuEntity.getActions()
+                              .stream()
+                              .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
+                                  roleEntity))
+                              .map(actionMapper::entityToVo)
+                              .collect(Collectors.toSet())
+                      );
+                      return submenuEntityVo;
+                    })
+                    .collect(Collectors.toSet());
+                vo.setActions(new HashSet<>());
+                vo.setSubmenus(submenuEntityVos);
+              }
+              return vo;
+            })
+            .collect(Collectors.toSet())
+            .stream()
+        )
+        .collect(Collectors.toSet());
   }
 }

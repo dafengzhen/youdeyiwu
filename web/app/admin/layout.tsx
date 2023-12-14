@@ -1,8 +1,7 @@
 import React, { type ReactNode } from 'react';
-import Navbar from '@/app/admin/navbar';
-import clsx from 'clsx';
-import styles from '@/app/admin/admin.module.scss';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
+import MenusUserAction from '@/app/actions/users/menus-user-action';
+import { Providers } from '@/app/admin/providers';
 
 export default async function RootLayout({
   children,
@@ -10,12 +9,14 @@ export default async function RootLayout({
   children: ReactNode;
 }) {
   const user = await LoginInfoUserAction();
+  const menus = await MenusUserAction();
 
   return (
     <div className="row mx-0">
       <div className="col">
-        <Navbar user={user} />
-        <div className={clsx(styles.boxMarginLeft)}>{children}</div>
+        <Providers user={user} menus={menus}>
+          {children}
+        </Providers>
       </div>
     </div>
   );

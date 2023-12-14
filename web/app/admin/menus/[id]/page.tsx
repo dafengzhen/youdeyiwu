@@ -4,6 +4,7 @@ import Delete from '@/app/admin/menus/[id]/delete';
 import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryMenuAction from '@/app/actions/menus/query-menu-action';
+import UpdateRoles from '@/app/admin/menus/[id]/update-roles';
 
 export const metadata: Metadata = {
   title: 'update menu - youdeyiwu',
@@ -18,7 +19,7 @@ export default async function Page({
     id: string;
   };
   searchParams: {
-    type?: 'del';
+    type?: 'del' | 'roles';
   };
 }) {
   const id = params.id;
@@ -31,6 +32,8 @@ export default async function Page({
   switch (type) {
     case 'del':
       return <Delete menu={menu} />;
+    case 'roles':
+      return <UpdateRoles menu={menu} />;
     default:
       return <Update menu={menu} />;
   }

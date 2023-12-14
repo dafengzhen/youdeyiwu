@@ -6,22 +6,18 @@ import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
 import { checkResponseStatus } from '@/app/common/server';
 
-export interface IUpdateMenuActionVariables {
-  name?: string;
-  link?: string;
-  sort?: number;
-  submenus?: number[];
-  actions?: number[];
+export interface IUpdateRoleActionActionVariables {
+  role?: number;
 }
 
-export default async function UpdateMenuAction({
+export default async function UpdateRoleActionAction({
   id,
   variables,
 }: {
   id: number;
-  variables: IUpdateMenuActionVariables;
+  variables: IUpdateRoleActionActionVariables;
 }) {
-  const response = await fetch(process.env.API_SERVER + `/menus/${id}`, {
+  const response = await fetch(process.env.API_SERVER + `/actions/${id}/role`, {
     method: PUT,
     headers: {
       ...AUTHENTICATION_HEADER(),
@@ -37,6 +33,6 @@ export default async function UpdateMenuAction({
     throw FetchDataException(data.message);
   }
 
-  revalidateTag('/admin/menus');
-  revalidateTag(`/admin/menus/${id}`);
+  revalidateTag('/admin/actions');
+  revalidateTag(`/admin/actions/${id}`);
 }

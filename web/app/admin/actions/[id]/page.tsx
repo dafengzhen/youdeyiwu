@@ -4,6 +4,7 @@ import Delete from '@/app/admin/actions/[id]/delete';
 import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryActionAction from '@/app/actions/actions/query-action-action';
+import UpdateRole from '@/app/admin/actions/[id]/update-role';
 
 export const metadata: Metadata = {
   title: 'update action - youdeyiwu',
@@ -18,7 +19,7 @@ export default async function Page({
     id: string;
   };
   searchParams: {
-    type?: 'del';
+    type?: 'del' | 'role';
   };
 }) {
   const id = params.id;
@@ -31,6 +32,8 @@ export default async function Page({
   switch (type) {
     case 'del':
       return <Delete action={action} />;
+    case 'role':
+      return <UpdateRole action={action} />;
     default:
       return <Update action={action} />;
   }
