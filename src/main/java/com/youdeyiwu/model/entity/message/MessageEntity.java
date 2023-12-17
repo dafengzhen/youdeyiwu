@@ -55,7 +55,7 @@ public class MessageEntity extends AbstractEntity {
    */
   @Enumerated
   @Column(columnDefinition = "smallint", nullable = false)
-  private MessageTypeEnum messageType = MessageTypeEnum.USER;
+  private MessageTypeEnum messageType = MessageTypeEnum.MESSAGE;
 
   /**
    * message range.

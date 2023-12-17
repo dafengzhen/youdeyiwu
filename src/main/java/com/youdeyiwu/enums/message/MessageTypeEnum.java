@@ -4,6 +4,8 @@ import lombok.Getter;
 
 /**
  * message type.
+ * If you need to add an enumeration, please append it at the end.
+ * This is because the enumeration is stored in natural order, not by name.
  *
  * @author dafengzhen
  */
@@ -14,6 +16,26 @@ public enum MessageTypeEnum {
    * system.
    */
   SYSTEM,
+
+  /**
+   * global message.
+   */
+  GLOBAL_MESSAGE,
+
+  /**
+   * message.
+   */
+  MESSAGE,
+
+  /**
+   * config.
+   */
+  CONFIG,
+
+  /**
+   * file.
+   */
+  FILE,
 
   /**
    * user.
@@ -29,6 +51,21 @@ public enum MessageTypeEnum {
    * permission.
    */
   PERMISSION,
+
+  /**
+   * menu.
+   */
+  MENU,
+
+  /**
+   * submenu.
+   */
+  SUBMENU,
+
+  /**
+   * action.
+   */
+  ACTION,
 
   /**
    * section.
@@ -64,5 +101,10 @@ public enum MessageTypeEnum {
    * reply.
    */
   REPLY,
+
+  /**
+   * point.
+   */
+  POINT
 
 }

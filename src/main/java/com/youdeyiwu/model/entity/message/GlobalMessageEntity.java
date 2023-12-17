@@ -58,7 +58,7 @@ public class GlobalMessageEntity extends AbstractEntity {
    */
   @Enumerated
   @Column(columnDefinition = "smallint", nullable = false)
-  private MessageTypeEnum messageType = MessageTypeEnum.SYSTEM;
+  private MessageTypeEnum messageType = MessageTypeEnum.GLOBAL_MESSAGE;
 
   /**
    * message range.
