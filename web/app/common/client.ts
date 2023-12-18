@@ -129,3 +129,12 @@ export const wait = async (ms = 1000) => {
     }, ms);
   });
 };
+
+export const isValidJSON = (jsonString: any) => {
+  try {
+    JSON.parse(jsonString);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};

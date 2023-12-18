@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import Messages from '@/app/messages/messages';
+import QueryAllMessagesAction from '@/app/actions/messages/query-all-messages-action';
 
 export const metadata: Metadata = {
   title: 'messages - youdeyiwu',
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return <Messages />;
+  return <Messages data={await QueryAllMessagesAction()} />;
 }

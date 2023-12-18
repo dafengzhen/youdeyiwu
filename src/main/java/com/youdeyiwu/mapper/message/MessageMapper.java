@@ -43,7 +43,7 @@ public interface MessageMapper {
    * @param entity entity
    */
   @Mapping(target = "sender", ignore = true)
-  void entityToVo(MessageEntityVo vo, @MappingTarget GlobalMessageEntity entity);
+  void entityToVo(@MappingTarget MessageEntityVo vo, GlobalMessageEntity entity);
 
   /**
    * entityToVo.

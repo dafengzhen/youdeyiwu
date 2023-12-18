@@ -6,15 +6,14 @@ import com.youdeyiwu.enums.message.MessageTypeEnum;
 import com.youdeyiwu.model.vo.AbstractEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
 import java.util.Map;
+import java.util.Objects;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * message.
  *
  * @author dafengzhen
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 public class MessageEntityVo extends AbstractEntityVo {
 
@@ -58,4 +57,23 @@ public class MessageEntityVo extends AbstractEntityVo {
    */
   private UserEntityVo receiver;
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    MessageEntityVo that = (MessageEntityVo) o;
+    return messageRange == that.messageRange;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), messageRange);
+  }
 }

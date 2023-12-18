@@ -231,7 +231,7 @@ public class MessageServiceImpl implements MessageService {
             PageRequest.of(
                 0,
                 6,
-                Sort.by(Sort.Order.by("state"), Sort.Order.desc("sort"), Sort.Order.desc("id"))
+                Sort.by(Sort.Order.desc("sort"), Sort.Order.desc("id"))
             )
         )
     );
@@ -258,8 +258,6 @@ public class MessageServiceImpl implements MessageService {
         .sorted(
             Comparator.comparing(MessageEntityVo::getMessageRange)
                 .thenComparing(MessageEntityVo::getState)
-                .thenComparing(MessageEntityVo::getId)
-                .reversed()
         )
         .toList();
 
@@ -277,7 +275,7 @@ public class MessageServiceImpl implements MessageService {
         PageRequest.of(
             0,
             6,
-            Sort.by(Sort.Order.by("state"), Sort.Order.desc("sort"), Sort.Order.desc("id"))
+            Sort.by(Sort.Order.desc("sort"), Sort.Order.desc("id"))
         )
     );
     Page<MessageEntity> messageEntities = messageRepository.findAllBySenderIsNull(pageable);
@@ -295,12 +293,7 @@ public class MessageServiceImpl implements MessageService {
             })
         )
         .flatMap(Streamable::stream)
-        .sorted(
-            Comparator.comparing(MessageEntityVo::getMessageRange)
-                .thenComparing(MessageEntityVo::getState)
-                .thenComparing(MessageEntityVo::getId)
-                .reversed()
-        )
+        .sorted(Comparator.comparing(MessageEntityVo::getMessageRange))
         .toList();
 
     return new PageVo<>(new PageImpl<>(vos, pageable, messageEntities.getTotalElements()));
