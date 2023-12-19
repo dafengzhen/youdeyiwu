@@ -9,7 +9,7 @@ import Link from 'next/link';
 import Nodata from '@/app/common/nodata';
 import LoadMore from '@/app/home/load-more';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import QueryAllGlobalMessagesAction from '@/app/actions/messages/query-all-global-messages-action';
+import QueryAllGlobalMessageAction from '@/app/actions/messages/query-all-global-message-action';
 import { getUserAlias } from '@/app/common/client';
 import { useRouter } from 'next/navigation';
 
@@ -21,7 +21,7 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
   const globalMessagesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/messages', '/global-messages', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllGlobalMessagesAction({
+      return QueryAllGlobalMessageAction({
         page: context.pageParam.page + '',
       });
     },

@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
 import Messages from '@/app/messages/messages';
-import QueryAllMessagesAction from '@/app/actions/messages/query-all-messages-action';
+import QueryAllMessageAction from '@/app/actions/messages/query-all-message-action';
+import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 
 export const metadata: Metadata = {
   title: 'messages - youdeyiwu',
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return <Messages data={await QueryAllMessagesAction()} />;
+  return (
+    <Messages
+      data={await QueryAllMessageAction()}
+      currentUser={await LoginInfoUserAction()}
+    />
+  );
 }

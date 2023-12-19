@@ -3,13 +3,17 @@ import Image from 'next/image';
 import { IUser } from '@/app/interfaces/users';
 import { getUserAlias, processFirstCharacter } from '@/app/common/server';
 import { IMenu } from '@/app/interfaces/menus';
+import { IPage } from '@/app/interfaces';
+import { IMessage } from '@/app/interfaces/messages';
 
 export default async function Navbar({
   user,
   menus,
+  messages,
 }: {
   user: IUser | null;
   menus: IMenu[];
+  messages?: IPage<IMessage[]>;
 }) {
   let id;
   let avatar;
@@ -67,6 +71,14 @@ export default async function Navbar({
                 <li>
                   <Link className="dropdown-item" href="/messages">
                     Messages
+                    {messages &&
+                      messages.content.some(
+                        (item) => item.state === 'UNREAD',
+                      ) && (
+                        <span className="badge rounded-pill text-bg-danger ms-2">
+                          New
+                        </span>
+                      )}
                   </Link>
                 </li>
                 <li>

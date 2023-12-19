@@ -6,7 +6,7 @@ import { checkResponseStatus, getQueryParams } from '@/app/common/server';
 import { AUTHENTICATION_HEADER } from '@/app/constants';
 import { IGlobalMessage } from '@/app/interfaces/messages';
 
-export default async function QueryAllGlobalMessagesAction(
+export default async function QueryAllGlobalMessageAction(
   queryParams?: TQueryParams,
 ) {
   let url = process.env.API_SERVER + '/messages/global-messages';

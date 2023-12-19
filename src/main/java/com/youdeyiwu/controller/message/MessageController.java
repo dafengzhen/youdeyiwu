@@ -64,13 +64,13 @@ public class MessageController {
         .build();
   }
 
-  @PutMapping("/global-messages/{id}")
+  @PutMapping("/global-messages/{id}/state")
   public ResponseEntity<Void> updateGlobalMessageState(@PathVariable Long id) {
     messageService.updateGlobalMessageState(id);
     return ResponseEntity.noContent().build();
   }
 
-  @PutMapping("/{id}")
+  @PutMapping("/{id}/state")
   public ResponseEntity<Void> updateState(@PathVariable Long id) {
     messageService.updateState(id);
     return ResponseEntity.noContent().build();

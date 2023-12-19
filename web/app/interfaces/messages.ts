@@ -10,6 +10,7 @@ export interface IMessage extends IBase {
   state?: TMessageState;
   sender?: IUser;
   receiver?: IUser;
+  link?: string;
 }
 
 export interface IGlobalMessage extends Omit<IMessage, 'receiver'> {

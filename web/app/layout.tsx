@@ -8,6 +8,9 @@ import { JetBrains_Mono, Open_Sans, Raleway } from 'next/font/google';
 import clsx from 'clsx';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import MenusUserAction from '@/app/actions/users/menus-user-action';
+import QueryAllMessageAction from '@/app/actions/messages/query-all-message-action';
+import { IMessage } from '@/app/interfaces/messages';
+import { IPage } from '@/app/interfaces';
 
 import('@popperjs/core');
 
@@ -41,6 +44,12 @@ export default async function RootLayout({
 }) {
   const user = await LoginInfoUserAction();
   const menus = await MenusUserAction();
+  const isLogin = !!user;
+
+  let messages: IPage<IMessage[]> | undefined;
+  if (isLogin) {
+    messages = await QueryAllMessageAction();
+  }
 
   return (
     <html data-bs-theme="auto" lang="en">
@@ -53,7 +62,7 @@ export default async function RootLayout({
         )}
       >
         <Providers>
-          <Navbar user={user} menus={menus} />
+          <Navbar user={user} menus={menus} messages={messages} />
           {children}
           {process.env.SHOW_FOOTER === 'true' && <Footer />}
         </Providers>

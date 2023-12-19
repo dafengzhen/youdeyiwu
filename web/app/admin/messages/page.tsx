@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import Create from '@/app/admin/messages/create';
-import QueryAllGlobalMessagesAction from '@/app/actions/messages/query-all-global-messages-action';
+import QueryAllGlobalMessageAction from '@/app/actions/messages/query-all-global-message-action';
 import Messages from '@/app/admin/messages/messages';
 
 export const metadata: Metadata = {
@@ -20,6 +20,6 @@ export default async function Page({
     case 'add':
       return <Create />;
     default:
-      return <Messages data={await QueryAllGlobalMessagesAction()} />;
+      return <Messages data={await QueryAllGlobalMessageAction()} />;
   }
 }
