@@ -31,7 +31,7 @@ public class CustomizedMessageRepositoryImpl implements CustomizedMessageReposit
   ) {
     List<GlobalMessageUserEntity> entities = entityManager.createQuery(
             """
-                 select g.id from GlobalMessageUserEntity g
+                 select g.globalMessage.id from GlobalMessageUserEntity g
                   left join g.user gu
                   where gu.id = :receiverId
                   order by g.state, g.globalMessage.sort desc, g.globalMessage.id desc
@@ -45,7 +45,7 @@ public class CustomizedMessageRepositoryImpl implements CustomizedMessageReposit
 
     Long totalSize = entityManager.createQuery(
             """
-                select count(g.id) from GlobalMessageUserEntity g
+                select count(g.globalMessage.id) from GlobalMessageUserEntity g
                 left join g.user gu
                 where gu.id = :receiverId
                 """,

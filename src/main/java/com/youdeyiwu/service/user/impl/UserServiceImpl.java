@@ -138,9 +138,7 @@ public class UserServiceImpl implements UserService {
     userEntity.setAlias(alias);
     userEntity.setUsername(username);
     userEntity.setPassword(passwordEncoder.encode(password));
-
-    userRepository.save(userEntity);
-    return createToken(userEntity);
+    return createToken(userRepository.save(userEntity));
   }
 
   @Transactional

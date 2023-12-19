@@ -94,16 +94,18 @@ export default async function Navbar({
                     Create Article
                   </Link>
                 </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
 
                 {menus.length > 0 && (
-                  <li>
-                    <Link className="dropdown-item" href="/admin">
-                      Dashboard
-                    </Link>
-                  </li>
+                  <>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" href="/admin">
+                        Dashboard
+                      </Link>
+                    </li>
+                  </>
                 )}
               </ul>
             </li>
