@@ -1,8 +1,7 @@
 'use client';
 
-import format from 'date-fns/format';
 import type { IUser } from '@/app/interfaces/users';
-import { formatDistanceStrict } from 'date-fns';
+import { format, formatDistanceStrict } from 'date-fns';
 
 export const isHttpOrHttps = (value?: string) => {
   return value && (value.startsWith('http') || value.startsWith('https'));
@@ -10,6 +9,7 @@ export const isHttpOrHttps = (value?: string) => {
 
 export const getFormattedTime = (time: string) => {
   const giveDate = new Date(time);
+
   return format(
     giveDate,
     new Date().getFullYear() === giveDate.getFullYear()
