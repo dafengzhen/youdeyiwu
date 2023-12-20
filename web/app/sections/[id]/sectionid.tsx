@@ -29,21 +29,30 @@ export default function SectionId({
   randomData: IPost[];
   queryParams: TQueryParams;
 }) {
+  const sectionGroups = details.sectionGroups;
+  const tagGroups = details.tagGroups;
+  const tags = details.tags;
+
   return (
     <SectionIdContext.Provider value={{ details, currentUser }}>
       <div className={clsx('row mx-0 position-sticky', styles.box)}>
-        <div
-          className={clsx(
-            'd-none d-lg-block col-2 position-sticky overflow-y-auto',
-            styles.left,
-          )}
-        >
-          <div className="d-flex flex-column gap-4">
-            <SectionGroups sectionGroups={details.sectionGroups} />
-            <TagGroups tagGroups={details.tagGroups} />
-            <Tags tags={details.tags} />
+        {(sectionGroups.length > 0 ||
+          tagGroups.length > 0 ||
+          tags.length > 0) && (
+          <div
+            className={clsx(
+              'd-none d-lg-block col-2 position-sticky overflow-y-auto',
+              styles.left,
+            )}
+          >
+            <div className="d-flex flex-column gap-4">
+              <SectionGroups sectionGroups={sectionGroups} />
+              <TagGroups tagGroups={tagGroups} />
+              <Tags tags={tags} />
+            </div>
           </div>
-        </div>
+        )}
+
         <div className="d-none d-lg-block col">
           <div className="d-flex flex-column gap-4">
             <Navbar details={details} />

@@ -14,6 +14,7 @@ import {
   getUserAlias,
   isHttpOrHttps,
 } from '@/app/common/client';
+import Cover from '@/app/home/cover';
 
 export default function Posts({
   data,
@@ -134,24 +135,7 @@ export default function Posts({
               )}
 
               <div className="row row-cols-auto g-2">
-                {isHttpOrHttps(cover) && (
-                  <div className="col">
-                    <div
-                      className="ratio ratio-16x9"
-                      style={{ width: 260, height: 195 }}
-                    >
-                      <Link href={`/posts/${item.id}`}>
-                        <Image
-                          className="rounded object-fit-cover image-hover cursor-pointer"
-                          width={260}
-                          height={195}
-                          src={cover!}
-                          alt="cover"
-                        />
-                      </Link>
-                    </div>
-                  </div>
-                )}
+                {isHttpOrHttps(cover) && <Cover item={item} />}
               </div>
               <div className="d-flex align-items-center gap-2">
                 <div className="d-flex gap-3">

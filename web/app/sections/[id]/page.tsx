@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import SectionId from '@/app/sections/[id]/sectionid';
 import QueryDetailsSectionAction from '@/app/actions/sections/query-details-section-action';
-import { isNum, parseNum } from '@/app/common/server';
+import { getUserAlias, isNum, parseNum } from '@/app/common/server';
 import { notFound } from 'next/navigation';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
@@ -17,10 +17,33 @@ export interface ISearchParamsSectionIdPage {
   tagGroupId?: string;
 }
 
-export const metadata: Metadata = {
-  title: 'content details page - youdeyiwu',
-  description: 'content details page',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const id = params.id;
+  if (!isNum(id)) {
+    notFound();
+  }
+
+  const details = await QueryDetailsSectionAction({ id });
+  const user = details.user;
+  const userAlias = getUserAlias(user);
+
+  return {
+    title: details.name,
+    authors: {
+      url: user ? `/users/${user.id}` : '/users',
+      name: getUserAlias(user),
+    },
+    creator: user ? `${userAlias}(ID. ${user.id})` : userAlias,
+    description: details.overview ?? '',
+    keywords: [...[details.name], ...details.tags.map((tag) => tag.name)],
+    category: details.name,
+    bookmarks: `/sections/${details.id}`,
+  };
+}
 
 export default async function Page({
   params,

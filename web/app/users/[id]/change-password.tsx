@@ -18,9 +18,11 @@ export default function ChangePassword({
 }) {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
+    username: string;
     oldPassword?: string;
     newPassword?: string;
   }>({
+    username: details.username ?? '',
     oldPassword: '',
     newPassword: '',
   });
@@ -36,7 +38,8 @@ export default function ChangePassword({
 
       const variables = trimObjectStrings({
         ...form,
-      }) as IUpdatePasswordUserActionVariables;
+      }) as IUpdatePasswordUserActionVariables & { username?: string };
+      delete variables.username;
 
       if (!variables.oldPassword) {
         toast.current.show({
@@ -109,6 +112,18 @@ export default function ChangePassword({
     >
       <div className="card-body">
         <form className="vstack gap-4" onSubmit={onSubmit}>
+          <div className="visually-hidden">
+            <label className="form-label">Username</label>
+            <input
+              name="username"
+              type="text"
+              className="form-control"
+              autoComplete="username"
+              value={form.username}
+              onChange={onChangeForm}
+            />
+          </div>
+
           <div>
             <label className="form-label">Old Password</label>
             <input
@@ -145,7 +160,7 @@ export default function ChangePassword({
             <button
               disabled={updatePasswordUserActionMutation.isPending}
               type="submit"
-              className="btn btn-outline-success col-auto"
+              className="btn btn-success col-auto"
             >
               {updatePasswordUserActionMutation.isPending
                 ? 'Updating'

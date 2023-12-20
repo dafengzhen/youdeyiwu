@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { ISectionGroup } from '@/app/interfaces/section-groups';
 import { ISection } from '@/app/interfaces/sections';
 import Nodata from '@/app/common/nodata';
 import { getUserAlias, isHttpOrHttps } from '@/app/common/client';
+import Cover from '@/app/sections/cover';
 
 export default function Sections({
   sectionGroups,
@@ -25,7 +25,7 @@ export default function Sections({
                 <div key={item.id} className="card border-0">
                   <div className="card-header bg-transparent border-bottom-0">
                     <div className="d-flex align-items-center justify-content-between">
-                      <div className="h4">Test</div>
+                      <div className="h4">{item.name}</div>
                       <div>
                         <i className="bi bi-arrow-right fs-4 text-secondary text-opacity-25"></i>
                       </div>
@@ -79,15 +79,7 @@ const Items = ({ sections }: { sections: ISection[] }) => {
             <div className="card border-0 shadow-sm shadow-hover">
               <div className="card-body d-flex flex-column gap-4">
                 {isHttpOrHttps(cover) ? (
-                  <Link href={`/sections/${section.id}`}>
-                    <Image
-                      className="rounded object-fit-cover image-hover cursor-pointer ratio ratio-16x9"
-                      width={260}
-                      height={195}
-                      src={cover!}
-                      alt="cover"
-                    />
-                  </Link>
+                  <Cover item={section} />
                 ) : (
                   <>
                     {section.overview && (

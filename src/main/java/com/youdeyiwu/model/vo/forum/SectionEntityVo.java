@@ -81,4 +81,9 @@ public class SectionEntityVo extends AbstractEntityVo {
    */
   private Set<SectionGroupEntityVo> sectionGroups;
 
+  /**
+   * user.
+   */
+  private UserEntityVo user;
+
 }

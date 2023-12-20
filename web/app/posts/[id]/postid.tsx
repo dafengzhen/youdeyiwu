@@ -21,8 +21,8 @@ import { useMutation } from '@tanstack/react-query';
 import ViewPagePostAction from '@/app/actions/posts/view-page-post-action';
 
 export default function PostId({
-  sectionGroups,
-  sections,
+  sectionGroups = [],
+  sections = [],
   randomData,
   details,
   currentUser,
@@ -36,6 +36,7 @@ export default function PostId({
   const [openReplyBox, setOpenReplyBox] = useState(false);
   const isLogin = !!currentUser;
   const self = isLogin && details.user?.id === currentUser.id;
+  const tags = details.tags;
 
   const viewPagePostActionMutation = useMutation({
     mutationFn: ViewPagePostAction,
@@ -59,18 +60,23 @@ export default function PostId({
       value={{ details, currentUser, openReplyBox, setOpenReplyBox }}
     >
       <div className={clsx('row mx-0 position-sticky', styles.box)}>
-        <div
-          className={clsx(
-            'd-none d-lg-block col-2 position-sticky overflow-y-auto',
-            styles.left,
-          )}
-        >
-          <div className="d-flex flex-column gap-4">
-            <SectionGroups sectionGroups={sectionGroups} />
-            <Sections sections={sections} />
-            <Tags tags={details.tags} />
+        {(sectionGroups.length > 0 ||
+          sections.length > 0 ||
+          tags.length > 0) && (
+          <div
+            className={clsx(
+              'd-none d-lg-block col-2 position-sticky overflow-y-auto',
+              styles.left,
+            )}
+          >
+            <div className="d-flex flex-column gap-4">
+              <SectionGroups sectionGroups={sectionGroups} />
+              <Sections sections={sections} />
+              <Tags tags={tags} />
+            </div>
           </div>
-        </div>
+        )}
+
         <div className="d-none d-lg-block col">
           <div className="d-flex flex-column gap-4">
             <Navbar details={details} />

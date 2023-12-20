@@ -33,8 +33,23 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'youdeyiwu',
-  description: 'youdeyiwu is an open-source lightweight forum',
+  title: {
+    template: '%s | Youdeyiwu',
+    default: 'Youdeyiwu',
+  },
+  generator: 'Next.js',
+  applicationName: 'Youdeyiwu',
+  publisher: 'Youdeyiwu',
+  description: 'Youdeyiwu is an open-source lightweight forum',
+  formatDetection: {
+    email: true,
+    address: true,
+    telephone: true,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({

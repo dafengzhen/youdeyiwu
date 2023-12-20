@@ -29,6 +29,10 @@ export default function TagGroups({
     }
   }
 
+  if (tagGroups.length === 0) {
+    return <></>;
+  }
+
   return (
     <div className="card border-0 shadow-sm shadow-hover">
       <div className="card-header bg-transparent border-bottom-0 fw-bold">

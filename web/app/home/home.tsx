@@ -35,21 +35,24 @@ export default function Home({
 }) {
   return (
     <div className={clsx('row mx-0 position-sticky', styles.box)}>
-      <div
-        className={clsx(
-          'd-none d-lg-block col-2 position-sticky overflow-y-auto',
-          styles.left,
-        )}
-      >
-        <div className="d-flex flex-column gap-4">
-          <SectionGroups
-            sectionGroups={sectionGroups}
-            queryParams={queryParams}
-          />
-          <Sections sections={sections} queryParams={queryParams} />
-          <Tags tags={tags} queryParams={queryParams} />
+      {(sectionGroups.length > 0 || sections.length > 0 || tags.length > 0) && (
+        <div
+          className={clsx(
+            'd-none d-lg-block col-2 position-sticky overflow-y-auto',
+            styles.left,
+          )}
+        >
+          <div className="d-flex flex-column gap-4">
+            <SectionGroups
+              sectionGroups={sectionGroups}
+              queryParams={queryParams}
+            />
+            <Sections sections={sections} queryParams={queryParams} />
+            <Tags tags={tags} queryParams={queryParams} />
+          </div>
         </div>
-      </div>
+      )}
+
       <div className="d-none d-lg-block col">
         <div className="d-flex flex-column gap-4">
           <Posts data={data} queryParams={queryParams} />

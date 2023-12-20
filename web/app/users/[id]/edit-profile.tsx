@@ -120,7 +120,7 @@ export default function EditProfile({
             <button
               disabled={updateProfileUserActionMutation.isPending}
               type="submit"
-              className="btn btn-outline-success col-auto"
+              className="btn btn-success col-auto"
             >
               {updateProfileUserActionMutation.isPending
                 ? 'Updating'

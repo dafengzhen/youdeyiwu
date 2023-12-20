@@ -6,6 +6,7 @@ import static com.youdeyiwu.tool.Tool.randomUuId;
 import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.ReplyNotFoundException;
+import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.mapper.forum.ReplyMapper;
 import com.youdeyiwu.model.dto.forum.CreateReplyDto;
@@ -15,6 +16,8 @@ import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.ReplyRepository;
+import com.youdeyiwu.repository.user.UserRepository;
+import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.ReplyService;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,9 +41,13 @@ public class ReplyServiceImpl implements ReplyService {
 
   private final PostRepository postRepository;
 
+  private final UserRepository userRepository;
+
   private final CommentMapper commentMapper;
 
   private final ReplyMapper replyMapper;
+
+  private final SecurityService securityService;
 
   @Transactional
   @Override
@@ -74,6 +81,14 @@ public class ReplyServiceImpl implements ReplyService {
     postEntity.get().setRepliesCount(postEntity.get().getRepliesCount() + 1);
     quoteReplyEntity.setContent(cleanBasicContent(dto.content().trim()));
     quoteReplyEntity.setUniqueIdentifier(randomUuId());
+
+    if (securityService.isAuthenticated()) {
+      quoteReplyEntity.setUser(
+          userRepository.findById(securityService.getUserId())
+              .orElseThrow(UserNotFoundException::new)
+      );
+    }
+
     replyRepository.save(quoteReplyEntity);
     return quoteReplyEntity;
   }

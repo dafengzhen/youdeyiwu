@@ -25,6 +25,7 @@ import com.youdeyiwu.repository.forum.SectionRepository;
 import com.youdeyiwu.repository.forum.TagGroupRepository;
 import com.youdeyiwu.repository.forum.TagRepository;
 import com.youdeyiwu.repository.user.UserRepository;
+import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.SectionService;
 import java.util.Objects;
 import java.util.Set;
@@ -63,6 +64,8 @@ public class SectionServiceImpl implements SectionService {
   private final TagGroupMapper tagGroupMapper;
 
   private final SectionGroupMapper sectionGroupMapper;
+
+  private final SecurityService securityService;
 
   @Transactional
   @Override
@@ -179,6 +182,14 @@ public class SectionServiceImpl implements SectionService {
     setSectionGroups(vo, sectionEntity);
     setTagGroup(vo, sectionEntity);
     setTags(vo, sectionEntity);
+
+    if (Objects.nonNull(sectionEntity.getCreatedBy())) {
+      vo.setUser(userMapper.entityToVo(
+          userRepository.findById(sectionEntity.getCreatedBy())
+              .orElseThrow(UserNotFoundException::new)
+      ));
+    }
+
     return vo;
   }
 

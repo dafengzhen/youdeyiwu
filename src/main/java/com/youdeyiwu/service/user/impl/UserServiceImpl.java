@@ -343,6 +343,7 @@ public class UserServiceImpl implements UserService {
         posts
             .stream()
             .map(PostEntity::getSection)
+            .filter(Objects::nonNull)
             .map(sectionMapper::entityToVo)
             .collect(Collectors.toSet())
     );

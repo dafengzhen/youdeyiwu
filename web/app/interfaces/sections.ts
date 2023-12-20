@@ -42,4 +42,5 @@ export interface ISectionDetails extends IBase {
   tags: ITag[];
   tagGroups: ITagGroup[];
   sectionGroups: ISectionGroup[];
+  user?: IUser | null;
 }

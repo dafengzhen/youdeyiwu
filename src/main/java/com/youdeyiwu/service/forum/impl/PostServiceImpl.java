@@ -20,11 +20,13 @@ import com.youdeyiwu.model.dto.forum.CreateTagDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
+import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.PageVo;
+import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
@@ -99,6 +101,14 @@ public class PostServiceImpl implements PostService {
     postMapper.dtoToEntity(dto, postEntity);
     setContentAndRelatedLinks(dto.content(), dto.cover(), dto.contentLink(), postEntity);
     setSectionAndTags(dto.sectionId(), dto.tags(), postEntity);
+
+    if (securityService.isAuthenticated()) {
+      postEntity.setUser(
+          userRepository.findById(securityService.getUserId())
+              .orElseThrow(UserNotFoundException::new)
+      );
+    }
+
     postRepository.save(postEntity);
     return postEntity;
   }
@@ -497,25 +507,56 @@ public class PostServiceImpl implements PostService {
             )
             .map(commentReplyEntityVo -> {
               CommentReplyVo vo = new CommentReplyVo();
-              vo.setComment(commentMapper.entityToVo(commentReplyEntityVo.getComment()));
-              QuoteReplyEntity quoteReplyEntity = commentReplyEntityVo.getReply();
-
-              if (Objects.nonNull(quoteReplyEntity)) {
-                QuoteReplyEntityVo quoteReplyEntityVo = replyMapper.entityToVo(quoteReplyEntity);
-                if (Objects.isNull(quoteReplyEntity.getQuoteReply())) {
-                  quoteReplyEntityVo.setComment(
-                      commentMapper.entityToVo(quoteReplyEntity.getComment())
-                  );
-                } else {
-                  quoteReplyEntityVo.setQuoteReply(
-                      replyMapper.entityToVo(quoteReplyEntity.getQuoteReply())
-                  );
-                }
-                vo.setReply(quoteReplyEntityVo);
-              }
-
+              setComment(vo, commentReplyEntityVo.getComment());
+              setReply(vo, commentReplyEntityVo.getReply());
               return vo;
             })
     );
+  }
+
+  /**
+   * set comment.
+   *
+   * @param vo            vo
+   * @param commentEntity commentEntity
+   */
+  private void setComment(CommentReplyVo vo, CommentEntity commentEntity) {
+    if (Objects.isNull(commentEntity)) {
+      return;
+    }
+
+    CommentEntityVo commentEntityVo = commentMapper.entityToVo(commentEntity);
+    commentEntityVo.setUser(userMapper.entityToVo(commentEntity.getUser()));
+    vo.setComment(commentEntityVo);
+  }
+
+  /**
+   * set reply.
+   *
+   * @param vo               vo
+   * @param quoteReplyEntity quoteReplyEntity
+   */
+  private void setReply(CommentReplyVo vo, QuoteReplyEntity quoteReplyEntity) {
+    if (Objects.isNull(quoteReplyEntity)) {
+      return;
+    }
+
+    QuoteReplyEntityVo quoteReplyEntityVo = replyMapper.entityToVo(quoteReplyEntity);
+    QuoteReplyEntity quoteReply = quoteReplyEntity.getQuoteReply();
+
+    if (Objects.isNull(quoteReply)) {
+      CommentEntity comment = quoteReplyEntity.getComment();
+      CommentEntityVo entityVo = commentMapper.entityToVo(comment);
+      entityVo.setUser(userMapper.entityToVo(comment.getUser()));
+      quoteReplyEntityVo.setComment(entityVo);
+    } else {
+      QuoteReplyEntityVo entityVo =
+          replyMapper.entityToVo(quoteReply);
+      entityVo.setUser(userMapper.entityToVo(quoteReply.getUser()));
+      quoteReplyEntityVo.setQuoteReply(entityVo);
+    }
+
+    quoteReplyEntityVo.setUser(userMapper.entityToVo(quoteReplyEntity.getUser()));
+    vo.setReply(quoteReplyEntityVo);
   }
 }
