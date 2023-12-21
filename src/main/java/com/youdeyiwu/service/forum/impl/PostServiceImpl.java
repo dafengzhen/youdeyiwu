@@ -2,7 +2,9 @@ package com.youdeyiwu.service.forum.impl;
 
 import static com.youdeyiwu.tool.Tool.cleanHtmlContent;
 import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
+import static com.youdeyiwu.tool.Tool.isValidImage;
 
+import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionNotFoundException;
 import com.youdeyiwu.exception.TagNotFoundException;
@@ -40,16 +42,21 @@ import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.PostService;
 import com.youdeyiwu.service.forum.TagService;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * post.
@@ -99,7 +106,13 @@ public class PostServiceImpl implements PostService {
   public PostEntity create(CreatePostDto dto) {
     PostEntity postEntity = new PostEntity();
     postMapper.dtoToEntity(dto, postEntity);
-    setContentAndRelatedLinks(dto.content(), dto.cover(), dto.contentLink(), postEntity);
+    setContentAndRelatedLinks(
+        dto.content(),
+        dto.cover(),
+        dto.coverImage(),
+        dto.contentLink(),
+        postEntity
+    );
     setSectionAndTags(dto.sectionId(), dto.tags(), postEntity);
 
     if (securityService.isAuthenticated()) {
@@ -118,6 +131,25 @@ public class PostServiceImpl implements PostService {
   public void viewPage(Long id) {
     PostEntity postEntity = findPost(id);
     postEntity.setPageViews(postEntity.getPageViews() + 1);
+  }
+
+  @Transactional
+  @Override
+  public void uploadCover(Long id, MultipartFile file) {
+    if (!isValidImage(file, 1)) {
+      throw new CustomException(
+          "This doesn't seem to be a valid cover image file"
+      );
+    }
+
+    PostEntity postEntity = findPost(id);
+    try {
+      postEntity.setCoverImage(new SerialBlob(file.getBytes()));
+    } catch (SQLException | IOException e) {
+      throw new CustomException(
+          "The setting of the cover image file failed : " + e.getMessage()
+      );
+    }
   }
 
   @Transactional
@@ -205,9 +237,14 @@ public class PostServiceImpl implements PostService {
   @Override
   public void update(Long id, UpdatePostDto dto) {
     PostEntity postEntity = findPost(id);
-
     postMapper.dtoToEntity(dto, postEntity);
-    setContentAndRelatedLinks(dto.content(), dto.cover(), dto.contentLink(), postEntity);
+    setContentAndRelatedLinks(
+        dto.content(),
+        dto.cover(),
+        dto.coverImage(),
+        dto.contentLink(),
+        postEntity
+    );
     setSectionAndTags(dto.sectionId(), dto.tags(), postEntity);
   }
 
@@ -269,6 +306,23 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  public byte[] queryCover(Long id) {
+    PostEntity postEntity = findPost(id);
+    Blob coverImage = postEntity.getCoverImage();
+    if (Objects.isNull(coverImage)) {
+      throw new CustomException("The cover image file does not exist");
+    }
+
+    try {
+      return coverImage.getBytes(1, (int) coverImage.length());
+    } catch (SQLException e) {
+      throw new CustomException(
+          "Failed to read the cover image file : " + e.getMessage()
+      );
+    }
+  }
+
+  @Override
   public PostEntityVo query(Long id) {
     PostEntity postEntity = findPost(id);
     PostEntityVo vo = postMapper.entityToVo(postEntity);
@@ -309,12 +363,14 @@ public class PostServiceImpl implements PostService {
    *
    * @param content     content
    * @param cover       cover
+   * @param coverImage  coverImage
    * @param contentLink contentLink
    * @param postEntity  postEntity
    */
   private void setContentAndRelatedLinks(
       String content,
       String cover,
+      MultipartFile coverImage,
       String contentLink,
       PostEntity postEntity
   ) {
@@ -323,6 +379,16 @@ public class PostServiceImpl implements PostService {
         postEntity.setCover(cover);
       } else {
         postEntity.setCover(null);
+      }
+    }
+
+    if (Objects.nonNull(coverImage) && isValidImage(coverImage, 1)) {
+      try {
+        postEntity.setCoverImage(new SerialBlob(coverImage.getBytes()));
+      } catch (SQLException | IOException e) {
+        throw new CustomException(
+            "The setting of the cover image file failed : " + e.getMessage()
+        );
       }
     }
 

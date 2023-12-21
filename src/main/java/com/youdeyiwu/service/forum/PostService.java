@@ -10,6 +10,7 @@ import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import java.util.Set;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * post.
@@ -32,6 +33,14 @@ public interface PostService {
    * @param id id
    */
   void viewPage(Long id);
+
+  /**
+   * upload cover.
+   *
+   * @param id   id
+   * @param file file
+   */
+  void uploadCover(Long id, MultipartFile file);
 
   /**
    * update like.
@@ -96,6 +105,14 @@ public interface PostService {
    * @return PostEntityVo
    */
   PostEntityVo queryDetails(Pageable pageable, Long id);
+
+  /**
+   * query cover.
+   *
+   * @param id id
+   * @return byte[]
+   */
+  byte[] queryCover(Long id);
 
   /**
    * query.

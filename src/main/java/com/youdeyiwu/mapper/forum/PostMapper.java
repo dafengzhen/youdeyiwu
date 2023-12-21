@@ -43,6 +43,7 @@ public interface PostMapper {
   @Mapping(target = "contentLink", ignore = true)
   @Mapping(target = "content", ignore = true)
   @Mapping(target = "tags", ignore = true)
+  @Mapping(target = "coverImage", ignore = true)
   void dtoToEntity(CreatePostDto dto, @MappingTarget PostEntity entity);
 
   /**
@@ -55,6 +56,7 @@ public interface PostMapper {
   @Mapping(target = "contentLink", ignore = true)
   @Mapping(target = "content", ignore = true)
   @Mapping(target = "tags", ignore = true)
+  @Mapping(target = "coverImage", ignore = true)
   void dtoToEntity(UpdatePostDto dto, @MappingTarget PostEntity entity);
 
   /**
@@ -71,6 +73,7 @@ public interface PostMapper {
   @Mapping(target = "tags", ignore = true)
   @Mapping(target = "user", ignore = true)
   @Mapping(target = "comments", ignore = true)
+  @Mapping(target = "coverImage", ignore = true)
   PostEntityVo entityToVo(PostEntity entity);
 
   /**

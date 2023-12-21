@@ -18,6 +18,7 @@ import {
 } from '@/app/common/editor';
 import { ISection } from '@/app/interfaces/sections';
 import RefreshAction from '@/app/actions/refresh-action';
+import UploadCover from '@/app/posts/save/upload-cover';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_CENTER = 'post-editor-center';
@@ -38,6 +39,7 @@ export default function Save({
     contentLink: string;
     content: string;
     sectionId: string;
+    uploadCoverUrl?: string;
   }>(
     isEdit
       ? {
@@ -125,6 +127,8 @@ export default function Save({
   async function onSubmit() {
     try {
       const variables = trimObjectStrings({ ...form });
+      delete variables.uploadCoverFile;
+
       const name = variables.name;
       if (!name) {
         toast.current.show({
@@ -254,7 +258,7 @@ export default function Save({
                       disabled={first || publishPostActionMutation.isPending}
                       onClick={onSubmit}
                       type="button"
-                      className="btn btn-sm btn-success"
+                      className="btn btn-success"
                     >
                       {isEdit ? (
                         <>
@@ -274,7 +278,7 @@ export default function Save({
                       disabled={publishPostActionMutation.isPending}
                       onClick={onClickReturn}
                       type="button"
-                      className="btn btn-sm btn-secondary"
+                      className="btn btn-secondary"
                     >
                       Return
                     </button>
@@ -355,7 +359,9 @@ export default function Save({
                       </div>
 
                       <div>
-                        <label className="form-label">Cover</label>
+                        <label className="form-label">
+                          Upload cover or enter cover link
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -378,6 +384,18 @@ export default function Save({
                           only in specific scenarios
                         </div>
                       </div>
+
+                      <UploadCover
+                        id={post?.id}
+                        uploadCoverUrl={form.uploadCoverUrl}
+                        setUploadCoverUrl={(uploadCoverUrl: string) => {
+                          setForm({
+                            ...form,
+                            cover: uploadCoverUrl,
+                            uploadCoverUrl,
+                          });
+                        }}
+                      />
 
                       <div>
                         <label className="form-label">Tags</label>

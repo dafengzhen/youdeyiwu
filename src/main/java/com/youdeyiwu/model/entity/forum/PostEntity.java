@@ -6,15 +6,18 @@ import com.youdeyiwu.enums.forum.PostSortStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -45,6 +48,15 @@ public class PostEntity extends AbstractEntity {
    * cover.
    */
   private String cover;
+
+  /**
+   * cover image.
+   */
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  @JsonIgnore
+  @ToString.Exclude
+  private Blob coverImage;
 
   /**
    * overview.

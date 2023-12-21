@@ -1,11 +1,16 @@
 package com.youdeyiwu.tool;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * tool.
@@ -76,5 +81,28 @@ public class Tool {
    */
   public static String randomUuId() {
     return UUID.randomUUID().toString().replace("-", "");
+  }
+
+  /**
+   * is valid image.
+   *
+   * @param file        file
+   * @param maxSizeInMb maxSizeInMb
+   * @return boolean
+   */
+  public static boolean isValidImage(MultipartFile file, long maxSizeInMb) {
+    BufferedImage image;
+    try {
+      image = ImageIO.read(file.getInputStream());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+    // One megabyte equals 1024 kilobytes, and one kilobyte equals 1024 bytes
+    long maxSizeBytes = maxSizeInMb * 1024 * 1024;
+    return Objects.nonNull(image)
+        && image.getWidth() > 0
+        && image.getHeight() > 0
+        && file.getSize() <= maxSizeBytes;
   }
 }

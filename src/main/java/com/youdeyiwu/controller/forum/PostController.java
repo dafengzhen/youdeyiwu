@@ -1,5 +1,7 @@
 package com.youdeyiwu.controller.forum;
 
+import static org.springframework.http.MediaType.IMAGE_PNG;
+
 import com.google.common.net.InetAddresses;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * post.
@@ -61,6 +65,12 @@ public class PostController {
     }
 
     postService.viewPage(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{id}/upload-cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<Void> uploadCover(@PathVariable Long id, @RequestParam MultipartFile file) {
+    postService.uploadCover(id, file);
     return ResponseEntity.noContent().build();
   }
 
@@ -127,6 +137,21 @@ public class PostController {
       @PathVariable Long id
   ) {
     return ResponseEntity.ok().body(postService.queryDetails(pageable, id));
+  }
+
+  /**
+   * query cover.
+   *
+   * @param id id
+   * @return ResponseEntity
+   */
+  @GetMapping(value = "/{id}/cover")
+  public ResponseEntity<byte[]> queryCover(@PathVariable Long id) {
+    byte[] coverImage = postService.queryCover(id);
+    return ResponseEntity.ok()
+        .contentType(IMAGE_PNG)
+        .contentLength(coverImage.length)
+        .body(coverImage);
   }
 
   @GetMapping(value = "/{id}")

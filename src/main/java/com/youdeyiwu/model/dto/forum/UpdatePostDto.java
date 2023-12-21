@@ -2,12 +2,14 @@ package com.youdeyiwu.model.dto.forum;
 
 import java.io.Serializable;
 import java.util.Set;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * update post.
  *
  * @param name        name
  * @param cover       cover
+ * @param coverImage  coverImage
  * @param overview    overview
  * @param content     content
  * @param contentLink contentLink
@@ -18,6 +20,8 @@ public record UpdatePostDto(
     String name,
 
     String cover,
+
+    MultipartFile coverImage,
 
     String overview,
 

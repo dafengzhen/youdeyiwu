@@ -30,6 +30,11 @@ public class PostEntityVo extends AbstractEntityVo {
   private String cover;
 
   /**
+   * cover image.
+   */
+  private byte[] coverImage;
+
+  /**
    * overview.
    */
   private String overview;
