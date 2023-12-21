@@ -597,6 +597,7 @@ create table if not exists post_entity
     sort_state      smallint     not null,
     section_id      bigint       null,
     user_id         bigint       null,
+    cover_image     mediumblob   null,
     constraint FK2e9ivvlpgr8x6wd2qxvlefvub
         foreign key (section_id) references section_entity (id),
     constraint FK2jmp42lmrw2f3ljd16f1re3c8

@@ -1,4 +1,10 @@
-import { type ChangeEvent, useContext, useEffect, useState } from 'react';
+import {
+  type ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import UploadCoverPostAction from '@/app/actions/posts/upload-cover-post-action';
@@ -6,23 +12,20 @@ import { GlobalContext } from '@/app/contexts';
 
 export default function UploadCover({
   id,
-  uploadCoverUrl,
-  setUploadCoverUrl,
+  callback,
 }: {
   id?: number;
-  uploadCoverUrl?: string;
-  setUploadCoverUrl: (uploadCoverUrl: string) => void;
+  callback: () => void;
 }) {
-  const isEdit = !!id;
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
     uploadCover: string;
-    uploadCoverFile?: File;
     uploadCoverObjectUrl: string;
   }>({
     uploadCover: '',
     uploadCoverObjectUrl: '',
   });
+  const uploadCoverFile = useRef<File | null>(null);
 
   const uploadCoverPostActionMutation = useMutation({
     mutationFn: UploadCoverPostAction,
@@ -41,13 +44,12 @@ export default function UploadCover({
       if (!id) {
         toast.current.show({
           type: 'danger',
-          message:
-            'Failed to upload cover image file, article id does not exist',
+          message: 'The anonymous article cannot be uploaded',
         });
         return;
       }
 
-      const file = form.uploadCoverFile;
+      const file = uploadCoverFile.current;
       if (!file) {
         toast.current.show({
           type: 'danger',
@@ -56,15 +58,27 @@ export default function UploadCover({
         return;
       }
 
+      const formData = new FormData();
+      formData.append('file', file);
       await uploadCoverPostActionMutation.mutateAsync({
         id,
-        variables: { file },
+        variables: { formData },
       });
+
+      callback();
 
       toast.current.show({
         type: 'success',
         message: 'Successfully uploaded',
       });
+
+      setTimeout(() => {
+        toast.current.show({
+          type: 'success',
+          message:
+            'Upload successful. Changes will take effect after clicking the "Update" button',
+        });
+      }, 1500);
     } catch (e: any) {
       uploadCoverPostActionMutation.reset();
       toast.current.show({
@@ -105,9 +119,9 @@ export default function UploadCover({
       setForm({
         ...form,
         uploadCover: value,
-        uploadCoverFile: file,
         uploadCoverObjectUrl: objectUrl,
       });
+      uploadCoverFile.current = file;
     } else {
       setForm({
         ...form,
@@ -124,9 +138,10 @@ export default function UploadCover({
     setForm({
       ...form,
       uploadCover: '',
-      uploadCoverFile: undefined,
       uploadCoverObjectUrl: '',
     });
+
+    uploadCoverFile.current = null;
   }
 
   return (

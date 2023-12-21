@@ -1,5 +1,6 @@
 package com.youdeyiwu.tool;
 
+import com.youdeyiwu.exception.CustomException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -87,19 +88,19 @@ public class Tool {
    * is valid image.
    *
    * @param file        file
-   * @param maxSizeInMb maxSizeInMb
+   * @param maxSizeInKb maxSizeInKb
    * @return boolean
    */
-  public static boolean isValidImage(MultipartFile file, long maxSizeInMb) {
+  public static boolean isValidImage(MultipartFile file, long maxSizeInKb) {
     BufferedImage image;
     try {
       image = ImageIO.read(file.getInputStream());
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new CustomException(e.getMessage());
     }
 
-    // One megabyte equals 1024 kilobytes, and one kilobyte equals 1024 bytes
-    long maxSizeBytes = maxSizeInMb * 1024 * 1024;
+    // One kilobyte equals 1024 bytes
+    long maxSizeBytes = maxSizeInKb * 1024;
     return Objects.nonNull(image)
         && image.getWidth() > 0
         && image.getHeight() > 0

@@ -2,12 +2,12 @@
 
 import { type IError } from '@/app/interfaces';
 import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
+import { AUTHENTICATION_HEADER, POST } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
 import { checkResponseStatus } from '@/app/common/server';
 
 export interface IUploadCoverPostActionVariables {
-  file: File;
+  formData: FormData;
 }
 
 export default async function UploadCoverPostAction({
@@ -17,18 +17,12 @@ export default async function UploadCoverPostAction({
   id: number;
   variables: IUploadCoverPostActionVariables;
 }) {
-  const body = new FormData();
-  body.append('file', variables.file);
-
   const response = await fetch(
     process.env.API_SERVER + `/posts/${id}/upload-cover`,
     {
       method: POST,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
-      },
-      body,
+      headers: AUTHENTICATION_HEADER(),
+      body: variables.formData,
     },
   );
 

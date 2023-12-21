@@ -39,7 +39,6 @@ export default function Save({
     contentLink: string;
     content: string;
     sectionId: string;
-    uploadCoverUrl?: string;
   }>(
     isEdit
       ? {
@@ -126,6 +125,14 @@ export default function Save({
 
   async function onSubmit() {
     try {
+      if (isEdit && !post.createdBy) {
+        toast.current.show({
+          type: 'danger',
+          message: 'The anonymous article cannot be edited',
+        });
+        return;
+      }
+
       const variables = trimObjectStrings({ ...form });
       delete variables.uploadCoverFile;
 
@@ -385,17 +392,17 @@ export default function Save({
                         </div>
                       </div>
 
-                      <UploadCover
-                        id={post?.id}
-                        uploadCoverUrl={form.uploadCoverUrl}
-                        setUploadCoverUrl={(uploadCoverUrl: string) => {
-                          setForm({
-                            ...form,
-                            cover: uploadCoverUrl,
-                            uploadCoverUrl,
-                          });
-                        }}
-                      />
+                      {post?.id && (
+                        <UploadCover
+                          id={isEdit && post.createdBy ? post.id : undefined}
+                          callback={() => {
+                            setForm({
+                              ...form,
+                              cover: `${location.origin}/api/posts/${post.id}/cover`,
+                            });
+                          }}
+                        />
+                      )}
 
                       <div>
                         <label className="form-label">Tags</label>

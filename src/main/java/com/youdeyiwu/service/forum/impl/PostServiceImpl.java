@@ -136,7 +136,7 @@ public class PostServiceImpl implements PostService {
   @Transactional
   @Override
   public void uploadCover(Long id, MultipartFile file) {
-    if (!isValidImage(file, 1)) {
+    if (!isValidImage(file, 500)) {
       throw new CustomException(
           "This doesn't seem to be a valid cover image file"
       );
@@ -382,7 +382,7 @@ public class PostServiceImpl implements PostService {
       }
     }
 
-    if (Objects.nonNull(coverImage) && isValidImage(coverImage, 1)) {
+    if (Objects.nonNull(coverImage) && isValidImage(coverImage, 500)) {
       try {
         postEntity.setCoverImage(new SerialBlob(coverImage.getBytes()));
       } catch (SQLException | IOException e) {

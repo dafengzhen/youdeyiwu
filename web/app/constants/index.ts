@@ -1,5 +1,5 @@
 import { obtainCredentials } from '@/app/common/server';
-import { TActionPage, TActionPageButton } from '@/app/interfaces/menus';
+import type { TActionPage, TActionPageButton } from '@/app/interfaces/menus';
 
 export const GET = 'GET';
 export const POST = 'POST';
