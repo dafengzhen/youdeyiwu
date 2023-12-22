@@ -254,21 +254,23 @@ VALUES (1);
 
 create table if not exists section_entity
 (
-    id          bigint       not null
+    id               bigint       not null
         primary key,
-    created_by  bigint       null,
-    created_on  datetime(6)  not null,
-    deleted     bit          not null,
-    updated_by  bigint       null,
-    updated_on  datetime(6)  null,
-    version     smallint     null,
-    access_key  varchar(255) null,
-    content     text         null,
-    cover       varchar(255) null,
-    name        varchar(255) not null,
-    overview    varchar(255) null,
-    sort        int          not null,
-    cover_image mediumblob   null
+    created_by       bigint       null,
+    created_on       datetime(6)  not null,
+    deleted          bit          not null,
+    updated_by       bigint       null,
+    updated_on       datetime(6)  null,
+    version          smallint     null,
+    access_key       varchar(255) null,
+    content          text         null,
+    cover            varchar(255) null,
+    name             varchar(255) not null,
+    overview         varchar(255) null,
+    sort             int          not null,
+    cover_image      mediumblob   null,
+    cover_image_type smallint     not null,
+    check (`cover_image_type` between 0 and 1)
 );
 
 create table if not exists section_entity_seq
@@ -573,38 +575,40 @@ create table if not exists message_entity
 
 create table if not exists post_entity
 (
-    id              bigint       not null
+    id               bigint       not null
         primary key,
-    created_by      bigint       null,
-    created_on      datetime(6)  not null,
-    deleted         bit          not null,
-    updated_by      bigint       null,
-    updated_on      datetime(6)  null,
-    version         smallint     null,
-    access_key      varchar(255) null,
-    comments_count  bigint       not null,
-    content         text         null,
-    content_link    varchar(255) null,
-    cover           varchar(255) null,
-    favorites_count bigint       not null,
-    followers_count bigint       not null,
-    initial_score   bigint       not null,
-    likes_count     bigint       not null,
-    name            varchar(255) not null,
-    overview        varchar(255) null,
-    page_views      bigint       not null,
-    replies_count   bigint       not null,
-    review_state    smallint     not null,
-    sort_state      smallint     not null,
-    section_id      bigint       null,
-    user_id         bigint       null,
-    cover_image     mediumblob   null,
+    created_by       bigint       null,
+    created_on       datetime(6)  not null,
+    deleted          bit          not null,
+    updated_by       bigint       null,
+    updated_on       datetime(6)  null,
+    version          smallint     null,
+    access_key       varchar(255) null,
+    comments_count   bigint       not null,
+    content          text         null,
+    content_link     varchar(255) null,
+    cover            varchar(255) null,
+    favorites_count  bigint       not null,
+    followers_count  bigint       not null,
+    initial_score    bigint       not null,
+    likes_count      bigint       not null,
+    name             varchar(255) not null,
+    overview         varchar(255) null,
+    page_views       bigint       not null,
+    replies_count    bigint       not null,
+    review_state     smallint     not null,
+    sort_state       smallint     not null,
+    section_id       bigint       null,
+    user_id          bigint       null,
+    cover_image      mediumblob   null,
+    cover_image_type smallint     not null,
     constraint FK2e9ivvlpgr8x6wd2qxvlefvub
         foreign key (section_id) references section_entity (id),
     constraint FK2jmp42lmrw2f3ljd16f1re3c8
         foreign key (user_id) references user_entity (id),
     check (`review_state` between 0 and 2),
-    check (`sort_state` between 0 and 3)
+    check (`sort_state` between 0 and 3),
+    check (`cover_image_type` between 0 and 1)
 );
 
 create table if not exists comment_entity
