@@ -56,6 +56,12 @@ public class UserController {
     return ResponseEntity.ok().body(userService.login(dto));
   }
 
+  @PostMapping(value = "/logout")
+  public ResponseEntity<Void> logout() {
+    userService.logout();
+    return ResponseEntity.noContent().build();
+  }
+
   @PostMapping("/{id}/add-roles")
   public ResponseEntity<Void> addRoles(
       @PathVariable Long id,

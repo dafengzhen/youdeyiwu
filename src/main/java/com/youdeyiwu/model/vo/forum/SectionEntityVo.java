@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo.forum;
 
+import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.SectionStateEnum;
 import com.youdeyiwu.model.vo.AbstractEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
@@ -25,6 +26,16 @@ public class SectionEntityVo extends AbstractEntityVo {
    * cover.
    */
   private String cover;
+
+  /**
+   * cover image.
+   */
+  private byte[] coverImage;
+
+  /**
+   * cover image type.
+   */
+  private FileTypeEnum coverImageType;
 
   /**
    * overview.

@@ -1,8 +1,12 @@
 package com.youdeyiwu.service.forum.impl;
 
 import static com.youdeyiwu.tool.Tool.cleanHtmlContent;
+import static com.youdeyiwu.tool.Tool.getFileType;
 import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
+import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
+import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.SectionNotFoundException;
 import com.youdeyiwu.exception.TagGroupNotFoundException;
 import com.youdeyiwu.exception.TagNotFoundException;
@@ -19,6 +23,7 @@ import com.youdeyiwu.model.dto.forum.UpdateStatesSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsSectionDto;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
+import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.repository.forum.SectionRepository;
@@ -27,15 +32,21 @@ import com.youdeyiwu.repository.forum.TagRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.SectionService;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * section.
@@ -74,6 +85,30 @@ public class SectionServiceImpl implements SectionService {
     sectionEntity.setName(dto.name());
     sectionRepository.save(sectionEntity);
     return sectionEntity;
+  }
+
+  @Transactional
+  @Override
+  public void uploadCover(Long id, MultipartFile file) {
+    if (!isValidImageFile(
+        file,
+        500,
+        EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
+    )) {
+      throw new CustomException(
+          "This doesn't seem to be a valid cover image file"
+      );
+    }
+
+    SectionEntity sectionEntity = findSection(id);
+    try {
+      sectionEntity.setCoverImage(new SerialBlob(file.getBytes()));
+      sectionEntity.setCoverImageType(getFileType(file));
+    } catch (SQLException | IOException e) {
+      throw new CustomException(
+          "The setting of the cover image file failed : " + e.getMessage()
+      );
+    }
   }
 
   @Transactional
@@ -169,6 +204,24 @@ public class SectionServiceImpl implements SectionService {
       }
     }
 
+    if (
+        Objects.nonNull(dto.coverImage())
+            && isValidImageFile(
+            dto.coverImage(),
+            500,
+            EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
+        )
+    ) {
+      try {
+        sectionEntity.setCoverImage(new SerialBlob(dto.coverImage().getBytes()));
+        sectionEntity.setCoverImageType(getFileType(dto.coverImage()));
+      } catch (SQLException | IOException e) {
+        throw new CustomException(
+            "The setting of the cover image file failed : " + e.getMessage()
+        );
+      }
+    }
+
     if (Objects.nonNull(dto.content())) {
       sectionEntity.setContent(cleanHtmlContent(dto.content().trim()));
     }
@@ -191,6 +244,26 @@ public class SectionServiceImpl implements SectionService {
     }
 
     return vo;
+  }
+
+  @Override
+  public CoverVo queryCover(Long id) {
+    SectionEntity sectionEntity = findSection(id);
+    Blob coverImage = sectionEntity.getCoverImage();
+    if (Objects.isNull(coverImage)) {
+      throw new CustomException("The cover image file does not exist");
+    }
+
+    try {
+      CoverVo vo = new CoverVo();
+      vo.setCoverImage(coverImage.getBytes(1, (int) coverImage.length()));
+      vo.setCoverImageType(sectionEntity.getCoverImageType());
+      return vo;
+    } catch (SQLException e) {
+      throw new CustomException(
+          "Failed to read the cover image file : " + e.getMessage()
+      );
+    }
   }
 
   @Override

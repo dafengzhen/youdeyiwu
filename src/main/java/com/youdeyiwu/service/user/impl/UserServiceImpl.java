@@ -161,6 +161,18 @@ public class UserServiceImpl implements UserService {
 
   @Transactional
   @Override
+  public void logout() {
+    if (securityService.isAnonymous()) {
+      throw new CustomException("The inability to log out");
+    }
+
+    UserEntity userEntity = findUser(securityService.getUserId());
+    userEntity.setToken(null);
+    userCache.removeUserFromCache(String.valueOf(userEntity.getId()));
+  }
+
+  @Transactional
+  @Override
   public void addRoles(Long id, AssignRolesDto dto) {
     UserEntity userEntity = findUser(id);
     List<RoleEntity> roles = dto.ids().stream()

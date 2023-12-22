@@ -21,15 +21,19 @@ export default function Logout({
 
   async function onClickLogout() {
     try {
-      const id = details?.id;
+      const id = details.id;
       await logoutUserActionMutation.mutateAsync({
         id,
       });
 
       toast.current.show({
         type: 'success',
-        message: 'Logout successfully',
+        message: 'Logout successfully, Refresh after 2 seconds',
       });
+
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
     } catch (e: any) {
       logoutUserActionMutation.reset();
       toast.current.show({

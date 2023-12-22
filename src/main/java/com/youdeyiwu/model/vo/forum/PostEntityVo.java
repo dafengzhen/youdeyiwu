@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo.forum;
 
+import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostSortStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
@@ -33,6 +34,11 @@ public class PostEntityVo extends AbstractEntityVo {
    * cover image.
    */
   private byte[] coverImage;
+
+  /**
+   * cover image type.
+   */
+  private FileTypeEnum coverImageType;
 
   /**
    * overview.

@@ -1,6 +1,7 @@
 package com.youdeyiwu.model.entity.forum;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostSortStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
@@ -57,6 +58,13 @@ public class PostEntity extends AbstractEntity {
   @JsonIgnore
   @ToString.Exclude
   private Blob coverImage;
+
+  /**
+   * cover image type.
+   */
+  @Enumerated
+  @Column(columnDefinition = "smallint", nullable = false)
+  private FileTypeEnum coverImageType = FileTypeEnum.JPG;
 
   /**
    * overview.

@@ -43,6 +43,11 @@ public interface UserService {
   TokenVo login(LoginDto dto);
 
   /**
+   * logout.
+   */
+  void logout();
+
+  /**
    * addRoles.
    *
    * @param id  id

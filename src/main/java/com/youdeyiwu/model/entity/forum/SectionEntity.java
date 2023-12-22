@@ -1,17 +1,21 @@
 package com.youdeyiwu.model.entity.forum;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.SectionStateEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -42,6 +46,22 @@ public class SectionEntity extends AbstractEntity {
    * cover.
    */
   private String cover;
+
+  /**
+   * cover image.
+   */
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  @JsonIgnore
+  @ToString.Exclude
+  private Blob coverImage;
+
+  /**
+   * cover image type.
+   */
+  @Enumerated
+  @Column(columnDefinition = "smallint", nullable = false)
+  private FileTypeEnum coverImageType = FileTypeEnum.JPG;
 
   /**
    * overview.

@@ -7,14 +7,14 @@ import {
 } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import UploadCoverPostAction from '@/app/actions/posts/upload-cover-post-action';
 import { GlobalContext } from '@/app/contexts';
+import UploadCoverSectionAction from '@/app/actions/sections/upload-cover-section-action';
 
 export default function UploadCover({
   id,
   callback,
 }: {
-  id?: number;
+  id: number;
   callback: () => void;
 }) {
   const { toast } = useContext(GlobalContext);
@@ -27,8 +27,8 @@ export default function UploadCover({
   });
   const uploadCoverFile = useRef<File | null>(null);
 
-  const uploadCoverPostActionMutation = useMutation({
-    mutationFn: UploadCoverPostAction,
+  const uploadCoverSectionActionMutation = useMutation({
+    mutationFn: UploadCoverSectionAction,
   });
 
   useEffect(() => {
@@ -41,14 +41,6 @@ export default function UploadCover({
 
   async function onClickUploadCover() {
     try {
-      if (!id) {
-        toast.current.show({
-          type: 'danger',
-          message: 'The anonymous article cannot be uploaded',
-        });
-        return;
-      }
-
       const file = uploadCoverFile.current;
       if (!file) {
         toast.current.show({
@@ -60,7 +52,7 @@ export default function UploadCover({
 
       const formData = new FormData();
       formData.append('file', file);
-      await uploadCoverPostActionMutation.mutateAsync({
+      await uploadCoverSectionActionMutation.mutateAsync({
         id,
         variables: { formData },
       });
@@ -80,7 +72,7 @@ export default function UploadCover({
         });
       }, 1500);
     } catch (e: any) {
-      uploadCoverPostActionMutation.reset();
+      uploadCoverSectionActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -147,13 +139,13 @@ export default function UploadCover({
           onChange={onChange}
         />
         <button
-          disabled={uploadCoverPostActionMutation.isPending}
+          disabled={uploadCoverSectionActionMutation.isPending}
           onClick={onClickUploadCover}
           className="btn btn-secondary"
           type="button"
         >
           <i className="bi bi-upload me-2"></i>
-          {uploadCoverPostActionMutation.isPending ? 'Uploading' : 'Upload'}
+          {uploadCoverSectionActionMutation.isPending ? 'Uploading' : 'Upload'}
         </button>
       </div>
 

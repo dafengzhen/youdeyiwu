@@ -20,6 +20,7 @@ import {
   onLoadEditor,
   setContent,
 } from '@/app/common/editor';
+import UploadCover from '@/app/admin/sections/[id]/upload-cover';
 
 export default function Update({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -160,11 +161,21 @@ export default function Update({ section }: { section: ISection }) {
           </div>
         </div>
 
+        <UploadCover
+          id={section.id}
+          callback={() => {
+            setForm({
+              ...form,
+              cover: `${location.origin}/api/sections/${section.id}/cover`,
+            });
+          }}
+        />
+
         <div>
           <label className="form-label">
             Overview
             {form.overview.length > 0 && (
-              <span>&nbsp;({form.overview.length})</span>
+              <span>&nbsp;({form.overview.length}-character length)</span>
             )}
           </label>
           <textarea

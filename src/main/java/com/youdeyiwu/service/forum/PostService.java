@@ -5,6 +5,7 @@ import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
@@ -110,9 +111,9 @@ public interface PostService {
    * query cover.
    *
    * @param id id
-   * @return byte[]
+   * @return CoverVo
    */
-  byte[] queryCover(Long id);
+  CoverVo queryCover(Long id);
 
   /**
    * query.

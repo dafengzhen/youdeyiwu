@@ -7,11 +7,13 @@ import com.youdeyiwu.model.dto.forum.UpdateStatesSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsSectionDto;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
+import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import jakarta.validation.Valid;
 import java.util.Set;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * section.
@@ -27,6 +29,14 @@ public interface SectionService {
    * @return SectionEntity
    */
   SectionEntity create(@Valid CreateSectionDto dto);
+
+  /**
+   * upload cover.
+   *
+   * @param id   id
+   * @param file file
+   */
+  void uploadCover(Long id, MultipartFile file);
 
   /**
    * update states.
@@ -75,6 +85,14 @@ public interface SectionService {
    * @return SectionEntityVo
    */
   SectionEntityVo queryDetails(Long id);
+
+  /**
+   * query cover.
+   *
+   * @param id id
+   * @return CoverVo
+   */
+  CoverVo queryCover(Long id);
 
   /**
    * query.

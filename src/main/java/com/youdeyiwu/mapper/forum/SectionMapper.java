@@ -25,6 +25,7 @@ public interface SectionMapper {
    */
   @Mapping(target = "cover", ignore = true)
   @Mapping(target = "content", ignore = true)
+  @Mapping(target = "coverImage", ignore = true)
   void dtoToEntity(UpdateSectionDto dto, @MappingTarget SectionEntity entity);
 
   /**
@@ -39,6 +40,7 @@ public interface SectionMapper {
   @Mapping(target = "tagGroups", ignore = true)
   @Mapping(target = "tags", ignore = true)
   @Mapping(target = "sectionGroups", ignore = true)
+  @Mapping(target = "coverImage", ignore = true)
   SectionEntityVo entityToVo(SectionEntity entity);
 
   /**

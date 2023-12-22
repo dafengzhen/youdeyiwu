@@ -1,6 +1,6 @@
 package com.youdeyiwu.controller.forum;
 
-import static org.springframework.http.MediaType.IMAGE_PNG;
+import static com.youdeyiwu.tool.Tool.getMediaType;
 
 import com.google.common.net.InetAddresses;
 import com.youdeyiwu.exception.CustomException;
@@ -8,6 +8,7 @@ import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
+import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
@@ -147,11 +148,11 @@ public class PostController {
    */
   @GetMapping(value = "/{id}/cover")
   public ResponseEntity<byte[]> queryCover(@PathVariable Long id) {
-    byte[] coverImage = postService.queryCover(id);
+    CoverVo vo = postService.queryCover(id);
     return ResponseEntity.ok()
-        .contentType(IMAGE_PNG)
-        .contentLength(coverImage.length)
-        .body(coverImage);
+        .contentType(getMediaType(vo.getCoverImageType()))
+        .contentLength(vo.getCoverImage().length)
+        .body(vo.getCoverImage());
   }
 
   @GetMapping(value = "/{id}")

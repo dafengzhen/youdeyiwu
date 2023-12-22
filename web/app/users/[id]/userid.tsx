@@ -152,7 +152,10 @@ export default function UserId({
             </div>
           </div>
           <div
-            className={clsx('d-flex flex-column gap-4', styles.boxMarginLeft)}
+            className={clsx(
+              'd-flex flex-column gap-4 pb-4',
+              styles.boxMarginLeft,
+            )}
           >
             {tabs
               .filter((item) => item)

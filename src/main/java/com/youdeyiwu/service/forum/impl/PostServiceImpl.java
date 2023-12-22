@@ -1,9 +1,11 @@
 package com.youdeyiwu.service.forum.impl;
 
 import static com.youdeyiwu.tool.Tool.cleanHtmlContent;
+import static com.youdeyiwu.tool.Tool.getFileType;
 import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
-import static com.youdeyiwu.tool.Tool.isValidImage;
+import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
+import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionNotFoundException;
@@ -27,6 +29,7 @@ import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
@@ -45,6 +48,7 @@ import com.youdeyiwu.service.forum.TagService;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -136,7 +140,11 @@ public class PostServiceImpl implements PostService {
   @Transactional
   @Override
   public void uploadCover(Long id, MultipartFile file) {
-    if (!isValidImage(file, 500)) {
+    if (!isValidImageFile(
+        file,
+        500,
+        EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
+    )) {
       throw new CustomException(
           "This doesn't seem to be a valid cover image file"
       );
@@ -145,6 +153,7 @@ public class PostServiceImpl implements PostService {
     PostEntity postEntity = findPost(id);
     try {
       postEntity.setCoverImage(new SerialBlob(file.getBytes()));
+      postEntity.setCoverImageType(getFileType(file));
     } catch (SQLException | IOException e) {
       throw new CustomException(
           "The setting of the cover image file failed : " + e.getMessage()
@@ -306,7 +315,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public byte[] queryCover(Long id) {
+  public CoverVo queryCover(Long id) {
     PostEntity postEntity = findPost(id);
     Blob coverImage = postEntity.getCoverImage();
     if (Objects.isNull(coverImage)) {
@@ -314,7 +323,10 @@ public class PostServiceImpl implements PostService {
     }
 
     try {
-      return coverImage.getBytes(1, (int) coverImage.length());
+      CoverVo vo = new CoverVo();
+      vo.setCoverImage(coverImage.getBytes(1, (int) coverImage.length()));
+      vo.setCoverImageType(postEntity.getCoverImageType());
+      return vo;
     } catch (SQLException e) {
       throw new CustomException(
           "Failed to read the cover image file : " + e.getMessage()
@@ -382,9 +394,17 @@ public class PostServiceImpl implements PostService {
       }
     }
 
-    if (Objects.nonNull(coverImage) && isValidImage(coverImage, 500)) {
+    if (
+        Objects.nonNull(coverImage)
+            && isValidImageFile(
+            coverImage,
+            500,
+            EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
+        )
+    ) {
       try {
         postEntity.setCoverImage(new SerialBlob(coverImage.getBytes()));
+        postEntity.setCoverImageType(getFileType(coverImage));
       } catch (SQLException | IOException e) {
         throw new CustomException(
             "The setting of the cover image file failed : " + e.getMessage()
