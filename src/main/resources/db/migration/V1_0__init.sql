@@ -732,8 +732,11 @@ create table if not exists post_image_entity
     sort       int          not null,
     url        varchar(255) not null,
     post_id    bigint       null,
+    image      mediumblob   null,
+    image_type smallint     not null,
     constraint FK7x84i77w0pu88xutpuiu1u801
-        foreign key (post_id) references post_entity (id)
+        foreign key (post_id) references post_entity (id),
+    check (`image_type` between 0 and 1)
 );
 
 create table if not exists post_user_entity

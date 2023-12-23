@@ -15,7 +15,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import java.sql.Blob;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -52,9 +51,10 @@ public class SectionEntity extends AbstractEntity {
    */
   @Lob
   @Basic(fetch = FetchType.LAZY)
+  @Column(columnDefinition = "mediumblob")
   @JsonIgnore
   @ToString.Exclude
-  private Blob coverImage;
+  private byte[] coverImage;
 
   /**
    * cover image type.

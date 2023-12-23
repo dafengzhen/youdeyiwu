@@ -46,14 +46,11 @@ import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.PostService;
 import com.youdeyiwu.service.forum.TagService;
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -152,9 +149,9 @@ public class PostServiceImpl implements PostService {
 
     PostEntity postEntity = findPost(id);
     try {
-      postEntity.setCoverImage(new SerialBlob(file.getBytes()));
+      postEntity.setCoverImage(file.getBytes());
       postEntity.setCoverImageType(getFileType(file));
-    } catch (SQLException | IOException e) {
+    } catch (IOException e) {
       throw new CustomException(
           "The setting of the cover image file failed : " + e.getMessage()
       );
@@ -317,21 +314,15 @@ public class PostServiceImpl implements PostService {
   @Override
   public CoverVo queryCover(Long id) {
     PostEntity postEntity = findPost(id);
-    Blob coverImage = postEntity.getCoverImage();
+    byte[] coverImage = postEntity.getCoverImage();
     if (Objects.isNull(coverImage)) {
       throw new CustomException("The cover image file does not exist");
     }
 
-    try {
-      CoverVo vo = new CoverVo();
-      vo.setCoverImage(coverImage.getBytes(1, (int) coverImage.length()));
-      vo.setCoverImageType(postEntity.getCoverImageType());
-      return vo;
-    } catch (SQLException e) {
-      throw new CustomException(
-          "Failed to read the cover image file : " + e.getMessage()
-      );
-    }
+    CoverVo vo = new CoverVo();
+    vo.setCoverImage(coverImage);
+    vo.setCoverImageType(postEntity.getCoverImageType());
+    return vo;
   }
 
   @Override
@@ -403,9 +394,9 @@ public class PostServiceImpl implements PostService {
         )
     ) {
       try {
-        postEntity.setCoverImage(new SerialBlob(coverImage.getBytes()));
+        postEntity.setCoverImage(coverImage.getBytes());
         postEntity.setCoverImageType(getFileType(coverImage));
-      } catch (SQLException | IOException e) {
+      } catch (IOException e) {
         throw new CustomException(
             "The setting of the cover image file failed : " + e.getMessage()
         );

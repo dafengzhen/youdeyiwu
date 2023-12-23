@@ -8,8 +8,8 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -27,11 +27,13 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Tool {
 
-  public static final int BYTES_PER_KB = 1024;
+  protected static final int BYTES_PER_KB = 1024;
 
-  public static final byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+  protected static final byte[] PNG_HEADER = {
+      (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A
+  };
 
-  public static final byte[] JPEG_HEADER = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+  protected static final byte[] JPEG_HEADER = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
 
   /**
    * get the html relaxed safe list.
@@ -107,7 +109,7 @@ public class Tool {
   public static boolean isValidImageFile(
       MultipartFile file,
       long maxSizeInKb,
-      EnumSet<FileTypeEnum> fileTypes
+      Set<FileTypeEnum> fileTypes
   ) {
     // One kilobyte equals 1024 bytes
     if (file.isEmpty() || file.getSize() > (maxSizeInKb * BYTES_PER_KB)) {
@@ -127,7 +129,7 @@ public class Tool {
         case PNG -> PNG_HEADER;
         case JPG -> JPEG_HEADER;
       };
-      if (Objects.nonNull(fileTypeHeader) && Arrays.equals(fileHeader, fileTypeHeader)) {
+      if (Arrays.equals(fileHeader, fileTypeHeader)) {
         return true;
       }
     }

@@ -33,14 +33,11 @@ import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.SectionService;
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -102,9 +99,9 @@ public class SectionServiceImpl implements SectionService {
 
     SectionEntity sectionEntity = findSection(id);
     try {
-      sectionEntity.setCoverImage(new SerialBlob(file.getBytes()));
+      sectionEntity.setCoverImage(file.getBytes());
       sectionEntity.setCoverImageType(getFileType(file));
-    } catch (SQLException | IOException e) {
+    } catch (IOException e) {
       throw new CustomException(
           "The setting of the cover image file failed : " + e.getMessage()
       );
@@ -213,9 +210,9 @@ public class SectionServiceImpl implements SectionService {
         )
     ) {
       try {
-        sectionEntity.setCoverImage(new SerialBlob(dto.coverImage().getBytes()));
+        sectionEntity.setCoverImage(dto.coverImage().getBytes());
         sectionEntity.setCoverImageType(getFileType(dto.coverImage()));
-      } catch (SQLException | IOException e) {
+      } catch (IOException e) {
         throw new CustomException(
             "The setting of the cover image file failed : " + e.getMessage()
         );
@@ -249,21 +246,15 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public CoverVo queryCover(Long id) {
     SectionEntity sectionEntity = findSection(id);
-    Blob coverImage = sectionEntity.getCoverImage();
+    byte[] coverImage = sectionEntity.getCoverImage();
     if (Objects.isNull(coverImage)) {
       throw new CustomException("The cover image file does not exist");
     }
 
-    try {
-      CoverVo vo = new CoverVo();
-      vo.setCoverImage(coverImage.getBytes(1, (int) coverImage.length()));
-      vo.setCoverImageType(sectionEntity.getCoverImageType());
-      return vo;
-    } catch (SQLException e) {
-      throw new CustomException(
-          "Failed to read the cover image file : " + e.getMessage()
-      );
-    }
+    CoverVo vo = new CoverVo();
+    vo.setCoverImage(coverImage);
+    vo.setCoverImageType(sectionEntity.getCoverImageType());
+    return vo;
   }
 
   @Override

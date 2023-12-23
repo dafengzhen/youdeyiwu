@@ -1,9 +1,14 @@
 package com.youdeyiwu.model.entity.forum;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +33,23 @@ public class PostImageEntity extends AbstractEntity {
    */
   @Column(nullable = false)
   private String url;
+
+  /**
+   * image.
+   */
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  @Column(columnDefinition = "mediumblob")
+  @JsonIgnore
+  @ToString.Exclude
+  private byte[] image;
+
+  /**
+   * image type.
+   */
+  @Enumerated
+  @Column(columnDefinition = "smallint", nullable = false)
+  private FileTypeEnum imageType = FileTypeEnum.JPG;
 
   /**
    * sort.
