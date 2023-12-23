@@ -21,6 +21,7 @@ import RefreshAction from '@/app/actions/refresh-action';
 import UploadCover from '@/app/posts/save/upload-cover';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
+const POST_EDITOR_SPLIT = 'post-editor-split';
 const POST_EDITOR_CENTER = 'post-editor-center';
 
 export default function Save({
@@ -64,6 +65,7 @@ export default function Save({
   const [editorInitializing, setEditorInitializing] = useState(true);
   const [expand, setExpand] = useState(true);
   const [center, setCenter] = useState(false);
+  const [split, setSplit] = useState(false);
   const [tags, setTags] = useState<string[]>(
     post?.tags.map((item) => item.name) ?? [],
   );
@@ -87,6 +89,16 @@ export default function Save({
       setExpand(false);
     } else {
       setExpand(true);
+    }
+  }, []);
+  useEffect(() => {
+    const item = localStorage.getItem(POST_EDITOR_SPLIT);
+    if (item === 'true') {
+      setSplit(true);
+    } else if (item === 'false') {
+      setSplit(false);
+    } else {
+      setSplit(false);
     }
   }, []);
   useEffect(() => {
@@ -115,6 +127,12 @@ export default function Save({
     const value = !expand;
     setExpand(value);
     localStorage.setItem(POST_EDITOR_COLLAPSE, value + '');
+  }
+
+  function onClickSplitLayout() {
+    const value = !split;
+    setSplit(value);
+    localStorage.setItem(POST_EDITOR_SPLIT, value + '');
   }
 
   function onClickCenterBox() {
@@ -252,12 +270,41 @@ export default function Save({
                     <div
                       className={clsx(
                         'cursor-pointer',
+                        split ? 'text-primary' : 'text-secondary',
+                      )}
+                      onClick={onClickSplitLayout}
+                    >
+                      {split ? (
+                        <>
+                          Split layout
+                          <i className="bi bi-arrows-expand-vertical ms-1"></i>
+                        </>
+                      ) : (
+                        <>
+                          Vertical layout
+                          <i className="bi bi-arrows-collapse-vertical ms-1"></i>
+                        </>
+                      )}
+                    </div>
+                    <div className="vr text-secondary"></div>
+                    <div
+                      className={clsx(
+                        'cursor-pointer',
                         center ? 'text-primary' : 'text-secondary',
                       )}
                       onClick={onClickCenterBox}
                     >
-                      {center ? 'Wide layout' : 'Centered layout'}
-                      <i className="bi bi-text-center ms-1"></i>
+                      {center ? (
+                        <>
+                          Centered layout
+                          <i className="bi bi-arrows-vertical ms-1"></i>
+                        </>
+                      ) : (
+                        <>
+                          Wide layout
+                          <i className="bi bi-arrows ms-1"></i>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="d-flex align-items-center flex-wrap gap-2">
@@ -293,9 +340,13 @@ export default function Save({
                 </div>
               </div>
               <div className="card-body">
-                <form className="vstack gap-4">
-                  {expand && (
-                    <div className="vstack gap-4">
+                <form className={clsx(split ? 'row' : 'vstack gap-4')}>
+                  <div className={clsx(split ? 'col-6' : '')}>
+                    <div
+                      className={clsx('vstack gap-4', {
+                        'd-none': !expand,
+                      })}
+                    >
                       <div>
                         <label className="form-label">
                           <span className="fw-bold text-danger">*</span>
@@ -442,9 +493,8 @@ export default function Save({
                         </div>
                       </div>
                     </div>
-                  )}
-
-                  <div>
+                  </div>
+                  <div className={clsx(split ? 'col-6' : '')}>
                     <label className="form-label">Content</label>
                     <div className="form-text mb-2">
                       You can publish an article with only a title or with
