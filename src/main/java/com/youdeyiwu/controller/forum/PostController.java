@@ -7,6 +7,7 @@ import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
+import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
@@ -87,6 +88,15 @@ public class PostController {
     return ResponseEntity.noContent().build();
   }
 
+  @PutMapping(value = "/{id}/section")
+  public ResponseEntity<Void> updateSection(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateSectionPostDto dto
+  ) {
+    postService.updateSection(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
   @PutMapping(value = "/{id}/tags")
   public ResponseEntity<Void> updateTags(
       @PathVariable Long id,
@@ -115,9 +125,10 @@ public class PostController {
       @PageableDefault(size = 15)
       @SortDefault(value = {"initialScore", "sortState", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable,
-      @Valid QueryParamsPostDto dto
+      @Valid QueryParamsPostDto dto,
+      @RequestParam(required = false) String postKey
   ) {
-    return ResponseEntity.ok().body(postService.selectAll(pageable, dto));
+    return ResponseEntity.ok().body(postService.selectAll(pageable, dto, postKey));
   }
 
   @GetMapping(value = "/{id}/comment-reply")

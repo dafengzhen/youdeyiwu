@@ -6,9 +6,12 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
+import com.youdeyiwu.exception.SectionGroupNotFoundException;
 import com.youdeyiwu.exception.SectionNotFoundException;
+import com.youdeyiwu.exception.TagGroupNotFoundException;
 import com.youdeyiwu.exception.TagNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.CommentMapper;
@@ -21,8 +24,10 @@ import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.CreateTagDto;
+import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
+import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
@@ -38,6 +43,7 @@ import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostFavoriteRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
+import com.youdeyiwu.repository.forum.SectionGroupRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
 import com.youdeyiwu.repository.forum.TagGroupRepository;
 import com.youdeyiwu.repository.forum.TagRepository;
@@ -76,6 +82,8 @@ public class PostServiceImpl implements PostService {
 
   private final CommentRepository commentRepository;
 
+  private final SectionGroupRepository sectionGroupRepository;
+
   private final SectionRepository sectionRepository;
 
   private final UserRepository userRepository;
@@ -107,6 +115,7 @@ public class PostServiceImpl implements PostService {
   public PostEntity create(CreatePostDto dto) {
     PostEntity postEntity = new PostEntity();
     postMapper.dtoToEntity(dto, postEntity);
+    postEntity.setStates(EnumSet.of(PostStateEnum.SHOW));
     setContentAndRelatedLinks(
         dto.content(),
         dto.cover(),
@@ -114,7 +123,7 @@ public class PostServiceImpl implements PostService {
         dto.contentLink(),
         postEntity
     );
-    setSectionAndTags(dto.sectionId(), dto.tags(), postEntity);
+    setSectionAndTags(dto.sectionId(), false, dto.tags(), postEntity);
 
     if (securityService.isAuthenticated()) {
       postEntity.setUser(
@@ -226,6 +235,23 @@ public class PostServiceImpl implements PostService {
 
   @Transactional
   @Override
+  public void updateSection(Long id, UpdateSectionPostDto dto) {
+    PostEntity postEntity = findPost(id);
+
+    if (Objects.nonNull(dto.sectionId())) {
+      postEntity.setSection(
+          sectionRepository.findById(dto.sectionId())
+              .orElseThrow(SectionNotFoundException::new)
+      );
+    }
+
+    if (Boolean.TRUE.equals(dto.removeSection())) {
+      postEntity.setSection(null);
+    }
+  }
+
+  @Transactional
+  @Override
   public void updateTags(Long id, UpdateTagsPostDto dto) {
     PostEntity postEntity = findPost(id);
 
@@ -251,7 +277,8 @@ public class PostServiceImpl implements PostService {
         dto.contentLink(),
         postEntity
     );
-    setSectionAndTags(dto.sectionId(), dto.tags(), postEntity);
+
+    setSectionAndTags(dto.sectionId(), dto.removeSection(), dto.tags(), postEntity);
   }
 
   @Override
@@ -263,23 +290,48 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public PageVo<PostEntityVo> selectAll(Pageable pageable, QueryParamsPostDto dto) {
-    Page<PostEntity> page;
-    if (securityService.isAnonymous()) {
-      page = postRepository.findAll(
-          new PaginationPositionDto(pageable),
-          dto,
-          true,
-          null
-      );
-    } else {
-      page = postRepository.findAll(
-          new PaginationPositionDto(pageable),
-          dto,
-          false,
-          securityService.getUserId()
-      );
+  public PageVo<PostEntityVo> selectAll(
+      Pageable pageable,
+      QueryParamsPostDto dto,
+      String postKey
+  ) {
+    UserEntity user = null;
+    UserEntity root = null;
+    boolean anonymous = securityService.isAnonymous();
+
+    if (!anonymous) {
+      user = userRepository.findById(securityService.getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      if (Boolean.TRUE.equals(user.getRoot())) {
+        root = user;
+      }
     }
+
+    Page<PostEntity> page = postRepository.findAll(
+        new PaginationPositionDto(pageable),
+        new QueryParamsPost(
+            Objects.nonNull(dto.sectionGroupId())
+                ? sectionGroupRepository.findById(dto.sectionGroupId())
+                .orElseThrow(SectionGroupNotFoundException::new)
+                : null,
+            Objects.nonNull(dto.sectionId())
+                ? sectionRepository.findById(dto.sectionId())
+                .orElseThrow(SectionNotFoundException::new)
+                : null,
+            Objects.nonNull(dto.tagGroupId())
+                ? tagGroupRepository.findById(dto.tagGroupId())
+                .orElseThrow(TagGroupNotFoundException::new)
+                : null,
+            Objects.nonNull(dto.tagId())
+                ? tagRepository.findById(dto.tagId())
+                .orElseThrow(TagNotFoundException::new)
+                : null
+        ),
+        postKey,
+        anonymous,
+        user,
+        root
+    );
 
     return new PageVo<>(
         page.map(postEntity -> {
@@ -419,20 +471,26 @@ public class PostServiceImpl implements PostService {
   /**
    * set section and tags.
    *
-   * @param sectionId  sectionId
-   * @param tags       tags
-   * @param postEntity postEntity
+   * @param sectionId     sectionId
+   * @param removeSection removeSection
+   * @param tags          tags
+   * @param postEntity    postEntity
    */
-  private void setSectionAndTags(String sectionId, Set<String> tags, PostEntity postEntity) {
+  private void setSectionAndTags(
+      Long sectionId,
+      Boolean removeSection,
+      Set<String> tags,
+      PostEntity postEntity
+  ) {
     if (Objects.nonNull(sectionId)) {
-      if ("none".equals(sectionId)) {
-        postEntity.setSection(null);
-      } else {
-        postEntity.setSection(
-            sectionRepository.findById(Long.parseLong(sectionId))
-                .orElseThrow(SectionNotFoundException::new)
-        );
-      }
+      postEntity.setSection(
+          sectionRepository.findById(sectionId)
+              .orElseThrow(SectionNotFoundException::new)
+      );
+    }
+
+    if (Boolean.TRUE.equals(removeSection)) {
+      postEntity.setSection(null);
     }
 
     if (Objects.nonNull(tags)) {

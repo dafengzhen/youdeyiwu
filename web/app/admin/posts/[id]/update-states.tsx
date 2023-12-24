@@ -234,6 +234,10 @@ export default function UpdateStates({ post }: { post: IPost }) {
             <div className="form-text">
               Please enter the user ID to add to the whitelist
             </div>
+            <div className="form-text">
+              If a user is both on the whitelist and the blacklist, the user
+              will be ineffective in the whitelist
+            </div>
           </div>
         )}
 
@@ -250,6 +254,10 @@ export default function UpdateStates({ post }: { post: IPost }) {
             </div>
             <div className="form-text">
               Please enter the user ID to add to the blacklist
+            </div>
+            <div className="form-text">
+              If a user is both on the whitelist and the blacklist, the user
+              will be considered effective in the blacklist
             </div>
           </div>
         )}

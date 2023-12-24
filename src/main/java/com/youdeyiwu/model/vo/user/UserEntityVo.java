@@ -50,6 +50,11 @@ public class UserEntityVo extends AbstractEntityVo {
   private LocalDateTime lastLoginTime;
 
   /**
+   * root.
+   */
+  private Boolean root;
+
+  /**
    * account not expired.
    */
   private Boolean accountNonExpired;

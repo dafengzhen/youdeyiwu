@@ -44,16 +44,23 @@ public class CustomizedSectionRepositoryImpl implements CustomizedSectionReposit
           .setParameter("lock", SectionStateEnum.LOCK)
           .setParameter("accessKey", accessKey)
           .getResultList();
-    } else if (Objects.nonNull(root)) {
-      return queryRootUserSections();
-    } else if (Objects.nonNull(user)) {
+    } else if (Objects.nonNull(root) || Objects.isNull(user)) {
+      return entityManager.createQuery(
+              """
+                  select s from SectionEntity s
+                  order by s.sort desc, s.id desc
+                  """,
+              SectionEntity.class
+          )
+          .getResultList();
+    } else {
       return entityManager.createQuery(
               """
                   select s from SectionEntity s
                   where :show member of s.states
-                  or (:hide member of s.states and :user member of s.admins)
-                  or (:lock member of s.states and s.accessKey = :accessKey)
-                  or (:block member of s.states and :user member of s.blocks)
+                  or (:hide member of s.states and (:user member of s.admins or :user member of s.allows))
+                  or (:lock member of s.states and (s.accessKey = :accessKey or :user member of s.allows))
+                  or (:block member of s.states and not (:user member of s.blocks))
                   order by s.sort desc, s.id desc
                   """,
               SectionEntity.class
@@ -66,22 +73,5 @@ public class CustomizedSectionRepositoryImpl implements CustomizedSectionReposit
           .setParameter("user", user)
           .getResultList();
     }
-    return queryRootUserSections();
-  }
-
-  /**
-   * query root user sections.
-   *
-   * @return List
-   */
-  private List<SectionEntity> queryRootUserSections() {
-    return entityManager.createQuery(
-            """
-                select s from SectionEntity s
-                order by s.sort desc, s.id desc
-                """,
-            SectionEntity.class
-        )
-        .getResultList();
   }
 }

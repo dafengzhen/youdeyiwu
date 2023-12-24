@@ -7,7 +7,8 @@ import { revalidateTag } from 'next/cache';
 import { checkResponseStatus } from '@/app/common/server';
 
 export interface IUpdateSectionPostActionVariables {
-  sectionId: string;
+  sectionId?: number;
+  removeSection?: boolean;
 }
 
 export default async function UpdateSectionPostAction({

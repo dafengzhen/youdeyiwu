@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { IPost } from '@/app/interfaces/posts';
 import { ISection } from '@/app/interfaces/sections';
 import UpdateSectionPostAction from '@/app/actions/posts/update-section-post-action';
+import { isNum } from '@/app/common/server';
 
 export default function UpdateSection({
   post,
@@ -33,7 +34,8 @@ export default function UpdateSection({
       await updateSectionPostActionMutation.mutateAsync({
         id,
         variables: {
-          sectionId,
+          sectionId: isNum(sectionId) ? parseInt(sectionId) : undefined,
+          removeSection: sectionId === 'none',
         },
       });
 

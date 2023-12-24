@@ -19,7 +19,8 @@ export interface IPublishPostActionVariables {
   content?: string;
   contentLink?: string;
   tags?: string[];
-  sectionId?: string | 'none';
+  sectionId?: number;
+  removeSection?: boolean;
 }
 
 export default async function PublishPostAction({

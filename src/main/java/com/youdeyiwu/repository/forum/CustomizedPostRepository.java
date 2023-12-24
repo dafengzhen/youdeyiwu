@@ -1,8 +1,9 @@
 package com.youdeyiwu.repository.forum;
 
 import com.youdeyiwu.model.dto.PaginationPositionDto;
-import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
+import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentReplyEntityVo;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -24,17 +25,21 @@ public interface CustomizedPostRepository {
   /**
    * find all.
    *
-   * @param position    position
-   * @param dto         dto
-   * @param isAnonymous isAnonymous
-   * @param userId      userId
+   * @param position      position
+   * @param dto           dto
+   * @param accessKey     accessKey
+   * @param isAnonymous   isAnonymous
+   * @param user          user
+   * @param root          root
    * @return Page
    */
   Page<PostEntity> findAll(
       PaginationPositionDto position,
-      QueryParamsPostDto dto,
+      QueryParamsPost dto,
+      String accessKey,
       Boolean isAnonymous,
-      Long userId
+      UserEntity user,
+      UserEntity root
   );
 
   /**

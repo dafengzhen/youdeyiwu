@@ -7,14 +7,15 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * update post.
  *
- * @param name        name
- * @param cover       cover
- * @param coverImage  coverImage
- * @param overview    overview
- * @param content     content
- * @param contentLink contentLink
- * @param tags        tags
- * @param sectionId   sectionId
+ * @param name          name
+ * @param cover         cover
+ * @param coverImage    coverImage
+ * @param overview      overview
+ * @param content       content
+ * @param contentLink   contentLink
+ * @param tags          tags
+ * @param sectionId     sectionId
+ * @param removeSection removeSection
  */
 public record UpdatePostDto(
     String name,
@@ -31,7 +32,9 @@ public record UpdatePostDto(
 
     Set<String> tags,
 
-    String sectionId
+    Long sectionId,
+
+    Boolean removeSection
 ) implements Serializable {
 
 }

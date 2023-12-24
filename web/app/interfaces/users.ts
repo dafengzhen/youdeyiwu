@@ -11,6 +11,7 @@ export interface IUser extends IBase {
   username: string;
   email?: string;
   lastLoginTime: string;
+  root?: boolean;
   accountNonExpired: boolean;
   credentialsNonExpired: boolean;
   accountNonLocked: boolean;
@@ -26,6 +27,7 @@ export interface IUserDetails extends IBase {
   username: string;
   email?: string;
   lastLoginTime: string;
+  root?: boolean;
   accountNonExpired: boolean;
   credentialsNonExpired: boolean;
   accountNonLocked: boolean;

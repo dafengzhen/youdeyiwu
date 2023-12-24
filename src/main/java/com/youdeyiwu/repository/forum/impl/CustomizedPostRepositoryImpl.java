@@ -1,10 +1,17 @@
 package com.youdeyiwu.repository.forum.impl;
 
+import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.model.dto.PaginationPositionDto;
-import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
+import com.youdeyiwu.model.dto.forum.QueryParamsPost;
+import com.youdeyiwu.model.dto.forum.TypedQueryPostPage;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.entity.forum.SectionEntity;
+import com.youdeyiwu.model.entity.forum.SectionGroupEntity;
+import com.youdeyiwu.model.entity.forum.TagEntity;
+import com.youdeyiwu.model.entity.forum.TagGroupEntity;
+import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentReplyEntityVo;
 import com.youdeyiwu.repository.forum.CustomizedPostRepository;
 import jakarta.persistence.EntityManager;
@@ -63,72 +70,36 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
   @Override
   public Page<PostEntity> findAll(
       PaginationPositionDto position,
-      QueryParamsPostDto dto,
+      QueryParamsPost dto,
+      String accessKey,
       Boolean isAnonymous,
-      Long userId
+      UserEntity user,
+      UserEntity root
   ) {
-    Long sectionGroupId = dto.sectionGroupId();
-    Long sectionId = dto.sectionId();
-    Long tagGroupId = dto.tagGroupId();
-    Long tagId = dto.tagId();
+    TypedQuery<PostEntity> query;
+    TypedQuery<Long> totalSizeQuery;
 
-    TypedQuery<Long> query = entityManager.createQuery(
-            getPostIdsQlStringByRelatedId(
-                sectionGroupId,
-                sectionId,
-                tagGroupId,
-                tagId
-            ),
-            Long.class
-        )
-        .setFirstResult(position.firstResult())
-        .setMaxResults(position.maxResults());
-
-    if (Objects.nonNull(sectionGroupId)) {
-      query.setParameter("sectionGroupId", sectionGroupId);
-    } else if (Objects.nonNull(sectionId)) {
-      query.setParameter("sectionId", sectionId);
-    } else if (Objects.nonNull(tagGroupId)) {
-      query.setParameter("tagGroupId", tagGroupId);
-    } else if (Objects.nonNull(tagId)) {
-      query.setParameter("tagId", tagId);
+    if (Boolean.TRUE.equals(isAnonymous)) {
+      TypedQueryPostPage typedQuery = queryAnonymousUserPosts(dto, accessKey);
+      query = typedQuery.query();
+      totalSizeQuery = typedQuery.totalSizeQuery();
+    } else if (Objects.nonNull(root) || Objects.isNull(user)) {
+      TypedQueryPostPage typedQuery = queryRootUserPosts(dto);
+      query = typedQuery.query();
+      totalSizeQuery = typedQuery.totalSizeQuery();
+    } else {
+      TypedQueryPostPage typedQuery = queryUserPosts(dto, accessKey, user);
+      query = typedQuery.query();
+      totalSizeQuery = typedQuery.totalSizeQuery();
     }
 
-    TypedQuery<PostEntity> postQuery = entityManager.createQuery(
-        getPostsQlStringByRelatedId(
-            sectionGroupId,
-            sectionId,
-            tagGroupId,
-            tagId
-        ),
-        PostEntity.class
+    return new PageImpl<>(
+        query.setFirstResult(position.firstResult())
+            .setMaxResults(position.maxResults())
+            .getResultList(),
+        position.pageable(),
+        totalSizeQuery.getSingleResult()
     );
-
-    TypedQuery<Long> totalSizeQuery = entityManager.createQuery(
-        getPostsSizeQlStringByRelatedId(
-            sectionGroupId,
-            sectionId,
-            tagGroupId,
-            tagId
-        ),
-        Long.class
-    );
-
-    List<Long> ids = query.getResultList();
-    if (Objects.nonNull(sectionGroupId)) {
-      postQuery.setParameter("ids", ids);
-      totalSizeQuery.setParameter("sectionGroupId", sectionGroupId);
-    } else if (Objects.nonNull(sectionId)) {
-      postQuery.setParameter("ids", ids);
-      totalSizeQuery.setParameter("sectionId", sectionId);
-    } else if (Objects.nonNull(tagId)) {
-      postQuery.setParameter("ids", ids);
-      totalSizeQuery.setParameter("tagId", tagId);
-    }
-
-    List<PostEntity> entities = postQuery.getResultList();
-    Long totalSize = totalSizeQuery.getSingleResult();
-    return new PageImpl<>(entities, position.pageable(), totalSize);
   }
 
   @Override
@@ -181,162 +152,497 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
   }
 
   /**
-   * getPostIdsQlStringByRelatedId.
+   * query anonymous user posts.
    *
-   * @param sectionGroupId sectionGroupId
-   * @param sectionId      sectionId
-   * @param tagGroupId     tagGroupId
-   * @param tagId          tagId
-   * @return String
+   * @param dto           dto
+   * @param accessKey     accessKey
+   * @return TypedQueryPostPage
    */
-  private String getPostIdsQlStringByRelatedId(
-      Long sectionGroupId,
-      Long sectionId,
-      Long tagGroupId,
-      Long tagId
+  private TypedQueryPostPage queryAnonymousUserPosts(
+      QueryParamsPost dto,
+      String accessKey
   ) {
-    String qlString;
-    if (Objects.nonNull(sectionGroupId)) {
-      qlString = """
-          select p.id from PostEntity p
-          left join p.section ps
-          left join ps.sectionGroups psg
-          where psg.id = :sectionGroupId
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
-    } else if (Objects.nonNull(sectionId)) {
-      qlString = """
-          select p.id from PostEntity p
-          left join p.section ps
-          where ps.id = :sectionId
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
-    } else if (Objects.nonNull(tagGroupId)) {
-      qlString = """
-          select p.id from PostEntity p
-          left join p.tags pt
-          left join pt.tagGroups ptg
-          where ptg.id = :tagGroupId
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
-    } else if (Objects.nonNull(tagId)) {
-      qlString = """
-          select p.id from PostEntity p
-          left join p.tags pt
-          where pt.id = :tagId
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
+    SectionGroupEntity sectionGroupEntity = dto.sectionGroup();
+    SectionEntity sectionEntity = dto.section();
+    TagGroupEntity tagGroupEntity = dto.tagGroup();
+    TagEntity tagEntity = dto.tag();
+
+    TypedQuery<PostEntity> query;
+    TypedQuery<Long> totalSizeQuery;
+    if (Objects.nonNull(sectionGroupEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :sectionGroup member of p.section.sectionGroups
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("sectionGroup", sectionGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :sectionGroup member of p.section.sectionGroups
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  """,
+              Long.class
+          )
+          .setParameter("sectionGroup", sectionGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+    } else if (Objects.nonNull(sectionEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where p.section = :section
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("section", sectionEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where p.section = :section
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  """,
+              Long.class
+          )
+          .setParameter("section", sectionEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+    } else if (Objects.nonNull(tagGroupEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p, TagEntity t
+                  where t member of p.tags and :tagGroup member of t.tagGroups
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("tagGroup", tagGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p, TagEntity t
+                  where t member of p.tags and :tagGroup member of t.tagGroups
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  """,
+              Long.class
+          )
+          .setParameter("tagGroup", tagGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+    } else if (Objects.nonNull(tagEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :tag member of p.tags
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("tag", tagEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :tag member of p.tags
+                  and :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  """,
+              Long.class
+          )
+          .setParameter("tag", tagEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
     } else {
-      qlString = """
-          select p.id from PostEntity p
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :show member of p.states
+                  or (:lock member of p.states and p.accessKey = :accessKey)
+                  """,
+              Long.class
+          )
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey);
     }
-    return qlString;
+
+    return new TypedQueryPostPage(query, totalSizeQuery);
   }
 
   /**
-   * getPostsQlStringByRelatedId.
+   * query root user posts.
    *
-   * @param sectionGroupId sectionGroupId
-   * @param sectionId      sectionId
-   * @param tagGroupId     tagGroupId
-   * @param tagId          tagId
-   * @return String
+   * @param dto dto
+   * @return TypedQueryPostPage
    */
-  private String getPostsQlStringByRelatedId(
-      Long sectionGroupId,
-      Long sectionId,
-      Long tagGroupId,
-      Long tagId
-  ) {
-    String qlString;
-    if (Objects.nonNull(sectionGroupId)) {
-      qlString = """
-          select p from PostEntity p
-          left join fetch p.section ps
-          left join fetch ps.sectionGroups psg
-          where p.id in (:ids)
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
-    } else if (Objects.nonNull(sectionId)) {
-      qlString = """
-          select p from PostEntity p
-          left join fetch p.section ps
-          where p.id in (:ids)
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
-    } else if (Objects.nonNull(tagGroupId)) {
-      qlString = """
-          select p from PostEntity p
-          left join fetch p.tags pt
-          left join fetch pt.tagGroups ptg
-          where p.id in (:ids)
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
-    } else if (Objects.nonNull(tagId)) {
-      qlString = """
-          select p from PostEntity p
-          left join fetch p.tags pt
-          where p.id in (:ids)
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
+  private TypedQueryPostPage queryRootUserPosts(QueryParamsPost dto) {
+    SectionGroupEntity sectionGroupEntity = dto.sectionGroup();
+    SectionEntity sectionEntity = dto.section();
+    TagGroupEntity tagGroupEntity = dto.tagGroup();
+    TagEntity tagEntity = dto.tag();
+
+    TypedQuery<PostEntity> query;
+    TypedQuery<Long> totalSizeQuery;
+    if (Objects.nonNull(sectionGroupEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :sectionGroup member of p.section.sectionGroups
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("sectionGroup", sectionGroupEntity);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :sectionGroup member of p.section.sectionGroups
+                  """,
+              Long.class
+          )
+          .setParameter("sectionGroup", sectionGroupEntity);
+    } else if (Objects.nonNull(sectionEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where p.section = :section
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("section", sectionEntity);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where p.section = :section
+                  """,
+              Long.class
+          )
+          .setParameter("section", sectionEntity);
+    } else if (Objects.nonNull(tagGroupEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p, TagEntity t
+                  where t member of p.tags and :tagGroup member of t.tagGroups
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("tagGroup", tagGroupEntity);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p, TagEntity t
+                  where t member of p.tags and :tagGroup member of t.tagGroups
+                  """,
+              Long.class
+          )
+          .setParameter("tagGroup", tagGroupEntity);
+    } else if (Objects.nonNull(tagEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :tag member of p.tags
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("tag", tagEntity);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :tag member of p.tags
+                  """,
+              Long.class
+          )
+          .setParameter("tag", tagEntity);
     } else {
-      qlString = """
-          select p from PostEntity p
-          order by p.initialScore desc, p.sortState desc, p.id desc
-          """;
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :show member of p.states
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("show", PostStateEnum.SHOW);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :show member of p.states
+                  """,
+              Long.class
+          )
+          .setParameter("show", PostStateEnum.SHOW);
     }
-    return qlString;
+
+    return new TypedQueryPostPage(query, totalSizeQuery);
   }
 
   /**
-   * getPostsSizeQlStringByRelatedId.
+   * query user posts.
    *
-   * @param sectionGroupId sectionGroupId
-   * @param sectionId      sectionId
-   * @param tagGroupId     tagGroupId
-   * @param tagId          tagId
-   * @return String
+   * @param dto       dto
+   * @param accessKey accessKey
+   * @return TypedQueryPostPage
    */
-  private String getPostsSizeQlStringByRelatedId(
-      Long sectionGroupId,
-      Long sectionId,
-      Long tagGroupId,
-      Long tagId
+  private TypedQueryPostPage queryUserPosts(
+      QueryParamsPost dto,
+      String accessKey,
+      UserEntity user
   ) {
-    String qlString;
-    if (Objects.nonNull(sectionGroupId)) {
-      qlString = """
-          select count(p.id) from PostEntity p
-          left join p.section ps
-          left join ps.sectionGroups psg
-          where psg.id = :sectionGroupId
-          """;
-    } else if (Objects.nonNull(sectionId)) {
-      qlString = """
-          select count(p.id) from PostEntity p
-          left join p.section ps
-          on ps.id = :sectionId
-          """;
-    } else if (Objects.nonNull(tagGroupId)) {
-      qlString = """
-          select count(p.id) from PostEntity p
-          left join p.tags pt
-          left join pt.tagGroups ptg
-          on ptg.id = :tagGroupId
-          """;
-    } else if (Objects.nonNull(tagId)) {
-      qlString = """
-          select count(p.id) from PostEntity p
-          left join p.tags pt
-          on pt.id = :tagId
-          """;
+    SectionGroupEntity sectionGroupEntity = dto.sectionGroup();
+    SectionEntity sectionEntity = dto.section();
+    TagGroupEntity tagGroupEntity = dto.tagGroup();
+    TagEntity tagEntity = dto.tag();
+
+    TypedQuery<PostEntity> query;
+    TypedQuery<Long> totalSizeQuery;
+    if (Objects.nonNull(sectionGroupEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :sectionGroup member of p.section.sectionGroups
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("sectionGroup", sectionGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :sectionGroup member of p.section.sectionGroups
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  """,
+              Long.class
+          )
+          .setParameter("sectionGroup", sectionGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+    } else if (Objects.nonNull(sectionEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where p.section = :section
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("section", sectionEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where p.section = :section
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  """,
+              Long.class
+          )
+          .setParameter("section", sectionEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+    } else if (Objects.nonNull(tagGroupEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p, TagEntity t
+                  where t member of p.tags and :tagGroup member of t.tagGroups
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("tagGroup", tagGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p, TagEntity t
+                  where t member of p.tags and :tagGroup member of t.tagGroups
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  """,
+              Long.class
+          )
+          .setParameter("tagGroup", tagGroupEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+    } else if (Objects.nonNull(tagEntity)) {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :tag member of p.tags
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("tag", tagEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :tag member of p.tags
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  """,
+              Long.class
+          )
+          .setParameter("tag", tagEntity)
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
     } else {
-      qlString = """
-          select count(p.id) from PostEntity p
-          """;
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p
+                  where :show member of p.states
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p
+                  where :show member of p.states
+                  and :show member of p.states
+                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                  or (:block member of p.states and not (:user member of p.blocks))
+                  """,
+              Long.class
+          )
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("hide", PostStateEnum.HIDE)
+          .setParameter("lock", PostStateEnum.LOCK)
+          .setParameter("accessKey", accessKey)
+          .setParameter("block", PostStateEnum.BLOCK)
+          .setParameter("user", user);
     }
-    return qlString;
+
+    return new TypedQueryPostPage(query, totalSizeQuery);
   }
 }

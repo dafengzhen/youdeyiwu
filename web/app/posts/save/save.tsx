@@ -19,6 +19,7 @@ import {
 import { ISection } from '@/app/interfaces/sections';
 import RefreshAction from '@/app/actions/refresh-action';
 import UploadCover from '@/app/posts/save/upload-cover';
+import { isNum } from '@/app/common/server';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -152,7 +153,10 @@ export default function Save({
       }
 
       const variables = trimObjectStrings({ ...form });
-      delete variables.uploadCoverFile;
+      variables.sectionId = isNum(variables.sectionId)
+        ? parseInt(variables.sectionId)
+        : undefined;
+      variables.removeSection = variables.sectionId === 'none';
 
       const name = variables.name;
       if (!name) {

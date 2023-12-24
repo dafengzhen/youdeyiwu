@@ -35,7 +35,7 @@ public record CreatePostDto(
 
     Set<String> tags,
 
-    String sectionId
+    Long sectionId
 ) implements Serializable {
 
 }

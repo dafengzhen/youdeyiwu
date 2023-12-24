@@ -3,6 +3,7 @@ package com.youdeyiwu.service.forum;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
+import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.vo.CoverVo;
@@ -58,6 +59,14 @@ public interface PostService {
   void updateFavorite(Long id);
 
   /**
+   * update section.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void updateSection(Long id, UpdateSectionPostDto dto);
+
+  /**
    * update tags.
    *
    * @param id  id
@@ -85,9 +94,14 @@ public interface PostService {
    *
    * @param pageable pageable
    * @param dto      dto
+   * @param postKey  postKey
    * @return PageVo
    */
-  PageVo<PostEntityVo> selectAll(Pageable pageable, QueryParamsPostDto dto);
+  PageVo<PostEntityVo> selectAll(
+      Pageable pageable,
+      QueryParamsPostDto dto,
+      String postKey
+  );
 
   /**
    * query comment reply.

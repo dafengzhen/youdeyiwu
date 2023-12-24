@@ -498,6 +498,7 @@ create table if not exists user_entity
     password                varchar(255) null,
     token                   varchar(255) null,
     username                varchar(255) null,
+    root                    bit          null,
     constraint UK_2jsk4eakd0rmvybo409wgwxuw
         unique (username),
     constraint UK_4xad1enskw4j1t2866f7sodrx
