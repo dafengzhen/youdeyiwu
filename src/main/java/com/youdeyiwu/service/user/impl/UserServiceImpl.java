@@ -420,6 +420,7 @@ public class UserServiceImpl implements UserService {
 
     String token = createJwt(decodeSecret(secret), userEntity.getId(), Duration.ofDays(expDays));
     userEntity.setToken(token);
+    userEntity.setLastLoginTime(LocalDateTime.now());
     TokenVo tokenVo = new TokenVo();
     tokenVo.setId(userEntity.getId());
     tokenVo.setAlias(userEntity.getAlias());

@@ -15,7 +15,7 @@ import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.service.forum.SectionService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -104,8 +104,10 @@ public class SectionController {
   }
 
   @GetMapping(value = "/select-all")
-  public ResponseEntity<Set<SectionEntityVo>> selectAll() {
-    return ResponseEntity.ok().body(sectionService.selectAll());
+  public ResponseEntity<List<SectionEntityVo>> selectAll(
+      @RequestParam(required = false) String sectionKey
+  ) {
+    return ResponseEntity.ok().body(sectionService.selectAll(sectionKey));
   }
 
   @GetMapping(value = "/{id}/details")

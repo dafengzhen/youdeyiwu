@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
-import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.message.GlobalMessageUserEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import jakarta.persistence.CascadeType;
@@ -83,6 +83,12 @@ public class UserEntity extends AbstractEntity implements UserDetails {
    */
   @Column(nullable = false)
   private LocalDateTime lastLoginTime = LocalDateTime.now();
+
+  /**
+   * root refers to whether someone is a forum administrator.
+   * There may be multiple forum administrators, but typically there is only one.
+   */
+  private Boolean root = false;
 
   /**
    * account not expired.

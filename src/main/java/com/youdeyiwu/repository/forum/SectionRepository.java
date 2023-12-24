@@ -10,6 +10,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author dafengzhen
  */
 public interface SectionRepository extends CrudRepository<SectionEntity, Long>,
-    PagingAndSortingRepository<SectionEntity, Long> {
+    PagingAndSortingRepository<SectionEntity, Long>, CustomizedSectionRepository {
 
 }

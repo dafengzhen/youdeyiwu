@@ -22,9 +22,12 @@ export default async function Page({
   };
   searchParams: {
     type?: 'del' | 'states' | 'tags' | 'section';
+    sKey?: string;
+    sectionKey?: string;
   };
 }) {
   const id = params.id;
+  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
   if (!isNum(id)) {
     notFound();
   }
@@ -40,7 +43,10 @@ export default async function Page({
       return <UpdateTags post={post} />;
     case 'section':
       return (
-        <UpdateSection post={post} sections={await SelectAllSectionAction()} />
+        <UpdateSection
+          post={post}
+          sections={await SelectAllSectionAction({ sectionKey })}
+        />
       );
     default:
       notFound();

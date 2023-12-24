@@ -11,7 +11,7 @@ import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import jakarta.validation.Valid;
-import java.util.Set;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,9 +105,10 @@ public interface SectionService {
   /**
    * select all.
    *
-   * @return Set
+   * @param sectionKey sectionKey
+   * @return List
    */
-  Set<SectionEntityVo> selectAll();
+  List<SectionEntityVo> selectAll(String sectionKey);
 
   /**
    * queryAll.

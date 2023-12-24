@@ -6,7 +6,7 @@ import SelectAllSectionAction from '@/app/actions/sections/select-all-section-ac
 import SelectAllTagAction from '@/app/actions/tags/select-all-tag-action';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
 import { parseNum } from '@/app/common/server';
-import { TQueryParams } from '@/app/interfaces';
+import type { TQueryParams } from '@/app/interfaces';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 
 export interface ISearchParamsHomePage {
@@ -16,6 +16,8 @@ export interface ISearchParamsHomePage {
   sectionId?: string;
   tid?: string;
   tagId?: string;
+  sKey?: string;
+  sectionKey?: string;
 }
 
 export const metadata: Metadata = {
@@ -31,7 +33,9 @@ export default async function Page({
   const params = parseSearchParams(searchParams);
   const queryParams: TQueryParams = {};
   const sectionGroups = await SelectAllSectionGroupAction();
-  let sections = await SelectAllSectionAction();
+  let sections = await SelectAllSectionAction({
+    sectionKey: params.sectionKey,
+  });
   let tags = await SelectAllTagAction();
 
   const sectionGroupId = params.sectionGroupId;
@@ -71,17 +75,20 @@ export default async function Page({
 }
 
 function parseSearchParams(searchParams: ISearchParamsHomePage) {
-  const { sgid, sectionGroupId, sid, sectionId, tid, tagId } = searchParams;
+  const { sgid, sectionGroupId, sid, sectionId, tid, tagId, sKey, sectionKey } =
+    searchParams;
 
   const params = {
     sectionGroupId: sectionGroupId ?? sgid,
     sectionId: sectionId ?? sid,
     tagId: tagId ?? tid,
+    sectionKey: sKey ?? sectionKey,
   };
 
   return {
     sectionGroupId: parseNum(params.sectionGroupId),
     sectionId: parseNum(params.sectionId),
     tagId: parseNum(params.tagId),
+    sectionKey: params.sectionKey,
   };
 }

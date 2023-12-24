@@ -8,11 +8,19 @@ export const metadata: Metadata = {
   description: 'view all content',
 };
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: {
+    sKey?: string;
+    sectionKey?: string;
+  };
+}) {
+  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
   return (
     <Sections
       sectionGroups={await SelectAllSectionGroupAction()}
-      sections={(await SelectAllSectionAction()).filter(
+      sections={(await SelectAllSectionAction({ sectionKey })).filter(
         (item) => item.sectionGroups.length === 0,
       )}
     />

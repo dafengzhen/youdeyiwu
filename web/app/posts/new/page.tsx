@@ -7,6 +7,14 @@ export const metadata: Metadata = {
   description: 'create article page',
 };
 
-export default async function Page() {
-  return <Save sections={await SelectAllSectionAction()} />;
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: {
+    sKey?: string;
+    sectionKey?: string;
+  };
+}) {
+  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
+  return <Save sections={await SelectAllSectionAction({ sectionKey })} />;
 }

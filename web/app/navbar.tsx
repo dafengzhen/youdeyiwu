@@ -57,6 +57,22 @@ export default async function Navbar({
                 Articles
               </Link>
             </li>
+
+            {messages &&
+              messages.content.some((item) => item.state === 'UNREAD') && (
+                <li className="nav-item position-relative">
+                  <Link className="nav-link" href="/messages">
+                    Messages
+                  </Link>
+                  <span
+                    className="position-absolute translate-middle p-1 bg-danger border border-light rounded-circle"
+                    style={{ top: '0.8rem', right: '-0.35rem' }}
+                  >
+                    <span className="visually-hidden">New messages</span>
+                  </span>
+                </li>
+              )}
+
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
@@ -68,19 +84,17 @@ export default async function Navbar({
                 More
               </a>
               <ul className="dropdown-menu">
-                <li>
-                  <Link className="dropdown-item" href="/messages">
-                    Messages
-                    {messages &&
-                      messages.content.some(
-                        (item) => item.state === 'UNREAD',
-                      ) && (
-                        <span className="badge rounded-pill text-bg-danger ms-2">
-                          New
-                        </span>
-                      )}
-                  </Link>
-                </li>
+                {!(
+                  messages &&
+                  messages.content.some((item) => item.state === 'UNREAD')
+                ) && (
+                  <li>
+                    <Link className="dropdown-item" href="/messages">
+                      Messages
+                    </Link>
+                  </li>
+                )}
+
                 <li>
                   <Link
                     className="dropdown-item"

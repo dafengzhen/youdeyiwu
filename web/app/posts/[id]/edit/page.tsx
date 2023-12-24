@@ -12,12 +12,18 @@ export const metadata: Metadata = {
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: {
     id: string;
   };
+  searchParams: {
+    sKey?: string;
+    sectionKey?: string;
+  };
 }) {
   const id = params.id;
+  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
   if (!isNum(id)) {
     notFound();
   }
@@ -25,7 +31,7 @@ export default async function Page({
   return (
     <Save
       post={await QueryPostAction({ id })}
-      sections={await SelectAllSectionAction()}
+      sections={await SelectAllSectionAction({ sectionKey })}
     />
   );
 }

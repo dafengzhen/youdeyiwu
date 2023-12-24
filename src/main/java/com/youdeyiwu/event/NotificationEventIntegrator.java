@@ -1,6 +1,5 @@
 package com.youdeyiwu.event;
 
-import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import java.util.Objects;
 import org.checkerframework.checker.initialization.qual.Initialized;

@@ -6,6 +6,7 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.enums.forum.SectionStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.SectionNotFoundException;
 import com.youdeyiwu.exception.TagGroupNotFoundException;
@@ -23,6 +24,7 @@ import com.youdeyiwu.model.dto.forum.UpdateStatesSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsSectionDto;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
+import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
@@ -34,13 +36,11 @@ import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.SectionService;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,6 +80,7 @@ public class SectionServiceImpl implements SectionService {
   public SectionEntity create(CreateSectionDto dto) {
     SectionEntity sectionEntity = new SectionEntity();
     sectionEntity.setName(dto.name());
+    sectionEntity.setStates(EnumSet.of(SectionStateEnum.SHOW));
     sectionRepository.save(sectionEntity);
     return sectionEntity;
   }
@@ -281,12 +282,21 @@ public class SectionServiceImpl implements SectionService {
   }
 
   @Override
-  public Set<SectionEntityVo> selectAll() {
-    return StreamSupport.stream(
-            sectionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
-                .spliterator(),
-            false
-        )
+  public List<SectionEntityVo> selectAll(String sectionKey) {
+    UserEntity user = null;
+    UserEntity root = null;
+    boolean anonymous = securityService.isAnonymous();
+
+    if (!anonymous) {
+      user = userRepository.findById(securityService.getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      if (Boolean.TRUE.equals(user.getRoot())) {
+        root = user;
+      }
+    }
+
+    return sectionRepository.findAll(sectionKey, anonymous, user, root)
+        .stream()
         .map(sectionEntity -> {
           SectionEntityVo vo = sectionMapper.entityToVo(sectionEntity);
           setAdmins(vo, sectionEntity);
@@ -294,7 +304,7 @@ public class SectionServiceImpl implements SectionService {
           setSectionGroups(vo, sectionEntity);
           return vo;
         })
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Override

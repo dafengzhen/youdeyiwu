@@ -13,13 +13,22 @@ export default async function Page({
 }: {
   searchParams: {
     type?: 'add';
+    sKey?: string;
+    sectionKey?: string;
   };
 }) {
   const type = searchParams.type;
+  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
   switch (type) {
     case 'add':
       return <Create />;
     default:
-      return <Sections data={await QueryAllSectionAction()} />;
+      return (
+        <Sections
+          data={await QueryAllSectionAction(
+            sectionKey ? { sectionKey: sectionKey } : undefined,
+          )}
+        />
+      );
   }
 }
