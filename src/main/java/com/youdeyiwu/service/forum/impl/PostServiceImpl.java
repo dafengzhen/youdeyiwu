@@ -6,7 +6,6 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
-import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionGroupNotFoundException;
@@ -115,7 +114,6 @@ public class PostServiceImpl implements PostService {
   public PostEntity create(CreatePostDto dto) {
     PostEntity postEntity = new PostEntity();
     postMapper.dtoToEntity(dto, postEntity);
-    postEntity.setStates(EnumSet.of(PostStateEnum.SHOW));
     setContentAndRelatedLinks(
         dto.content(),
         dto.cover(),

@@ -18,6 +18,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -111,7 +112,7 @@ public class PostEntity extends AbstractEntity {
    */
   @Enumerated
   @ElementCollection(fetch = FetchType.EAGER)
-  private Set<PostStateEnum> states = new HashSet<>();
+  private Set<PostStateEnum> states = EnumSet.of(PostStateEnum.SHOW);
 
   /**
    * reviewState.

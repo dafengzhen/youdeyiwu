@@ -174,6 +174,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :sectionGroup member of p.section.sectionGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   order by p.initialScore desc, p.sortState desc, p.id desc
@@ -189,6 +190,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where :sectionGroup member of p.section.sectionGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   """,
@@ -203,6 +205,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where p.section = :section
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   order by p.initialScore desc, p.sortState desc, p.id desc
@@ -218,6 +221,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where p.section = :section
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   """,
@@ -232,6 +236,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p, TagEntity t
                   where t member of p.tags and :tagGroup member of t.tagGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   order by p.initialScore desc, p.sortState desc, p.id desc
@@ -247,6 +252,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p, TagEntity t
                   where t member of p.tags and :tagGroup member of t.tagGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   """,
@@ -261,6 +267,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :tag member of p.tags
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   order by p.initialScore desc, p.sortState desc, p.id desc
@@ -276,6 +283,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where :tag member of p.tags
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   """,
@@ -289,7 +297,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
       query = entityManager.createQuery(
               """
                   select p from PostEntity p
-                  where :show member of p.states
+                  where p.reviewState = 0
+                  and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   order by p.initialScore desc, p.sortState desc, p.id desc
                   """,
@@ -302,7 +311,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
       totalSizeQuery = entityManager.createQuery(
               """
                   select count(p.id) from PostEntity p
-                  where :show member of p.states
+                  where p.reviewState = 0
+                  and :show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey)
                   """,
               Long.class
@@ -453,10 +463,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :sectionGroup member of p.section.sectionGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   order by p.initialScore desc, p.sortState desc, p.id desc
                   """,
               PostEntity.class
@@ -473,10 +485,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where :sectionGroup member of p.section.sectionGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   """,
               Long.class
           )
@@ -492,10 +506,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where p.section = :section
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   order by p.initialScore desc, p.sortState desc, p.id desc
                   """,
               PostEntity.class
@@ -512,10 +528,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where p.section = :section
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   """,
               Long.class
           )
@@ -531,10 +549,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p, TagEntity t
                   where t member of p.tags and :tagGroup member of t.tagGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   order by p.initialScore desc, p.sortState desc, p.id desc
                   """,
               PostEntity.class
@@ -551,10 +571,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p, TagEntity t
                   where t member of p.tags and :tagGroup member of t.tagGroups
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   """,
               Long.class
           )
@@ -570,10 +592,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :tag member of p.tags
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   order by p.initialScore desc, p.sortState desc, p.id desc
                   """,
               PostEntity.class
@@ -590,10 +614,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where :tag member of p.tags
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   """,
               Long.class
           )
@@ -609,10 +635,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :show member of p.states
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   order by p.initialScore desc, p.sortState desc, p.id desc
                   """,
               PostEntity.class
@@ -628,10 +656,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select count(p.id) from PostEntity p
                   where :show member of p.states
+                  and p.reviewState = 0
                   and :show member of p.states
                   or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
+                  or p.user = :user
                   """,
               Long.class
           )

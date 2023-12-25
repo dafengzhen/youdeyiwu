@@ -80,7 +80,6 @@ public class SectionServiceImpl implements SectionService {
   public SectionEntity create(CreateSectionDto dto) {
     SectionEntity sectionEntity = new SectionEntity();
     sectionEntity.setName(dto.name());
-    sectionEntity.setStates(EnumSet.of(SectionStateEnum.SHOW));
     sectionRepository.save(sectionEntity);
     return sectionEntity;
   }
