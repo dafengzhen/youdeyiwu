@@ -126,9 +126,10 @@ public interface PostService {
    *
    * @param pageable pageable
    * @param id       id
+   * @param postKey  postKey
    * @return PostEntityVo
    */
-  PostEntityVo queryDetails(Pageable pageable, Long id);
+  PostEntityVo queryDetails(Pageable pageable, Long id, String postKey);
 
   /**
    * query cover.

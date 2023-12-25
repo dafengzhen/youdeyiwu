@@ -111,8 +111,11 @@ public class SectionController {
   }
 
   @GetMapping(value = "/{id}/details")
-  public ResponseEntity<SectionEntityVo> queryDetails(@PathVariable Long id) {
-    return ResponseEntity.ok().body(sectionService.queryDetails(id));
+  public ResponseEntity<SectionEntityVo> queryDetails(
+      @PathVariable Long id,
+      @RequestParam(required = false) String sectionKey
+  ) {
+    return ResponseEntity.ok().body(sectionService.queryDetails(id, sectionKey));
   }
 
   /**

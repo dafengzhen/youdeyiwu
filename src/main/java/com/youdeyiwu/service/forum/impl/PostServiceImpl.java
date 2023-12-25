@@ -6,6 +6,7 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionGroupNotFoundException;
@@ -33,6 +34,7 @@ import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
@@ -402,7 +404,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public PostEntityVo queryDetails(Pageable pageable, Long id) {
+  public PostEntityVo queryDetails(Pageable pageable, Long id, String postKey) {
     UserEntity user = null;
     UserEntity root = null;
     boolean anonymous = securityService.isAnonymous();
@@ -416,6 +418,7 @@ public class PostServiceImpl implements PostService {
     }
 
     PostEntity postEntity = findPost(id);
+    checkPostStates(postEntity, postKey, anonymous, user, root);
     PostEntityVo vo = postMapper.entityToVo(postEntity);
     setBadges(vo, postEntity);
     setSection(vo, postEntity);
@@ -768,5 +771,76 @@ public class PostServiceImpl implements PostService {
 
     quoteReplyEntityVo.setUser(userMapper.entityToVo(quoteReplyEntity.getUser()));
     vo.setReply(quoteReplyEntityVo);
+  }
+
+  /**
+   * check post states.
+   *
+   * @param postEntity postEntity
+   * @param postKey    postKey
+   * @param anonymous  anonymous
+   * @param user       user
+   * @param root       root
+   */
+  private void checkPostStates(
+      PostEntity postEntity,
+      String postKey,
+      boolean anonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
+    boolean failed = postEntity.getStates().isEmpty()
+        || postEntity.getStates()
+        .stream()
+        .map(state -> isAuthorized(state, postEntity, postKey, anonymous, user, root))
+        .anyMatch(Boolean.FALSE::equals);
+
+    if (failed) {
+      throw new CustomException(
+          "Sorry, cannot access this post, or this post does not exist");
+    }
+  }
+
+  /**
+   * is authorized.
+   *
+   * @param state     state
+   * @param post      post
+   * @param accessKey accessKey
+   * @param anonymous anonymous
+   * @param user      user
+   * @param root      root
+   * @return boolean
+   */
+  private boolean isAuthorized(
+      PostStateEnum state,
+      PostEntity post,
+      String accessKey,
+      boolean anonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
+    if (Objects.nonNull(root)) {
+      return true;
+    }
+
+    if (anonymous && state != PostStateEnum.SHOW) {
+      return false;
+    }
+
+    SectionEntity section = post.getSection();
+    return switch (state) {
+      case SHOW -> true;
+      case HIDE -> Objects.nonNull(section) && section.getAdmins().contains(user);
+      case LOCK -> Objects.equals(post.getAccessKey(), accessKey)
+          || (Objects.nonNull(section) && section.getAdmins().contains(user));
+      case ALLOW -> Objects.nonNull(user)
+          && ((Objects.nonNull(section) && section.getAdmins().contains(user))
+          || post.getAllows().contains(user));
+      case BLOCK -> Objects.nonNull(user)
+          && ((Objects.nonNull(section) && section.getAdmins().contains(user))
+          || post.getBlocks().contains(user));
+      case VISIBLE_AFTER_LOGIN -> Objects.nonNull(user);
+    };
   }
 }

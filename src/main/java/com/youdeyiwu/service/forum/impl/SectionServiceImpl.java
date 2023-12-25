@@ -6,6 +6,7 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.enums.forum.SectionStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.SectionNotFoundException;
 import com.youdeyiwu.exception.TagGroupNotFoundException;
@@ -224,8 +225,21 @@ public class SectionServiceImpl implements SectionService {
   }
 
   @Override
-  public SectionEntityVo queryDetails(Long id) {
+  public SectionEntityVo queryDetails(Long id, String sectionKey) {
+    UserEntity user = null;
+    UserEntity root = null;
+    boolean anonymous = securityService.isAnonymous();
+
+    if (!anonymous) {
+      user = userRepository.findById(securityService.getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      if (Boolean.TRUE.equals(user.getRoot())) {
+        root = user;
+      }
+    }
+
     SectionEntity sectionEntity = findSection(id);
+    checkSectionStates(sectionEntity, sectionKey, anonymous, user, root);
     SectionEntityVo vo = sectionMapper.entityToVo(sectionEntity);
     setAdmins(vo, sectionEntity);
     setSectionGroups(vo, sectionEntity);
@@ -390,5 +404,75 @@ public class SectionServiceImpl implements SectionService {
             .map(tagGroupMapper::entityToVo)
             .collect(Collectors.toSet())
     );
+  }
+
+  /**
+   * check section states.
+   *
+   * @param sectionEntity sectionEntity
+   * @param sectionKey    sectionKey
+   * @param anonymous     anonymous
+   * @param user          user
+   * @param root          root
+   */
+  private void checkSectionStates(
+      SectionEntity sectionEntity,
+      String sectionKey,
+      boolean anonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
+    boolean failed = sectionEntity.getStates().isEmpty()
+        || sectionEntity.getStates()
+        .stream()
+        .map(state -> isAuthorized(state, sectionEntity, sectionKey, anonymous, user, root))
+        .anyMatch(Boolean.FALSE::equals);
+
+    if (failed) {
+      throw new CustomException(
+          "Sorry, cannot access this section, or this section does not exist");
+    }
+  }
+
+  /**
+   * is authorized.
+   *
+   * @param state     state
+   * @param section   section
+   * @param accessKey accessKey
+   * @param anonymous anonymous
+   * @param user      user
+   * @param root      root
+   * @return boolean
+   */
+  private boolean isAuthorized(
+      SectionStateEnum state,
+      SectionEntity section,
+      String accessKey,
+      boolean anonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
+    if (Objects.nonNull(root)) {
+      return true;
+    }
+
+    if (anonymous && state != SectionStateEnum.SHOW) {
+      return false;
+    }
+
+    return switch (state) {
+      case SHOW -> true;
+      case HIDE -> section.getAdmins().contains(user);
+      case LOCK -> Objects.equals(section.getAccessKey(), accessKey)
+          || section.getAdmins().contains(user);
+      case ALLOW -> Objects.nonNull(user)
+          && (section.getAdmins().contains(user)
+          || section.getAllows().contains(user));
+      case BLOCK -> Objects.nonNull(user)
+          && (section.getAdmins().contains(user)
+          || section.getBlocks().contains(user));
+      case VISIBLE_AFTER_LOGIN -> Objects.nonNull(user);
+    };
   }
 }

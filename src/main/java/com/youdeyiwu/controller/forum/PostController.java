@@ -156,9 +156,10 @@ public class PostController {
       @PageableDefault(size = 15)
       @SortDefault(value = {"id"}, direction = Sort.Direction.ASC)
       Pageable pageable,
-      @PathVariable Long id
+      @PathVariable Long id,
+      @RequestParam(required = false) String postKey
   ) {
-    return ResponseEntity.ok().body(postService.queryDetails(pageable, id));
+    return ResponseEntity.ok().body(postService.queryDetails(pageable, id, postKey));
   }
 
   /**

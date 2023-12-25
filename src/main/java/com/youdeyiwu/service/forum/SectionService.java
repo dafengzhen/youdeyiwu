@@ -81,10 +81,11 @@ public interface SectionService {
   /**
    * query details.
    *
-   * @param id id
+   * @param id         id
+   * @param sectionKey sectionKey
    * @return SectionEntityVo
    */
-  SectionEntityVo queryDetails(Long id);
+  SectionEntityVo queryDetails(Long id, String sectionKey);
 
   /**
    * query cover.
