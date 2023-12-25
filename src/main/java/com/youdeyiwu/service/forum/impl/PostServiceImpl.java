@@ -27,6 +27,7 @@ import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
+import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
@@ -245,6 +246,46 @@ public class PostServiceImpl implements PostService {
 
     if (Boolean.TRUE.equals(dto.removeSection())) {
       postEntity.setSection(null);
+    }
+  }
+
+  @Transactional
+  @Override
+  public void updateStates(Long id, UpdateStatesPostDto dto) {
+    PostEntity postEntity = findPost(id);
+
+    if (Objects.nonNull(dto.reviewState())) {
+      postEntity.setReviewState(dto.reviewState());
+    }
+
+    if (Objects.nonNull(dto.sortState())) {
+      postEntity.setSortState(dto.sortState());
+    }
+
+    if (Objects.nonNull(dto.states())) {
+      postEntity.setStates(dto.states());
+    }
+
+    if (Objects.nonNull(dto.allows())) {
+      postEntity.setAllows(
+          dto.allows()
+              .stream()
+              .map(uid -> userRepository.findById(uid).orElseThrow(UserNotFoundException::new))
+              .collect(Collectors.toSet())
+      );
+    }
+
+    if (Objects.nonNull(dto.blocks())) {
+      postEntity.setBlocks(
+          dto.blocks()
+              .stream()
+              .map(uid -> userRepository.findById(uid).orElseThrow(UserNotFoundException::new))
+              .collect(Collectors.toSet())
+      );
+    }
+
+    if (Objects.nonNull(dto.accessKey())) {
+      postEntity.setAccessKey(dto.accessKey());
     }
   }
 

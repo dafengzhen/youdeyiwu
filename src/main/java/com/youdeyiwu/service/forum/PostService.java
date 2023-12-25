@@ -4,6 +4,7 @@ import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
+import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.vo.CoverVo;
@@ -65,6 +66,14 @@ public interface PostService {
    * @param dto dto
    */
   void updateSection(Long id, UpdateSectionPostDto dto);
+
+  /**
+   * update states.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void updateStates(Long id, UpdateStatesPostDto dto);
 
   /**
    * update tags.

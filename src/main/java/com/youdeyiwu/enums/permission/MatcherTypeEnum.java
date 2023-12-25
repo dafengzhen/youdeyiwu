@@ -12,14 +12,14 @@ import lombok.Getter;
 @Getter
 public enum MatcherTypeEnum {
 
-    /**
-     * ant.
-     */
-    ANT,
+  /**
+   * ant.
+   */
+  ANT,
 
-    /**
-     * regex.
-     */
-    REGEX
+  /**
+   * regex.
+   */
+  REGEX
 
 }

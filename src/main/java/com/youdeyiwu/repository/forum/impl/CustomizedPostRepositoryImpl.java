@@ -154,8 +154,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
   /**
    * query anonymous user posts.
    *
-   * @param dto           dto
-   * @param accessKey     accessKey
+   * @param dto       dto
+   * @param accessKey accessKey
    * @return TypedQueryPostPage
    */
   private TypedQueryPostPage queryAnonymousUserPosts(

@@ -6,7 +6,6 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
-import com.youdeyiwu.enums.forum.SectionStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.SectionNotFoundException;
 import com.youdeyiwu.exception.TagGroupNotFoundException;

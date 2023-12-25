@@ -29,8 +29,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class DefaultRateLimitFilter extends OncePerRequestFilter {
 
-  private final SecurityService securityService;
-
   private static final BucketConfiguration configuration = BucketConfiguration.builder()
       .addLimit(
           Bandwidth.builder()
@@ -46,7 +44,7 @@ public class DefaultRateLimitFilter extends OncePerRequestFilter {
               .build()
       )
       .build();
-
+  private final SecurityService securityService;
   private ProxyManager<String> buckets;
 
   @Override

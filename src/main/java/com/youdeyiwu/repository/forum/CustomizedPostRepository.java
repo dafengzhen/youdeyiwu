@@ -25,12 +25,12 @@ public interface CustomizedPostRepository {
   /**
    * find all.
    *
-   * @param position      position
-   * @param dto           dto
-   * @param accessKey     accessKey
-   * @param isAnonymous   isAnonymous
-   * @param user          user
-   * @param root          root
+   * @param position    position
+   * @param dto         dto
+   * @param accessKey   accessKey
+   * @param isAnonymous isAnonymous
+   * @param user        user
+   * @param root        root
    * @return Page
    */
   Page<PostEntity> findAll(

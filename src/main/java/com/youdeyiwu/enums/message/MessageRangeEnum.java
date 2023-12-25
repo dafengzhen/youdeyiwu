@@ -12,14 +12,14 @@ import lombok.Getter;
 @Getter
 public enum MessageRangeEnum {
 
-    /**
-     * all user.
-     */
-    ALL_USER,
+  /**
+   * all user.
+   */
+  ALL_USER,
 
-    /**
-     * user.
-     */
-    USER
+  /**
+   * user.
+   */
+  USER
 
 }

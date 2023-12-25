@@ -8,6 +8,7 @@ import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
+import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
@@ -94,6 +95,15 @@ public class PostController {
       @Valid @RequestBody UpdateSectionPostDto dto
   ) {
     postService.updateSection(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/{id}/states")
+  public ResponseEntity<Void> updateStates(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateStatesPostDto dto
+  ) {
+    postService.updateStates(id, dto);
     return ResponseEntity.noContent().build();
   }
 

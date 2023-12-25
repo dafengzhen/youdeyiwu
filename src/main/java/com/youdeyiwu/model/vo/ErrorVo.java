@@ -11,6 +11,15 @@ import lombok.Data;
 public class ErrorVo {
 
   /**
+   * status.
+   */
+  private Integer status;
+  /**
+   * message.
+   */
+  private String message;
+
+  /**
    * error.
    *
    * @param status  status
@@ -20,15 +29,5 @@ public class ErrorVo {
     this.status = status;
     this.message = message;
   }
-
-  /**
-   * status.
-   */
-  private Integer status;
-
-  /**
-   * message.
-   */
-  private String message;
 
 }

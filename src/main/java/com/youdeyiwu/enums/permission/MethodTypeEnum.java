@@ -9,44 +9,44 @@ package com.youdeyiwu.enums.permission;
  */
 public enum MethodTypeEnum {
 
-    /**
-     * get.
-     */
-    GET,
+  /**
+   * get.
+   */
+  GET,
 
-    /**
-     * head.
-     */
-    HEAD,
+  /**
+   * head.
+   */
+  HEAD,
 
-    /**
-     * post.
-     */
-    POST,
+  /**
+   * post.
+   */
+  POST,
 
-    /**
-     * put.
-     */
-    PUT,
+  /**
+   * put.
+   */
+  PUT,
 
-    /**
-     * patch.
-     */
-    PATCH,
+  /**
+   * patch.
+   */
+  PATCH,
 
-    /**
-     * delete.
-     */
-    DELETE,
+  /**
+   * delete.
+   */
+  DELETE,
 
-    /**
-     * options.
-     */
-    OPTIONS,
+  /**
+   * options.
+   */
+  OPTIONS,
 
-    /**
-     * trace.
-     */
-    TRACE
+  /**
+   * trace.
+   */
+  TRACE
 
 }

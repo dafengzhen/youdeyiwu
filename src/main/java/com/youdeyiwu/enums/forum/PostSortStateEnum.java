@@ -30,6 +30,6 @@ public enum PostSortStateEnum {
   /**
    * global top (The thread is pinned across all sections).
    */
-  GLOBAL_TOP;
+  GLOBAL_TOP
 
 }
