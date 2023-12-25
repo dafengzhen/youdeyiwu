@@ -1,10 +1,13 @@
 package com.youdeyiwu.runner;
 
+import static com.youdeyiwu.tool.JwtTool.encodeSecret;
+import static com.youdeyiwu.tool.Tool.randomUuId;
+
 import com.youdeyiwu.constant.JwtConfigConstant;
+import com.youdeyiwu.constant.RootConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
-import com.youdeyiwu.tool.JwtTool;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,6 +33,15 @@ public class ConfigApplicationRunner implements ApplicationRunner {
   @Transactional
   @Override
   public void run(ApplicationArguments args) throws Exception {
+    initRootSecretConfig();
+    initJwtSecretConfig();
+    log.info("=== Config === Initial configuration completed");
+  }
+
+  /**
+   * init jwt secret config.
+   */
+  private void initJwtSecretConfig() {
     if (
         Optional.ofNullable(
                 configRepository.findByTypeAndName(
@@ -42,11 +54,40 @@ public class ConfigApplicationRunner implements ApplicationRunner {
       ConfigEntity configEntity = new ConfigEntity();
       configEntity.setType(ConfigTypeEnum.JWT);
       configEntity.setName(JwtConfigConstant.SECRET);
-      configEntity.setValue(JwtTool.encodeSecret());
+      configEntity.setValue(encodeSecret());
       configRepository.save(configEntity);
       log.info("=== Config === Create jwt.secret option");
     }
+  }
 
-    log.info("=== Config === Initial configuration completed");
+  /**
+   * init root secret config.
+   */
+  private void initRootSecretConfig() {
+    if (
+        Optional.ofNullable(
+                configRepository.findByTypeAndName(
+                    ConfigTypeEnum.ROOT,
+                    RootConfigConstant.SECRET
+                )
+            )
+            .isEmpty()
+    ) {
+      ConfigEntity configEntity = new ConfigEntity();
+      configEntity.setType(ConfigTypeEnum.ROOT);
+      configEntity.setName(RootConfigConstant.SECRET);
+      configEntity.setValue(randomUuId());
+      configRepository.save(configEntity);
+      log.info(
+          """
+              === Config === Create root.secret option
+              === The secret will only be initialized once
+              === and then stored in the database as credentials to set up the initial administrator for the forum
+              === Please do not disclose
+              === {}
+              """,
+          configEntity.getValue()
+      );
+    }
   }
 }

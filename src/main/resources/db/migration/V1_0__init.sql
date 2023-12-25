@@ -16,18 +16,18 @@ VALUES (1);
 
 create table if not exists config_entity
 (
-    id          bigint       not null
+    id          bigint               not null
         primary key,
-    created_by  bigint       null,
-    created_on  datetime(6)  not null,
-    deleted     bit          not null,
-    updated_by  bigint       null,
-    updated_on  datetime(6)  null,
-    version     smallint     null,
-    description varchar(255) null,
-    name        varchar(255) not null,
-    type        enum ('JWT') not null,
-    value       varchar(255) not null,
+    created_by  bigint               null,
+    created_on  datetime(6)          not null,
+    deleted     bit                  not null,
+    updated_by  bigint               null,
+    updated_on  datetime(6)          null,
+    version     smallint             null,
+    description varchar(255)         null,
+    name        varchar(255)         not null,
+    type        enum ('ROOT', 'JWT') not null,
+    value       varchar(255)         not null,
     constraint UKcuv54x6fdxtcid1r8ory6l8ec
         unique (type, name)
 );

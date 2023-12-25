@@ -11,6 +11,11 @@ import lombok.Getter;
 public enum ConfigTypeEnum {
 
   /**
+   * root.
+   */
+  ROOT,
+
+  /**
    * jwt.
    */
   JWT,
