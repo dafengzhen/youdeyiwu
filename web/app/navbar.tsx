@@ -25,10 +25,7 @@ export default async function Navbar({
   }
 
   return (
-    <nav
-      className="navbar navbar-expand-lg bg-body-tertiary sticky-top mb-4"
-      style={{ height: '3.125rem' }}
-    >
+    <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top mb-4">
       <div className="container-fluid">
         <Link href="/" className="navbar-brand">
           <Image

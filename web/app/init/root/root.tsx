@@ -1,17 +1,78 @@
 'use client';
 
 import type { IUser } from '@/app/interfaces/users';
-import { type ChangeEvent, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import Link from 'next/link';
+import { useMutation } from '@tanstack/react-query';
+import { GlobalContext } from '@/app/contexts';
+import { getUserAlias, trimObjectStrings } from '@/app/common/client';
+import UpdateRootConfigAction, {
+  IUpdateRootActionVariables,
+} from '@/app/actions/configs/root/update-root-config-action';
 
 export default function InitRoot({
   currentUser,
 }: {
   currentUser: IUser | null;
 }) {
+  const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState({
     secret: '',
   });
+  const [finish, setFinish] = useState(false);
+  const isLogin = !!currentUser;
+
+  const updateRootConfigActionMutation = useMutation({
+    mutationFn: UpdateRootConfigAction,
+  });
+
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    try {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (!isLogin) {
+        toast.current.show({
+          type: 'danger',
+          message: 'Not logged in yet. Please login before proceeding',
+        });
+        return;
+      }
+
+      const variables = trimObjectStrings({
+        ...form,
+      }) as IUpdateRootActionVariables;
+      const secret = variables.secret;
+
+      if (!secret) {
+        toast.current.show({
+          type: 'danger',
+          message: 'Please enter the root secret',
+        });
+        return;
+      }
+
+      await updateRootConfigActionMutation.mutateAsync(variables);
+      setFinish(true);
+
+      toast.current.show({
+        type: 'success',
+        message: `Congratulations! User ${getUserAlias(currentUser)} (ID. ${
+          currentUser.id
+        }) has become a forum administrator`,
+      });
+    } catch (e: any) {
+      updateRootConfigActionMutation.reset();
+      toast.current.show({
+        type: 'danger',
+        message: e.message,
+      });
+    }
+  }
+
+  function onClickReturn() {
+    location.assign('/');
+  }
 
   function onChangeForm(e: ChangeEvent<HTMLInputElement>) {
     const name = e.target.name;
@@ -22,9 +83,9 @@ export default function InitRoot({
   return (
     <div className="row mx-0">
       <div className="col">
-        <div className="container text-center py-5 my-4">
-          <div className="p-5 my-4">
-            <div className="mb-4">
+        <div className="container text-center py-5">
+          <div className="py-5 my-4">
+            <div className="mb-5">
               <div>
                 <h2 className="fw-bold display-6">
                   Initialize Forum Administrator
@@ -44,11 +105,17 @@ export default function InitRoot({
                 </p>
               </div>
             </div>
-            <div className="mb-5 container w-50">
-              <form className="vstack gap-4 text-start">
-                <div>
-                  <label className="form-label">Secret</label>
+            <div className="mb-5">
+              <form className="vstack gap-4" onSubmit={onSubmit}>
+                <div className="text-start">
+                  <label className="form-label">
+                    <span className="text-danger fw-bold">*</span>
+                    Secret
+                  </label>
                   <input
+                    disabled={
+                      updateRootConfigActionMutation.isPending || finish
+                    }
                     required
                     type="text"
                     className="form-control"
@@ -65,13 +132,35 @@ export default function InitRoot({
                     <Link href="/register">register</Link> an account of your
                     choice
                   </div>
+                  <div className="form-text">
+                    The secret can only be used once, and once used, the key
+                    becomes invalid. The new password will be stored in the
+                    database configuration
+                  </div>
+                </div>
+
+                <div className="my-4">
+                  {finish ? (
+                    <button
+                      onClick={onClickReturn}
+                      type="button"
+                      className="btn btn-secondary"
+                    >
+                      Return Homepage
+                    </button>
+                  ) : (
+                    <button
+                      disabled={updateRootConfigActionMutation.isPending}
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      {updateRootConfigActionMutation.isPending
+                        ? 'Initializing'
+                        : 'Initialize'}
+                    </button>
+                  )}
                 </div>
               </form>
-            </div>
-            <div className="mb-2">
-              <button type="button" className="btn btn-primary">
-                Initialize
-              </button>
             </div>
           </div>
         </div>
