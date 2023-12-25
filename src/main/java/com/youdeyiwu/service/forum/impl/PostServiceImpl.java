@@ -385,12 +385,36 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PageVo<CommentReplyVo> queryCommentReply(Pageable pageable, Long id) {
+    UserEntity user = null;
+    UserEntity root = null;
+    boolean anonymous = securityService.isAnonymous();
+
+    if (!anonymous) {
+      user = userRepository.findById(securityService.getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      if (Boolean.TRUE.equals(user.getRoot())) {
+        root = user;
+      }
+    }
+
     PostEntity postEntity = findPost(id);
-    return getCommentReply(pageable, postEntity);
+    return getCommentReply(pageable, postEntity, anonymous, user, root);
   }
 
   @Override
   public PostEntityVo queryDetails(Pageable pageable, Long id) {
+    UserEntity user = null;
+    UserEntity root = null;
+    boolean anonymous = securityService.isAnonymous();
+
+    if (!anonymous) {
+      user = userRepository.findById(securityService.getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      if (Boolean.TRUE.equals(user.getRoot())) {
+        root = user;
+      }
+    }
+
     PostEntity postEntity = findPost(id);
     PostEntityVo vo = postMapper.entityToVo(postEntity);
     setBadges(vo, postEntity);
@@ -398,7 +422,7 @@ public class PostServiceImpl implements PostService {
     setUser(vo, postEntity);
     setTags(vo, postEntity);
     setSocialInteraction(vo, postEntity);
-    vo.setComments(getCommentReply(pageable, postEntity));
+    vo.setComments(getCommentReply(pageable, postEntity, anonymous, user, root));
     return vo;
   }
 
@@ -669,15 +693,27 @@ public class PostServiceImpl implements PostService {
   /**
    * get comment reply.
    *
-   * @param pageable   pageable
-   * @param postEntity postEntity
+   * @param pageable    pageable
+   * @param postEntity  postEntity
+   * @param isAnonymous isAnonymous
+   * @param user        user
+   * @param root        root
    * @return PageVo
    */
-  private PageVo<CommentReplyVo> getCommentReply(Pageable pageable, PostEntity postEntity) {
+  private PageVo<CommentReplyVo> getCommentReply(
+      Pageable pageable,
+      PostEntity postEntity,
+      Boolean isAnonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
     return new PageVo<>(
         postRepository.findAllCommentReply(
                 new PaginationPositionDto(pageable),
-                postEntity.getId()
+                postEntity,
+                isAnonymous,
+                user,
+                root
             )
             .map(commentReplyEntityVo -> {
               CommentReplyVo vo = new CommentReplyVo();

@@ -45,12 +45,18 @@ public interface CustomizedPostRepository {
   /**
    * find all comment reply.
    *
-   * @param position position
-   * @param postId   postId
+   * @param position    position
+   * @param postEntity  postEntity
+   * @param isAnonymous isAnonymous
+   * @param user        user
+   * @param root        root
    * @return Page
    */
   Page<CommentReplyEntityVo> findAllCommentReply(
       PaginationPositionDto position,
-      Long postId
+      PostEntity postEntity,
+      Boolean isAnonymous,
+      UserEntity user,
+      UserEntity root
   );
 }

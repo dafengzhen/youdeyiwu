@@ -105,32 +105,89 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
   @Override
   public Page<CommentReplyEntityVo> findAllCommentReply(
       PaginationPositionDto position,
-      Long postId
+      PostEntity postEntity,
+      Boolean isAnonymous,
+      UserEntity user,
+      UserEntity root
   ) {
-    List<Tuple> tuples = entityManager.createQuery(
-            """
-                    select c, r from CommentEntity c left join fetch QuoteReplyEntity r
-                    on c.id = r.comment.id
-                    where c.post.id = :postId
-                    order by c.id, r.id
-                """,
-            Tuple.class
-        )
-        .setParameter("postId", postId)
+    TypedQuery<Tuple> query;
+    TypedQuery<Tuple> totalSizeQuery;
+
+    if (Boolean.TRUE.equals(isAnonymous)) {
+      query = entityManager.createQuery(
+              """
+                      select c, r from CommentEntity c left join fetch QuoteReplyEntity r
+                      on c.id = r.comment.id
+                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      order by c.id, r.id
+                  """,
+              Tuple.class
+          )
+          .setParameter("post", postEntity);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                      select count(c), count(r) from CommentEntity c left join QuoteReplyEntity r
+                      on c.id = r.comment.id
+                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                  """,
+              Tuple.class
+          )
+          .setParameter("post", postEntity);
+    } else if (Objects.nonNull(root) || Objects.isNull(user)) {
+      query = entityManager.createQuery(
+              """
+                      select c, r from CommentEntity c left join fetch QuoteReplyEntity r
+                      on c.id = r.comment.id
+                      where c.post = :post
+                      order by c.id, r.id
+                  """,
+              Tuple.class
+          )
+          .setParameter("post", postEntity);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                      select count(c), count(r) from CommentEntity c left join QuoteReplyEntity r
+                      on c.id = r.comment.id
+                      where c.post = :post
+                  """,
+              Tuple.class
+          )
+          .setParameter("post", postEntity);
+    } else {
+      query = entityManager.createQuery(
+              """
+                      select c, r from CommentEntity c left join fetch QuoteReplyEntity r
+                      on c.id = r.comment.id
+                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      or (c.user = :user or r.user = :user)
+                      order by c.id, r.id
+                  """,
+              Tuple.class
+          )
+          .setParameter("post", postEntity)
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                      select count(c), count(r) from CommentEntity c left join QuoteReplyEntity r
+                      on c.id = r.comment.id
+                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      or (c.user = :user or r.user = :user)
+                  """,
+              Tuple.class
+          )
+          .setParameter("post", postEntity)
+          .setParameter("user", user);
+    }
+
+    List<Tuple> tuples = query
         .setFirstResult(position.firstResult())
         .setMaxResults(position.maxResults())
         .getResultList();
 
-    Tuple result = entityManager.createQuery(
-            """
-                    select count(c), count(r) from CommentEntity c left join QuoteReplyEntity r
-                    on c.id = r.comment.id
-                    where c.post.id = :postId
-                """,
-            Tuple.class
-        )
-        .setParameter("postId", postId)
-        .getSingleResult();
+    Tuple result = totalSizeQuery.getSingleResult();
     long totalSize = (long) result.get(0) + (long) result.get(1);
 
     List<CommentReplyEntityVo> commentReplyEntityVos = tuples.stream()
