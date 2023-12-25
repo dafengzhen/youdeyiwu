@@ -457,8 +457,8 @@ public class SectionServiceImpl implements SectionService {
       return true;
     }
 
-    if (anonymous && state != SectionStateEnum.SHOW) {
-      return false;
+    if (anonymous && state == SectionStateEnum.SHOW) {
+      return true;
     }
 
     return switch (state) {

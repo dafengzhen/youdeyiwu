@@ -6,6 +6,7 @@ import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
@@ -418,6 +419,7 @@ public class PostServiceImpl implements PostService {
     }
 
     PostEntity postEntity = findPost(id);
+    checkPostReviewState(postEntity, anonymous, user, root);
     checkPostStates(postEntity, postKey, anonymous, user, root);
     PostEntityVo vo = postMapper.entityToVo(postEntity);
     setBadges(vo, postEntity);
@@ -802,6 +804,36 @@ public class PostServiceImpl implements PostService {
   }
 
   /**
+   * check post review state.
+   *
+   * @param post      post
+   * @param anonymous anonymous
+   * @param user      user
+   * @param root      root
+   */
+  private void checkPostReviewState(
+      PostEntity post,
+      boolean anonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
+    SectionEntity section = post.getSection();
+    boolean successful = Objects.nonNull(root)
+        || (anonymous && post.getReviewState() == PostReviewStateEnum.APPROVED)
+        || switch (post.getReviewState()) {
+      case APPROVED -> true;
+      case REJECTED, PENDING_REVIEW ->
+          (Objects.nonNull(section) && section.getAdmins().contains(user))
+              || (Objects.nonNull(user) && user.equals(post.getUser()));
+    };
+
+    if (!successful) {
+      throw new CustomException(
+          "Sorry, unable to access the post. The post is either under review or has not been approved");
+    }
+  }
+
+  /**
    * is authorized.
    *
    * @param state     state
@@ -824,8 +856,8 @@ public class PostServiceImpl implements PostService {
       return true;
     }
 
-    if (anonymous && state != PostStateEnum.SHOW) {
-      return false;
+    if (anonymous && state == PostStateEnum.SHOW) {
+      return true;
     }
 
     SectionEntity section = post.getSection();
