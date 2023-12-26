@@ -4,8 +4,7 @@ import QueryAllMessageAction from '@/app/actions/messages/query-all-message-acti
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 
 export const metadata: Metadata = {
-  title: 'messages - youdeyiwu',
-  description: 'view all message',
+  title: 'Messages',
 };
 
 export default async function Page() {

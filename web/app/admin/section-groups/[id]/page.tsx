@@ -7,8 +7,7 @@ import QuerySectionGroupAction from '@/app/actions/section-groups/query-section-
 import UpdateSections from '@/app/admin/section-groups/[id]/update-sections';
 
 export const metadata: Metadata = {
-  title: 'update section group - youdeyiwu',
-  description: 'update section group page',
+  title: 'Update Section Group',
 };
 
 export default async function Page({

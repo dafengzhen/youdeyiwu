@@ -3,8 +3,7 @@ import Users from '@/app/admin/users/users';
 import QueryAllUserAction from '@/app/actions/users/query-all-user-action';
 
 export const metadata: Metadata = {
-  title: 'users - youdeyiwu',
-  description: 'query all user page',
+  title: 'Users',
 };
 
 export default async function Page() {

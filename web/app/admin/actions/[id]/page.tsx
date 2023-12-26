@@ -7,8 +7,7 @@ import QueryActionAction from '@/app/actions/actions/query-action-action';
 import UpdateRole from '@/app/admin/actions/[id]/update-role';
 
 export const metadata: Metadata = {
-  title: 'update action - youdeyiwu',
-  description: 'update action page',
+  title: 'Update Action',
 };
 
 export default async function Page({

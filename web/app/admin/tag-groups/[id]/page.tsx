@@ -7,8 +7,7 @@ import QueryTagGroupAction from '@/app/actions/tag-groups/query-tag-group-action
 import UpdateTags from '@/app/admin/tag-groups/[id]/update-tags';
 
 export const metadata: Metadata = {
-  title: 'update tag group - youdeyiwu',
-  description: 'update tag group page',
+  title: 'Update Tag Group',
 };
 
 export default async function Page({

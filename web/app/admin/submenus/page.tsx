@@ -4,8 +4,7 @@ import Submenus from '@/app/admin/submenus/submenus';
 import QueryAllSubmenuAction from '@/app/actions/submenus/query-all-submenu-action';
 
 export const metadata: Metadata = {
-  title: 'submenus - youdeyiwu',
-  description: 'query all submenu page',
+  title: 'Submenus',
 };
 
 export default async function Page({

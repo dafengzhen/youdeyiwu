@@ -4,8 +4,7 @@ import SelectAllSectionGroupAction from '@/app/actions/section-groups/select-all
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
 
 export const metadata: Metadata = {
-  title: 'contents - youdeyiwu',
-  description: 'view all content',
+  title: 'Contents',
 };
 
 export default async function Page({

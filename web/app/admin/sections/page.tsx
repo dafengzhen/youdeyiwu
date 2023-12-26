@@ -4,8 +4,7 @@ import Create from '@/app/admin/sections/create';
 import QueryAllSectionAction from '@/app/actions/sections/query-all-section-action';
 
 export const metadata: Metadata = {
-  title: 'section details - youdeyiwu',
-  description: 'section page',
+  title: 'Sections',
 };
 
 export default async function Page({

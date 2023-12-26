@@ -4,8 +4,7 @@ import Create from '@/app/admin/permissions/create';
 import QueryAllPermissionAction from '@/app/actions/permissions/query-all-permission-action';
 
 export const metadata: Metadata = {
-  title: 'permissions - youdeyiwu',
-  description: 'query all permission page',
+  title: 'Permissions',
 };
 
 export default async function Page({

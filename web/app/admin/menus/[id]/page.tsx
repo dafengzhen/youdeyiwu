@@ -7,8 +7,7 @@ import QueryMenuAction from '@/app/actions/menus/query-menu-action';
 import UpdateRoles from '@/app/admin/menus/[id]/update-roles';
 
 export const metadata: Metadata = {
-  title: 'update menu - youdeyiwu',
-  description: 'update menu page',
+  title: 'Update Menu',
 };
 
 export default async function Page({

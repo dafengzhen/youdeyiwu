@@ -9,8 +9,7 @@ import UpdateSection from '@/app/admin/posts/[id]/update-section';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
 
 export const metadata: Metadata = {
-  title: 'post details - youdeyiwu',
-  description: 'post details page',
+  title: 'Update Post',
 };
 
 export default async function Page({

@@ -5,8 +5,7 @@ import QueryGlobalMessageAction from '@/app/actions/messages/query-global-messag
 import Details from '@/app/admin/messages/global-messages/[id]/details';
 
 export const metadata: Metadata = {
-  title: 'global message - youdeyiwu',
-  description: 'global message page',
+  title: 'Global Message',
 };
 
 export default async function Page({

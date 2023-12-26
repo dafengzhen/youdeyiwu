@@ -3,8 +3,8 @@ import InitRoot from '@/app/init/root/root';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 
 export const metadata: Metadata = {
-  title: 'init root - youdeyiwu',
-  description: 'view init root',
+  title: 'Init Root',
+  description: 'Initialize Forum Administrator',
 };
 
 export default async function Page() {

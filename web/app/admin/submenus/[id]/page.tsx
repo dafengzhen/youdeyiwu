@@ -7,8 +7,7 @@ import QuerySubmenuAction from '@/app/actions/submenus/query-submenu-action';
 import UpdateRoles from '@/app/admin/submenus/[id]/update-roles';
 
 export const metadata: Metadata = {
-  title: 'update submenu - youdeyiwu',
-  description: 'update submenu page',
+  title: 'Update Submenu',
 };
 
 export default async function Page({

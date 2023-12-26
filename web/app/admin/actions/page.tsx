@@ -4,8 +4,7 @@ import Actions from '@/app/admin/actions/actions';
 import QueryAllActionAction from '@/app/actions/actions/query-all-action-action';
 
 export const metadata: Metadata = {
-  title: 'actions - youdeyiwu',
-  description: 'query all action page',
+  title: 'Actions',
 };
 
 export default async function Page({

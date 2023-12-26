@@ -10,8 +10,7 @@ import UpdateTags from '@/app/admin/sections/[id]/update-tags';
 import UpdateTagGroups from '@/app/admin/sections/[id]/update-tag-groups';
 
 export const metadata: Metadata = {
-  title: 'update sections - youdeyiwu',
-  description: 'update sections page',
+  title: 'Update Section',
 };
 
 export default async function Page({

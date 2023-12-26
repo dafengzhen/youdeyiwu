@@ -21,8 +21,8 @@ export interface ISearchParamsHomePage {
 }
 
 export const metadata: Metadata = {
-  title: 'home - youdeyiwu',
-  description: 'youdeyiwu is an open-source lightweight forum',
+  title: `Home | ${process.env.NAME!}`,
+  description: process.env.DESCRIPTION!,
 };
 
 export default async function Page({

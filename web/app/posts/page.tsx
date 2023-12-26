@@ -3,8 +3,7 @@ import Posts from '@/app/posts/posts';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
 
 export const metadata: Metadata = {
-  title: 'articles - youdeyiwu',
-  description: 'view all article',
+  title: 'Articles',
 };
 
 export default async function Page() {

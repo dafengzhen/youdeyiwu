@@ -6,8 +6,7 @@ import SelectAllSectionAction from '@/app/actions/sections/select-all-section-ac
 import QueryPostAction from '@/app/actions/posts/query-post-action';
 
 export const metadata: Metadata = {
-  title: 'edit article - youdeyiwu',
-  description: 'edit article page',
+  title: 'Edit Article',
 };
 
 export default async function Page({

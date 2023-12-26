@@ -4,8 +4,7 @@ import QueryAllTagAction from '@/app/actions/tags/query-all-tag-action';
 import Create from '@/app/admin/tags/create';
 
 export const metadata: Metadata = {
-  title: 'tags - youdeyiwu',
-  description: 'query all tag page',
+  title: 'Tags',
 };
 
 export default async function Page({

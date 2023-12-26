@@ -4,8 +4,7 @@ import TagGroups from '@/app/admin/tag-groups/tag-groups';
 import QueryAllTagGroupAction from '@/app/actions/tag-groups/query-all-tag-group-action';
 
 export const metadata: Metadata = {
-  title: 'tag groups - youdeyiwu',
-  description: 'query all tag group page',
+  title: 'Tag Groups',
 };
 
 export default async function Page({

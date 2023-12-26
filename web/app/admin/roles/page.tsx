@@ -4,8 +4,7 @@ import QueryAllRoleAction from '@/app/actions/roles/query-all-role-action';
 import Create from '@/app/admin/roles/create';
 
 export const metadata: Metadata = {
-  title: 'roles - youdeyiwu',
-  description: 'query all role page',
+  title: 'Roles',
 };
 
 export default async function Page({

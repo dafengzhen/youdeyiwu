@@ -34,13 +34,13 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Youdeyiwu',
-    default: 'Youdeyiwu',
+    template: `%s | ${process.env.NAME!}`,
+    default: process.env.NAME!,
   },
   generator: 'Next.js',
-  applicationName: 'Youdeyiwu',
+  applicationName: process.env.NAME!,
   publisher: 'Youdeyiwu',
-  description: 'Youdeyiwu is an open-source lightweight forum',
+  description: process.env.DESCRIPTION!,
   formatDetection: {
     email: true,
     address: true,

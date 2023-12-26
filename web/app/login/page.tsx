@@ -2,8 +2,7 @@ import { Metadata } from 'next';
 import Login from '@/app/login/login';
 
 export const metadata: Metadata = {
-  title: 'login - youdeyiwu',
-  description: 'login page',
+  title: 'User Login',
 };
 
 export default async function Page() {

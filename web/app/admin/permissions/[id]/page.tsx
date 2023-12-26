@@ -7,8 +7,7 @@ import UpdateRoles from '@/app/admin/permissions/[id]/update-roles';
 import QueryPermissionAction from '@/app/actions/permissions/query-permission-action';
 
 export const metadata: Metadata = {
-  title: 'update permission - youdeyiwu',
-  description: 'update permission page',
+  title: 'Update Permission',
 };
 
 export default async function Page({

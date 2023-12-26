@@ -3,8 +3,7 @@ import Save from '@/app/posts/save/save';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
 
 export const metadata: Metadata = {
-  title: 'create article - youdeyiwu',
-  description: 'create article page',
+  title: 'Create Article',
 };
 
 export default async function Page({

@@ -6,8 +6,7 @@ import { isNum } from '@/app/common/server';
 import QueryTagAction from '@/app/actions/tags/query-tag-action';
 
 export const metadata: Metadata = {
-  title: 'update tag - youdeyiwu',
-  description: 'update tag page',
+  title: 'Update Tag',
 };
 
 export default async function Page({

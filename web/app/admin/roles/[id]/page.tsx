@@ -7,8 +7,7 @@ import UpdatePermissions from '@/app/admin/roles/[id]/update-permissions';
 import QueryRoleAction from '@/app/actions/roles/query-role-action';
 
 export const metadata: Metadata = {
-  title: 'update role - youdeyiwu',
-  description: 'update role page',
+  title: 'Update Role',
 };
 
 export default async function Page({
