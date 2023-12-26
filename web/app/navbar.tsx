@@ -29,8 +29,8 @@ export default async function Navbar({
       <div className="container-fluid">
         <Link href="/" className="navbar-brand">
           <Image
-            className="d-inline-block me-2"
-            src="/logo.png"
+            className="d-inline-block me-2 rounded"
+            src="/favicon/android-chrome-512x512.png"
             alt="logo"
             width={40}
             height={40}
