@@ -1,12 +1,19 @@
 import { type Metadata } from 'next';
 import PostId from '@/app/posts/[id]/postid';
 import QueryDetailsPostAction from '@/app/actions/posts/query-details-post-action';
-import { getUserAlias, isNum } from '@/app/common/server';
+import {
+  errorContent,
+  errorTitle,
+  getUserAlias,
+  isNum,
+} from '@/app/common/server';
 import { notFound } from 'next/navigation';
 import SelectAllSectionGroupAction from '@/app/actions/section-groups/select-all-section-group-action';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
 import QueryRandomPostAction from '@/app/actions/posts/query-random-post-action';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
+import ClientErrorHandler from '@/app/common/client-error-handler';
+import { IPostDetails } from '@/app/interfaces/posts';
 
 export async function generateMetadata({
   params,
@@ -18,7 +25,13 @@ export async function generateMetadata({
     notFound();
   }
 
-  const details = await QueryDetailsPostAction({ id });
+  let details: IPostDetails;
+  try {
+    details = await QueryDetailsPostAction({ id });
+  } catch (e) {
+    return errorTitle(e);
+  }
+
   const user = details.user;
   const userAlias = getUserAlias(user);
 
@@ -26,7 +39,7 @@ export async function generateMetadata({
     title: details.name,
     authors: {
       url: user ? `/users/${user.id}` : '/users',
-      name: getUserAlias(user),
+      name: userAlias,
     },
     creator: user ? `${userAlias}(ID. ${user.id})` : userAlias,
     description: details.overview ?? '',
@@ -57,13 +70,17 @@ export default async function Page({
     notFound();
   }
 
-  return (
-    <PostId
-      sectionGroups={await SelectAllSectionGroupAction()}
-      sections={await SelectAllSectionAction({ sectionKey })}
-      randomData={await QueryRandomPostAction()}
-      details={await QueryDetailsPostAction({ id })}
-      currentUser={await LoginInfoUserAction()}
-    />
-  );
+  try {
+    return (
+      <PostId
+        sectionGroups={await SelectAllSectionGroupAction()}
+        sections={await SelectAllSectionAction({ sectionKey })}
+        randomData={await QueryRandomPostAction()}
+        details={await QueryDetailsPostAction({ id })}
+        currentUser={await LoginInfoUserAction()}
+      />
+    );
+  } catch (e) {
+    return <ClientErrorHandler message={errorContent(e)} />;
+  }
 }

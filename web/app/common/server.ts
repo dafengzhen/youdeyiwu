@@ -4,7 +4,8 @@ import { cookies, headers } from 'next/headers';
 import { SECURE_TK, TK } from '@/app/constants';
 import { redirect } from 'next/navigation';
 import type { IToken, TQueryParams } from '@/app/interfaces';
-import { IUser } from '@/app/interfaces/users';
+import type { IUser } from '@/app/interfaces/users';
+import type { Metadata } from 'next';
 
 export const obtainCredentials = (checkLogin?: boolean) => {
   const isHttpsSite = process.env.IS_HTTPS_SITE === 'true';
@@ -108,4 +109,16 @@ export const getXRealIp = () => {
 
 export const isHttpOrHttps = (value?: string) => {
   return value && (value.startsWith('http') || value.startsWith('https'));
+};
+
+export const errorTitle = (e?: any): Metadata => {
+  const title = 'Sorry, an error has occurred';
+  return {
+    title,
+    description: e?.message ?? title,
+  };
+};
+
+export const errorContent = (e?: any): string => {
+  return e?.message ?? 'Sorry, an error has occurred';
 };

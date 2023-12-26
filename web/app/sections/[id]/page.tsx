@@ -1,12 +1,20 @@
 import { type Metadata } from 'next';
 import SectionId from '@/app/sections/[id]/sectionid';
 import QueryDetailsSectionAction from '@/app/actions/sections/query-details-section-action';
-import { getUserAlias, isNum, parseNum } from '@/app/common/server';
+import {
+  errorContent,
+  errorTitle,
+  getUserAlias,
+  isNum,
+  parseNum,
+} from '@/app/common/server';
 import { notFound } from 'next/navigation';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
 import QueryRandomPostAction from '@/app/actions/posts/query-random-post-action';
 import { TQueryParams } from '@/app/interfaces';
+import ClientErrorHandler from '@/app/common/client-error-handler';
+import { ISectionDetails } from '@/app/interfaces/sections';
 
 export interface ISearchParamsSectionIdPage {
   sgid?: string;
@@ -27,7 +35,13 @@ export async function generateMetadata({
     notFound();
   }
 
-  const details = await QueryDetailsSectionAction({ id });
+  let details: ISectionDetails;
+  try {
+    details = await QueryDetailsSectionAction({ id });
+  } catch (e) {
+    return errorTitle(e);
+  }
+
   const user = details.user;
   const userAlias = getUserAlias(user);
 
@@ -35,7 +49,7 @@ export async function generateMetadata({
     title: details.name,
     authors: {
       url: user ? `/users/${user.id}` : '/users',
-      name: getUserAlias(user),
+      name: userAlias,
     },
     creator: user ? `${userAlias}(ID. ${user.id})` : userAlias,
     description: details.overview ?? '',
@@ -71,15 +85,19 @@ export default async function Page({
     queryParams.tagId = _searchParams.tagId + '';
   }
 
-  return (
-    <SectionId
-      details={await QueryDetailsSectionAction({ id })}
-      currentUser={await LoginInfoUserAction()}
-      data={await SelectAllPostAction(queryParams)}
-      randomData={await QueryRandomPostAction()}
-      queryParams={queryParams}
-    />
-  );
+  try {
+    return (
+      <SectionId
+        details={await QueryDetailsSectionAction({ id })}
+        currentUser={await LoginInfoUserAction()}
+        data={await SelectAllPostAction(queryParams)}
+        randomData={await QueryRandomPostAction()}
+        queryParams={queryParams}
+      />
+    );
+  } catch (e) {
+    return <ClientErrorHandler message={errorContent(e)} />;
+  }
 }
 
 function parseSearchParams(searchParams: ISearchParamsSectionIdPage) {
