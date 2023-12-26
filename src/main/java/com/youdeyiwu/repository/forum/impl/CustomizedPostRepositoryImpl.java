@@ -518,11 +518,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
     if (Objects.nonNull(sectionGroupEntity)) {
       query = entityManager.createQuery(
               """
-                  select p from PostEntity p
-                  where :sectionGroup member of p.section.sectionGroups
+                  select p from PostEntity p left join fetch p.section ps
+                  where :sectionGroup member of ps.sectionGroups
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -540,11 +540,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
 
       totalSizeQuery = entityManager.createQuery(
               """
-                  select count(p.id) from PostEntity p
-                  where :sectionGroup member of p.section.sectionGroups
+                  select count(p.id) from PostEntity p left join p.section ps
+                  where :sectionGroup member of ps.sectionGroups
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -561,11 +561,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
     } else if (Objects.nonNull(sectionEntity)) {
       query = entityManager.createQuery(
               """
-                  select p from PostEntity p
-                  where p.section = :section
+                  select p from PostEntity p left join fetch p.section ps
+                  where ps = :section
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -583,11 +583,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
 
       totalSizeQuery = entityManager.createQuery(
               """
-                  select count(p.id) from PostEntity p
-                  where p.section = :section
+                  select count(p.id) from PostEntity p left join p.section ps
+                  where ps = :section
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -604,11 +604,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
     } else if (Objects.nonNull(tagGroupEntity)) {
       query = entityManager.createQuery(
               """
-                  select p from PostEntity p, TagEntity t
+                  select p from PostEntity p, TagEntity t left join fetch p.section ps
                   where t member of p.tags and :tagGroup member of t.tagGroups
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -626,11 +626,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
 
       totalSizeQuery = entityManager.createQuery(
               """
-                  select count(p.id) from PostEntity p, TagEntity t
+                  select count(p.id) from PostEntity p, TagEntity t left join p.section ps
                   where t member of p.tags and :tagGroup member of t.tagGroups
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -647,11 +647,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
     } else if (Objects.nonNull(tagEntity)) {
       query = entityManager.createQuery(
               """
-                  select p from PostEntity p
+                  select p from PostEntity p left join fetch p.section ps
                   where :tag member of p.tags
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -669,11 +669,11 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
 
       totalSizeQuery = entityManager.createQuery(
               """
-                  select count(p.id) from PostEntity p
+                  select count(p.id) from PostEntity p left join p.section ps
                   where :tag member of p.tags
                   and p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -690,11 +690,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
     } else {
       query = entityManager.createQuery(
               """
-                  select p from PostEntity p
-                  where :show member of p.states
-                  and p.reviewState = 0
+                  select p from PostEntity p left join fetch p.section ps
+                  where p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user
@@ -711,11 +710,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
 
       totalSizeQuery = entityManager.createQuery(
               """
-                  select count(p.id) from PostEntity p
-                  where :show member of p.states
-                  and p.reviewState = 0
+                  select count(p.id) from PostEntity p left join p.section ps
+                  where p.reviewState = 0
                   and :show member of p.states
-                  or (:hide member of p.states and (:user member of p.section.admins or :user member of p.allows))
+                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user

@@ -33,7 +33,7 @@ export const getQueryParams = (init?: TQueryParams) => {
 
 export const checkResponseStatus = (status: number) => {
   if (status === 401) {
-    redirect('/login');
+    redirect('/api/login-again');
   }
 };
 
