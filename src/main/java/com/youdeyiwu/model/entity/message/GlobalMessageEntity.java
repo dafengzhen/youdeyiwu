@@ -48,6 +48,11 @@ public class GlobalMessageEntity extends AbstractEntity {
   private String overview;
 
   /**
+   * link (Can be an absolute or relative path).
+   */
+  private String link;
+
+  /**
    * content.
    */
   @JdbcTypeCode(SqlTypes.JSON)

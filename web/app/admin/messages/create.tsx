@@ -19,6 +19,7 @@ export default function Create() {
   const [form, setForm] = useState<{
     name: string;
     overview: string;
+    link: string;
     content: string;
     sort: number;
     messageRange: TMessageRange;
@@ -26,6 +27,7 @@ export default function Create() {
   }>({
     name: '',
     overview: '',
+    link: '',
     content: '',
     sort: 0,
     messageRange: 'ALL_USER',
@@ -183,6 +185,20 @@ export default function Create() {
             minLength={1}
           />
           <div className="form-text">The message overview cannot be empty</div>
+        </div>
+
+        <div>
+          <label className="form-label">Link</label>
+          <input
+            type="text"
+            className="form-control"
+            name="link"
+            value={form.link}
+            onChange={onChangeForm}
+            placeholder="Please enter the message link"
+            aria-describedby="link"
+          />
+          <div className="form-text">Can be an absolute or relative path</div>
         </div>
 
         <div>

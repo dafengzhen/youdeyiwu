@@ -355,7 +355,7 @@ create table if not exists action_entity
     menu_id    bigint       null,
     role_id    bigint       null,
     submenu_id bigint       null,
-    alias      varchar(255) null,
+    alias      varchar(255) not null,
     sort       int          not null,
     constraint UK_c4yrem3jw4rbreob0v0lsbkp1
         unique (role_id),
@@ -509,23 +509,28 @@ create table if not exists user_entity
 
 create table if not exists global_message_entity
 (
-    id         bigint       not null
+    id            bigint       not null
         primary key,
-    created_by bigint       null,
-    created_on datetime(6)  not null,
-    deleted    bit          not null,
-    updated_by bigint       null,
-    updated_on datetime(6)  null,
-    version    smallint     null,
-    content    json         null,
-    name       varchar(255) not null,
-    overview   varchar(255) not null,
-    sender_id  bigint       null,
-    sort       int          not null,
+    created_by    bigint       null,
+    created_on    datetime(6)  not null,
+    deleted       bit          not null,
+    updated_by    bigint       null,
+    updated_on    datetime(6)  null,
+    version       smallint     null,
+    content       json         null,
+    name          varchar(255) not null,
+    overview      varchar(255) not null,
+    sender_id     bigint       null,
+    sort          int          not null,
+    message_range smallint     not null,
+    message_type  smallint     not null,
+    link          varchar(255) null,
     constraint UK_pt1jenvifwkmyypi8m8856td5
         unique (sender_id),
     constraint FKm68afdpt9e6ycxdmvgjq9nln6
-        foreign key (sender_id) references user_entity (id)
+        foreign key (sender_id) references user_entity (id),
+    check (`message_range` between 0 and 1),
+    check (`message_type` between 0 and 10)
 );
 
 create table if not exists global_message_user_entity
@@ -565,6 +570,7 @@ create table if not exists message_entity
     state         smallint     not null,
     receiver_id   bigint       null,
     sender_id     bigint       null,
+    link          varchar(255) null,
     constraint FKchngvnhlot2wncosjrnmd1qjp
         foreign key (sender_id) references user_entity (id),
     constraint FKf1eboma4d9p0wlj48qwpd2ban

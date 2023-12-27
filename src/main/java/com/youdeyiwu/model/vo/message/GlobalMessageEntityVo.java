@@ -29,6 +29,11 @@ public class GlobalMessageEntityVo extends AbstractEntityVo {
   private String overview;
 
   /**
+   * link (Can be an absolute or relative path).
+   */
+  private String link;
+
+  /**
    * content.
    */
   private Map<String, String> content;

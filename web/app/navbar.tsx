@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { IUser } from '@/app/interfaces/users';
-import { getUserAlias, processFirstCharacter } from '@/app/common/server';
+import { getUserAlias } from '@/app/common/server';
 import { IMenu } from '@/app/interfaces/menus';
 import { IPage } from '@/app/interfaces';
 import { IMessage } from '@/app/interfaces/messages';
@@ -16,12 +16,10 @@ export default async function Navbar({
   messages?: IPage<IMessage[]>;
 }) {
   let id;
-  let avatar;
   let alias = getUserAlias(user);
 
   if (user) {
     id = user.id;
-    avatar = user.avatar;
   }
 
   return (
@@ -37,8 +35,8 @@ export default async function Navbar({
           />
           Youdeyiwu
         </Link>
-        <div className="collapse navbar-collapse">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+        <div className="collapse navbar-collapse gap-2">
+          <ul className="navbar-nav me-auto mb-lg-0">
             <li className="nav-item">
               <Link className="nav-link" aria-current="page" href="/">
                 Home
@@ -121,21 +119,16 @@ export default async function Navbar({
               </ul>
             </li>
           </ul>
-          <Link
-            href={id ? `/users/${id}` : '/users'}
-            className="position-relative"
-          >
-            <Image
-              className="rounded-circle object-fit-contain image-hover"
-              src={avatar ?? '/avatar.png'}
-              alt="avatar"
-              width={50}
-              height={50}
-            />
-            <div className="user-select-none text-white position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center fw-medium">
-              {processFirstCharacter(alias)}
-            </div>
-          </Link>
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <Link
+                href={id ? `/users/${id}` : '/users'}
+                className="user-select-none link-secondary text-decoration-none"
+              >
+                {alias}
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>

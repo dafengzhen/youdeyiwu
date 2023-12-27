@@ -10,6 +10,7 @@ import java.util.Map;
  *
  * @param name     name
  * @param overview overview
+ * @param link     link
  * @param content  content
  * @param sort     sort
  */
@@ -19,6 +20,8 @@ public record CreateGlobalMessageDto(
 
     @NotBlank
     String overview,
+
+    String link,
 
     Map<String, String> content,
 

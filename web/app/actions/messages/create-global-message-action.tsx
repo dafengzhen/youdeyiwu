@@ -9,6 +9,7 @@ import { checkResponseStatus } from '@/app/common/server';
 export interface ICreateGlobalMessageActionVariables {
   name: string;
   overview: string;
+  link?: string;
   content?: Record<string, any>;
   sort: number;
 }
