@@ -10,9 +10,11 @@ import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.mapper.forum.ReplyMapper;
 import com.youdeyiwu.model.dto.forum.CreateReplyDto;
+import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.ReplyRepository;
@@ -91,5 +93,23 @@ public class ReplyServiceImpl implements ReplyService {
 
     replyRepository.save(quoteReplyEntity);
     return quoteReplyEntity;
+  }
+
+  @Transactional
+  @Override
+  public void updateState(Long id, UpdateStateReplyDto dto) {
+    QuoteReplyEntity quoteReplyEntity = replyRepository.findById(id)
+        .orElseThrow(ReplyNotFoundException::new);
+
+    if (Objects.nonNull(dto.reviewState())) {
+      quoteReplyEntity.setReviewState(dto.reviewState());
+    }
+  }
+
+  @Override
+  public QuoteReplyEntityVo query(Long id) {
+    QuoteReplyEntity quoteReplyEntity = replyRepository.findById(id)
+        .orElseThrow(ReplyNotFoundException::new);
+    return replyMapper.entityToVo(quoteReplyEntity);
   }
 }

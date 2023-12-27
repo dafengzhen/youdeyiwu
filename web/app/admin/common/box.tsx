@@ -11,6 +11,7 @@ export default function Box({
   onLoadEditor,
   onErrorEditor,
   title,
+  hideReturnBtn,
 }: {
   children: ReactNode;
   footer?: ReactNode;
@@ -18,6 +19,7 @@ export default function Box({
   title?: string;
   onLoadEditor?: () => void;
   onErrorEditor?: (e: any) => void;
+  hideReturnBtn?: boolean;
 }) {
   const router = useRouter();
 
@@ -35,13 +37,15 @@ export default function Box({
             <div className="d-flex align-items-center justify-content-between gap-4">
               {title ? <div className="fw-bold">{title}</div> : <div></div>}
               <div>
-                <button
-                  onClick={onClickReturn}
-                  type="button"
-                  className="btn btn-sm btn-secondary"
-                >
-                  Return
-                </button>
+                {!hideReturnBtn && (
+                  <button
+                    onClick={onClickReturn}
+                    type="button"
+                    className="btn btn-sm btn-secondary"
+                  >
+                    Return
+                  </button>
+                )}
               </div>
             </div>
           </div>

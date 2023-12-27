@@ -120,14 +120,16 @@ export default async function Navbar({
             </li>
           </ul>
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link
-                href={id ? `/users/${id}` : '/users'}
-                className="user-select-none link-secondary text-decoration-none"
-              >
-                {alias}
-              </Link>
-            </li>
+            {id && (
+              <li className="nav-item">
+                <Link
+                  href={id ? `/users/${id}` : '/users'}
+                  className="user-select-none link-secondary text-decoration-none"
+                >
+                  {alias}
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

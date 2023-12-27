@@ -1,7 +1,9 @@
 package com.youdeyiwu.service.forum;
 
 import com.youdeyiwu.model.dto.forum.CreateCommentDto;
+import com.youdeyiwu.model.dto.forum.UpdateStateCommentDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
+import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 
 /**
  * comment.
@@ -17,4 +19,20 @@ public interface CommentService {
    * @return CommentEntity
    */
   CommentEntity create(CreateCommentDto dto);
+
+  /**
+   * update state.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void updateState(Long id, UpdateStateCommentDto dto);
+
+  /**
+   * query.
+   *
+   * @param id id
+   * @return CommentEntityVo
+   */
+  CommentEntityVo query(Long id);
 }
