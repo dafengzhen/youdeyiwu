@@ -15,6 +15,7 @@ import java.util.Set;
  * @param allows      allows
  * @param blocks      blocks
  * @param accessKey   accessKey
+ * @param reason   reason
  */
 public record UpdateStatesPostDto(
     Set<PostStateEnum> states,
@@ -27,7 +28,9 @@ public record UpdateStatesPostDto(
 
     Set<Long> blocks,
 
-    String accessKey
+    String accessKey,
+
+    String reason
 ) implements Serializable {
 
 }

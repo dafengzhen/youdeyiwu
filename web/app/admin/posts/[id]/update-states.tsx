@@ -32,6 +32,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
     accessKey: string;
     reviewState: IPostReviewState;
     sortState: IPostSortState;
+    reason: string;
   }>({
     states: [
       'SHOW',
@@ -50,6 +51,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
     accessKey: post.accessKey ?? '',
     reviewState: post.reviewState ?? 'APPROVED',
     sortState: post.sortState ?? 'DEFAULT',
+    reason: '',
   });
   const [allows, setAllows] = useState<string[]>(
     post.allows.map((item) => item.id + ''),
@@ -119,6 +121,8 @@ export default function UpdateStates({ post }: { post: IPost }) {
         return;
       }
 
+      const reason = form.reason;
+
       const id = post.id;
       await updateStatesPostActionMutation.mutateAsync({
         id,
@@ -129,6 +133,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
           accessKey: form.accessKey,
           reviewState,
           sortState,
+          reason,
         },
       });
 
@@ -340,6 +345,27 @@ export default function UpdateStates({ post }: { post: IPost }) {
           <div className="form-text">
             Select an sort state, with the default state set to
             &apos;Default&lsquo;
+          </div>
+        </div>
+
+        <div>
+          <label className="form-label">Reason</label>
+          <textarea
+            rows={2}
+            className="form-control"
+            name="reason"
+            value={form.reason}
+            onChange={(event) =>
+              setForm({ ...form, reason: event.target.value })
+            }
+            placeholder="Please enter the reason"
+            aria-describedby="reason"
+          />
+          <div className="form-text">
+            Please enter the reasons for setting this state, if available
+          </div>
+          <div className="form-text">
+            The reason will be communicated to the user via a message
           </div>
         </div>
 
