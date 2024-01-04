@@ -1,10 +1,10 @@
-FROM node:18-alpine As deps
+FROM node:20-alpine As deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /youdeyiwu-web
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-FROM node:18-alpine As builder
+FROM node:20-alpine As builder
 WORKDIR /youdeyiwu-web
 COPY --from=deps /youdeyiwu-web/node_modules ./node_modules
 COPY . .
@@ -12,7 +12,7 @@ ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-FROM node:18-alpine As runner
+FROM node:20-alpine As runner
 WORKDIR /youdeyiwu-web
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
