@@ -1,7 +1,7 @@
 FROM node:20-alpine As deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /youdeyiwu-web
-COPY package.json package-lock.json* ./
+COPY package.json package-lock.json* .npmrc ./
 RUN npm ci
 
 FROM node:20-alpine As builder
