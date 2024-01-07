@@ -7,6 +7,8 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
@@ -170,5 +172,15 @@ public class Tool {
       };
     }
     return IMAGE_JPEG;
+  }
+
+  /**
+   * get current date time.
+   *
+   * @return String
+   */
+  public static String getCurrentDateTime() {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return LocalDateTime.now().format(formatter);
   }
 }

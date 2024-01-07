@@ -2,9 +2,11 @@ package com.youdeyiwu.service.user.impl;
 
 import static com.youdeyiwu.tool.JwtTool.createJwt;
 import static com.youdeyiwu.tool.JwtTool.decodeSecret;
+import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
+import com.youdeyiwu.event.MessageApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.RoleNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -27,6 +29,7 @@ import com.youdeyiwu.model.dto.user.UpdateUserStatesDto;
 import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.ActionEntity;
 import com.youdeyiwu.model.entity.user.RoleEntity;
 import com.youdeyiwu.model.entity.user.SubmenuEntity;
@@ -65,6 +68,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserCache;
@@ -123,6 +127,8 @@ public class UserServiceImpl implements UserService {
 
   private final ActionRepository actionRepository;
 
+  private final ApplicationEventPublisher publisher;
+
   @Transactional
   @Override
   public TokenVo register(RegisterDto dto) {
@@ -134,11 +140,26 @@ public class UserServiceImpl implements UserService {
       throw new CustomException("This username already exists");
     }
 
-    UserEntity userEntity = new UserEntity();
-    userEntity.setAlias(alias);
-    userEntity.setUsername(username);
-    userEntity.setPassword(passwordEncoder.encode(password));
-    return createToken(userRepository.save(userEntity));
+    UserEntity entity = new UserEntity();
+    entity.setAlias(alias);
+    entity.setUsername(username);
+    entity.setPassword(passwordEncoder.encode(password));
+    UserEntity userEntity = userRepository.save(entity);
+
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName("Welcome notification");
+    messageEntity.setOverview(
+        """
+            Welcome, %s!
+            Thank you for registering with us.
+            Your registration was successful at %s.
+            We are excited to have you on board!
+            """
+            .formatted(alias, getCurrentDateTime())
+    );
+    messageEntity.setReceiver(userEntity);
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+    return createToken(userEntity);
   }
 
   @Transactional
@@ -156,6 +177,17 @@ public class UserServiceImpl implements UserService {
       throw new CustomException("Wrong username or password");
     }
 
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName("Login notification");
+    messageEntity.setOverview(
+        """
+            Congratulations on your successful login.
+            You performed an operation at %s time
+            """
+            .formatted(getCurrentDateTime())
+    );
+    messageEntity.setReceiver(userEntity);
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
     return createToken(userEntity);
   }
 
