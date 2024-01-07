@@ -139,7 +139,6 @@ export default function Create() {
             className="form-select"
             value={form.display + ''}
             aria-label="display"
-            placeholder="Please select whether to display role identifiers"
           >
             <option value="true">true</option>
             <option value="false">false</option>

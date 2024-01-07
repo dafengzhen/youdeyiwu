@@ -61,7 +61,6 @@ export default function UpdateSection({
             className="form-select"
             size={sections.length + 1}
             aria-label="Select Section"
-            placeholder="Please select a content topic"
             value={sectionId}
             name="sectionId"
             onChange={(event) => setSectionId(event.target.value)}

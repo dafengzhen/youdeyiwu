@@ -377,7 +377,6 @@ export default function Save({
                         <select
                           className="form-select"
                           aria-label="Select Content"
-                          placeholder="Please select a content topic"
                           value={form.sectionId}
                           onChange={onChangeForm}
                           name="sectionId"
