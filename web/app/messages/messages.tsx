@@ -13,7 +13,6 @@ import { IUser } from '@/app/interfaces/users';
 import DeleteMessageAction from '@/app/actions/messages/delete-message-action';
 import UpdateStateMessageAction from '@/app/actions/messages/update-state-message-action';
 import UpdateStateGlobalMessageAction from '@/app/actions/messages/update-state-global-message-action';
-import clsx from 'clsx';
 import Link from 'next/link';
 
 export default function Messages({
@@ -234,16 +233,13 @@ export default function Messages({
                               <div className="d-flex gap-2">
                                 {isLogin ? (
                                   <>
-                                    <i
-                                      onClick={() => onClickSetRead(item)}
-                                      className={clsx(
-                                        'bi bi-bookmark-check fs-4 cursor-pointer',
-                                        item.state === 'READ'
-                                          ? 'text-secondary'
-                                          : 'text-primary',
-                                      )}
-                                      title="Set Read"
-                                    ></i>
+                                    {item.state === 'UNREAD' && (
+                                      <i
+                                        onClick={() => onClickSetRead(item)}
+                                        className="bi bi-bookmark-check fs-4 cursor-pointer text-primary"
+                                        title="Set Read"
+                                      ></i>
+                                    )}
 
                                     {item.messageRange === 'USER' && (
                                       <>
@@ -288,16 +284,18 @@ export default function Messages({
                             <div className="mt-2 d-flex flex-column gap-2">
                               <div>{item.name}</div>
                               <div>{item.overview}</div>
-                              {item.link && isHttpOrHttps(item.link) && (
-                                <div className="mt-2 d-flex gap-2">
-                                  <Link
-                                    href={item.link}
-                                    className="btn btn-primary"
-                                  >
-                                    View Details
-                                  </Link>
-                                </div>
-                              )}
+                              {item.link &&
+                                (isHttpOrHttps(item.link) ||
+                                  item.link.startsWith('/')) && (
+                                  <div className="mt-2 d-flex gap-2">
+                                    <Link
+                                      href={item.link}
+                                      className="btn btn-primary"
+                                    >
+                                      View Details
+                                    </Link>
+                                  </div>
+                                )}
                             </div>
                           </div>
                         </div>

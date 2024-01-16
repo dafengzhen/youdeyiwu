@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * security.
@@ -113,5 +114,25 @@ public class SecurityServiceImpl implements SecurityService {
   @Override
   public Long getUserIdOrNull() {
     return isAuthenticated() ? getUserId() : null;
+  }
+
+  @Override
+  public String getAlias(UserEntity entity) {
+    String alias;
+    if (StringUtils.hasText(entity.getAlias())) {
+      alias = entity.getAlias();
+    } else if (StringUtils.hasText(entity.getUsername())) {
+      alias = entity.getUsername();
+    } else {
+      alias = entity.getId().toString();
+    }
+    return alias;
+  }
+
+  @Override
+  public String getAliasAndId(UserEntity entity) {
+    return getAlias(entity) + """
+         (ID. %s)
+        """.formatted(entity.getId());
   }
 }

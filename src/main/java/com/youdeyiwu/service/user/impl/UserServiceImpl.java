@@ -155,8 +155,9 @@ public class UserServiceImpl implements UserService {
             Your registration was successful at %s.
             We are excited to have you on board!
             """
-            .formatted(alias, getCurrentDateTime())
+            .formatted(securityService.getAliasAndId(userEntity), getCurrentDateTime())
     );
+    messageEntity.setLink("/users/" + userEntity.getId());
     messageEntity.setReceiver(userEntity);
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
     return createToken(userEntity);

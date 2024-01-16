@@ -1,8 +1,10 @@
 package com.youdeyiwu.service.forum.impl;
 
 import static com.youdeyiwu.tool.Tool.cleanBasicContent;
+import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
+import com.youdeyiwu.event.MessageApplicationEvent;
 import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -11,14 +13,18 @@ import com.youdeyiwu.model.dto.forum.CreateCommentDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateCommentDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.message.MessageEntity;
+import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.CommentService;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +48,8 @@ public class CommentServiceImpl implements CommentService {
 
   private final SecurityService securityService;
 
+  private final ApplicationEventPublisher publisher;
+
   @Transactional
   @Override
   public CommentEntity create(CreateCommentDto dto) {
@@ -54,10 +62,33 @@ public class CommentServiceImpl implements CommentService {
     commentEntity.setUniqueIdentifier(randomUuId());
 
     if (securityService.isAuthenticated()) {
-      commentEntity.setUser(
-          userRepository.findById(securityService.getUserId())
-              .orElseThrow(UserNotFoundException::new)
-      );
+      UserEntity userEntity = userRepository.findById(securityService.getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      commentEntity.setUser(userEntity);
+
+      if (Objects.nonNull(postEntity.getUser())) {
+        MessageEntity messageEntity = new MessageEntity();
+        messageEntity.setName("You have received a new comment");
+        messageEntity.setOverview(
+            """
+                %s user commented on your article in %s at %s. The comment says: %s.
+                """
+                .formatted(
+                    securityService.getAliasAndId(userEntity),
+                    getCurrentDateTime(),
+                    postEntity.getName(),
+                    commentEntity.getContent()
+                )
+        );
+
+        Map<String, String> content = messageEntity.getContent();
+        content.put("postId", postEntity.getId().toString());
+        content.put("sender", userEntity.getId().toString());
+        content.put("receiver", postEntity.getUser().getId().toString());
+        messageEntity.setLink("/posts/" + postEntity.getId());
+        messageEntity.setReceiver(postEntity.getUser());
+        publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+      }
     }
 
     commentRepository.save(commentEntity);

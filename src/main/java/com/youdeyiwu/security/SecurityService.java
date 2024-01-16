@@ -104,4 +104,20 @@ public interface SecurityService {
    * @return Long
    */
   Long getUserIdOrNull();
+
+  /**
+   * get alias.
+   *
+   * @param entity entity
+   * @return String
+   */
+  String getAlias(UserEntity entity);
+
+  /**
+   * get alias and id.
+   *
+   * @param entity entity
+   * @return String
+   */
+  String getAliasAndId(UserEntity entity);
 }
