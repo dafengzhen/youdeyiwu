@@ -7,12 +7,15 @@ import { useMutation } from '@tanstack/react-query';
 import LikePostAction from '@/app/actions/posts/like-post-action';
 import FavoritePostAction from '@/app/actions/posts/favorite-post-action';
 import { formatCount, wait } from '@/app/common/client';
+import RewardBox from '@/app/posts/[id]/reward-box';
 
 export default function ActionButton({ details }: { details: IPostDetails }) {
-  const { toast } = useContext(GlobalContext);
+  const { toast, modal } = useContext(GlobalContext);
   const { openReplyBox, setOpenReplyBox, currentUser } =
     useContext(PostIdContext);
   const [copying, setCopying] = useState(false);
+  const [rewarding, setRewarding] = useState(false);
+  const [openRewardBox, setOpenRewardBox] = useState(false);
   const [likeProcessing, setLikeProcessing] = useState(false);
   const [favouriteProcessing, setFavouriteProcessing] = useState(false);
 
@@ -109,6 +112,10 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
     }
   }
 
+  function onClickReward() {
+    setOpenRewardBox(!openRewardBox);
+  }
+
   function onClickShare() {
     if (copying) {
       return;
@@ -145,76 +152,111 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
   }
 
   return (
-    <div className="my-5 d-flex justify-content-center gap-4">
-      <button
-        disabled={likeProcessing || likePostActionMutation.isPending}
-        onClick={onClickLike}
-        type="button"
-        className="btn rounded-pill btn-outline-primary position-relative"
-      >
-        <span className="me-2">
-          {likeProcessing || likePostActionMutation.isPending
-            ? 'Processing'
-            : 'Like'}
-        </span>
-        <i className="bi bi-hand-thumbs-up"></i>
+    <div className="my-5">
+      <div className="d-flex justify-content-center flex-column gap-3">
+        <div className="d-flex justify-content-center gap-4">
+          <button
+            disabled={likeProcessing || likePostActionMutation.isPending}
+            onClick={onClickLike}
+            type="button"
+            className="btn rounded-pill btn-outline-primary position-relative"
+          >
+            <span className="me-2">
+              {likeProcessing || likePostActionMutation.isPending
+                ? 'Processing'
+                : 'Like'}
+            </span>
+            <i className="bi bi-hand-thumbs-up"></i>
 
-        {details.likesCount > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-            <span>{formatCount(details.likesCount)}</span>
-            <span className="visually-hidden">likes</span>
-          </span>
-        )}
-      </button>
-      <button
-        disabled={favouriteProcessing || favoritePostActionMutation.isPending}
-        onClick={onClickFavourite}
-        type="button"
-        className="btn rounded-pill btn-outline-primary"
-      >
-        <span className="me-2">
-          {favouriteProcessing || favoritePostActionMutation.isPending
-            ? 'Processing'
-            : 'Favourite'}
-        </span>
-        <i className="bi bi-star"></i>
+            {details.likesCount > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                <span>{formatCount(details.likesCount)}</span>
+                <span className="visually-hidden">likes</span>
+              </span>
+            )}
+          </button>
+          <button
+            disabled={
+              favouriteProcessing || favoritePostActionMutation.isPending
+            }
+            onClick={onClickFavourite}
+            type="button"
+            className="btn rounded-pill btn-outline-primary"
+          >
+            <span className="me-2">
+              {favouriteProcessing || favoritePostActionMutation.isPending
+                ? 'Processing'
+                : 'Favourite'}
+            </span>
+            <i className="bi bi-star"></i>
 
-        {details.favoritesCount > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-            <span>{formatCount(details.favoritesCount)}</span>
-            <span className="visually-hidden">favorites</span>
-          </span>
-        )}
-      </button>
-      <button
-        disabled={copying}
-        onClick={onClickShare}
-        type="button"
-        className={clsx(
-          'btn rounded-pill',
-          copying ? 'btn-outline-secondary' : 'btn-outline-primary',
-        )}
-      >
-        <span className="me-2">{copying ? 'Copying' : 'Share'}</span>
-        <i className="bi bi-share"></i>
-      </button>
-      <button
-        onClick={onClickReply}
-        type="button"
-        className={clsx(
-          'btn rounded-pill',
-          openReplyBox ? 'btn-outline-secondary' : 'btn-outline-primary',
-        )}
-      >
-        {openReplyBox ? (
-          'Cancel Reply'
-        ) : (
-          <>
-            <span className="me-2">Reply</span>
-            <i className="bi bi-send"></i>
-          </>
-        )}
-      </button>
+            {details.favoritesCount > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                <span>{formatCount(details.favoritesCount)}</span>
+                <span className="visually-hidden">favorites</span>
+              </span>
+            )}
+          </button>
+          <button
+            onClick={onClickReply}
+            type="button"
+            className={clsx(
+              'btn rounded-pill',
+              openReplyBox ? 'btn-outline-secondary' : 'btn-outline-primary',
+            )}
+          >
+            {openReplyBox ? (
+              'Cancel Reply'
+            ) : (
+              <>
+                <span className="me-2">Reply</span>
+                <i className="bi bi-send"></i>
+              </>
+            )}
+          </button>
+        </div>
+        <div className="d-flex justify-content-center gap-4">
+          <button
+            disabled={rewarding}
+            onClick={onClickReward}
+            type="button"
+            className={clsx(
+              'btn rounded-pill',
+              openRewardBox ? 'btn-outline-secondary' : 'btn-outline-primary',
+            )}
+          >
+            <span className="me-2">
+              {rewarding
+                ? 'Rewarding'
+                : openRewardBox
+                  ? 'Cancel Reward'
+                  : 'Reward'}
+            </span>
+            <i className="bi bi-currency-yen"></i>
+          </button>
+          <button
+            disabled={copying}
+            onClick={onClickShare}
+            type="button"
+            className={clsx(
+              'btn rounded-pill',
+              copying ? 'btn-outline-secondary' : 'btn-outline-primary',
+            )}
+          >
+            <span className="me-2">{copying ? 'Copying' : 'Share'}</span>
+            <i className="bi bi-share"></i>
+          </button>
+        </div>
+      </div>
+
+      {openRewardBox && (
+        <RewardBox
+          details={details}
+          onClickReward={onClickReward}
+          rewarding={rewarding}
+          setRewarding={setRewarding}
+        />
+      )}
     </div>
   );
 }
