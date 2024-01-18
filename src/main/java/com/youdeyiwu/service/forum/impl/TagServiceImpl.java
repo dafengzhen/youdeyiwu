@@ -63,7 +63,9 @@ public class TagServiceImpl implements TagService {
 
     if (StringUtils.hasText(dto.name())) {
       String name = dto.name().trim();
-      if (Boolean.TRUE.equals(tagRepository.existsByName(name))) {
+      if (tagEntity.getName().equalsIgnoreCase(name)) {
+        tagEntity.setName(name);
+      } else if (Boolean.TRUE.equals(tagRepository.existsByName(name))) {
         throw new CustomException("The tag name already exists, cannot create duplicates");
       } else {
         tagEntity.setName(name);

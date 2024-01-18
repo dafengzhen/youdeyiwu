@@ -29,7 +29,7 @@ export default function RelatedTags({
                   <div className="card border-0">
                     <div className="list-group list-group-flush text-center">
                       <Link
-                        href={`/tags/${item.id}`}
+                        href={`/?tid=${item.id}`}
                         className={clsx(
                           'list-group-item list-group-item-action px-2',
                           styles.tagBg,

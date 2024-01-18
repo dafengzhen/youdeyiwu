@@ -16,7 +16,20 @@ export default function RelatedActions({
         <div className="card border-0">
           <div className="card-body py-2">
             <div className="d-flex flex-column gap-2">
-              {editPostId ? (
+              <Link
+                href="/posts/new"
+                className="btn rounded-2 btn-primary w-100 d-flex justify-content-center"
+              >
+                <div
+                  className="text-start flex-shrink-0 text-truncate"
+                  style={{ width: 140 }}
+                >
+                  <i className="bi bi-pen me-2"></i>
+                  Create Article
+                </div>
+              </Link>
+
+              {editPostId && (
                 <Link
                   href={`/posts/${editPostId}/edit`}
                   className="btn rounded-2 btn-primary w-100 d-flex justify-content-center"
@@ -27,19 +40,6 @@ export default function RelatedActions({
                   >
                     <i className="bi bi-pencil-square me-2"></i>
                     Edit Article
-                  </div>
-                </Link>
-              ) : (
-                <Link
-                  href="/posts/new"
-                  className="btn rounded-2 btn-primary w-100 d-flex justify-content-center"
-                >
-                  <div
-                    className="text-start flex-shrink-0 text-truncate"
-                    style={{ width: 140 }}
-                  >
-                    <i className="bi bi-pen me-2"></i>
-                    Create Article
                   </div>
                 </Link>
               )}
