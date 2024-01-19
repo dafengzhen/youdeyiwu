@@ -22,12 +22,12 @@
     "date-fns": "^3.2.0",
     "highlight.js": "^11.9.0",
     "nanoid": "^5.0.4",
-    "next": "14.0.4",
+    "next": "14.1.0",
     "photoswipe": "^5.4.3",
     "react": "^18",
     "react-dom": "^18",
     "sanitize-html": "^2.11.0",
-    "sharp": "^0.32.6"
+    "sharp": "^0.33.2"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.17.7",
@@ -37,7 +37,7 @@
     "@types/react-dom": "^18",
     "@types/sanitize-html": "^2.9.5",
     "eslint": "^8",
-    "eslint-config-next": "14.0.4",
+    "eslint-config-next": "14.1.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.4",
     "sass": "^1.70.0",
