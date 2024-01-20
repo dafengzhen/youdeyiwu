@@ -25,7 +25,7 @@ export default function SectionGroups({
     if (item.id + '' === currentSectionGroupId) {
       router.back();
     } else {
-      router.push(`/?sgid=${item.id}`);
+      router.push(`/?sgid=${item.id}`, { scroll: false });
     }
   }
 
@@ -54,6 +54,7 @@ export default function SectionGroups({
                     : 'link-body-emphasis',
                 )}
                 href={`/?sgid=${item.id}`}
+                scroll={false}
               >
                 <div className="card-body py-2">
                   <div className="d-flex align-items-center gap-2">

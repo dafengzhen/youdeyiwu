@@ -4,11 +4,14 @@ import com.youdeyiwu.exception.SectionNotFoundException;
 import com.youdeyiwu.exception.TagGroupNotFoundException;
 import com.youdeyiwu.mapper.forum.SectionGroupMapper;
 import com.youdeyiwu.mapper.forum.SectionMapper;
+import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.forum.CreateSectionGroupDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionGroupDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionsSectionGroupDto;
+import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.forum.SectionGroupEntity;
 import com.youdeyiwu.model.vo.PageVo;
+import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.model.vo.forum.SectionGroupEntityVo;
 import com.youdeyiwu.repository.forum.SectionGroupRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
@@ -40,6 +43,8 @@ public class SectionGroupServiceImpl implements SectionGroupService {
   private final SectionGroupMapper sectionGroupMapper;
 
   private final SectionMapper sectionMapper;
+
+  private final UserMapper userMapper;
 
   @Transactional
   @Override
@@ -134,7 +139,26 @@ public class SectionGroupServiceImpl implements SectionGroupService {
     vo.setSections(
         sectionGroupEntity.getSections()
             .stream()
-            .map(sectionMapper::entityToVo)
+            .map(sectionEntity -> {
+              SectionEntityVo sectionEntityVo = sectionMapper.entityToVo(sectionEntity);
+              setAdmins(sectionEntityVo, sectionEntity);
+              return sectionEntityVo;
+            })
+            .collect(Collectors.toSet())
+    );
+  }
+
+  /**
+   * set admins.
+   *
+   * @param vo            vo
+   * @param sectionEntity sectionEntity
+   */
+  private void setAdmins(SectionEntityVo vo, SectionEntity sectionEntity) {
+    vo.setAdmins(
+        sectionEntity.getAdmins()
+            .stream()
+            .map(userMapper::entityToVo)
             .collect(Collectors.toSet())
     );
   }

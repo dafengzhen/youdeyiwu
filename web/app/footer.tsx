@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="p-4 mt-4 position-sticky">
+    <footer className="p-4 mt-4">
       <aside>
         <p className="text-center">
           Built by&nbsp;

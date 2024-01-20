@@ -113,6 +113,7 @@ export default function Posts({
                 <Link
                   className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                   href={`/posts/${item.id}`}
+                  scroll={false}
                 >
                   {item.name}
                 </Link>
@@ -129,6 +130,7 @@ export default function Posts({
                 <Link
                   className="line-clamp-3 link-dark text-decoration-none"
                   href={`/posts/${item.id}`}
+                  scroll={false}
                 >
                   {item.overview}
                 </Link>
@@ -167,6 +169,7 @@ export default function Posts({
                     <Link
                       className="link-body-emphasis link-underline-opacity-0 link-underline-opacity-100-hover"
                       href={`/posts/${item.id}`}
+                      scroll={false}
                     >
                       <i className="bi bi-chat-text fs-4"></i>
                     </Link>

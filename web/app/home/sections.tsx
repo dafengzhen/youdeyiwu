@@ -25,7 +25,7 @@ export default function Sections({
     if (item.id + '' === currentSectionId) {
       router.back();
     } else {
-      router.push(`/?sid=${item.id}`);
+      router.push(`/?sid=${item.id}`, { scroll: false });
     }
   }
 
@@ -54,6 +54,7 @@ export default function Sections({
                     : 'link-body-emphasis',
                 )}
                 href={`/?sid=${item.id}`}
+                scroll={false}
               >
                 <div className="card-body py-2">
                   <div className="d-flex align-items-center gap-2">

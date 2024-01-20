@@ -25,7 +25,7 @@ export default function Tags({
     if (item.id + '' === currentTagId) {
       router.back();
     } else {
-      router.push(`/?tid=${item.id}`);
+      router.push(`/?tid=${item.id}`, { scroll: false });
     }
   }
 
@@ -54,6 +54,7 @@ export default function Tags({
                     : 'link-body-emphasis',
                 )}
                 href={`/?tid=${item.id}`}
+                scroll={false}
               >
                 <div className="card-body py-2">
                   <div className="d-flex align-items-center gap-2">

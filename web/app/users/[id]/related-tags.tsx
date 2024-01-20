@@ -34,6 +34,7 @@ export default function RelatedTags({
                           'list-group-item list-group-item-action px-2',
                           styles.tagBg,
                         )}
+                        scroll={false}
                       >
                         {item.name}
                       </Link>

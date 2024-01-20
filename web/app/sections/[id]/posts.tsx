@@ -126,6 +126,7 @@ export default function Posts({
                     <Link
                       className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                       href={`/posts/${item.id}`}
+                      scroll={false}
                     >
                       {item.name}
                     </Link>
@@ -155,6 +156,7 @@ export default function Posts({
                 <Link
                   className="line-clamp-3 link-dark text-decoration-none"
                   href={`/posts/${item.id}`}
+                  scroll={false}
                 >
                   {item.overview}
                 </Link>
@@ -167,7 +169,7 @@ export default function Posts({
                       className="ratio ratio-16x9"
                       style={{ width: 260, height: 195 }}
                     >
-                      <Link href={`/posts/${item.id}`}>
+                      <Link href={`/posts/${item.id}`} scroll={false}>
                         <Image
                           className="rounded object-fit-cover image-hover cursor-pointer"
                           width={260}
@@ -186,6 +188,7 @@ export default function Posts({
                   href={`/posts/${item.id}`}
                   className="btn btn-primary rounded-pill"
                   type="button"
+                  scroll={false}
                 >
                   Read More
                 </Link>
@@ -195,6 +198,7 @@ export default function Posts({
                     <Link
                       className="link-body-emphasis link-underline-opacity-0 link-underline-opacity-100-hover"
                       href={`/posts/${item.id}`}
+                      scroll={false}
                     >
                       <i className="bi bi-chat-text fs-4"></i>
                     </Link>

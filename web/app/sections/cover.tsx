@@ -17,11 +17,11 @@ export default function Cover({ item }: { item: ISection }) {
   }
 
   return (
-    <div className="ratio ratio-16x9" style={{ width: 260, height: 195 }}>
-      <Link href={`/sections/${item.id}`}>
+    <div className="ratio ratio-16x9 p-3" style={{ width: 260, height: 195 }}>
+      <Link href={`/sections/${item.id}`} scroll={false}>
         <Image
           onError={onErrorCover}
-          className="rounded object-fit-cover image-hover cursor-pointer"
+          className="rounded-top object-fit-cover image-hover cursor-pointer"
           width={260}
           height={195}
           src={isError ? NoImage : cover}

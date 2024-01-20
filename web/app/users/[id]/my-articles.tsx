@@ -43,6 +43,7 @@ export default function MyArticles({
                         <Link
                           className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                           href={`/posts/${item.id}`}
+                          scroll={false}
                         >
                           {item.name}
                         </Link>
@@ -67,6 +68,7 @@ export default function MyArticles({
                         href={`/posts/${item.id}`}
                         type="button"
                         className="btn btn-primary"
+                        scroll={false}
                       >
                         Read More
                       </Link>

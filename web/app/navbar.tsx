@@ -25,7 +25,7 @@ export default async function Navbar({
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top mb-4">
       <div className="container-fluid">
-        <Link href="/" className="navbar-brand">
+        <Link href="/" className="navbar-brand" scroll={false}>
           <Image
             className="d-inline-block me-2 rounded"
             src="/favicon/android-chrome-512x512.png"
@@ -38,17 +38,22 @@ export default async function Navbar({
         <div className="collapse navbar-collapse gap-2">
           <ul className="navbar-nav me-auto mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link" aria-current="page" href="/">
+              <Link
+                className="nav-link"
+                aria-current="page"
+                href="/"
+                scroll={false}
+              >
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" href="/sections">
+              <Link className="nav-link" href="/sections" scroll={false}>
                 Contents
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" href="/posts">
+              <Link className="nav-link" href="/posts" scroll={false}>
                 Articles
               </Link>
             </li>

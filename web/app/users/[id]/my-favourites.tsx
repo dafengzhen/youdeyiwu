@@ -45,6 +45,7 @@ export default function MyFavourites({
                         <Link
                           className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                           href={`/posts/${item.postId}`}
+                          scroll={false}
                         >
                           {item.name}
                         </Link>
@@ -69,6 +70,7 @@ export default function MyFavourites({
                         href={`/posts/${item.postId}`}
                         type="button"
                         className="btn btn-primary"
+                        scroll={false}
                       >
                         Read More
                       </Link>

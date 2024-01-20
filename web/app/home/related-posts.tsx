@@ -24,6 +24,7 @@ export default function RelatedPosts({
                   <Link
                     className="link-body-emphasis text-decoration-none"
                     href={`/posts/${item.id}`}
+                    scroll={false}
                   >
                     <div className="card-body py-2">
                       <div className="line-clamp-2">{item.name}</div>

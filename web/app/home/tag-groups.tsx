@@ -25,7 +25,7 @@ export default function TagGroups({
     if (item.id + '' === currentTagGroupId) {
       router.back();
     } else {
-      router.push(`/?tgid=${item.id}`);
+      router.push(`/?tgid=${item.id}`, { scroll: false });
     }
   }
 
@@ -54,6 +54,7 @@ export default function TagGroups({
                     : 'link-body-emphasis',
                 )}
                 href={`/?sgid=${item.id}`}
+                scroll={false}
               >
                 <div className="card-body py-2">
                   <div className="d-flex align-items-center gap-2">

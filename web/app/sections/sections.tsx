@@ -77,15 +77,16 @@ const Items = ({ sections }: { sections: ISection[] }) => {
         return (
           <div key={section.id} className="col" style={{ maxWidth: 330 }}>
             <div className="card border-0 shadow-sm shadow-hover">
-              <div className="card-body d-flex flex-column gap-4">
+              <div className="card-body d-flex flex-column gap-4 p-0">
                 {isHttpOrHttps(cover) ? (
                   <Cover item={section} />
                 ) : (
                   <>
                     {section.overview && (
                       <Link
-                        className="line-clamp-3 link-dark text-decoration-none"
+                        className="line-clamp-3 link-dark text-decoration-none p-3"
                         href={`/sections/${section.id}`}
+                        scroll={false}
                       >
                         {section.overview}
                       </Link>
@@ -94,7 +95,7 @@ const Items = ({ sections }: { sections: ISection[] }) => {
                 )}
 
                 {section.admins.length > 0 && (
-                  <div className="text-secondary">
+                  <div className="text-secondary p-3">
                     <div className="">Admins</div>
                     <div className="mt-2 d-flex flex-wrap align-items-center column-gap-2">
                       {section.admins.map((admin) => {
@@ -112,10 +113,11 @@ const Items = ({ sections }: { sections: ISection[] }) => {
                   </div>
                 )}
 
-                <div>
+                <div className="p-3">
                   <Link
                     href={`/sections/${section.id}`}
                     className="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                    scroll={false}
                   >
                     {section.name}
                     <i
