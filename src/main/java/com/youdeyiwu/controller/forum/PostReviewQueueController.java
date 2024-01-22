@@ -1,5 +1,7 @@
 package com.youdeyiwu.controller.forum;
 
+import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
 import com.youdeyiwu.model.vo.PageVo;
@@ -31,12 +33,9 @@ public class PostReviewQueueController {
 
   private final PostReviewQueueService postReviewQueueService;
 
-  @PostMapping(value = "/{id}/receive")
-  public ResponseEntity<Void> receive(
-      @PathVariable Long id,
-      @Valid @RequestBody ReceivePostReviewQueueDto dto
-  ) {
-    postReviewQueueService.receive(id, dto);
+  @PostMapping(value = "/receive")
+  public ResponseEntity<Void> receive(@Valid @RequestBody ReceivePostReviewQueueDto dto) {
+    postReviewQueueService.receive(dto);
     return ResponseEntity.noContent().build();
   }
 
@@ -46,6 +45,24 @@ public class PostReviewQueueController {
       @Valid @RequestBody RefundPostReviewQueueDto dto
   ) {
     postReviewQueueService.refund(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{id}/approved")
+  public ResponseEntity<Void> approved(
+      @PathVariable Long id,
+      @Valid @RequestBody ApprovedPostReviewQueueDto dto
+  ) {
+    postReviewQueueService.approved(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{id}/not-approved")
+  public ResponseEntity<Void> notApproved(
+      @PathVariable Long id,
+      @Valid @RequestBody NotApprovedPostReviewQueueDto dto
+  ) {
+    postReviewQueueService.notApproved(id, dto);
     return ResponseEntity.noContent().build();
   }
 

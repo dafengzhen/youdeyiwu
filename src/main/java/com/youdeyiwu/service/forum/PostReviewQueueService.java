@@ -1,5 +1,7 @@
 package com.youdeyiwu.service.forum;
 
+import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
 import com.youdeyiwu.model.vo.PageVo;
@@ -16,10 +18,9 @@ public interface PostReviewQueueService {
   /**
    * receive.
    *
-   * @param id  id
    * @param dto dto
    */
-  void receive(Long id, ReceivePostReviewQueueDto dto);
+  void receive(ReceivePostReviewQueueDto dto);
 
   /**
    * refund.
@@ -28,6 +29,22 @@ public interface PostReviewQueueService {
    * @param dto dto
    */
   void refund(Long id, RefundPostReviewQueueDto dto);
+
+  /**
+   * approved.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void approved(Long id, ApprovedPostReviewQueueDto dto);
+
+  /**
+   * not approved.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void notApproved(Long id, NotApprovedPostReviewQueueDto dto);
 
   /**
    * query.

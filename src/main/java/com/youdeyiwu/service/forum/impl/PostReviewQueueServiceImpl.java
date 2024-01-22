@@ -11,6 +11,8 @@ import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.PostMapper;
 import com.youdeyiwu.mapper.forum.PostReviewQueueMapper;
 import com.youdeyiwu.mapper.user.UserMapper;
+import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
@@ -32,6 +34,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * post review queue.
@@ -62,7 +65,7 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
 
   @Transactional
   @Override
-  public void receive(Long id, ReceivePostReviewQueueDto dto) {
+  public void receive(ReceivePostReviewQueueDto dto) {
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
     UserEntity userEntity = userRepository.findById(securityService.getUserId())
@@ -135,6 +138,50 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     String currentDateTime = getCurrentDateTime();
     sendRefundMessageToReviewer(postReviewQueueEntity, currentDateTime);
     sendRefundMessageToUser(postReviewQueueEntity, currentDateTime);
+  }
+
+  @Transactional
+  @Override
+  public void approved(Long id, ApprovedPostReviewQueueDto dto) {
+    PostReviewQueueEntity postReviewQueueEntity = postReviewQueueRepository.findById(id)
+        .orElseThrow(PostReviewQueueNotFoundException::new);
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+
+    if (Boolean.FALSE.equals(postReviewQueueEntity.getReceived())) {
+      throw new CustomException("Sorry, the review for this post has not started yet");
+    }
+
+    if (!Objects.equals(postReviewQueueEntity.getReceiver(), userEntity)) {
+      throw new CustomException(
+          "Sorry, you are unable to process the review result of this post");
+    }
+
+    postReviewQueueRepository.delete(postReviewQueueEntity);
+    String currentDateTime = getCurrentDateTime();
+    sendApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
+  }
+
+  @Transactional
+  @Override
+  public void notApproved(Long id, NotApprovedPostReviewQueueDto dto) {
+    PostReviewQueueEntity postReviewQueueEntity = postReviewQueueRepository.findById(id)
+        .orElseThrow(PostReviewQueueNotFoundException::new);
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+
+    if (Boolean.FALSE.equals(postReviewQueueEntity.getReceived())) {
+      throw new CustomException("Sorry, the review for this post has not started yet");
+    }
+
+    if (!Objects.equals(postReviewQueueEntity.getReceiver(), userEntity)) {
+      throw new CustomException(
+          "Sorry, you are unable to process the review result of this post");
+    }
+
+    postReviewQueueRepository.delete(postReviewQueueEntity);
+    String currentDateTime = getCurrentDateTime();
+    sendNotApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
   }
 
   @Override
@@ -307,6 +354,82 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
                 securityService.getAliasAndId(postReviewQueueEntity.getReceiver()),
                 postReviewQueueEntity.getPost().getName(),
                 currentDateTime
+            )
+    );
+
+    messageEntity.setLink("/posts/" + postReviewQueueEntity.getPost().getId());
+    messageEntity.setReceiver(postReviewQueueEntity.getPost().getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * send approved message to user.
+   *
+   * @param postReviewQueueEntity postReviewQueueEntity
+   * @param currentDateTime       currentDateTime
+   * @param reason                reason
+   */
+  private void sendApprovedMessageToUser(
+      PostReviewQueueEntity postReviewQueueEntity,
+      String currentDateTime,
+      String reason
+  ) {
+    if (Objects.isNull(postReviewQueueEntity.getPost().getUser())) {
+      return;
+    }
+
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName("Congratulations, your post has been approved");
+    messageEntity.setOverview(
+        """
+            The user %s, on %s, has approved your post [%s].
+            The reason for approval is as follows: %s.
+            Your post is now publicly accessible. Congratulations and thank you for your continued support. Every article you write deserves praise.
+            """
+            .formatted(
+                securityService.getAliasAndId(postReviewQueueEntity.getReceiver()),
+                currentDateTime,
+                postReviewQueueEntity.getPost().getName(),
+                StringUtils.hasText(reason) ? reason : "-"
+            )
+    );
+
+    messageEntity.setLink("/posts/" + postReviewQueueEntity.getPost().getId());
+    messageEntity.setReceiver(postReviewQueueEntity.getPost().getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * send not approved message to user.
+   *
+   * @param postReviewQueueEntity postReviewQueueEntity
+   * @param currentDateTime       currentDateTime
+   * @param reason                reason
+   */
+  private void sendNotApprovedMessageToUser(
+      PostReviewQueueEntity postReviewQueueEntity,
+      String currentDateTime,
+      String reason
+  ) {
+    if (Objects.isNull(postReviewQueueEntity.getPost().getUser())) {
+      return;
+    }
+
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName("Apologies, your post did not pass the review");
+    messageEntity.setOverview(
+        """
+            The user %s, on %s, has determined that your post [%s] cannot be approved.
+            The reason for disapproval is as follows: %s.
+            Your post will now be restricted from access.
+            Please don't be discouraged; you can resubmit your application after revising the article.
+            We will continue to accompany you on the forum.
+            """
+            .formatted(
+                securityService.getAliasAndId(postReviewQueueEntity.getReceiver()),
+                currentDateTime,
+                postReviewQueueEntity.getPost().getName(),
+                StringUtils.hasText(reason) ? reason : "-"
             )
     );
 
