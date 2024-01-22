@@ -1,0 +1,72 @@
+package com.youdeyiwu.controller.forum;
+
+import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
+import com.youdeyiwu.model.vo.PageVo;
+import com.youdeyiwu.model.vo.forum.PostReviewQueueEntityVo;
+import com.youdeyiwu.service.forum.PostReviewQueueService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * post review queue.
+ *
+ * @author dafengzhen
+ */
+@RequiredArgsConstructor
+@RequestMapping(value = "/posts/review-queues")
+@RestController
+public class PostReviewQueueController {
+
+  private final PostReviewQueueService postReviewQueueService;
+
+  @PostMapping(value = "/{id}/receive")
+  public ResponseEntity<Void> receive(
+      @PathVariable Long id,
+      @Valid @RequestBody ReceivePostReviewQueueDto dto
+  ) {
+    postReviewQueueService.receive(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping(value = "/{id}/refund")
+  public ResponseEntity<Void> refund(
+      @PathVariable Long id,
+      @Valid @RequestBody RefundPostReviewQueueDto dto
+  ) {
+    postReviewQueueService.refund(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping(value = "/{id}")
+  public ResponseEntity<PostReviewQueueEntityVo> query(@PathVariable Long id) {
+    return ResponseEntity.ok().body(postReviewQueueService.query(id));
+  }
+
+  @GetMapping
+  public ResponseEntity<PageVo<PostReviewQueueEntityVo>> queryAll(
+      @PageableDefault(size = 15)
+      @SortDefault(value = {"received", "id"}, direction = Sort.Direction.DESC)
+      Pageable pageable
+  ) {
+    return ResponseEntity.ok().body(postReviewQueueService.queryAll(pageable));
+  }
+
+  @DeleteMapping(value = "/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    postReviewQueueService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+}

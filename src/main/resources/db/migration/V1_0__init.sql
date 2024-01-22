@@ -187,6 +187,22 @@ create table if not exists post_image_entity_seq
 INSERT INTO post_image_entity_seq (next_val)
 VALUES (1);
 
+create table if not exists post_review_history_entity_seq
+(
+    next_val bigint null
+);
+
+INSERT INTO post_review_history_entity_seq (next_val)
+VALUES (1);
+
+create table if not exists post_review_queue_entity_seq
+(
+    next_val bigint null
+);
+
+INSERT INTO post_review_queue_entity_seq (next_val)
+VALUES (1);
+
 create table if not exists quote_reply_entity_seq
 (
     next_val bigint null
@@ -744,6 +760,50 @@ create table if not exists post_image_entity
     constraint FK7x84i77w0pu88xutpuiu1u801
         foreign key (post_id) references post_entity (id),
     check (`image_type` between 0 and 1)
+);
+
+create table if not exists post_review_history_entity
+(
+    id                        bigint       not null
+        primary key,
+    created_by                bigint       null,
+    created_on                datetime(6)  not null,
+    deleted                   bit          not null,
+    updated_by                bigint       null,
+    updated_on                datetime(6)  null,
+    version                   smallint     null,
+    latest_review_result_time date         null,
+    review_reason             varchar(255) null,
+    review_state              smallint     not null,
+    post_id                   bigint       null,
+    reviewer_id               bigint       null,
+    constraint FK4q0iimsun4lk5kkaw3bn5chti
+        foreign key (post_id) references post_entity (id),
+    constraint FKe7ak4w53axiwmkagrtx9fvogh
+        foreign key (reviewer_id) references user_entity (id),
+    check (`review_state` between 0 and 2)
+);
+
+create table if not exists post_review_queue_entity
+(
+    id                        bigint      not null
+        primary key,
+    created_by                bigint      null,
+    created_on                datetime(6) not null,
+    deleted                   bit         not null,
+    updated_by                bigint      null,
+    updated_on                datetime(6) null,
+    version                   smallint    null,
+    latest_review_result_time date        null,
+    received                  bit         null,
+    post_id                   bigint      null,
+    receiver_id               bigint      null,
+    constraint UK_r19orfn87k4jo00673bo8vbcf
+        unique (post_id),
+    constraint FKh2dnlbgv8gapf297i2o802et6
+        foreign key (receiver_id) references user_entity (id),
+    constraint FKlgcpqwakmoatjlql3bpxcmaoe
+        foreign key (post_id) references post_entity (id)
 );
 
 create table if not exists post_user_entity

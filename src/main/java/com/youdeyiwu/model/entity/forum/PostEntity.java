@@ -18,6 +18,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -115,14 +116,14 @@ public class PostEntity extends AbstractEntity {
   private Set<PostStateEnum> states = EnumSet.of(PostStateEnum.SHOW);
 
   /**
-   * reviewState.
+   * review state.
    */
   @Enumerated
   @Column(columnDefinition = "smallint", nullable = false)
   private PostReviewStateEnum reviewState = PostReviewStateEnum.APPROVED;
 
   /**
-   * sortState.
+   * sort state.
    */
   @Enumerated
   @Column(columnDefinition = "smallint", nullable = false)
@@ -265,5 +266,11 @@ public class PostEntity extends AbstractEntity {
   @JsonIgnore
   @ToString.Exclude
   private Set<PostUserEntity> postUsers = new HashSet<>();
+
+  /**
+   * transient review reason.
+   */
+  @Transient
+  private String reviewReason;
 
 }

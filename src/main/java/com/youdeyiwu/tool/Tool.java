@@ -7,6 +7,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -180,7 +181,28 @@ public class Tool {
    * @return String
    */
   public static String getCurrentDateTime() {
+    return getCurrentDateTime(LocalDateTime.now());
+  }
+
+  /**
+   * get current date time.
+   *
+   * @param dateTime dateTime
+   * @return String
+   */
+  public static String getCurrentDateTime(LocalDateTime dateTime) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    return LocalDateTime.now().format(formatter);
+    return dateTime.format(formatter);
+  }
+
+  /**
+   * get current date time.
+   *
+   * @param dateTime dateTime
+   * @return String
+   */
+  public static String getCurrentDateTime(LocalDate dateTime) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    return dateTime.format(formatter);
   }
 }

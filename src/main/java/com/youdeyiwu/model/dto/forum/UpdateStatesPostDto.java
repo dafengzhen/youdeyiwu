@@ -9,13 +9,14 @@ import java.util.Set;
 /**
  * update states post.
  *
- * @param states      states
- * @param reviewState reviewState
- * @param sortState   sortState
- * @param allows      allows
- * @param blocks      blocks
- * @param accessKey   accessKey
- * @param reason   reason
+ * @param states       states
+ * @param reviewState  reviewState
+ * @param sortState    sortState
+ * @param allows       allows
+ * @param blocks       blocks
+ * @param accessKey    accessKey
+ * @param reason       reason
+ * @param reviewReason reviewReason
  */
 public record UpdateStatesPostDto(
     Set<PostStateEnum> states,
@@ -30,7 +31,9 @@ public record UpdateStatesPostDto(
 
     String accessKey,
 
-    String reason
+    String reason,
+
+    String reviewReason
 ) implements Serializable {
 
 }

@@ -8,6 +8,7 @@ import static com.youdeyiwu.tool.Tool.isValidImageFile;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
+import com.youdeyiwu.event.PostReviewStateApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionGroupNotFoundException;
@@ -62,6 +63,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -112,6 +114,8 @@ public class PostServiceImpl implements PostService {
   private final CommentMapper commentMapper;
 
   private final ReplyMapper replyMapper;
+
+  private final ApplicationEventPublisher publisher;
 
   @Transactional
   @Override
@@ -259,6 +263,8 @@ public class PostServiceImpl implements PostService {
 
     if (Objects.nonNull(dto.reviewState())) {
       postEntity.setReviewState(dto.reviewState());
+      postEntity.setReviewReason(dto.reviewReason());
+      publisher.publishEvent(new PostReviewStateApplicationEvent(postEntity));
     }
 
     if (Objects.nonNull(dto.sortState())) {
