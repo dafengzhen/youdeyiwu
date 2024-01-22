@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,15 +57,9 @@ public class PostReviewQueueController {
   @GetMapping
   public ResponseEntity<PageVo<PostReviewQueueEntityVo>> queryAll(
       @PageableDefault(size = 15)
-      @SortDefault(value = {"received", "id"}, direction = Sort.Direction.DESC)
+      @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
     return ResponseEntity.ok().body(postReviewQueueService.queryAll(pageable));
-  }
-
-  @DeleteMapping(value = "/{id}")
-  public ResponseEntity<Void> delete(@PathVariable Long id) {
-    postReviewQueueService.delete(id);
-    return ResponseEntity.noContent().build();
   }
 }

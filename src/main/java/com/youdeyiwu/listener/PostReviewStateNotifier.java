@@ -64,9 +64,9 @@ public class PostReviewStateNotifier
       case APPROVED -> {
         String message = Objects.isNull(senderAlias)
             ?
-            "The system has approved your post [%s] at %s. Your post is now accessible."
+            "The system has approved your post [ %s ] at %s. Your post is now accessible."
                 .formatted(entity.getName(), currentDateTime)
-            : "User %s has approved your post [%s] at %s. Your post is now accessible."
+            : "User %s has approved your post [ %s ] at %s. Your post is now accessible."
             .formatted(senderAlias, entity.getName(), currentDateTime);
 
         sendPostReviewStateMessage(
@@ -78,10 +78,10 @@ public class PostReviewStateNotifier
       case REJECTED -> {
         String message = (Objects.isNull(senderAlias))
             ?
-            "The system has rejected your post [%s] at %s. Your post is temporarily inaccessible. The reason for the rejection is as follows: %s"
+            "The system has rejected your post [ %s ] at %s. Your post is temporarily inaccessible. The reason for the rejection is as follows: %s"
                 .formatted(entity.getName(), currentDateTime, reviewReason)
             :
-            "User %s has rejected your post [%s] at %s. Your post is temporarily inaccessible. The reason for the rejection is as follows: %s"
+            "User %s has rejected your post [ %s ] at %s. Your post is temporarily inaccessible. The reason for the rejection is as follows: %s"
                 .formatted(senderAlias, entity.getName(), currentDateTime, reviewReason);
 
         sendPostReviewStateMessage("Sorry, your post did not pass the review", message,
@@ -92,7 +92,7 @@ public class PostReviewStateNotifier
         String message =
             """
                 Success is just around the corner.
-                Your post [%s] is currently awaiting review. Once approved, it will be accessible to the public.
+                Your post [ %s ] is currently awaiting review. Once approved, it will be accessible to the public.
                 Please note that during the review process, you won't be able to edit the post.
                 Please wait for the review to be completed.
                 """
@@ -124,7 +124,7 @@ public class PostReviewStateNotifier
         .forEach(userEntity -> sendPostReviewStateMessage(
             "There is a post awaiting your review",
             """
-                There is a post [%s] in the forum section you manage [%s] that is currently awaiting review.
+                There is a post [ %s ] in the forum section you manage [ %s ] that is currently awaiting review.
                 Please go to the backend's review queue to check and process it.
                 """
                 .formatted(entity.getName(), entity.getSection().getName()),

@@ -44,11 +44,4 @@ public interface PostReviewQueueService {
    * @return PostReviewQueueEntityVo
    */
   PageVo<PostReviewQueueEntityVo> queryAll(Pageable pageable);
-
-  /**
-   * delete.
-   *
-   * @param id id
-   */
-  void delete(Long id);
 }

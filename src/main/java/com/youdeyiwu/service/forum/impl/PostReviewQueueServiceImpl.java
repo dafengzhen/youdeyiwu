@@ -80,16 +80,9 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
       throw new CustomException("You can only claim posts that are currently awaiting review");
     }
 
-    boolean whetherToContinue = false;
-    if (Boolean.TRUE.equals(userEntity.getRoot())) {
-      whetherToContinue = true;
-    } else if (
-        Objects.nonNull(postEntity.getSection())
-            && postEntity.getSection().getAdmins().contains(userEntity)
-    ) {
-      whetherToContinue = true;
-    }
-
+    boolean whetherToContinue = Boolean.TRUE.equals(userEntity.getRoot())
+                                || (Objects.nonNull(postEntity.getSection())
+                                    && postEntity.getSection().getAdmins().contains(userEntity));
     if (!whetherToContinue) {
       throw new CustomException("Sorry, you are unable to process the audit request for this post");
     }
@@ -116,50 +109,62 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
 
     String currentDateTime = getCurrentDateTime();
     String estimatedTime = getCurrentDateTime(postReviewQueueEntity.getLatestReviewResultTime());
-    messageToReviewer(postReviewQueueEntity, currentDateTime, estimatedTime);
-    messageToUser(postReviewQueueEntity, currentDateTime, estimatedTime);
+    sendReceivedMessageToReviewer(postReviewQueueEntity, currentDateTime, estimatedTime);
+    sendReceivedMessageToUser(postReviewQueueEntity, currentDateTime, estimatedTime);
   }
 
   @Transactional
   @Override
   public void refund(Long id, RefundPostReviewQueueDto dto) {
-    // TODO
+    PostReviewQueueEntity postReviewQueueEntity = postReviewQueueRepository.findById(id)
+        .orElseThrow(PostReviewQueueNotFoundException::new);
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+
+    if (Boolean.FALSE.equals(postReviewQueueEntity.getReceived())) {
+      throw new CustomException("The audit request for this post has not been processed yet");
+    }
+
+    if (!Objects.equals(postReviewQueueEntity.getReceiver(), userEntity)) {
+      throw new CustomException(
+          "Sorry, you are unable to cancel the processing of the audit request for this post");
+    }
+
+    postReviewQueueEntity.setReceived(false);
+    postReviewQueueEntity.setLatestReviewResultTime(null);
+    String currentDateTime = getCurrentDateTime();
+    sendRefundMessageToReviewer(postReviewQueueEntity, currentDateTime);
+    sendRefundMessageToUser(postReviewQueueEntity, currentDateTime);
   }
 
   @Override
   public PostReviewQueueEntityVo query(Long id) {
     PostReviewQueueEntity postReviewQueueEntity = postReviewQueueRepository.findById(id)
         .orElseThrow(PostReviewQueueNotFoundException::new);
-    return postReviewQueueMapper.entityToVo(postReviewQueueEntity);
+    PostReviewQueueEntityVo vo = postReviewQueueMapper.entityToVo(postReviewQueueEntity);
+    vo.setPost(postMapper.entityToVo(postReviewQueueEntity.getPost()));
+    vo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
+    return vo;
   }
 
   @Override
   public PageVo<PostReviewQueueEntityVo> queryAll(Pageable pageable) {
     return new PageVo<>(postReviewQueueRepository.findAll(pageable).map(postReviewQueueEntity -> {
-      PostReviewQueueEntityVo vo =
-          postReviewQueueMapper.entityToVo(postReviewQueueEntity);
+      PostReviewQueueEntityVo vo = postReviewQueueMapper.entityToVo(postReviewQueueEntity);
       vo.setPost(postMapper.entityToVo(postReviewQueueEntity.getPost()));
       vo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
       return vo;
     }));
   }
 
-  @Transactional
-  @Override
-  public void delete(Long id) {
-    PostReviewQueueEntity postReviewQueueEntity = postReviewQueueRepository.findById(id)
-        .orElseThrow(PostReviewQueueNotFoundException::new);
-    postReviewQueueRepository.delete(postReviewQueueEntity);
-  }
-
   /**
-   * message to reviewer.
+   * send received message to reviewer.
    *
    * @param postReviewQueueEntity postReviewQueueEntity
    * @param currentDateTime       currentDateTime
    * @param estimatedTime         estimatedTime
    */
-  private void messageToReviewer(
+  private void sendReceivedMessageToReviewer(
       PostReviewQueueEntity postReviewQueueEntity,
       String currentDateTime,
       String estimatedTime
@@ -170,7 +175,7 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     if (Objects.isNull(postReviewQueueEntity.getPost().getUser())) {
       messageEntity.setOverview(
           """
-              At %s, you have claimed the review request for the post [%s],
+              At %s, you have claimed the review request for the post [ %s ],
               with an estimated completion time of %s. Thank you for your support to the forum.
               """
               .formatted(
@@ -182,7 +187,7 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     } else {
       messageEntity.setOverview(
           """
-              You have received a post review request from user %s for the post [%s] at %s.
+              You have received a post review request from user %s for the post [ %s ] at %s.
               The estimated completion time for the review is %s.
               Thank you for your support to the forum.
               """
@@ -201,13 +206,13 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
   }
 
   /**
-   * message to user.
+   * send received message to user.
    *
    * @param postReviewQueueEntity postReviewQueueEntity
    * @param currentDateTime       currentDateTime
    * @param estimatedTime         estimatedTime
    */
-  private void messageToUser(
+  private void sendReceivedMessageToUser(
       PostReviewQueueEntity postReviewQueueEntity,
       String currentDateTime,
       String estimatedTime
@@ -220,7 +225,7 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     messageEntity.setName("Your post is under review");
     messageEntity.setOverview(
         """
-            Your post [%s] will be reviewed by user %s starting at %s.
+            Your post [ %s ] will be reviewed by user %s starting at %s.
             The estimated completion time for the review is %s.
             We value every post you make and appreciate your support.
             """
@@ -229,6 +234,79 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
                 securityService.getAliasAndId(postReviewQueueEntity.getReceiver()),
                 currentDateTime,
                 estimatedTime
+            )
+    );
+
+    messageEntity.setLink("/posts/" + postReviewQueueEntity.getPost().getId());
+    messageEntity.setReceiver(postReviewQueueEntity.getPost().getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * send refund message to reviewer.
+   *
+   * @param postReviewQueueEntity postReviewQueueEntity
+   * @param currentDateTime       currentDateTime
+   */
+  private void sendRefundMessageToReviewer(
+      PostReviewQueueEntity postReviewQueueEntity,
+      String currentDateTime
+  ) {
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName("You have returned a post review request");
+
+    if (Objects.isNull(postReviewQueueEntity.getPost().getUser())) {
+      messageEntity.setOverview(
+          """
+              You have returned the review request for post [ %s ] at %s. The review task for this post is now available for other people to claim and process.
+              """
+              .formatted(
+                  postReviewQueueEntity.getPost().getName(),
+                  currentDateTime
+              )
+      );
+    } else {
+      messageEntity.setOverview(
+          """
+              You have returned the review request for the post [ %s ] from user %s at %s. The post is now available for other people to claim for review.
+              """
+              .formatted(
+                  postReviewQueueEntity.getPost().getName(),
+                  securityService.getAliasAndId(postReviewQueueEntity.getPost().getUser()),
+                  currentDateTime
+              )
+      );
+    }
+
+    messageEntity.setLink("/posts/" + postReviewQueueEntity.getPost().getId());
+    messageEntity.setReceiver(postReviewQueueEntity.getReceiver());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * send refund message to user.
+   *
+   * @param postReviewQueueEntity postReviewQueueEntity
+   * @param currentDateTime       currentDateTime
+   */
+  private void sendRefundMessageToUser(
+      PostReviewQueueEntity postReviewQueueEntity,
+      String currentDateTime
+  ) {
+    if (Objects.isNull(postReviewQueueEntity.getPost().getUser())) {
+      return;
+    }
+
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName("Your post is currently awaiting review");
+    messageEntity.setOverview(
+        """
+            User %s has released the review request for your post [ %s ] at %s. Your post is now available for other people to review.
+            """
+            .formatted(
+                securityService.getAliasAndId(postReviewQueueEntity.getReceiver()),
+                postReviewQueueEntity.getPost().getName(),
+                currentDateTime
             )
     );
 
