@@ -1,7 +1,10 @@
 package com.youdeyiwu.security;
 
 import com.youdeyiwu.exception.UnauthorizedException;
+import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.model.other.UserContext;
+import com.youdeyiwu.repository.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ import org.springframework.util.StringUtils;
 public class SecurityServiceImpl implements SecurityService {
 
   private final HttpServletRequest request;
+
+  private final UserRepository userRepository;
 
   @Override
   public Authentication getAuthentication() {
@@ -134,5 +139,22 @@ public class SecurityServiceImpl implements SecurityService {
     return getAlias(entity) + """
          (ID. %s)
         """.formatted(entity.getId());
+  }
+
+  @Override
+  public UserContext getUserContext() {
+    UserEntity user = null;
+    UserEntity root = null;
+    boolean anonymous = isAnonymous();
+
+    if (!anonymous) {
+      user = userRepository.findById(getUserId())
+          .orElseThrow(UserNotFoundException::new);
+      if (Boolean.TRUE.equals(user.getRoot())) {
+        root = user;
+      }
+    }
+
+    return new UserContext(anonymous, user, root);
   }
 }

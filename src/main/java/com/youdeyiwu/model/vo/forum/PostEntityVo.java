@@ -160,4 +160,9 @@ public class PostEntityVo extends AbstractEntityVo {
    */
   private PageVo<CommentReplyVo> comments;
 
+  /**
+   * post review queue.
+   */
+  private PostReviewQueueEntityVo postReviewQueue;
+
 }

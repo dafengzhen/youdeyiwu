@@ -10,7 +10,9 @@ import com.youdeyiwu.exception.PostReviewQueueNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.PostMapper;
 import com.youdeyiwu.mapper.forum.PostReviewQueueMapper;
+import com.youdeyiwu.mapper.forum.SectionMapper;
 import com.youdeyiwu.mapper.user.UserMapper;
+import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
@@ -19,7 +21,9 @@ import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostReviewQueueEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.model.other.UserContext;
 import com.youdeyiwu.model.vo.PageVo;
+import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostReviewQueueEntityVo;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.PostReviewQueueRepository;
@@ -31,6 +35,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,6 +67,8 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
   private final PostReviewQueueMapper postReviewQueueMapper;
 
   private final UserMapper userMapper;
+
+  private final SectionMapper sectionMapper;
 
   @Transactional
   @Override
@@ -107,6 +114,7 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
       entity.setPost(postEntity);
       entity.setLatestReviewResultTime(dto.latestReviewResultTime());
       entity.setReceiver(userEntity);
+      postEntity.setPostReviewQueue(entity);
       postReviewQueueEntity = postReviewQueueRepository.save(entity);
     }
 
@@ -195,13 +203,27 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
   }
 
   @Override
-  public PageVo<PostReviewQueueEntityVo> queryAll(Pageable pageable) {
-    return new PageVo<>(postReviewQueueRepository.findAll(pageable).map(postReviewQueueEntity -> {
-      PostReviewQueueEntityVo vo = postReviewQueueMapper.entityToVo(postReviewQueueEntity);
-      vo.setPost(postMapper.entityToVo(postReviewQueueEntity.getPost()));
-      vo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
-      return vo;
-    }));
+  public PageVo<PostEntityVo> queryAll(Pageable pageable) {
+    UserContext userContext = securityService.getUserContext();
+    Page<PostEntity> page = postRepository.findPostReviewQueues(
+        new PaginationPositionDto(pageable),
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
+    );
+
+    return new PageVo<>(
+        page.map(postEntity -> {
+              PostEntityVo vo = postMapper.entityToVo(postEntity);
+              vo.setSection(sectionMapper.entityToVo(postEntity.getSection()));
+              PostReviewQueueEntity postReviewQueueEntity = postEntity.getPostReviewQueue();
+              PostReviewQueueEntityVo postReviewQueueEntityVo = postReviewQueueMapper.entityToVo(postReviewQueueEntity);
+              postReviewQueueEntityVo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
+              vo.setPostReviewQueue(postReviewQueueEntityVo);
+              return vo;
+            }
+        )
+    );
   }
 
   /**

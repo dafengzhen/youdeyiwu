@@ -38,6 +38,7 @@ import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.model.other.UserContext;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
@@ -343,18 +344,7 @@ public class PostServiceImpl implements PostService {
       QueryParamsPostDto dto,
       String postKey
   ) {
-    UserEntity user = null;
-    UserEntity root = null;
-    boolean anonymous = securityService.isAnonymous();
-
-    if (!anonymous) {
-      user = userRepository.findById(securityService.getUserId())
-          .orElseThrow(UserNotFoundException::new);
-      if (Boolean.TRUE.equals(user.getRoot())) {
-        root = user;
-      }
-    }
-
+    UserContext userContext = securityService.getUserContext();
     Page<PostEntity> page = postRepository.findAll(
         new PaginationPositionDto(pageable),
         new QueryParamsPost(
@@ -376,9 +366,9 @@ public class PostServiceImpl implements PostService {
                 : null
         ),
         postKey,
-        anonymous,
-        user,
-        root
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
     );
 
     return new PageVo<>(
@@ -394,46 +384,47 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PageVo<CommentReplyVo> queryCommentReply(Pageable pageable, Long id) {
-    UserEntity user = null;
-    UserEntity root = null;
-    boolean anonymous = securityService.isAnonymous();
-
-    if (!anonymous) {
-      user = userRepository.findById(securityService.getUserId())
-          .orElseThrow(UserNotFoundException::new);
-      if (Boolean.TRUE.equals(user.getRoot())) {
-        root = user;
-      }
-    }
-
+    UserContext userContext = securityService.getUserContext();
     PostEntity postEntity = findPost(id);
-    return getCommentReply(pageable, postEntity, anonymous, user, root);
+    return getCommentReply(
+        pageable,
+        postEntity,
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
+    );
   }
 
   @Override
   public PostEntityVo queryDetails(Pageable pageable, Long id, String postKey) {
-    UserEntity user = null;
-    UserEntity root = null;
-    boolean anonymous = securityService.isAnonymous();
-
-    if (!anonymous) {
-      user = userRepository.findById(securityService.getUserId())
-          .orElseThrow(UserNotFoundException::new);
-      if (Boolean.TRUE.equals(user.getRoot())) {
-        root = user;
-      }
-    }
-
+    UserContext userContext = securityService.getUserContext();
     PostEntity postEntity = findPost(id);
-    checkPostReviewState(postEntity, anonymous, user, root);
-    checkPostStates(postEntity, postKey, anonymous, user, root);
+    checkPostReviewState(
+        postEntity,
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
+    );
+    checkPostStates(
+        postEntity,
+        postKey,
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
+    );
     PostEntityVo vo = postMapper.entityToVo(postEntity);
     setBadges(vo, postEntity);
     setSection(vo, postEntity);
     setUser(vo, postEntity);
     setTags(vo, postEntity);
     setSocialInteraction(vo, postEntity);
-    vo.setComments(getCommentReply(pageable, postEntity, anonymous, user, root));
+    vo.setComments(getCommentReply(
+        pageable,
+        postEntity,
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
+    ));
     return vo;
   }
 

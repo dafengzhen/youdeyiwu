@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo;
 
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Data;
  * @author dafengzhen
  */
 @Data
-public class TokenVo {
+public class TokenVo implements Serializable {
 
   /**
    * id.

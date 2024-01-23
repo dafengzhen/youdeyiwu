@@ -18,6 +18,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -266,6 +267,14 @@ public class PostEntity extends AbstractEntity {
   @JsonIgnore
   @ToString.Exclude
   private Set<PostUserEntity> postUsers = new HashSet<>();
+
+  /**
+   * post review queue.
+   */
+  @OneToOne
+  @JsonIgnore
+  @ToString.Exclude
+  private PostReviewQueueEntity postReviewQueue;
 
   /**
    * transient review reason.

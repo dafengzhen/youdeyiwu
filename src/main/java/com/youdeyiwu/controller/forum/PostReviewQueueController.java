@@ -5,6 +5,7 @@ import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
 import com.youdeyiwu.model.vo.PageVo;
+import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostReviewQueueEntityVo;
 import com.youdeyiwu.service.forum.PostReviewQueueService;
 import jakarta.validation.Valid;
@@ -72,7 +73,7 @@ public class PostReviewQueueController {
   }
 
   @GetMapping
-  public ResponseEntity<PageVo<PostReviewQueueEntityVo>> queryAll(
+  public ResponseEntity<PageVo<PostEntityVo>> queryAll(
       @PageableDefault(size = 15)
       @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
       Pageable pageable

@@ -74,6 +74,7 @@ public interface PostMapper {
   @Mapping(target = "user", ignore = true)
   @Mapping(target = "comments", ignore = true)
   @Mapping(target = "coverImage", ignore = true)
+  @Mapping(target = "postReviewQueue", ignore = true)
   PostEntityVo entityToVo(PostEntity entity);
 
   /**

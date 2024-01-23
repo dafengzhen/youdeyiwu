@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo.forum;
 
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Data;
  * @author dafengzhen
  */
 @Data
-public class CommentReplyVo {
+public class CommentReplyVo implements Serializable {
 
   /**
    * comment.

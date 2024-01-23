@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo.user;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import lombok.Data;
  * @author dafengzhen
  */
 @Data
-public class UsersCountByDateVo {
+public class UsersCountByDateVo implements Serializable {
 
   /**
    * date.

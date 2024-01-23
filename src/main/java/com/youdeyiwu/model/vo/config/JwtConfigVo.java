@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo.config;
 
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Data;
  * @author dafengzhen
  */
 @Data
-public class JwtConfigVo {
+public class JwtConfigVo implements Serializable {
 
   /**
    * secret.

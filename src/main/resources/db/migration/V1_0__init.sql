@@ -534,12 +534,12 @@ create table if not exists global_message_entity
     updated_on    datetime(6)  null,
     version       smallint     null,
     content       json         null,
+    message_range smallint not null,
+    message_type  smallint not null,
     name          varchar(255) not null,
     overview      varchar(255) not null,
+    sort          int      not null,
     sender_id     bigint       null,
-    sort          int          not null,
-    message_range smallint     not null,
-    message_type  smallint     not null,
     link          varchar(255) null,
     constraint UK_pt1jenvifwkmyypi8m8856td5
         unique (sender_id),
@@ -598,33 +598,36 @@ create table if not exists message_entity
 
 create table if not exists post_entity
 (
-    id               bigint       not null
+    id                   bigint       not null
         primary key,
-    created_by       bigint       null,
-    created_on       datetime(6)  not null,
-    deleted          bit          not null,
-    updated_by       bigint       null,
-    updated_on       datetime(6)  null,
-    version          smallint     null,
-    access_key       varchar(255) null,
-    comments_count   bigint       not null,
-    content          text         null,
-    content_link     varchar(255) null,
-    cover            varchar(255) null,
-    favorites_count  bigint       not null,
-    followers_count  bigint       not null,
-    initial_score    bigint       not null,
-    likes_count      bigint       not null,
-    name             varchar(255) not null,
-    overview         varchar(255) null,
-    page_views       bigint       not null,
-    replies_count    bigint       not null,
-    review_state     smallint     not null,
-    sort_state       smallint     not null,
-    section_id       bigint       null,
-    user_id          bigint       null,
-    cover_image      mediumblob   null,
-    cover_image_type smallint     not null,
+    created_by           bigint       null,
+    created_on           datetime(6)  not null,
+    deleted              bit          not null,
+    updated_by           bigint       null,
+    updated_on           datetime(6)  null,
+    version              smallint     null,
+    access_key           varchar(255) null,
+    comments_count       bigint       not null,
+    content              text         null,
+    content_link         varchar(255) null,
+    cover                varchar(255) null,
+    favorites_count      bigint       not null,
+    followers_count      bigint       not null,
+    initial_score        bigint       not null,
+    likes_count          bigint       not null,
+    name                 varchar(255) not null,
+    overview             varchar(255) null,
+    page_views           bigint       not null,
+    replies_count        bigint       not null,
+    review_state         smallint     not null,
+    sort_state           smallint     not null,
+    section_id           bigint       null,
+    user_id              bigint       null,
+    cover_image          mediumblob   null,
+    cover_image_type     smallint     not null,
+    post_review_queue_id bigint       null,
+    constraint UK_kc7ibbd39111bkurue4tppjsj
+        unique (post_review_queue_id),
     constraint FK2e9ivvlpgr8x6wd2qxvlefvub
         foreign key (section_id) references section_entity (id),
     constraint FK2jmp42lmrw2f3ljd16f1re3c8
@@ -647,9 +650,9 @@ create table if not exists comment_entity
     content           varchar(255) not null,
     likes_count       bigint       null,
     review_state      smallint     not null,
-    unique_identifier varchar(255) null,
     post_id           bigint       null,
     user_id           bigint       null,
+    unique_identifier varchar(255) null,
     constraint FK5q5av5arkm3of9b5n493p992p
         foreign key (post_id) references post_entity (id),
     constraint FK7u6osru73338guaca8ukops8l
@@ -729,11 +732,11 @@ create table if not exists post_favorite_entity
     updated_on   datetime(6)  null,
     version      smallint     null,
     content      text         null,
-    content_link varchar(255) null,
     name         varchar(255) not null,
     overview     varchar(255) null,
     post_id      bigint       null,
     user_id      bigint       null,
+    content_link varchar(255) null,
     constraint UK_pn91hw7x2pb4pfuks68g04m3i
         unique (post_id),
     constraint FK8xpmgt9es0635uycto71vs3p5
@@ -806,6 +809,10 @@ create table if not exists post_review_queue_entity
         foreign key (post_id) references post_entity (id)
 );
 
+alter table post_entity
+    add constraint FKopdbggrpv46rq9ef247xwweos
+        foreign key (post_review_queue_id) references post_review_queue_entity (id);
+
 create table if not exists post_user_entity
 (
     created_by bigint      null,
@@ -839,11 +846,11 @@ create table if not exists quote_reply_entity
     content           varchar(255) not null,
     likes_count       bigint       null,
     review_state      smallint     not null,
-    unique_identifier varchar(255) null,
     comment_id        bigint       null,
     post_id           bigint       null,
     quote_reply_id    bigint       null,
     user_id           bigint       null,
+    unique_identifier varchar(255) null,
     constraint FKc1f8k34dp659y9sv9gnvhl01x
         foreign key (comment_id) references comment_entity (id),
     constraint FKeovnjq8qxbk8q7j3bs8jryf5s

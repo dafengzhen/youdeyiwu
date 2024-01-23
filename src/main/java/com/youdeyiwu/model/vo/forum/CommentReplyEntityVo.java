@@ -2,6 +2,7 @@ package com.youdeyiwu.model.vo.forum;
 
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import java.io.Serializable;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
  * @author dafengzhen
  */
 @Data
-public class CommentReplyEntityVo {
+public class CommentReplyEntityVo implements Serializable {
 
   /**
    * comment.

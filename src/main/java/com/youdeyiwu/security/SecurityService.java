@@ -1,6 +1,7 @@
 package com.youdeyiwu.security;
 
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.model.other.UserContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -120,4 +121,11 @@ public interface SecurityService {
    * @return String
    */
   String getAliasAndId(UserEntity entity);
+
+  /**
+   * get user context.
+   *
+   * @return UserContext
+   */
+  UserContext getUserContext();
 }

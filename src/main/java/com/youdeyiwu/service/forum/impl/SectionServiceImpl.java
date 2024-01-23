@@ -25,6 +25,7 @@ import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsSectionDto;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.model.other.UserContext;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
@@ -226,20 +227,15 @@ public class SectionServiceImpl implements SectionService {
 
   @Override
   public SectionEntityVo queryDetails(Long id, String sectionKey) {
-    UserEntity user = null;
-    UserEntity root = null;
-    boolean anonymous = securityService.isAnonymous();
-
-    if (!anonymous) {
-      user = userRepository.findById(securityService.getUserId())
-          .orElseThrow(UserNotFoundException::new);
-      if (Boolean.TRUE.equals(user.getRoot())) {
-        root = user;
-      }
-    }
-
+    UserContext userContext = securityService.getUserContext();
     SectionEntity sectionEntity = findSection(id);
-    checkSectionStates(sectionEntity, sectionKey, anonymous, user, root);
+    checkSectionStates(
+        sectionEntity,
+        sectionKey,
+        userContext.anonymous(),
+        userContext.user(),
+        userContext.root()
+    );
     SectionEntityVo vo = sectionMapper.entityToVo(sectionEntity);
     setAdmins(vo, sectionEntity);
     setSectionGroups(vo, sectionEntity);
@@ -295,19 +291,13 @@ public class SectionServiceImpl implements SectionService {
 
   @Override
   public List<SectionEntityVo> selectAll(String sectionKey) {
-    UserEntity user = null;
-    UserEntity root = null;
-    boolean anonymous = securityService.isAnonymous();
-
-    if (!anonymous) {
-      user = userRepository.findById(securityService.getUserId())
-          .orElseThrow(UserNotFoundException::new);
-      if (Boolean.TRUE.equals(user.getRoot())) {
-        root = user;
-      }
-    }
-
-    return sectionRepository.findAll(sectionKey, anonymous, user, root)
+    UserContext userContext = securityService.getUserContext();
+    return sectionRepository.findAll(
+            sectionKey,
+            userContext.anonymous(),
+            userContext.user(),
+            userContext.root()
+        )
         .stream()
         .map(sectionEntity -> {
           SectionEntityVo vo = sectionMapper.entityToVo(sectionEntity);

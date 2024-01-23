@@ -59,4 +59,20 @@ public interface CustomizedPostRepository {
       UserEntity user,
       UserEntity root
   );
+
+  /**
+   * find post review queues.
+   *
+   * @param position    position
+   * @param isAnonymous isAnonymous
+   * @param user        user
+   * @param root        root
+   * @return Page
+   */
+  Page<PostEntity> findPostReviewQueues(
+      PaginationPositionDto position,
+      Boolean isAnonymous,
+      UserEntity user,
+      UserEntity root
+  );
 }

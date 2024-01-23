@@ -5,6 +5,7 @@ import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
 import com.youdeyiwu.model.vo.PageVo;
+import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostReviewQueueEntityVo;
 import org.springframework.data.domain.Pageable;
 
@@ -58,7 +59,7 @@ public interface PostReviewQueueService {
    * queryAll.
    *
    * @param pageable pageable
-   * @return PostReviewQueueEntityVo
+   * @return PageVo
    */
-  PageVo<PostReviewQueueEntityVo> queryAll(Pageable pageable);
+  PageVo<PostEntityVo> queryAll(Pageable pageable);
 }

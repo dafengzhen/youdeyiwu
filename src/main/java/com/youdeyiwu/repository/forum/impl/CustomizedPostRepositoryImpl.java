@@ -208,6 +208,65 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
     return new PageImpl<>(commentReplyEntityVos, position.pageable(), totalSize);
   }
 
+  @Override
+  public Page<PostEntity> findPostReviewQueues(
+      PaginationPositionDto position,
+      Boolean isAnonymous,
+      UserEntity user,
+      UserEntity root
+  ) {
+    TypedQuery<PostEntity> query;
+    TypedQuery<Long> totalSizeQuery;
+
+    if (Boolean.TRUE.equals(isAnonymous) || Objects.nonNull(root) || Objects.isNull(user)) {
+      query = entityManager.createQuery(
+          """
+              select p from PostEntity p
+              where p.reviewState = 2
+              order by p.initialScore desc, p.sortState desc, p.id desc
+              """,
+          PostEntity.class
+      );
+
+      totalSizeQuery = entityManager.createQuery(
+          """
+              select count(p.id) from PostEntity p
+              where p.reviewState = 2
+              """,
+          Long.class
+      );
+    } else {
+      query = entityManager.createQuery(
+              """
+                  select p from PostEntity p left join fetch p.section ps
+                  where p.reviewState = 2
+                  and :user member of ps.admins
+                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  """,
+              PostEntity.class
+          )
+          .setParameter("user", user);
+
+      totalSizeQuery = entityManager.createQuery(
+              """
+                  select count(p.id) from PostEntity p left join p.section ps
+                  where p.reviewState = 2
+                  and :user member of ps.admins
+                  """,
+              Long.class
+          )
+          .setParameter("user", user);
+    }
+
+    return new PageImpl<>(
+        query.setFirstResult(position.firstResult())
+            .setMaxResults(position.maxResults())
+            .getResultList(),
+        position.pageable(),
+        totalSizeQuery.getSingleResult()
+    );
+  }
+
   /**
    * query anonymous user posts.
    *

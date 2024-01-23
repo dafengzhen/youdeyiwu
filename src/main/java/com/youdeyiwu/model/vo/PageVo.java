@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.vo;
 
+import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,7 @@ import org.springframework.data.domain.Page;
  * @author dafengzhen
  */
 @Data
-public class PageVo<T> {
+public class PageVo<T extends Serializable> implements Serializable {
 
   /**
    * content.
