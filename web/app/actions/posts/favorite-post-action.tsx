@@ -2,7 +2,7 @@
 
 import { type IError } from '@/app/interfaces';
 import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
+import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
 import { checkResponseStatus } from '@/app/common/server';
 
 export default async function FavoritePostAction(variables: {
@@ -11,7 +11,7 @@ export default async function FavoritePostAction(variables: {
   const response = await fetch(
     process.env.API_SERVER + `/posts/${variables.id}/favorite`,
     {
-      method: POST,
+      method: PUT,
       headers: {
         ...AUTHENTICATION_HEADER(),
         ...JSON_HEADER,
