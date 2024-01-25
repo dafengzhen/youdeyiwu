@@ -165,6 +165,10 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
           "Sorry, you are unable to process the review result of this post");
     }
 
+    PostEntity postEntity = postReviewQueueEntity.getPost();
+    postEntity.setReviewReason(dto.reason());
+    postEntity.setReviewState(PostReviewStateEnum.APPROVED);
+    postEntity.setPostReviewQueue(null);
     postReviewQueueRepository.delete(postReviewQueueEntity);
     String currentDateTime = getCurrentDateTime();
     sendApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
@@ -187,6 +191,10 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
           "Sorry, you are unable to process the review result of this post");
     }
 
+    PostEntity postEntity = postReviewQueueEntity.getPost();
+    postEntity.setReviewReason(dto.reason());
+    postEntity.setReviewState(PostReviewStateEnum.REJECTED);
+    postEntity.setPostReviewQueue(null);
     postReviewQueueRepository.delete(postReviewQueueEntity);
     String currentDateTime = getCurrentDateTime();
     sendNotApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
@@ -218,7 +226,11 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
               vo.setSection(sectionMapper.entityToVo(postEntity.getSection()));
               PostReviewQueueEntity postReviewQueueEntity = postEntity.getPostReviewQueue();
               PostReviewQueueEntityVo postReviewQueueEntityVo = postReviewQueueMapper.entityToVo(postReviewQueueEntity);
-              postReviewQueueEntityVo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
+
+              if (Objects.nonNull(postReviewQueueEntity)) {
+                postReviewQueueEntityVo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
+              }
+
               vo.setPostReviewQueue(postReviewQueueEntityVo);
               return vo;
             }

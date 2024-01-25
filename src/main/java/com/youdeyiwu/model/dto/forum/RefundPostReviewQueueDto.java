@@ -5,10 +5,10 @@ import java.io.Serializable;
 /**
  * refund post review queue.
  *
- * @param refundReason refundReason
+ * @param reason reason
  */
 public record RefundPostReviewQueueDto(
-    String refundReason
+    String reason
 ) implements Serializable {
 
 }

@@ -44,7 +44,7 @@ public class GlobalMessageEntity extends AbstractEntity {
   /**
    * overview.
    */
-  @Column(nullable = false)
+  @Column(nullable = false, length = 512)
   private String overview;
 
   /**

@@ -12,6 +12,7 @@ export default function Box({
   onErrorEditor,
   title,
   hideReturnBtn,
+  hideHeader,
 }: {
   children: ReactNode;
   footer?: ReactNode;
@@ -20,6 +21,7 @@ export default function Box({
   onLoadEditor?: () => void;
   onErrorEditor?: (e: any) => void;
   hideReturnBtn?: boolean;
+  hideHeader?: boolean;
 }) {
   const router = useRouter();
 
@@ -30,26 +32,27 @@ export default function Box({
   return (
     <>
       <div className="card rounded-2">
-        {header ? (
-          <div className="card-header">{header}</div>
-        ) : (
-          <div className="card-header">
-            <div className="d-flex align-items-center justify-content-between gap-4">
-              {title ? <div className="fw-bold">{title}</div> : <div></div>}
-              <div>
-                {!hideReturnBtn && (
-                  <button
-                    onClick={onClickReturn}
-                    type="button"
-                    className="btn btn-sm btn-secondary"
-                  >
-                    Return
-                  </button>
-                )}
+        {!hideHeader &&
+          (header ? (
+            <div className="card-header">{header}</div>
+          ) : (
+            <div className="card-header">
+              <div className="d-flex align-items-center justify-content-between gap-4">
+                {title ? <div className="fw-bold">{title}</div> : <div></div>}
+                <div>
+                  {!hideReturnBtn && (
+                    <button
+                      onClick={onClickReturn}
+                      type="button"
+                      className="btn btn-sm btn-secondary"
+                    >
+                      Return
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          ))}
         <div className="card-body">{children}</div>
         {footer && (
           <div className="card-footer bg-transparent border-top-0">

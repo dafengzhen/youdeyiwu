@@ -44,6 +44,7 @@ export interface IPost extends IBase {
   tags: ITag[];
   accessKey?: string;
   user?: IUser;
+  postReviewQueue?: IPostReviewQueue;
 }
 
 export interface IPostDetails extends IBase {
@@ -73,6 +74,13 @@ export interface IPostDetails extends IBase {
   followed?: boolean;
   bookmarked?: boolean;
   comments: IPage<ICommentReply[]>;
+}
+
+export interface IPostReviewQueue extends IBase {
+  received: boolean;
+  latestReviewResultTime?: string;
+  receiver: IUser;
+  post?: IPost;
 }
 
 export interface IPostFavorite extends IBase {
