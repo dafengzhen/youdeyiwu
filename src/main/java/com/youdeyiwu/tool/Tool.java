@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
+import com.youdeyiwu.enums.point.SignEnum;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jsoup.Jsoup;
@@ -204,5 +206,23 @@ public class Tool {
   public static String getCurrentDateTime(LocalDate dateTime) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     return dateTime.format(formatter);
+  }
+
+  /**
+   * Determines the sign of an integer and returns the result through a callback parameter.
+   *
+   * @param number   The integer to determine the sign of.
+   * @param callback The callback function to handle the result string.
+   */
+  public static void getSign(Integer number, Consumer<SignEnum> callback) {
+    if (number == null) {
+      throw new IllegalArgumentException("Number cannot be null.");
+    } else if (number > 0) {
+      callback.accept(SignEnum.POSITIVE);
+    } else if (number < 0) {
+      callback.accept(SignEnum.NEGATIVE);
+    } else {
+      callback.accept(SignEnum.ZERO);
+    }
   }
 }

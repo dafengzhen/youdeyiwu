@@ -1,8 +1,8 @@
-package com.youdeyiwu.model.entity.user;
+package com.youdeyiwu.model.entity.point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
-import jakarta.persistence.Column;
+import com.youdeyiwu.model.entity.user.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
- * action.
+ * point history.
  *
  * @author dafengzhen
  */
@@ -22,47 +22,39 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 @Entity
-public class ActionEntity extends AbstractEntity {
+public class PointHistoryEntity extends AbstractEntity {
 
   /**
-   * name.
+   * point Value.
    */
-  @Column(nullable = false)
-  private String name;
+  private Integer pointValue = 0;
 
   /**
-   * alias.
+   * points.
    */
-  private String alias;
+  private Integer points = 0;
 
   /**
-   * sort.
+   * min points.
    */
-  @Column(nullable = false)
-  private Integer sort = 0;
+  private Integer minPoints = 0;
 
   /**
-   * menu.
+   * max points.
+   */
+  private Integer maxPoints = 10000;
+
+  /**
+   * reason.
+   */
+  private String reason;
+
+  /**
+   * user.
    */
   @ManyToOne
   @JsonIgnore
   @ToString.Exclude
-  private MenuEntity menu;
-
-  /**
-   * submenu.
-   */
-  @ManyToOne
-  @JsonIgnore
-  @ToString.Exclude
-  private SubmenuEntity submenu;
-
-  /**
-   * role.
-   */
-  @OneToOne
-  @JsonIgnore
-  @ToString.Exclude
-  private RoleEntity role;
+  private UserEntity user;
 
 }

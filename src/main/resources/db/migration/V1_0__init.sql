@@ -93,7 +93,7 @@ create table if not exists permission_entity
     case_insensitive bit          not null,
     method           smallint     not null,
     name             varchar(255) not null,
-    overview         varchar(512) null,
+    overview varchar(255) null,
     sort             int          not null,
     type             smallint     not null,
     matcher_id       bigint       null,
@@ -111,48 +111,65 @@ create table if not exists permission_entity_seq
 INSERT INTO permission_entity_seq (next_val)
 VALUES (1);
 
-create table if not exists point_category
+create table if not exists point_entity
 (
-    id         bigint       not null
+    id         bigint      not null
         primary key,
-    created_by bigint       null,
-    created_on datetime(6)  not null,
-    deleted    bit          not null,
-    updated_by bigint       null,
-    updated_on datetime(6)  null,
-    version    smallint     null,
-    name       varchar(255) null,
-    weight     int          not null
+    created_by bigint      null,
+    created_on datetime(6) not null,
+    deleted    bit         not null,
+    updated_by bigint      null,
+    updated_on datetime(6) null,
+    version    smallint    null,
+    max_points int         null,
+    min_points int         null,
+    points     int         null,
+    user_id    bigint      null,
+    constraint UK_fgdr5sn8ytuc70o823y5ciux2
+        unique (user_id)
 );
 
-create table if not exists point_category_seq
+create table if not exists point_entity_seq
 (
     next_val bigint null
 );
 
-INSERT INTO point_category_seq (next_val)
+INSERT INTO point_entity_seq (next_val)
 VALUES (1);
 
-create table if not exists point_level
-(
-    id         bigint       not null
-        primary key,
-    created_by bigint       null,
-    created_on datetime(6)  not null,
-    deleted    bit          not null,
-    updated_by bigint       null,
-    updated_on datetime(6)  null,
-    version    smallint     null,
-    name       varchar(255) null,
-    threshold  int          not null
-);
-
-create table if not exists point_level_seq
+create table if not exists point_history_entity_seq
 (
     next_val bigint null
 );
 
-INSERT INTO point_level_seq (next_val)
+INSERT INTO point_history_entity_seq (next_val)
+VALUES (1);
+
+create table if not exists point_rule_entity
+(
+    id              bigint                                                                                                                                                                                                                                                                                                                           not null
+        primary key,
+    created_by      bigint                                                                                                                                                                                                                                                                                                                           null,
+    created_on      datetime(6)                                                                                                                                                                                                                                                                                                                      not null,
+    deleted         bit                                                                                                                                                                                                                                                                                                                              not null,
+    updated_by      bigint                                                                                                                                                                                                                                                                                                                           null,
+    updated_on      datetime(6)                                                                                                                                                                                                                                                                                                                      null,
+    version         smallint                                                                                                                                                                                                                                                                                                                         null,
+    auto_rule_name  enum ('LIKED_YOUR_POST', 'LIKED_YOUR_COMMENT', 'LIKED_YOUR_REPLY', 'COMMENTED_ON_YOUR_POST', 'REPLIED_TO_YOUR_POST', 'FOLLOWED_YOUR_POST', 'BOOKMARKED_YOUR_POST', 'APPRECIATED_YOUR_POST', 'DISLIKED_YOUR_POST', 'DISLIKED_YOUR_COMMENT', 'DISLIKED_YOUR_REPLY', 'POST_NOT_APPROVED', 'POST_UNDER_REVIEW', 'VISITED_YOUR_POST') null,
+    required_points int                                                                                                                                                                                                                                                                                                                              null,
+    rule_name       enum ('CREATE_POST', 'CREATE_COMMENT', 'LIKE_POST', 'LIKE_COMMENT', 'UPDATE_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'CREATE_REPLY', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION')                                                                                                           null,
+    constraint UK_5do4d4csxlsnk9coer6vkvdyl
+        unique (rule_name),
+    constraint UK_nmcrig6atqbwxsi8c29o323yf
+        unique (auto_rule_name)
+);
+
+create table if not exists point_rule_entity_seq
+(
+    next_val bigint null
+);
+
+INSERT INTO point_rule_entity_seq (next_val)
 VALUES (1);
 
 create table if not exists post_badge_entity_seq
@@ -238,17 +255,6 @@ create table if not exists menu_entity_roles
         foreign key (roles_id) references role_entity (id)
 );
 
-create table if not exists point_level_roles
-(
-    point_levels_id bigint not null,
-    roles_id        bigint not null,
-    primary key (point_levels_id, roles_id),
-    constraint FKjrui7c6amchw32akc5twh23qu
-        foreign key (roles_id) references role_entity (id),
-    constraint FKmi5mw3tmlea6sapbecjj04dx1
-        foreign key (point_levels_id) references point_level (id)
-);
-
 create table if not exists role_entity_permissions
 (
     roles_id       bigint not null,
@@ -281,11 +287,11 @@ create table if not exists section_entity
     access_key       varchar(255) null,
     content          text         null,
     cover            varchar(255) null,
+    cover_image      mediumblob null,
+    cover_image_type smallint   not null,
     name             varchar(255) not null,
     overview         varchar(255) null,
     sort             int          not null,
-    cover_image      mediumblob   null,
-    cover_image_type smallint     not null,
     check (`cover_image_type` between 0 and 1)
 );
 
@@ -367,12 +373,12 @@ create table if not exists action_entity
     updated_by bigint       null,
     updated_on datetime(6)  null,
     version    smallint     null,
+    alias varchar(255) null,
     name       varchar(255) not null,
+    sort  int          not null,
     menu_id    bigint       null,
     role_id    bigint       null,
     submenu_id bigint       null,
-    alias      varchar(255) not null,
-    sort       int          not null,
     constraint UK_c4yrem3jw4rbreob0v0lsbkp1
         unique (role_id),
     constraint FK1ebgngak0984tgntr54pd26qg
@@ -381,17 +387,6 @@ create table if not exists action_entity
         foreign key (menu_id) references menu_entity (id),
     constraint FKg8yurqmjqna7nufmkia8ncfmt
         foreign key (role_id) references role_entity (id)
-);
-
-create table if not exists point_category_actions
-(
-    point_categories_id bigint not null,
-    actions_id          bigint not null,
-    primary key (point_categories_id, actions_id),
-    constraint FKk5okc3mk9qiq3tw10v433b66g
-        foreign key (point_categories_id) references point_category (id),
-    constraint FKq02p1cqsbg3uuhrde0osowpjw
-        foreign key (actions_id) references action_entity (id)
 );
 
 create table if not exists submenu_entity_roles
@@ -512,15 +507,20 @@ create table if not exists user_entity
     last_login_time         datetime(6)  not null,
     one_sentence            varchar(255) null,
     password                varchar(255) null,
+    root     bit    null,
     token                   varchar(255) null,
     username                varchar(255) null,
-    root                    bit          null,
+    point_id bigint null,
     constraint UK_2jsk4eakd0rmvybo409wgwxuw
         unique (username),
     constraint UK_4xad1enskw4j1t2866f7sodrx
         unique (email),
     constraint UK_dn94k3s93vqlu1ufqus4t6y13
-        unique (token)
+        unique (token),
+    constraint UK_h68ijywxr8fb0aecy1w3tmoqb
+        unique (point_id),
+    constraint FKotxi17nb0gbck27xv06rdcvyb
+        foreign key (point_id) references point_entity (id)
 );
 
 create table if not exists global_message_entity
@@ -534,19 +534,19 @@ create table if not exists global_message_entity
     updated_on    datetime(6)  null,
     version       smallint     null,
     content       json         null,
-    message_range smallint not null,
-    message_type  smallint not null,
+    link          varchar(255) null,
+    message_range smallint     not null,
+    message_type  smallint     not null,
     name          varchar(255) not null,
     overview      varchar(512) not null,
-    sort          int      not null,
+    sort          int          not null,
     sender_id     bigint       null,
-    link          varchar(255) null,
     constraint UK_pt1jenvifwkmyypi8m8856td5
         unique (sender_id),
     constraint FKm68afdpt9e6ycxdmvgjq9nln6
         foreign key (sender_id) references user_entity (id),
     check (`message_range` between 0 and 1),
-    check (`message_type` between 0 and 10)
+    check (`message_type` between 0 and 18)
 );
 
 create table if not exists global_message_user_entity
@@ -579,21 +579,45 @@ create table if not exists message_entity
     updated_on    datetime(6)  null,
     version       smallint     null,
     content       json         null,
+    link     varchar(255) null,
     message_range smallint     not null,
     message_type  smallint     not null,
     name          varchar(255) not null,
-    overview      varchar(255) not null,
+    overview varchar(512) not null,
     state         smallint     not null,
     receiver_id   bigint       null,
     sender_id     bigint       null,
-    link          varchar(255) null,
     constraint FKchngvnhlot2wncosjrnmd1qjp
         foreign key (sender_id) references user_entity (id),
     constraint FKf1eboma4d9p0wlj48qwpd2ban
         foreign key (receiver_id) references user_entity (id),
     check (`message_range` between 0 and 1),
-    check (`message_type` between 0 and 9),
+    check (`message_type` between 0 and 18),
     check (`state` between 0 and 1)
+);
+
+alter table point_entity
+    add constraint FKpognvqglbn467dcgrvfsybyex
+        foreign key (user_id) references user_entity (id);
+
+create table if not exists point_history_entity
+(
+    id          bigint       not null
+        primary key,
+    created_by  bigint       null,
+    created_on  datetime(6)  not null,
+    deleted     bit          not null,
+    updated_by  bigint       null,
+    updated_on  datetime(6)  null,
+    version     smallint     null,
+    max_points  int          null,
+    min_points  int          null,
+    point_value int          null,
+    points      int          null,
+    reason      varchar(255) null,
+    user_id     bigint       null,
+    constraint FKksk0vbx82ws1j6vrhn6j4y3wb
+        foreign key (user_id) references user_entity (id)
 );
 
 create table if not exists post_entity
@@ -611,6 +635,8 @@ create table if not exists post_entity
     content              text         null,
     content_link         varchar(255) null,
     cover                varchar(255) null,
+    cover_image          mediumblob null,
+    cover_image_type     smallint   not null,
     favorites_count      bigint       not null,
     followers_count      bigint       not null,
     initial_score        bigint       not null,
@@ -621,20 +647,18 @@ create table if not exists post_entity
     replies_count        bigint       not null,
     review_state         smallint     not null,
     sort_state           smallint     not null,
+    post_review_queue_id bigint     null,
     section_id           bigint       null,
     user_id              bigint       null,
-    cover_image          mediumblob   null,
-    cover_image_type     smallint     not null,
-    post_review_queue_id bigint       null,
     constraint UK_kc7ibbd39111bkurue4tppjsj
         unique (post_review_queue_id),
     constraint FK2e9ivvlpgr8x6wd2qxvlefvub
         foreign key (section_id) references section_entity (id),
     constraint FK2jmp42lmrw2f3ljd16f1re3c8
         foreign key (user_id) references user_entity (id),
+    check (`cover_image_type` between 0 and 1),
     check (`review_state` between 0 and 2),
-    check (`sort_state` between 0 and 3),
-    check (`cover_image_type` between 0 and 1)
+    check (`sort_state` between 0 and 3)
 );
 
 create table if not exists comment_entity
@@ -650,9 +674,9 @@ create table if not exists comment_entity
     content           varchar(255) not null,
     likes_count       bigint       null,
     review_state      smallint     not null,
+    unique_identifier varchar(255) null,
     post_id           bigint       null,
     user_id           bigint       null,
-    unique_identifier varchar(255) null,
     constraint FK5q5av5arkm3of9b5n493p992p
         foreign key (post_id) references post_entity (id),
     constraint FK7u6osru73338guaca8ukops8l
@@ -732,11 +756,11 @@ create table if not exists post_favorite_entity
     updated_on   datetime(6)  null,
     version      smallint     null,
     content      text         null,
+    content_link varchar(255) null,
     name         varchar(255) not null,
     overview     varchar(255) null,
     post_id      bigint       null,
     user_id      bigint       null,
-    content_link varchar(255) null,
     constraint UK_pn91hw7x2pb4pfuks68g04m3i
         unique (post_id),
     constraint FK8xpmgt9es0635uycto71vs3p5
@@ -755,11 +779,11 @@ create table if not exists post_image_entity
     updated_by bigint       null,
     updated_on datetime(6)  null,
     version    smallint     null,
+    image      mediumblob null,
+    image_type smallint   not null,
     sort       int          not null,
     url        varchar(255) not null,
     post_id    bigint       null,
-    image      mediumblob   null,
-    image_type smallint     not null,
     constraint FK7x84i77w0pu88xutpuiu1u801
         foreign key (post_id) references post_entity (id),
     check (`image_type` between 0 and 1)
@@ -846,11 +870,11 @@ create table if not exists quote_reply_entity
     content           varchar(255) not null,
     likes_count       bigint       null,
     review_state      smallint     not null,
+    unique_identifier varchar(255) null,
     comment_id        bigint       null,
     post_id           bigint       null,
     quote_reply_id    bigint       null,
     user_id           bigint       null,
-    unique_identifier varchar(255) null,
     constraint FKc1f8k34dp659y9sv9gnvhl01x
         foreign key (comment_id) references comment_entity (id),
     constraint FKeovnjq8qxbk8q7j3bs8jryf5s

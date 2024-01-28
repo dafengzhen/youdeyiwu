@@ -9,11 +9,14 @@ import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.message.GlobalMessageUserEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
+import com.youdeyiwu.model.entity.point.PointEntity;
+import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -260,6 +263,26 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   @JsonIgnore
   @ToString.Exclude
   private Set<GlobalMessageUserEntity> userGlobalMessages = new HashSet<>();
+
+  /**
+   * point.
+   */
+  @OneToOne
+  @JsonIgnore
+  @ToString.Exclude
+  private PointEntity point;
+
+  /**
+   * point histories.
+   */
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<PointHistoryEntity> pointHistories = new HashSet<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -2,7 +2,6 @@ package com.youdeyiwu.model.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
-import com.youdeyiwu.model.entity.point.PointLevel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -86,13 +85,5 @@ public class RoleEntity extends AbstractEntity {
   @JsonIgnore
   @ToString.Exclude
   private Set<PermissionEntity> permissions = new HashSet<>();
-
-  /**
-   * pointLevels.
-   */
-  @ManyToMany(mappedBy = "roles")
-  @JsonIgnore
-  @ToString.Exclude
-  private Set<PointLevel> pointLevels = new HashSet<>();
 
 }
