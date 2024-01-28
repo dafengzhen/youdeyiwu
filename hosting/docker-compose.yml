@@ -1,0 +1,30 @@
+version: "3"
+services:
+  youdeyiwu:
+    labels:
+      - "description=Build Youdeyiwu backend application"
+    container_name: youdeyiwu
+    build:
+      context: ../
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - youdeyiwu
+
+  youdeyiwu-web:
+    labels:
+      - "description=Build Youdeyiwu frontend application"
+    container_name: youdeyiwu-web
+    build:
+      context: ../web
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    networks:
+      - youdeyiwu
+      - youdeyiwu-web
+
+networks:
+  youdeyiwu:
+  youdeyiwu-web:
