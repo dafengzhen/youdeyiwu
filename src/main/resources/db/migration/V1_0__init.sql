@@ -93,7 +93,7 @@ create table if not exists permission_entity
     case_insensitive bit          not null,
     method           smallint     not null,
     name             varchar(255) not null,
-    overview varchar(255) null,
+    overview         varchar(255) null,
     sort             int          not null,
     type             smallint     not null,
     matcher_id       bigint       null,
@@ -109,6 +109,30 @@ create table if not exists permission_entity_seq
 );
 
 INSERT INTO permission_entity_seq (next_val)
+VALUES (1);
+
+create table if not exists point_auto_rule_entity
+(
+    id              bigint                                                                                                                                                                                                                                                                                                                           not null
+        primary key,
+    created_by      bigint                                                                                                                                                                                                                                                                                                                           null,
+    created_on      datetime(6)                                                                                                                                                                                                                                                                                                                      not null,
+    deleted         bit                                                                                                                                                                                                                                                                                                                              not null,
+    updated_by      bigint                                                                                                                                                                                                                                                                                                                           null,
+    updated_on      datetime(6)                                                                                                                                                                                                                                                                                                                      null,
+    version         smallint                                                                                                                                                                                                                                                                                                                         null,
+    auto_rule_name  enum ('LIKED_YOUR_POST', 'LIKED_YOUR_COMMENT', 'LIKED_YOUR_REPLY', 'COMMENTED_ON_YOUR_POST', 'REPLIED_TO_YOUR_POST', 'FOLLOWED_YOUR_POST', 'BOOKMARKED_YOUR_POST', 'APPRECIATED_YOUR_POST', 'DISLIKED_YOUR_POST', 'DISLIKED_YOUR_COMMENT', 'DISLIKED_YOUR_REPLY', 'POST_NOT_APPROVED', 'POST_UNDER_REVIEW', 'VISITED_YOUR_POST') null,
+    required_points int                                                                                                                                                                                                                                                                                                                              null,
+    constraint UK_7tbue8vin8u8e9c6tm6t9gsrp
+        unique (auto_rule_name)
+);
+
+create table if not exists point_auto_rule_entity_seq
+(
+    next_val bigint null
+);
+
+INSERT INTO point_auto_rule_entity_seq (next_val)
 VALUES (1);
 
 create table if not exists point_entity
@@ -147,21 +171,18 @@ VALUES (1);
 
 create table if not exists point_rule_entity
 (
-    id              bigint                                                                                                                                                                                                                                                                                                                           not null
+    id              bigint                                                                                                                                                                                                                 not null
         primary key,
-    created_by      bigint                                                                                                                                                                                                                                                                                                                           null,
-    created_on      datetime(6)                                                                                                                                                                                                                                                                                                                      not null,
-    deleted         bit                                                                                                                                                                                                                                                                                                                              not null,
-    updated_by      bigint                                                                                                                                                                                                                                                                                                                           null,
-    updated_on      datetime(6)                                                                                                                                                                                                                                                                                                                      null,
-    version         smallint                                                                                                                                                                                                                                                                                                                         null,
-    auto_rule_name  enum ('LIKED_YOUR_POST', 'LIKED_YOUR_COMMENT', 'LIKED_YOUR_REPLY', 'COMMENTED_ON_YOUR_POST', 'REPLIED_TO_YOUR_POST', 'FOLLOWED_YOUR_POST', 'BOOKMARKED_YOUR_POST', 'APPRECIATED_YOUR_POST', 'DISLIKED_YOUR_POST', 'DISLIKED_YOUR_COMMENT', 'DISLIKED_YOUR_REPLY', 'POST_NOT_APPROVED', 'POST_UNDER_REVIEW', 'VISITED_YOUR_POST') null,
-    required_points int                                                                                                                                                                                                                                                                                                                              null,
-    rule_name       enum ('CREATE_POST', 'CREATE_COMMENT', 'LIKE_POST', 'LIKE_COMMENT', 'UPDATE_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'CREATE_REPLY', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION')                                                                                                           null,
+    created_by      bigint                                                                                                                                                                                                                 null,
+    created_on      datetime(6)                                                                                                                                                                                                            not null,
+    deleted         bit                                                                                                                                                                                                                    not null,
+    updated_by      bigint                                                                                                                                                                                                                 null,
+    updated_on      datetime(6)                                                                                                                                                                                                            null,
+    version         smallint                                                                                                                                                                                                               null,
+    required_points int                                                                                                                                                                                                                    null,
+    rule_name       enum ('CREATE_POST', 'CREATE_COMMENT', 'LIKE_POST', 'LIKE_COMMENT', 'UPDATE_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'CREATE_REPLY', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION') null,
     constraint UK_5do4d4csxlsnk9coer6vkvdyl
-        unique (rule_name),
-    constraint UK_nmcrig6atqbwxsi8c29o323yf
-        unique (auto_rule_name)
+        unique (rule_name)
 );
 
 create table if not exists point_rule_entity_seq
@@ -287,8 +308,8 @@ create table if not exists section_entity
     access_key       varchar(255) null,
     content          text         null,
     cover            varchar(255) null,
-    cover_image      mediumblob null,
-    cover_image_type smallint   not null,
+    cover_image      mediumblob   null,
+    cover_image_type smallint     not null,
     name             varchar(255) not null,
     overview         varchar(255) null,
     sort             int          not null,
@@ -373,9 +394,9 @@ create table if not exists action_entity
     updated_by bigint       null,
     updated_on datetime(6)  null,
     version    smallint     null,
-    alias varchar(255) null,
+    alias      varchar(255) null,
     name       varchar(255) not null,
-    sort  int          not null,
+    sort       int          not null,
     menu_id    bigint       null,
     role_id    bigint       null,
     submenu_id bigint       null,
@@ -507,10 +528,10 @@ create table if not exists user_entity
     last_login_time         datetime(6)  not null,
     one_sentence            varchar(255) null,
     password                varchar(255) null,
-    root     bit    null,
+    root                    bit          null,
     token                   varchar(255) null,
     username                varchar(255) null,
-    point_id bigint null,
+    point_id                bigint       null,
     constraint UK_2jsk4eakd0rmvybo409wgwxuw
         unique (username),
     constraint UK_4xad1enskw4j1t2866f7sodrx
@@ -579,11 +600,11 @@ create table if not exists message_entity
     updated_on    datetime(6)  null,
     version       smallint     null,
     content       json         null,
-    link     varchar(255) null,
+    link          varchar(255) null,
     message_range smallint     not null,
     message_type  smallint     not null,
     name          varchar(255) not null,
-    overview varchar(512) not null,
+    overview      varchar(512) not null,
     state         smallint     not null,
     receiver_id   bigint       null,
     sender_id     bigint       null,
@@ -635,8 +656,8 @@ create table if not exists post_entity
     content              text         null,
     content_link         varchar(255) null,
     cover                varchar(255) null,
-    cover_image          mediumblob null,
-    cover_image_type     smallint   not null,
+    cover_image          mediumblob   null,
+    cover_image_type     smallint     not null,
     favorites_count      bigint       not null,
     followers_count      bigint       not null,
     initial_score        bigint       not null,
@@ -647,7 +668,7 @@ create table if not exists post_entity
     replies_count        bigint       not null,
     review_state         smallint     not null,
     sort_state           smallint     not null,
-    post_review_queue_id bigint     null,
+    post_review_queue_id bigint       null,
     section_id           bigint       null,
     user_id              bigint       null,
     constraint UK_kc7ibbd39111bkurue4tppjsj
@@ -779,8 +800,8 @@ create table if not exists post_image_entity
     updated_by bigint       null,
     updated_on datetime(6)  null,
     version    smallint     null,
-    image      mediumblob null,
-    image_type smallint   not null,
+    image      mediumblob   null,
+    image_type smallint     not null,
     sort       int          not null,
     url        varchar(255) not null,
     post_id    bigint       null,
