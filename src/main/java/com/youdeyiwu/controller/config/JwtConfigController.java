@@ -2,7 +2,7 @@ package com.youdeyiwu.controller.config;
 
 import com.youdeyiwu.model.dto.config.UpdateJwtConfigDto;
 import com.youdeyiwu.model.vo.config.JwtConfigVo;
-import com.youdeyiwu.service.config.JwtService;
+import com.youdeyiwu.service.config.JwtConfigService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,23 +20,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(value = "/configs/jwt")
 @RestController
-public class JwtController {
+public class JwtConfigController {
 
-  private final JwtService jwtService;
+  private final JwtConfigService jwtConfigService;
 
   @GetMapping(value = "/generate-random-secret")
   public ResponseEntity<String> generateRandomSecret() {
-    return ResponseEntity.ok().body(jwtService.generateRandomSecret());
+    return ResponseEntity.ok().body(jwtConfigService.generateRandomSecret());
   }
 
   @GetMapping
   public ResponseEntity<JwtConfigVo> query() {
-    return ResponseEntity.ok().body(jwtService.query());
+    return ResponseEntity.ok().body(jwtConfigService.query());
   }
 
   @PutMapping
   public ResponseEntity<Void> update(@Valid @RequestBody UpdateJwtConfigDto dto) {
-    jwtService.update(dto);
+    jwtConfigService.update(dto);
     return ResponseEntity.noContent().build();
   }
 }

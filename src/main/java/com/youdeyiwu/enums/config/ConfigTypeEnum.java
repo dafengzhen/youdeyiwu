@@ -20,4 +20,9 @@ public enum ConfigTypeEnum {
    */
   JWT,
 
+  /**
+   * point.
+   */
+  POINT
+
 }

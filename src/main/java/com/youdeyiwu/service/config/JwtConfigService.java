@@ -8,7 +8,7 @@ import com.youdeyiwu.model.vo.config.JwtConfigVo;
  *
  * @author dafengzhen
  */
-public interface JwtService {
+public interface JwtConfigService {
 
   /**
    * generate random secret.

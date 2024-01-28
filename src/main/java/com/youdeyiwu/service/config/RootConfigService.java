@@ -7,7 +7,7 @@ import com.youdeyiwu.model.dto.config.UpdateRootConfigDto;
  *
  * @author dafengzhen
  */
-public interface RootService {
+public interface RootConfigService {
 
   /**
    * update.

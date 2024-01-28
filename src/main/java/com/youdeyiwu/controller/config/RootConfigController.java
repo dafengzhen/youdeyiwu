@@ -1,7 +1,7 @@
 package com.youdeyiwu.controller.config;
 
 import com.youdeyiwu.model.dto.config.UpdateRootConfigDto;
-import com.youdeyiwu.service.config.RootService;
+import com.youdeyiwu.service.config.RootConfigService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(value = "/configs/root")
 @RestController
-public class RootController {
+public class RootConfigController {
 
-  private final RootService rootService;
+  private final RootConfigService rootConfigService;
 
   @PutMapping
   public ResponseEntity<Void> update(@Valid @RequestBody UpdateRootConfigDto dto) {
-    rootService.update(dto);
+    rootConfigService.update(dto);
     return ResponseEntity.noContent().build();
   }
 }

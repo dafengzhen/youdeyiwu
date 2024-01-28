@@ -11,10 +11,9 @@ import com.youdeyiwu.model.dto.config.UpdateJwtConfigDto;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.model.vo.config.JwtConfigVo;
 import com.youdeyiwu.repository.config.ConfigRepository;
-import com.youdeyiwu.service.config.JwtService;
+import com.youdeyiwu.service.config.JwtConfigService;
 import io.jsonwebtoken.JwtException;
 import java.time.Duration;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class JwtServiceImpl implements JwtService {
+public class JwtConfigServiceImpl implements JwtConfigService {
 
   private final ConfigRepository configRepository;
 
@@ -53,23 +52,14 @@ public class JwtServiceImpl implements JwtService {
   @Override
   public void update(UpdateJwtConfigDto dto) {
     if (StringUtils.hasText(dto.secret())) {
+      ConfigEntity configEntity = configRepository.findByTypeAndName(
+          ConfigTypeEnum.JWT,
+          JwtConfigConstant.SECRET
+      );
+
       try {
         createJwt(decodeSecret(dto.secret()), 0L, Duration.ofDays(1));
-        Optional<ConfigEntity> configEntityOptional = Optional.ofNullable(
-            configRepository.findByTypeAndName(
-                ConfigTypeEnum.JWT,
-                JwtConfigConstant.SECRET
-            )
-        );
-        if (configEntityOptional.isEmpty()) {
-          ConfigEntity configEntity = new ConfigEntity();
-          configEntity.setType(ConfigTypeEnum.JWT);
-          configEntity.setName(JwtConfigConstant.SECRET);
-          configEntity.setValue(dto.secret());
-          configRepository.save(configEntity);
-        } else {
-          configEntityOptional.get().setValue(dto.secret());
-        }
+        configEntity.setValue(dto.secret());
       } catch (JwtException e) {
         throw new CustomException("Invalid JWT token secret");
       }

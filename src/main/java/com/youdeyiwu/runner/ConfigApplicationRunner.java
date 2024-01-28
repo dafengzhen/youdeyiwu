@@ -4,6 +4,7 @@ import static com.youdeyiwu.tool.JwtTool.encodeSecret;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
+import com.youdeyiwu.constant.PointConfigConstant;
 import com.youdeyiwu.constant.RootConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
@@ -35,6 +36,7 @@ public class ConfigApplicationRunner implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
     initRootSecretConfig();
     initJwtSecretConfig();
+    initPointConfig();
     log.info("=== Config === Initial configuration completed");
   }
 
@@ -88,6 +90,45 @@ public class ConfigApplicationRunner implements ApplicationRunner {
               """,
           configEntity.getValue()
       );
+    }
+  }
+
+  /**
+   * init point config.
+   */
+  private void initPointConfig() {
+    if (
+        Optional.ofNullable(
+                configRepository.findByTypeAndName(
+                    ConfigTypeEnum.POINT,
+                    PointConfigConstant.ENABLE
+                )
+            )
+            .isEmpty()
+    ) {
+      ConfigEntity configEntity = new ConfigEntity();
+      configEntity.setType(ConfigTypeEnum.POINT);
+      configEntity.setName(PointConfigConstant.ENABLE);
+      configEntity.setValue("false");
+      configRepository.save(configEntity);
+      log.info("=== Config === Create point.enable option");
+    }
+
+    if (
+        Optional.ofNullable(
+                configRepository.findByTypeAndName(
+                    ConfigTypeEnum.POINT,
+                    PointConfigConstant.INIT_POINTS
+                )
+            )
+            .isEmpty()
+    ) {
+      ConfigEntity configEntity = new ConfigEntity();
+      configEntity.setType(ConfigTypeEnum.POINT);
+      configEntity.setName(PointConfigConstant.INIT_POINTS);
+      configEntity.setValue("100");
+      configRepository.save(configEntity);
+      log.info("=== Config === Create point.initPoints option");
     }
   }
 }
