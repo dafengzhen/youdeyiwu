@@ -8,6 +8,9 @@ import static com.youdeyiwu.tool.Tool.isValidImageFile;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.SignEnum;
+import com.youdeyiwu.event.PointAutoRuleApplicationEvent;
 import com.youdeyiwu.event.PostReviewStateApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
@@ -32,6 +35,7 @@ import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
+import com.youdeyiwu.model.dto.point.PointAutoRuleEventDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
@@ -202,9 +206,20 @@ public class PostServiceImpl implements PostService {
     }
 
     postEntity.setLikesCount(
-        Boolean.TRUE.equals(postUserEntity.getLiked()) ? postEntity.getLikesCount() + 1
+        Boolean.TRUE.equals(postUserEntity.getLiked())
+            ? postEntity.getLikesCount() + 1
             : Math.max(0, postEntity.getLikesCount() - 1)
     );
+
+    publisher.publishEvent(new PointAutoRuleApplicationEvent(
+        new PointAutoRuleEventDto(
+            AutoRuleNameEnum.LIKED_YOUR_POST,
+            Boolean.TRUE.equals(postUserEntity.getLiked())
+                ? SignEnum.POSITIVE
+                : SignEnum.NEGATIVE,
+            postEntity.getId()
+        )
+    ));
   }
 
   @Transactional

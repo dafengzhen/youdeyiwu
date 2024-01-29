@@ -2,10 +2,10 @@ package com.youdeyiwu.model.entity.point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
-import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -46,5 +46,11 @@ public class PointEntity extends AbstractEntity {
   @JsonIgnore
   @ToString.Exclude
   private UserEntity user;
+
+  /**
+   * old points.
+   */
+  @Transient
+  private Integer oldPoints;
 
 }

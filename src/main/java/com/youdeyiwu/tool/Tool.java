@@ -7,6 +7,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.point.SignEnum;
+import com.youdeyiwu.model.entity.point.PointEntity;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.jsoup.Jsoup;
@@ -215,14 +217,31 @@ public class Tool {
    * @param callback The callback function to handle the result string.
    */
   public static void getSign(Integer number, Consumer<SignEnum> callback) {
-    if (number == null) {
-      throw new IllegalArgumentException("Number cannot be null.");
-    } else if (number > 0) {
+    if (number > 0) {
       callback.accept(SignEnum.POSITIVE);
     } else if (number < 0) {
       callback.accept(SignEnum.NEGATIVE);
     } else {
       callback.accept(SignEnum.ZERO);
+    }
+  }
+
+  /**
+   * Calculates the sign of the difference between the points and oldPoints of a PointEntity object
+   * and invokes the specified callback with the corresponding SignEnum value and the absolute difference.
+   *
+   * @param pointEntity The PointEntity object containing the points and oldPoints values.
+   * @param callback    The callback function to be invoked with the calculated SignEnum value and the absolute difference.
+   */
+  public static void getDifferenceSign(PointEntity pointEntity, ObjIntConsumer<SignEnum> callback) {
+    int difference = pointEntity.getPoints() - pointEntity.getOldPoints();
+    int absoluteDifference = Math.abs(difference);
+    if (difference > 0) {
+      callback.accept(SignEnum.POSITIVE, absoluteDifference);
+    } else if (difference < 0) {
+      callback.accept(SignEnum.NEGATIVE, absoluteDifference);
+    } else {
+      callback.accept(SignEnum.ZERO, absoluteDifference);
     }
   }
 }
