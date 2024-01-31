@@ -1,7 +1,12 @@
 package com.youdeyiwu.repository.point.impl;
 
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.RuleNameEnum;
+import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.repository.point.CustomizedPointHistoryRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +24,49 @@ public class CustomizedPointHistoryRepositoryImpl implements CustomizedPointHist
   private final EntityManager entityManager;
 
   @Override
-  public Integer findPointHistoryCountParity() {
-    return entityManager.createQuery(
-            "select case when mod(count(*), 2) = 0 then 0 else 1 end from UserEntity",
-            Integer.class
-        )
-        .getSingleResult();
+  public Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndAutoRuleName(
+      Long userId,
+      AutoRuleNameEnum autoRuleName
+  ) {
+    try {
+      return Optional.of(
+          entityManager.createQuery(
+                  """
+                      select ph from PointHistoryEntity ph
+                      where ph.user.id = :userId and ph.autoRuleName = :autoRuleName
+                      order by ph.id desc
+                      limit 1
+                      """,
+                  PointHistoryEntity.class
+              )
+              .setParameter("userId", userId)
+              .setParameter("autoRuleName", autoRuleName)
+              .getSingleResult()
+      );
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndRuleName(Long userId, RuleNameEnum ruleName) {
+    try {
+      return Optional.of(
+          entityManager.createQuery(
+                  """
+                      select ph from PointHistoryEntity ph
+                      where ph.user.id = :userId and ph.ruleName = :ruleName
+                      order by ph.id desc
+                      limit 1
+                      """,
+                  PointHistoryEntity.class
+              )
+              .setParameter("userId", userId)
+              .setParameter("ruleName", ruleName)
+              .getSingleResult()
+      );
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
   }
 }

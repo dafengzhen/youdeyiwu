@@ -1,5 +1,8 @@
 package com.youdeyiwu.service.point;
 
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.RuleNameEnum;
+import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.model.dto.point.UpdatePointDto;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
@@ -22,11 +25,21 @@ public interface PointCoreService {
   /**
    * create.
    *
-   * @param pointEntity pointEntity
-   * @param pointValue  pointValue
-   * @param reason      reason
+   * @param pointEntity  pointEntity
+   * @param pointValue   pointValue
+   * @param sign         sign
+   * @param autoRuleName autoRuleName
+   * @param ruleName     ruleName
+   * @param reason       reason
    */
-  void create(PointEntity pointEntity, Integer pointValue, String reason);
+  void create(
+      PointEntity pointEntity,
+      Integer pointValue,
+      SignEnum sign,
+      AutoRuleNameEnum autoRuleName,
+      RuleNameEnum ruleName,
+      String reason
+  );
 
   /**
    * update.

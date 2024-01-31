@@ -1,5 +1,10 @@
 package com.youdeyiwu.repository.point;
 
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.RuleNameEnum;
+import com.youdeyiwu.model.entity.point.PointHistoryEntity;
+import java.util.Optional;
+
 /**
  * point history.
  *
@@ -8,9 +13,26 @@ package com.youdeyiwu.repository.point;
 public interface CustomizedPointHistoryRepository {
 
   /**
-   * find point history count parity.
+   * findLatestPointsHistoryByUserIdAndAutoRuleName.
    *
-   * @return int
+   * @param userId       userId
+   * @param autoRuleName autoRuleName
+   * @return Optional
    */
-  Integer findPointHistoryCountParity();
+  Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndAutoRuleName(
+      Long userId,
+      AutoRuleNameEnum autoRuleName
+  );
+
+  /**
+   * findLatestPointsHistoryByUserIdAndRuleName.
+   *
+   * @param userId   userId
+   * @param ruleName ruleName
+   * @return Optional
+   */
+  Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndRuleName(
+      Long userId,
+      RuleNameEnum ruleName
+  );
 }

@@ -16,6 +16,7 @@ import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.point.PointAutoRuleEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
+import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
@@ -109,8 +110,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void likedYourPost(PointAutoRuleEventDto dto) {
-    Optional<PointAutoRuleEntity> byAutoRuleName =
-        pointAutoRuleRepository.findByAutoRuleName(dto.autoRuleName());
+    Optional<PointAutoRuleEntity> byAutoRuleName = pointAutoRuleRepository.findByAutoRuleName(dto.autoRuleName());
     if (byAutoRuleName.isEmpty()) {
       return;
     }
@@ -119,72 +119,83 @@ public class PointAutoRuleNotifier
         .orElseThrow(UserNotFoundException::new);
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
+
     PointEntity pointEntity = pointService.findPointByUserEntity(userEntity);
     PointAutoRuleEntity pointAutoRuleEntity = byAutoRuleName.get();
-    PointEntity updatedPointEntity;
-
-    Integer pointHistoryCountParity = pointHistoryRepository.findPointHistoryCountParity();
-    if (pointHistoryCountParity == 0) {
-      updatedPointEntity = pointCoreService.update(
-          pointEntity,
-          new UpdatePointDto(
-              calculatePoints(pointAutoRuleEntity.getRequiredPoints(), dto.sign()),
-              null,
-              null
-          )
-      );
-    } else {
-      updatedPointEntity = pointEntity;
-    }
+    Optional<PointHistoryEntity> pointHistoryEntityOptional = pointHistoryRepository
+        .findLatestPointsHistoryByUserIdAndAutoRuleName(userEntity.getId(), dto.autoRuleName());
+    PointEntity updatedPointEntity = pointCoreService.update(
+        pointEntity,
+        new UpdatePointDto(
+            calculatePoints(
+                pointAutoRuleEntity.getRequiredPoints(),
+                pointHistoryEntityOptional
+                    .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
+                      case POSITIVE -> SignEnum.NEGATIVE;
+                      case NEGATIVE -> SignEnum.POSITIVE;
+                      case ZERO -> SignEnum.ZERO;
+                    })
+                    .orElseGet(dto::sign)
+            ),
+            null,
+            null
+        )
+    );
 
     getDifferenceSign(
         updatedPointEntity,
         (sign, difference) -> {
-          pointCoreService.create(
-              updatedPointEntity,
-              difference,
-              dto.autoRuleName().name()
-          );
+          String message;
+          String description;
+          String link;
 
           switch (sign) {
-            case POSITIVE -> sendMessage(
-                "Awesome! You have earned new like points",
-                """
+            case POSITIVE:
+              message = "Awesome! You have earned new like points";
+              description = """
                     Congratulations! Due to your liking of the post [%s],
                     you have been awarded %s points as a gift from the system. Please continue to support us!
                     """
-                    .formatted(
-                        postEntity.getName(),
-                        difference
-                    ),
-                "/posts/" + postEntity.getId(),
-                userEntity
-            );
-            case NEGATIVE -> sendMessage(
-                "Unfortunately! Your like points have been reduced",
-                """
+                  .formatted(
+                      postEntity.getName(),
+                      difference
+                  );
+              link = "/posts/" + postEntity.getId();
+              break;
+            case NEGATIVE:
+              message = "Unfortunately! Your like points have been reduced";
+              description = """
                     Unfortunately, due to your unliking of the post [%s],
                     the system will reclaim %s points that were previously awarded.
                     We will continue to strive and look forward to earning your support again!
                     """
-                    .formatted(
-                        postEntity.getName(),
-                        difference
-                    ),
-                "/posts/" + postEntity.getId(),
-                userEntity
-            );
-            case ZERO -> sendMessage(
-                "Steady! Your like points neither increased nor decreased",
-                """
+                  .formatted(
+                      postEntity.getName(),
+                      difference
+                  );
+              link = "/posts/" + postEntity.getId();
+              break;
+            case ZERO:
+              message = "Steady! Your like points neither increased nor decreased";
+              description = """
                     Nothing eventful, your point count remains unchanged.
                     Trying to like posts you support is also a good choice to increase your points. Give it a try and see your points rise!
-                    """,
-                null,
-                userEntity
-            );
-            default -> throw new IllegalStateException("Unexpected value: " + sign);
+                  """;
+              link = null;
+              break;
+            default:
+              throw new IllegalStateException("Unexpected value: " + sign);
           }
+
+          pointCoreService.create(
+              updatedPointEntity,
+              difference,
+              sign,
+              dto.autoRuleName(),
+              null,
+              null
+          );
+          sendMessage(message, description, link, userEntity);
         }
     );
   }

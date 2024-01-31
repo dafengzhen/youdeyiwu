@@ -4,6 +4,9 @@ import static com.youdeyiwu.tool.Tool.getSign;
 
 import com.youdeyiwu.constant.PointConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.RuleNameEnum;
+import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.exception.PointNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.point.PointMapper;
@@ -60,19 +63,37 @@ public class PointCoreServiceImpl implements PointCoreService {
 
   @Transactional
   @Override
-  public void create(PointEntity pointEntity, Integer pointValue, String reason) {
-    UserEntity userEntity = userRepository.findById(pointEntity.getUser().getId())
-        .orElseThrow(UserNotFoundException::new);
+  public void create(
+      PointEntity pointEntity,
+      Integer pointValue,
+      SignEnum sign,
+      AutoRuleNameEnum autoRuleName,
+      RuleNameEnum ruleName,
+      String reason
+  ) {
     PointHistoryEntity pointHistoryEntity = pointMapper.entityToEntity(pointEntity);
-
     if (Objects.nonNull(pointValue)) {
       pointHistoryEntity.setPointValue(pointValue);
+    }
+
+    if (Objects.nonNull(sign)) {
+      pointHistoryEntity.setSign(sign);
+    }
+
+    if (Objects.nonNull(autoRuleName)) {
+      pointHistoryEntity.setAutoRuleName(autoRuleName);
+    }
+
+    if (Objects.nonNull(ruleName)) {
+      pointHistoryEntity.setRuleName(ruleName);
     }
 
     if (StringUtils.hasText(reason)) {
       pointHistoryEntity.setReason(reason);
     }
 
+    UserEntity userEntity = userRepository.findById(pointEntity.getUser().getId())
+        .orElseThrow(UserNotFoundException::new);
     pointHistoryEntity.setUser(userEntity);
     userEntity.getPointHistories().add(pointHistoryEntity);
     pointHistoryRepository.save(pointHistoryEntity);

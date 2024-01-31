@@ -623,20 +623,23 @@ alter table point_entity
 
 create table if not exists point_history_entity
 (
-    id          bigint       not null
+    id             bigint                                                                                                                                                                                                                                                                                                                           not null
         primary key,
-    created_by  bigint       null,
-    created_on  datetime(6)  not null,
-    deleted     bit          not null,
-    updated_by  bigint       null,
-    updated_on  datetime(6)  null,
-    version     smallint     null,
-    max_points  int          null,
-    min_points  int          null,
-    point_value int          null,
-    points      int          null,
-    reason      varchar(255) null,
-    user_id     bigint       null,
+    created_by     bigint                                                                                                                                                                                                                                                                                                                           null,
+    created_on     datetime(6)                                                                                                                                                                                                                                                                                                                      not null,
+    deleted        bit                                                                                                                                                                                                                                                                                                                              not null,
+    updated_by     bigint                                                                                                                                                                                                                                                                                                                           null,
+    updated_on     datetime(6)                                                                                                                                                                                                                                                                                                                      null,
+    version        smallint                                                                                                                                                                                                                                                                                                                         null,
+    max_points     int                                                                                                                                                                                                                                                                                                                              null,
+    min_points     int                                                                                                                                                                                                                                                                                                                              null,
+    point_value    int                                                                                                                                                                                                                                                                                                                              null,
+    points         int                                                                                                                                                                                                                                                                                                                              null,
+    reason         varchar(255)                                                                                                                                                                                                                                                                                                                     null,
+    user_id        bigint                                                                                                                                                                                                                                                                                                                           null,
+    auto_rule_name enum ('LIKED_YOUR_POST', 'LIKED_YOUR_COMMENT', 'LIKED_YOUR_REPLY', 'COMMENTED_ON_YOUR_POST', 'REPLIED_TO_YOUR_POST', 'FOLLOWED_YOUR_POST', 'BOOKMARKED_YOUR_POST', 'APPRECIATED_YOUR_POST', 'DISLIKED_YOUR_POST', 'DISLIKED_YOUR_COMMENT', 'DISLIKED_YOUR_REPLY', 'POST_NOT_APPROVED', 'POST_UNDER_REVIEW', 'VISITED_YOUR_POST') null,
+    rule_name      enum ('CREATE_POST', 'CREATE_COMMENT', 'LIKE_POST', 'LIKE_COMMENT', 'UPDATE_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'CREATE_REPLY', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION')                                                                                                           null,
+    sign           enum ('POSITIVE', 'NEGATIVE', 'ZERO')                                                                                                                                                                                                                                                                                            null,
     constraint FKksk0vbx82ws1j6vrhn6j4y3wb
         foreign key (user_id) references user_entity (id)
 );
