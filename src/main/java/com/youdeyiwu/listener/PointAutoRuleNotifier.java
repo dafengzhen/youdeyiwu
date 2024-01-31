@@ -20,6 +20,7 @@ import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.point.PointAutoRuleRepository;
+import com.youdeyiwu.repository.point.PointHistoryRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.point.PointCoreService;
@@ -43,6 +44,8 @@ public class PointAutoRuleNotifier
   private final PostRepository postRepository;
 
   private final PointAutoRuleRepository pointAutoRuleRepository;
+
+  private final PointHistoryRepository pointHistoryRepository;
 
   private final UserRepository userRepository;
 
@@ -118,18 +121,31 @@ public class PointAutoRuleNotifier
         .orElseThrow(PostNotFoundException::new);
     PointEntity pointEntity = pointService.findPointByUserEntity(userEntity);
     PointAutoRuleEntity pointAutoRuleEntity = byAutoRuleName.get();
-    PointEntity updatedPointEntity = pointCoreService.update(
-        pointEntity,
-        new UpdatePointDto(
-            calculatePoints(pointAutoRuleEntity.getRequiredPoints(), dto.sign()),
-            null,
-            null
-        )
-    );
+    PointEntity updatedPointEntity;
+
+    Integer pointHistoryCountParity = pointHistoryRepository.findPointHistoryCountParity();
+    if (pointHistoryCountParity == 0) {
+      updatedPointEntity = pointCoreService.update(
+          pointEntity,
+          new UpdatePointDto(
+              calculatePoints(pointAutoRuleEntity.getRequiredPoints(), dto.sign()),
+              null,
+              null
+          )
+      );
+    } else {
+      updatedPointEntity = pointEntity;
+    }
 
     getDifferenceSign(
         updatedPointEntity,
         (sign, difference) -> {
+          pointCoreService.create(
+              updatedPointEntity,
+              difference,
+              dto.autoRuleName().name()
+          );
+
           switch (sign) {
             case POSITIVE -> sendMessage(
                 "Awesome! You have earned new like points",

@@ -234,7 +234,9 @@ public class Tool {
    * @param callback    The callback function to be invoked with the calculated SignEnum value and the absolute difference.
    */
   public static void getDifferenceSign(PointEntity pointEntity, ObjIntConsumer<SignEnum> callback) {
-    int difference = pointEntity.getPoints() - pointEntity.getOldPoints();
+    int difference = Objects.nonNull(pointEntity.getOldPoints())
+        ? pointEntity.getPoints() - pointEntity.getOldPoints()
+        : 0;
     int absoluteDifference = Math.abs(difference);
     if (difference > 0) {
       callback.accept(SignEnum.POSITIVE, absoluteDifference);

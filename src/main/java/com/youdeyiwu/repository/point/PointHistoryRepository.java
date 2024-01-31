@@ -10,6 +10,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author dafengzhen
  */
 public interface PointHistoryRepository extends CrudRepository<PointHistoryEntity, Long>,
-    PagingAndSortingRepository<PointHistoryEntity, Long> {
+    PagingAndSortingRepository<PointHistoryEntity, Long>, CustomizedPointHistoryRepository {
 
 }

@@ -20,6 +20,15 @@ public interface PointCoreService {
   PointEntity create(UserEntity userEntity);
 
   /**
+   * create.
+   *
+   * @param pointEntity pointEntity
+   * @param pointValue  pointValue
+   * @param reason      reason
+   */
+  void create(PointEntity pointEntity, Integer pointValue, String reason);
+
+  /**
    * update.
    *
    * @param pointEntity pointEntity

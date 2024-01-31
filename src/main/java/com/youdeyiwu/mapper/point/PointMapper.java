@@ -53,4 +53,20 @@ public interface PointMapper {
    * @return PointRuleEntityVo
    */
   PointRuleEntityVo entityToVo(PointRuleEntity entity);
+
+  /**
+   * entityToEntity.
+   *
+   * @param pointEntity pointEntity
+   * @return PointHistoryEntity
+   */
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createdBy", ignore = true)
+  @Mapping(target = "updatedBy", ignore = true)
+  @Mapping(target = "createdOn", ignore = true)
+  @Mapping(target = "updatedOn", ignore = true)
+  @Mapping(target = "deleted", ignore = true)
+  @Mapping(target = "version", ignore = true)
+  @Mapping(target = "user", ignore = true)
+  PointHistoryEntity entityToEntity(PointEntity pointEntity);
 }

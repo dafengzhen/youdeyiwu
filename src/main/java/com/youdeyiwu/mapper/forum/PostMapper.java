@@ -29,6 +29,13 @@ public interface PostMapper {
    * @param postEntity         postEntity
    * @param postFavoriteEntity postFavoriteEntity
    */
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createdBy", ignore = true)
+  @Mapping(target = "updatedBy", ignore = true)
+  @Mapping(target = "createdOn", ignore = true)
+  @Mapping(target = "updatedOn", ignore = true)
+  @Mapping(target = "deleted", ignore = true)
+  @Mapping(target = "version", ignore = true)
   @Mapping(target = "post", ignore = true)
   @Mapping(target = "user", ignore = true)
   void entityToEntity(PostEntity postEntity, @MappingTarget PostFavoriteEntity postFavoriteEntity);
