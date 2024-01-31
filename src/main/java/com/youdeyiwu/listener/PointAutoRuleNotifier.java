@@ -1,5 +1,6 @@
 package com.youdeyiwu.listener;
 
+import static com.youdeyiwu.constant.PointConstant.THE_POINTS_AUTOMATICALLY_GRANTED_BY_SYSTEM;
 import static com.youdeyiwu.tool.Tool.getDifferenceSign;
 
 import com.youdeyiwu.constant.PointConfigConstant;
@@ -16,7 +17,6 @@ import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.point.PointAutoRuleEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
-import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
@@ -119,17 +119,13 @@ public class PointAutoRuleNotifier
         .orElseThrow(UserNotFoundException::new);
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
-
-    PointEntity pointEntity = pointService.findPointByUserEntity(userEntity);
-    PointAutoRuleEntity pointAutoRuleEntity = byAutoRuleName.get();
-    Optional<PointHistoryEntity> pointHistoryEntityOptional = pointHistoryRepository
-        .findLatestPointsHistoryByUserIdAndAutoRuleName(userEntity.getId(), dto.autoRuleName());
     PointEntity updatedPointEntity = pointCoreService.update(
-        pointEntity,
+        pointService.findPointByUserEntity(userEntity),
         new UpdatePointDto(
             calculatePoints(
-                pointAutoRuleEntity.getRequiredPoints(),
-                pointHistoryEntityOptional
+                byAutoRuleName.get().getRequiredPoints(),
+                pointHistoryRepository
+                    .findLatestPointsHistoryByUserIdAndAutoRuleName(userEntity.getId(), dto.autoRuleName())
                     .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
                       case POSITIVE -> SignEnum.NEGATIVE;
                       case NEGATIVE -> SignEnum.POSITIVE;
@@ -193,7 +189,7 @@ public class PointAutoRuleNotifier
               sign,
               dto.autoRuleName(),
               null,
-              null
+              THE_POINTS_AUTOMATICALLY_GRANTED_BY_SYSTEM
           );
           sendMessage(message, description, link, userEntity);
         }
