@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "@tanstack/react-query": "^5.17.19",
-    "@tanstack/react-query-devtools": "^5.17.21",
+    "@tanstack/react-query": "^5.18.0",
+    "@tanstack/react-query-devtools": "^5.18.0",
     "animate.css": "^4.1.1",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.3",
@@ -30,7 +30,7 @@
     "sharp": "^0.33.2"
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.17.20",
+    "@tanstack/eslint-plugin-query": "^5.18.0",
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^20",
     "@types/react": "^18",
