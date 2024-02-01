@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function Configs() {
-  const [items, setItems] = useState<string[]>(['jwt']);
+  const [items, setItems] = useState<string[]>(['jwt', 'point']);
 
   return (
     <Box>
