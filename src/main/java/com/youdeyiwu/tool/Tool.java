@@ -211,6 +211,22 @@ public class Tool {
   }
 
   /**
+   * calculate points.
+   *
+   * @param requiredPoints requiredPoints
+   * @param sign           sign
+   * @return Integer
+   */
+  public static Integer calculatePoints(Integer requiredPoints, SignEnum sign) {
+    int points = Math.abs(requiredPoints);
+    return switch (sign) {
+      case POSITIVE -> points;
+      case NEGATIVE -> -points;
+      case ZERO -> 0;
+    };
+  }
+
+  /**
    * Determines the sign of an integer and returns the result through a callback parameter.
    *
    * @param number   The integer to determine the sign of.

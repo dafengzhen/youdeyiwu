@@ -1,6 +1,7 @@
 package com.youdeyiwu.listener;
 
 import static com.youdeyiwu.constant.PointConstant.THE_POINTS_AUTOMATICALLY_GRANTED_BY_SYSTEM;
+import static com.youdeyiwu.tool.Tool.calculatePoints;
 import static com.youdeyiwu.tool.Tool.getDifferenceSign;
 
 import com.youdeyiwu.constant.PointConfigConstant;
@@ -110,7 +111,8 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void likedYourPost(PointAutoRuleEventDto dto) {
-    Optional<PointAutoRuleEntity> byAutoRuleName = pointAutoRuleRepository.findByAutoRuleName(dto.autoRuleName());
+    Optional<PointAutoRuleEntity> byAutoRuleName =
+        pointAutoRuleRepository.findByAutoRuleName(dto.autoRuleName());
     if (byAutoRuleName.isEmpty()) {
       return;
     }
@@ -125,7 +127,8 @@ public class PointAutoRuleNotifier
             calculatePoints(
                 byAutoRuleName.get().getRequiredPoints(),
                 pointHistoryRepository
-                    .findLatestPointsHistoryByUserIdAndAutoRuleName(userEntity.getId(), dto.autoRuleName())
+                    .findLatestPointsHistoryByUserIdAndAutoRuleName(userEntity.getId(),
+                        dto.autoRuleName())
                     .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
                       case POSITIVE -> SignEnum.NEGATIVE;
                       case NEGATIVE -> SignEnum.POSITIVE;
@@ -149,9 +152,9 @@ public class PointAutoRuleNotifier
             case POSITIVE:
               message = "Awesome! You have earned new like points";
               description = """
-                    Congratulations! Due to your liking of the post [%s],
-                    you have been awarded %s points as a gift from the system. Please continue to support us!
-                    """
+                  Congratulations! Due to your liking of the post [%s],
+                  you have been awarded %s points as a gift from the system. Please continue to support us!
+                  """
                   .formatted(
                       postEntity.getName(),
                       difference
@@ -161,10 +164,10 @@ public class PointAutoRuleNotifier
             case NEGATIVE:
               message = "Unfortunately! Your like points have been reduced";
               description = """
-                    Unfortunately, due to your unliking of the post [%s],
-                    the system will reclaim %s points that were previously awarded.
-                    We will continue to strive and look forward to earning your support again!
-                    """
+                  Unfortunately, due to your unliking of the post [%s],
+                  the system will reclaim %s points that were previously awarded.
+                  We will continue to strive and look forward to earning your support again!
+                  """
                   .formatted(
                       postEntity.getName(),
                       difference
@@ -194,21 +197,6 @@ public class PointAutoRuleNotifier
           sendMessage(message, description, link, userEntity);
         }
     );
-  }
-
-  /**
-   * calculate points.
-   *
-   * @param requiredPoints requiredPoints
-   * @param sign           sign
-   * @return Integer
-   */
-  private Integer calculatePoints(Integer requiredPoints, SignEnum sign) {
-    return switch (sign) {
-      case POSITIVE -> requiredPoints;
-      case NEGATIVE -> -requiredPoints;
-      case ZERO -> 0;
-    };
   }
 
   /**
