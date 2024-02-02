@@ -8,12 +8,14 @@ export default function Details({ message }: { message: IGlobalMessage }) {
   const [form, setForm] = useState<{
     name: string;
     overview: string;
+    links: string;
     content: string;
     sort: number;
     sender: string;
   }>({
     name: message.name ?? '',
     overview: message.overview ?? '',
+    links: message.links ? JSON.stringify(message.links) : '',
     content: message.content ? JSON.stringify(message.content) : '',
     sort: message.sort ?? 0,
     sender: message.sender ? message.sender.id + '' : '',
@@ -94,6 +96,18 @@ export default function Details({ message }: { message: IGlobalMessage }) {
             name="sender"
             defaultValue={form.sender}
             aria-describedby="sender"
+          />
+        </div>
+
+        <div>
+          <label className="form-label">Links</label>
+          <textarea
+            readOnly
+            rows={3}
+            className="form-control border-0 border-start"
+            name="links"
+            defaultValue={form.links}
+            aria-describedby="links"
           />
         </div>
 

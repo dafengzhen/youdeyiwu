@@ -33,7 +33,7 @@ export default async function Navbar({
             width={40}
             height={40}
           />
-          Youdeyiwu
+          {process.env.NAME}
         </Link>
         <div className="collapse navbar-collapse gap-2">
           <ul className="navbar-nav me-auto mb-lg-0">

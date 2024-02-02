@@ -11,6 +11,7 @@ export interface IMessage extends IBase {
   sender?: IUser;
   receiver?: IUser;
   link?: string;
+  links?: Record<string, string>;
 }
 
 export interface IGlobalMessage extends Omit<IMessage, 'receiver'> {

@@ -284,18 +284,42 @@ export default function Messages({
                             <div className="mt-2 d-flex flex-column gap-2">
                               <div>{item.name}</div>
                               <div>{item.overview}</div>
-                              {item.link &&
-                                (isHttpOrHttps(item.link) ||
-                                  item.link.startsWith('/')) && (
-                                  <div className="mt-2 d-flex gap-2">
-                                    <Link
-                                      href={item.link}
-                                      className="btn btn-primary"
-                                    >
-                                      View Details
-                                    </Link>
-                                  </div>
-                                )}
+
+                              {(item.link || item.links) && (
+                                <div className="mt-2 d-flex gap-2">
+                                  {item.link &&
+                                    (isHttpOrHttps(item.link) ||
+                                      item.link.startsWith('/')) && (
+                                      <Link
+                                        href={item.link}
+                                        className="btn btn-primary"
+                                        scroll={false}
+                                      >
+                                        View Details
+                                      </Link>
+                                    )}
+
+                                  {item.links &&
+                                    Object.entries(item.links)
+                                      .filter(
+                                        (_item) =>
+                                          isHttpOrHttps(_item[1]) ||
+                                          _item[1].startsWith('/'),
+                                      )
+                                      .map((_item) => {
+                                        return (
+                                          <Link
+                                            key={_item[0]}
+                                            href={_item[1]}
+                                            className="btn btn-primary"
+                                            scroll={false}
+                                          >
+                                            {_item[0]}
+                                          </Link>
+                                        );
+                                      })}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

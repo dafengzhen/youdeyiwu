@@ -20,6 +20,7 @@ export default function Create() {
     name: string;
     overview: string;
     link: string;
+    links: string;
     content: string;
     sort: number;
     messageRange: TMessageRange;
@@ -28,6 +29,7 @@ export default function Create() {
     name: '',
     overview: '',
     link: '',
+    links: '',
     content: '',
     sort: 0,
     messageRange: 'ALL_USER',
@@ -77,8 +79,25 @@ export default function Create() {
         }
       }
 
+      if (variables.links) {
+        if (isValidJSON(variables.links)) {
+          variables.links = JSON.parse(variables.links);
+        } else {
+          toast.current.show({
+            type: 'danger',
+            message:
+              'Please enter the attributes of the message in JSON format',
+          });
+          return;
+        }
+      }
+
       if (variables.content === '') {
         delete variables.content;
+      }
+
+      if (variables.links === '') {
+        delete variables.links;
       }
 
       const messageRange = form.messageRange;
@@ -202,6 +221,38 @@ export default function Create() {
         </div>
 
         <div>
+          <label className="form-label">Links</label>
+          <textarea
+            rows={3}
+            className="form-control"
+            name="links"
+            value={form.links}
+            onChange={onChangeForm}
+            placeholder="Please enter the message links"
+            aria-describedby="links"
+          />
+          <div className="form-text">
+            Please enter the attributes of the message in
+            <Link
+              target="_blank"
+              rel="noreferrer"
+              className="link-dark"
+              href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON"
+            >
+              &nbsp;JSON&nbsp;
+            </Link>
+            format. The object key is the link name, and the value is the
+            specific link
+          </div>
+          <div className="form-text">
+            Example:&nbsp;
+            {
+              '{"detail1": "https://www.xxx.com/detail/1", "detail2": "/posts/detail/2"}'
+            }
+          </div>
+        </div>
+
+        <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
             Range
@@ -281,6 +332,7 @@ export default function Create() {
           <div className="form-text">
             Please enter the attributes of the message in
             <Link
+              rel="noreferrer"
               target="_blank"
               className="link-dark"
               href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON"
