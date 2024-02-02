@@ -1,20 +1,19 @@
 package com.youdeyiwu.model.dto.point;
 
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.RuleNameEnum;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * create point auto rule.
+ * save point rule.
  *
- * @param autoRuleName   autoRuleName
+ * @param ruleName       ruleName
  * @param requiredPoints requiredPoints
  */
-public record CreatePointAutoRuleDto(
+public record SavePointRuleDto(
     @NotNull
-    AutoRuleNameEnum autoRuleName,
+    RuleNameEnum ruleName,
 
-    @NotNull
     Integer requiredPoints
 ) implements Serializable {
 

@@ -1,14 +1,13 @@
 package com.youdeyiwu.controller.point;
 
-import com.youdeyiwu.model.dto.point.CreatePointAutoRuleDto;
-import com.youdeyiwu.model.dto.point.CreatePointRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointAutoRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointRuleDto;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.point.PointAutoRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointHistoryEntityVo;
 import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
 import com.youdeyiwu.service.point.PointService;
 import jakarta.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -35,15 +34,15 @@ public class PointController {
   private final PointService pointService;
 
   @PostMapping(value = "/auto-rules")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreatePointAutoRuleDto dto) {
-    return ResponseEntity.created(URI.create("/points/auto-rules/" + pointService.create(dto).getId()))
-        .build();
+  public ResponseEntity<Void> save(@Valid @RequestBody SavePointAutoRuleDto dto) {
+    pointService.save(dto);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping(value = "/rules")
-  public ResponseEntity<Void> create(@Valid @RequestBody CreatePointRuleDto dto) {
-    return ResponseEntity.created(URI.create("/points/rules/" + pointService.create(dto).getId()))
-        .build();
+  public ResponseEntity<Void> save(@Valid @RequestBody SavePointRuleDto dto) {
+    pointService.save(dto);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping(value = "/auto-rules")

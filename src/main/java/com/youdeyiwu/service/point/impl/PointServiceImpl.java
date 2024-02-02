@@ -1,10 +1,9 @@
 package com.youdeyiwu.service.point.impl;
 
-import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.point.PointMapper;
-import com.youdeyiwu.model.dto.point.CreatePointAutoRuleDto;
-import com.youdeyiwu.model.dto.point.CreatePointRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointAutoRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointRuleDto;
 import com.youdeyiwu.model.entity.point.PointAutoRuleEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.point.PointRuleEntity;
@@ -23,7 +22,6 @@ import com.youdeyiwu.service.point.PointCoreService;
 import com.youdeyiwu.service.point.PointService;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -58,34 +56,32 @@ public class PointServiceImpl implements PointService {
 
   @Transactional
   @Override
-  public PointAutoRuleEntity create(CreatePointAutoRuleDto dto) {
-    Optional<PointAutoRuleEntity> pointAutoRuleEntityOptional = pointAutoRuleRepository
-        .findByAutoRuleName(dto.autoRuleName());
-    if (pointAutoRuleEntityOptional.isPresent()) {
-      throw new CustomException("The auto rule name already exists");
+  public void save(SavePointAutoRuleDto dto) {
+    PointAutoRuleEntity pointAutoRuleEntity = pointAutoRuleRepository
+        .findByAutoRuleName(dto.autoRuleName())
+        .orElseGet(PointAutoRuleEntity::new);
+
+    pointAutoRuleEntity.setAutoRuleName(dto.autoRuleName());
+    if (Objects.nonNull(dto.requiredPoints())) {
+      pointAutoRuleEntity.setRequiredPoints(dto.requiredPoints());
     }
 
-    PointAutoRuleEntity pointAutoRuleEntity = new PointAutoRuleEntity();
-    pointAutoRuleEntity.setAutoRuleName(dto.autoRuleName());
-    pointAutoRuleEntity.setRequiredPoints(dto.requiredPoints());
     pointAutoRuleRepository.save(pointAutoRuleEntity);
-    return pointAutoRuleEntity;
   }
 
   @Transactional
   @Override
-  public PointRuleEntity create(CreatePointRuleDto dto) {
-    Optional<PointRuleEntity> pointRuleEntityOptional = pointRuleRepository
-        .findByRuleName(dto.ruleName());
-    if (pointRuleEntityOptional.isPresent()) {
-      throw new CustomException("The rule name already exists");
+  public void save(SavePointRuleDto dto) {
+    PointRuleEntity pointRuleEntity = pointRuleRepository
+        .findByRuleName(dto.ruleName())
+        .orElseGet(PointRuleEntity::new);
+
+    pointRuleEntity.setRuleName(dto.ruleName());
+    if (Objects.nonNull(dto.requiredPoints())) {
+      pointRuleEntity.setRequiredPoints(dto.requiredPoints());
     }
 
-    PointRuleEntity pointRuleEntity = new PointRuleEntity();
-    pointRuleEntity.setRuleName(dto.ruleName());
-    pointRuleEntity.setRequiredPoints(dto.requiredPoints());
     pointRuleRepository.save(pointRuleEntity);
-    return pointRuleEntity;
   }
 
   @Override

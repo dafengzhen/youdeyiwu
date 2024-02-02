@@ -1,10 +1,8 @@
 package com.youdeyiwu.service.point;
 
-import com.youdeyiwu.model.dto.point.CreatePointAutoRuleDto;
-import com.youdeyiwu.model.dto.point.CreatePointRuleDto;
-import com.youdeyiwu.model.entity.point.PointAutoRuleEntity;
+import com.youdeyiwu.model.dto.point.SavePointAutoRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointRuleDto;
 import com.youdeyiwu.model.entity.point.PointEntity;
-import com.youdeyiwu.model.entity.point.PointRuleEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.point.PointAutoRuleEntityVo;
@@ -21,20 +19,18 @@ import org.springframework.data.domain.Pageable;
 public interface PointService {
 
   /**
-   * create.
+   * save.
    *
    * @param dto dto
-   * @return PointAutoRuleEntity
    */
-  PointAutoRuleEntity create(CreatePointAutoRuleDto dto);
+  void save(SavePointAutoRuleDto dto);
 
   /**
-   * create.
+   * save.
    *
    * @param dto dto
-   * @return PointRuleEntity
    */
-  PointRuleEntity create(CreatePointRuleDto dto);
+  void save(SavePointRuleDto dto);
 
   /**
    * query auto rules.
