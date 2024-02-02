@@ -96,7 +96,6 @@ public class PointCoreServiceImpl implements PointCoreService {
         .orElseThrow(UserNotFoundException::new);
     pointHistoryEntity.setUser(userEntity);
     userEntity.getPointHistories().add(pointHistoryEntity);
-    pointHistoryRepository.save(pointHistoryEntity);
   }
 
   @Transactional

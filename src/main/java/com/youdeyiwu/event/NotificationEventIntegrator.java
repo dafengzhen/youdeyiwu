@@ -1,6 +1,5 @@
 package com.youdeyiwu.event;
 
-import com.youdeyiwu.model.entity.forum.SectionEntity;
 import java.util.Objects;
 import org.checkerframework.checker.initialization.qual.Initialized;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -49,10 +48,7 @@ public class NotificationEventIntegrator implements Integrator, PostInsertEventL
 
   @Override
   public void onPostInsert(PostInsertEvent event) {
-    Object entity = event.getEntity();
-    if (entity instanceof SectionEntity sectionEntity) {
-      System.out.println("=== sectionEntity === event ===");
-    }
+    // onPostInsert
   }
 
   @Override
