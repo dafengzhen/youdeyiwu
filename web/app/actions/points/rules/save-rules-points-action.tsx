@@ -5,8 +5,12 @@ import FetchDataException from '@/app/exception/fetch-data-exception';
 import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
 import { checkResponseStatus } from '@/app/common/server';
+import { RuleNameEnum } from '@/app/interfaces/points';
 
-export interface ISaveRulesPointsActionVariables {}
+export interface ISaveRulesPointsActionVariables {
+  ruleName: RuleNameEnum;
+  requiredPoints?: number;
+}
 
 export default async function SaveRulesPointsAction(
   variables: ISaveRulesPointsActionVariables,

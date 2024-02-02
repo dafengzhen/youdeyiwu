@@ -42,6 +42,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
     }),
   );
   const [isUpdate, setIsUpdate] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const saveRulesPointsActionMutation = useMutation({
     mutationFn: SaveRulesPointsAction,
@@ -53,8 +54,21 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
 
   async function onClickSave() {
     try {
-      // await saveRulesPointsActionMutation.mutateAsync();
+      if (saving) {
+        return;
+      }
+      setSaving(true);
 
+      const _content = content.map((item) => ({
+        ruleName: item.ruleName,
+        requiredPoints: item.requiredPoints,
+      }));
+
+      for (let item of _content) {
+        await saveRulesPointsActionMutation.mutateAsync(item);
+      }
+
+      setIsUpdate(false);
       toast.current.show({
         type: 'success',
         message: 'Successfully updated',
@@ -65,6 +79,8 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
         type: 'danger',
         message: e.message,
       });
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -75,6 +91,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
           <div></div>
           <div className="d-flex gap-2">
             <button
+              disabled={saving}
               onClick={onClickUpdate}
               type="button"
               className={clsx(
@@ -87,11 +104,12 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
 
             {isUpdate && (
               <button
+                disabled={saving}
                 onClick={onClickSave}
                 type="button"
                 className="btn btn-sm btn-success"
               >
-                Save
+                {saving ? 'Saving' : 'Save'}
               </button>
             )}
           </div>
@@ -101,9 +119,12 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
       <div className="table-responsive">
         <table className="table align-middle table-striped">
           <caption>
-            The permission points required to perform these operations should
-            have a positive value; if the value is negative or zero, it will be
-            skipped
+            <p className="mb-0">
+              The permission points required to perform these actions
+            </p>
+            <p>
+              The default value is 0, and the value should be a positive number
+            </p>
           </caption>
           <thead>
             <tr>
@@ -120,6 +141,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                     {isUpdate ? (
                       <input
                         required
+                        disabled={saving}
                         type="number"
                         className="form-control"
                         name="requiredPoints"
@@ -140,7 +162,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                           find.requiredPoints = value;
                           setContent([...content]);
                         }}
-                        placeholder="Please enter the required points"
+                        placeholder="The default value is 0, and the value should be a positive number"
                         aria-describedby="requiredPoints"
                       />
                     ) : (

@@ -46,6 +46,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
     }),
   );
   const [isUpdate, setIsUpdate] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const saveAutoRulesPointsActionMutation = useMutation({
     mutationFn: SaveAutoRulesPointsAction,
@@ -57,8 +58,21 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
 
   async function onClickSave() {
     try {
-      // await saveAutoRulesPointsActionMutation.mutateAsync();
+      if (saving) {
+        return;
+      }
+      setSaving(true);
 
+      const _content = content.map((item) => ({
+        autoRuleName: item.autoRuleName,
+        requiredPoints: item.requiredPoints,
+      }));
+
+      for (let item of _content) {
+        await saveAutoRulesPointsActionMutation.mutateAsync(item);
+      }
+
+      setIsUpdate(false);
       toast.current.show({
         type: 'success',
         message: 'Successfully updated',
@@ -69,6 +83,8 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
         type: 'danger',
         message: e.message,
       });
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -79,6 +95,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
           <div></div>
           <div className="d-flex gap-2">
             <button
+              disabled={saving}
               onClick={onClickUpdate}
               type="button"
               className={clsx(
@@ -91,11 +108,12 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
 
             {isUpdate && (
               <button
+                disabled={saving}
                 onClick={onClickSave}
                 type="button"
                 className="btn btn-sm btn-success"
               >
-                Save
+                {saving ? 'Saving' : 'Save'}
               </button>
             )}
           </div>
@@ -105,8 +123,13 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
       <div className="table-responsive">
         <table className="table align-middle table-striped">
           <caption>
-            you will automatically receive a points reward or deduction,
-            depending on the positive or negative value of the points
+            <p className="mb-0">
+              You will automatically receive points rewards or refunds,
+              depending on the status of the target
+            </p>
+            <p>
+              The default value is 0, and the value should be a positive number
+            </p>
           </caption>
           <thead>
             <tr>
@@ -123,6 +146,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
                     {isUpdate ? (
                       <input
                         required
+                        disabled={saving}
                         type="number"
                         className="form-control"
                         name="requiredPoints"
@@ -143,7 +167,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
                           find.requiredPoints = value;
                           setContent([...content]);
                         }}
-                        placeholder="Please enter the required points"
+                        placeholder="The default value is 0, and the value should be a positive number"
                         aria-describedby="requiredPoints"
                       />
                     ) : (
