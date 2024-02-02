@@ -562,6 +562,7 @@ create table if not exists global_message_entity
     overview      varchar(512) not null,
     sort          int          not null,
     sender_id     bigint       null,
+    links         json         null,
     constraint UK_pt1jenvifwkmyypi8m8856td5
         unique (sender_id),
     constraint FKm68afdpt9e6ycxdmvgjq9nln6
@@ -608,6 +609,7 @@ create table if not exists message_entity
     state         smallint     not null,
     receiver_id   bigint       null,
     sender_id     bigint       null,
+    links         json         null,
     constraint FKchngvnhlot2wncosjrnmd1qjp
         foreign key (sender_id) references user_entity (id),
     constraint FKf1eboma4d9p0wlj48qwpd2ban

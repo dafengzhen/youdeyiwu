@@ -50,6 +50,12 @@ public class MessageEntity extends AbstractEntity {
   private String link;
 
   /**
+   * links.
+   */
+  @JdbcTypeCode(SqlTypes.JSON)
+  private Map<String, String> links = new HashMap<>();
+
+  /**
    * content.
    */
   @JdbcTypeCode(SqlTypes.JSON)

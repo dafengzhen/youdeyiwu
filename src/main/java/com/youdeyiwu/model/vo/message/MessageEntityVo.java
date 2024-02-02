@@ -33,6 +33,11 @@ public class MessageEntityVo extends AbstractEntityVo {
   private String link;
 
   /**
+   * links.
+   */
+  private Map<String, String> links;
+
+  /**
    * content.
    */
   private Map<String, String> content;
