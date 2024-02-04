@@ -277,6 +277,12 @@ public class PostEntity extends AbstractEntity {
   private PostReviewQueueEntity postReviewQueue;
 
   /**
+   * review state.
+   */
+  @Transient
+  private PostReviewStateEnum oldReviewState;
+
+  /**
    * transient review reason.
    */
   @Transient

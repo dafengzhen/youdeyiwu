@@ -152,6 +152,16 @@ public class PostServiceImpl implements PostService {
   public void viewPage(Long id) {
     PostEntity postEntity = findPost(id);
     postEntity.setPageViews(postEntity.getPageViews() + 1);
+
+    if (Objects.nonNull(postEntity.getUser())) {
+      publisher.publishEvent(new PointAutoRuleApplicationEvent(
+          new PointAutoRuleEventDto(
+              AutoRuleNameEnum.VISITED_YOUR_POST,
+              SignEnum.POSITIVE,
+              postEntity.getId()
+          )
+      ));
+    }
   }
 
   @Transactional
@@ -182,7 +192,6 @@ public class PostServiceImpl implements PostService {
   @Override
   public void updateLike(Long id) {
     PostEntity postEntity = findPost(id);
-    securityService.checkAuthenticationStatus();
     UserEntity userEntity = userRepository.findById(securityService.getUserId())
         .orElseThrow(UserNotFoundException::new);
     Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
@@ -211,22 +220,23 @@ public class PostServiceImpl implements PostService {
             : Math.max(0, postEntity.getLikesCount() - 1)
     );
 
-    publisher.publishEvent(new PointAutoRuleApplicationEvent(
-        new PointAutoRuleEventDto(
-            AutoRuleNameEnum.LIKED_YOUR_POST,
-            Boolean.TRUE.equals(postUserEntity.getLiked())
-                ? SignEnum.POSITIVE
-                : SignEnum.NEGATIVE,
-            postEntity.getId()
-        )
-    ));
+    if (!Objects.equals(userEntity, postEntity.getUser())) {
+      publisher.publishEvent(new PointAutoRuleApplicationEvent(
+          new PointAutoRuleEventDto(
+              AutoRuleNameEnum.LIKED_YOUR_POST,
+              Boolean.TRUE.equals(postUserEntity.getLiked())
+                  ? SignEnum.POSITIVE
+                  : SignEnum.NEGATIVE,
+              postEntity.getId()
+          )
+      ));
+    }
   }
 
   @Transactional
   @Override
   public void updateFavorite(Long id) {
     PostEntity postEntity = findPost(id);
-    securityService.checkAuthenticationStatus();
     UserEntity userEntity = userRepository.findById(securityService.getUserId())
         .orElseThrow(UserNotFoundException::new);
     Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
@@ -239,10 +249,10 @@ public class PostServiceImpl implements PostService {
     PostUserEntity postUserEntity;
     if (postUserEntityOptional.isPresent()) {
       postUserEntity = postUserEntityOptional.get();
-      postUserEntity.setBookmarked(!postUserEntity.getBookmarked());
+      postUserEntity.setFavorited(!postUserEntity.getFavorited());
     } else {
       postUserEntity = new PostUserEntity();
-      postUserEntity.setBookmarked(!postUserEntity.getBookmarked());
+      postUserEntity.setFavorited(!postUserEntity.getFavorited());
       postUserEntity.setPost(postEntity);
       postUserEntity.setUser(userEntity);
       userEntity.getUserPosts().add(postUserEntity);
@@ -250,9 +260,21 @@ public class PostServiceImpl implements PostService {
     }
 
     postEntity.setFavoritesCount(
-        Boolean.TRUE.equals(postUserEntity.getBookmarked()) ? postEntity.getFavoritesCount() + 1
+        Boolean.TRUE.equals(postUserEntity.getFavorited()) ? postEntity.getFavoritesCount() + 1
             : Math.max(0, postEntity.getFavoritesCount() - 1)
     );
+
+    if (!Objects.equals(userEntity, postEntity.getUser())) {
+      publisher.publishEvent(new PointAutoRuleApplicationEvent(
+          new PointAutoRuleEventDto(
+              AutoRuleNameEnum.FAVORITED_YOUR_POST,
+              Boolean.TRUE.equals(postUserEntity.getFavorited())
+                  ? SignEnum.POSITIVE
+                  : SignEnum.NEGATIVE,
+              postEntity.getId()
+          )
+      ));
+    }
   }
 
   @Transactional
@@ -278,9 +300,34 @@ public class PostServiceImpl implements PostService {
     PostEntity postEntity = findPost(id);
 
     if (Objects.nonNull(dto.reviewState())) {
+      postEntity.setOldReviewState(postEntity.getReviewState());
       postEntity.setReviewState(dto.reviewState());
       postEntity.setReviewReason(dto.reviewReason());
       publisher.publishEvent(new PostReviewStateApplicationEvent(postEntity));
+
+      if (Objects.nonNull(postEntity.getUser())) {
+        AutoRuleNameEnum ruleName;
+        SignEnum sign = switch (postEntity.getReviewState()) {
+          case APPROVED -> {
+            ruleName = AutoRuleNameEnum.POST_APPROVED;
+            yield SignEnum.POSITIVE;
+          }
+          case REJECTED -> {
+            ruleName = AutoRuleNameEnum.POST_NOT_APPROVED;
+            yield SignEnum.NEGATIVE;
+          }
+          case PENDING_REVIEW -> {
+            ruleName = AutoRuleNameEnum.POST_PENDING_REVIEW;
+            yield SignEnum.NEGATIVE;
+          }
+          default ->
+              throw new IllegalStateException("Unexpected value: " + postEntity.getReviewState());
+        };
+
+        publisher.publishEvent(new PointAutoRuleApplicationEvent(
+            new PointAutoRuleEventDto(ruleName, sign, postEntity.getId())
+        ));
+      }
     }
 
     if (Objects.nonNull(dto.sortState())) {
@@ -689,7 +736,7 @@ public class PostServiceImpl implements PostService {
       PostUserEntity postUserEntity = postUserEntityOptional.get();
       vo.setLiked(postUserEntity.getLiked());
       vo.setFollowed(postUserEntity.getFollowed());
-      vo.setBookmarked(postUserEntity.getBookmarked());
+      vo.setFavorited(postUserEntity.getFavorited());
     }
   }
 

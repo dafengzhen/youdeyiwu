@@ -4,7 +4,10 @@ import static com.youdeyiwu.tool.Tool.cleanBasicContent;
 import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.event.MessageApplicationEvent;
+import com.youdeyiwu.event.PointAutoRuleApplicationEvent;
 import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.ReplyNotFoundException;
@@ -13,6 +16,7 @@ import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.mapper.forum.ReplyMapper;
 import com.youdeyiwu.model.dto.forum.CreateReplyDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
+import com.youdeyiwu.model.dto.point.PointAutoRuleEventDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
@@ -126,7 +130,7 @@ public class ReplyServiceImpl implements ReplyService {
 
       if (
           commentOrReplyUserEntity.isPresent()
-          && !Objects.equals(postEntity.get().getUser(), commentOrReplyUserEntity.get())
+              && !Objects.equals(postEntity.get().getUser(), commentOrReplyUserEntity.get())
       ) {
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setName("You have received a new reply");
@@ -157,6 +161,21 @@ public class ReplyServiceImpl implements ReplyService {
         messageEntity.setLink("/posts/" + postEntity.get().getId());
         messageEntity.setReceiver(commentOrReplyUserEntity.get());
         publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+      }
+
+      if (
+          !Objects.equals(
+              userEntity,
+              commentOrReplyUserEntity.orElse(null)
+          )
+      ) {
+        publisher.publishEvent(new PointAutoRuleApplicationEvent(
+            new PointAutoRuleEventDto(
+                AutoRuleNameEnum.LIKED_YOUR_REPLY,
+                SignEnum.POSITIVE,
+                postEntity.get().getId()
+            )
+        ));
       }
     }
 

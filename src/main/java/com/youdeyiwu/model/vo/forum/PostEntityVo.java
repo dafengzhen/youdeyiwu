@@ -151,9 +151,9 @@ public class PostEntityVo extends AbstractEntityVo {
   private Boolean followed;
 
   /**
-   * bookmarked.
+   * favorited.
    */
-  private Boolean bookmarked;
+  private Boolean favorited;
 
   /**
    * comments.

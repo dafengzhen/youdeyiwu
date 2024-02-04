@@ -16,13 +16,13 @@ const tips = {
   COMMENTED_ON_YOUR_POST: 'When someone comments on your post',
   REPLIED_TO_YOUR_POST: 'When someone replies to your post',
   FOLLOWED_YOUR_POST: 'When someone follows your post',
-  BOOKMARKED_YOUR_POST: 'When someone bookmarks your post',
-  APPRECIATED_YOUR_POST: 'When someone appreciates your post',
+  FAVORITED_YOUR_POST: 'When someone favorites your post',
   DISLIKED_YOUR_POST: 'When someone dislikes your post',
   DISLIKED_YOUR_COMMENT: 'When someone dislikes your comment',
   DISLIKED_YOUR_REPLY: 'When someone dislikes your reply',
+  POST_APPROVED: 'When your post is approved',
   POST_NOT_APPROVED: 'When your post is not approved',
-  POST_UNDER_REVIEW: 'When your post is under review',
+  POST_PENDING_REVIEW: 'When your post is pending review',
   VISITED_YOUR_POST: 'When someone visits your post',
 };
 

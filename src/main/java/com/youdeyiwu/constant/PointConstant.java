@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 public class PointConstant {
 
   /**
-   * The points are automatically granted by the system.
+   * the point reward is issued by the system.
    */
-  public static final String THE_POINTS_AUTOMATICALLY_GRANTED_BY_SYSTEM = "The points are automatically granted by the system";
+  public static final String POINT_REWARD_BY_SYSTEM = "The point reward is issued by the system";
 
   /**
-   * The points are manually awarded by the user.
+   * the point reward is issued by the user.
    */
-  public static final String THE_POINTS_MANUALLY_AWARDED_BY_USER = "The points are manually awarded by the user";
+  public static final String POINT_REWARD_BY_USER = "The point reward is issued by the user";
 
 }

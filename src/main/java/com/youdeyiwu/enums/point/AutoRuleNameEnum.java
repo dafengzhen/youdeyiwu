@@ -41,14 +41,9 @@ public enum AutoRuleNameEnum {
   FOLLOWED_YOUR_POST,
 
   /**
-   * Someone bookmarked your post.
+   * Someone favorited your post.
    */
-  BOOKMARKED_YOUR_POST,
-
-  /**
-   * Someone appreciated your post.
-   */
-  APPRECIATED_YOUR_POST,
+  FAVORITED_YOUR_POST,
 
   /**
    * Someone disliked your post.
@@ -66,6 +61,11 @@ public enum AutoRuleNameEnum {
   DISLIKED_YOUR_REPLY,
 
   /**
+   * Your post has been approved.
+   */
+  POST_APPROVED,
+
+  /**
    * Your post did not pass review.
    */
   POST_NOT_APPROVED,
@@ -73,7 +73,7 @@ public enum AutoRuleNameEnum {
   /**
    * Your post is awaiting review.
    */
-  POST_UNDER_REVIEW,
+  POST_PENDING_REVIEW,
 
   /**
    * Someone visited your post.

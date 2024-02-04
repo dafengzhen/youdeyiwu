@@ -3,7 +3,10 @@ package com.youdeyiwu.service.forum.impl;
 import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
+import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.event.MessageApplicationEvent;
+import com.youdeyiwu.event.PointAutoRuleApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.PostReviewQueueNotFoundException;
@@ -17,6 +20,7 @@ import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
+import com.youdeyiwu.model.dto.point.PointAutoRuleEventDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostReviewQueueEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
@@ -91,8 +95,8 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     }
 
     boolean whetherToContinue = Boolean.TRUE.equals(userEntity.getRoot())
-                                || (Objects.nonNull(postEntity.getSection())
-                                    && postEntity.getSection().getAdmins().contains(userEntity));
+        || (Objects.nonNull(postEntity.getSection())
+        && postEntity.getSection().getAdmins().contains(userEntity));
     if (!whetherToContinue) {
       throw new CustomException("Sorry, you are unable to process the audit request for this post");
     }
@@ -172,6 +176,16 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     postReviewQueueRepository.delete(postReviewQueueEntity);
     String currentDateTime = getCurrentDateTime();
     sendApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
+
+    if (Objects.nonNull(postEntity.getUser())) {
+      publisher.publishEvent(new PointAutoRuleApplicationEvent(
+          new PointAutoRuleEventDto(
+              AutoRuleNameEnum.POST_APPROVED,
+              SignEnum.POSITIVE,
+              postEntity.getId()
+          )
+      ));
+    }
   }
 
   @Transactional
@@ -198,6 +212,16 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     postReviewQueueRepository.delete(postReviewQueueEntity);
     String currentDateTime = getCurrentDateTime();
     sendNotApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
+
+    if (Objects.nonNull(postEntity.getUser())) {
+      publisher.publishEvent(new PointAutoRuleApplicationEvent(
+          new PointAutoRuleEventDto(
+              AutoRuleNameEnum.POST_NOT_APPROVED,
+              SignEnum.NEGATIVE,
+              postEntity.getId()
+          )
+      ));
+    }
   }
 
   @Override
@@ -225,10 +249,12 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
               PostEntityVo vo = postMapper.entityToVo(postEntity);
               vo.setSection(sectionMapper.entityToVo(postEntity.getSection()));
               PostReviewQueueEntity postReviewQueueEntity = postEntity.getPostReviewQueue();
-              PostReviewQueueEntityVo postReviewQueueEntityVo = postReviewQueueMapper.entityToVo(postReviewQueueEntity);
+              PostReviewQueueEntityVo postReviewQueueEntityVo =
+                  postReviewQueueMapper.entityToVo(postReviewQueueEntity);
 
               if (Objects.nonNull(postReviewQueueEntity)) {
-                postReviewQueueEntityVo.setReceiver(userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
+                postReviewQueueEntityVo.setReceiver(
+                    userMapper.entityToVo(postReviewQueueEntity.getReceiver()));
               }
 
               vo.setPostReviewQueue(postReviewQueueEntityVo);
