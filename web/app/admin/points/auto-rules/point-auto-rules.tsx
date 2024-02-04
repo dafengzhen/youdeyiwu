@@ -24,6 +24,7 @@ const tips = {
   POST_NOT_APPROVED: 'When your post is not approved',
   POST_PENDING_REVIEW: 'When your post is pending review',
   VISITED_YOUR_POST: 'When someone visits your post',
+  POST_CREATE: 'When you create a post',
 };
 
 const rules = Object.keys(AutoRuleNameEnum).map((item) => {

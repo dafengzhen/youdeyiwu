@@ -78,6 +78,11 @@ public enum AutoRuleNameEnum {
   /**
    * Someone visited your post.
    */
-  VISITED_YOUR_POST
+  VISITED_YOUR_POST,
+
+  /**
+   * create post.
+   */
+  POST_CREATE
 
 }

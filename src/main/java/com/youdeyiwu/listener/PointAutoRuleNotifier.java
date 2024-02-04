@@ -90,6 +90,7 @@ public class PointAutoRuleNotifier
       case POST_NOT_APPROVED -> postNotApproved(dto);
       case POST_PENDING_REVIEW -> postPendingReview(dto);
       case VISITED_YOUR_POST -> visitedYourPost(dto);
+      case POST_CREATE -> postCreate(dto);
       default -> throw new IllegalStateException("Unexpected value: " + dto.autoRuleName());
     }
   }
@@ -100,7 +101,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void likedYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -172,7 +173,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void likedYourComment(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -245,7 +246,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void likedYourReply(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -317,7 +318,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void commentedOnYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -389,7 +390,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void repliedToYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -461,7 +462,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void followedYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -533,7 +534,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void favoritedYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -605,7 +606,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void dislikedYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -679,7 +680,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void dislikedYourComment(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -754,7 +755,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void dislikedYourReply(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null, null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -831,7 +832,11 @@ public class PointAutoRuleNotifier
   private void postApproved(PointAutoRuleEventDto dto) {
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, postEntity.getUser().getId());
+    PointAutoRuleProcessEventDto result = getProcessEventDto(
+        dto,
+        dto.sign(),
+        postEntity.getUser().getId()
+    );
     if (Objects.isNull(result)) {
       return;
     }
@@ -885,7 +890,11 @@ public class PointAutoRuleNotifier
   private void postNotApproved(PointAutoRuleEventDto dto) {
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, postEntity.getUser().getId());
+    PointAutoRuleProcessEventDto result = getProcessEventDto(
+        dto,
+        dto.sign(),
+        postEntity.getUser().getId()
+    );
     if (Objects.isNull(result)) {
       return;
     }
@@ -939,7 +948,11 @@ public class PointAutoRuleNotifier
   private void postPendingReview(PointAutoRuleEventDto dto) {
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, postEntity.getUser().getId());
+    PointAutoRuleProcessEventDto result = getProcessEventDto(
+        dto,
+        dto.sign(),
+        postEntity.getUser().getId()
+    );
     if (Objects.isNull(result)) {
       return;
     }
@@ -992,7 +1005,7 @@ public class PointAutoRuleNotifier
    * @param dto dto
    */
   private void visitedYourPost(PointAutoRuleEventDto dto) {
-    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, null);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(dto, dto.sign(), null);
     if (Objects.isNull(result)) {
       return;
     }
@@ -1014,6 +1027,65 @@ public class PointAutoRuleNotifier
               description = """
                   Your post [ %s ] has been visited,
                   and you have been awarded [ %s ] points automatically by the system. Thank you for your support
+                  """
+                  .formatted(
+                      postEntity.getName(),
+                      difference
+                  );
+              link = "/posts/" + postEntity.getId();
+              break;
+            case NEGATIVE, ZERO:
+              break;
+            default:
+              throw new IllegalStateException("Unexpected value: " + sign);
+          }
+
+          pointCoreService.create(
+              result.updatedPointEntity(),
+              difference,
+              sign,
+              dto.autoRuleName(),
+              null,
+              POINT_REWARD_BY_SYSTEM
+          );
+
+          sendMessage(message, description, link, result.userEntity());
+        }
+    );
+  }
+
+  /**
+   * post create.
+   *
+   * @param dto dto
+   */
+  private void postCreate(PointAutoRuleEventDto dto) {
+    PostEntity postEntity = postRepository.findById(dto.postId())
+        .orElseThrow(PostNotFoundException::new);
+    PointAutoRuleProcessEventDto result = getProcessEventDto(
+        dto,
+        dto.sign(),
+        null
+    );
+    if (Objects.isNull(result)) {
+      return;
+    }
+
+    getDifferenceSign(
+        result.updatedPointEntity(),
+        (sign, difference) -> {
+          String message = null;
+          String description = null;
+          String link = null;
+
+          switch (sign) {
+            case POSITIVE:
+              message =
+                  "Congratulations on successfully creating a post. You have been awarded new points as a reward";
+              description = """
+                  Your post [ %s ] has been successfully created,
+                  and the system will automatically grant you [ %s ] points as a reward.
+                  Thank you for your support, and we look forward to offering you more points in the future
                   """
                   .formatted(
                       postEntity.getName(),
@@ -1071,10 +1143,15 @@ public class PointAutoRuleNotifier
    * get process event.
    *
    * @param dto    dto
+   * @param sign   sign
    * @param userId userId
    * @return PointAutoRuleProcessEventDto
    */
-  private PointAutoRuleProcessEventDto getProcessEventDto(PointAutoRuleEventDto dto, Long userId) {
+  private PointAutoRuleProcessEventDto getProcessEventDto(
+      PointAutoRuleEventDto dto,
+      SignEnum sign,
+      Long userId
+  ) {
     Optional<PointAutoRuleEntity> byAutoRuleName =
         pointAutoRuleRepository.findByAutoRuleName(dto.autoRuleName());
     if (byAutoRuleName.isEmpty()) {
@@ -1092,15 +1169,18 @@ public class PointAutoRuleNotifier
         new UpdatePointDto(
             calculatePoints(
                 byAutoRuleName.get().getRequiredPoints(),
-                pointHistoryRepository
-                    .findLatestPointsHistoryByUserIdAndAutoRuleName(userEntity.getId(),
-                        dto.autoRuleName())
+                Objects.isNull(sign)
+                    ? pointHistoryRepository.findLatestPointsHistoryByUserIdAndAutoRuleName(
+                        userEntity.getId(),
+                        dto.autoRuleName()
+                    )
                     .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
                       case POSITIVE -> SignEnum.NEGATIVE;
                       case NEGATIVE -> SignEnum.POSITIVE;
                       case ZERO -> SignEnum.ZERO;
                     })
                     .orElseGet(dto::sign)
+                    : sign
             ),
             null,
             null
