@@ -111,30 +111,6 @@ create table if not exists permission_entity_seq
 INSERT INTO permission_entity_seq (next_val)
 VALUES (1);
 
-create table if not exists point_auto_rule_entity
-(
-    id              bigint                                                                                                                                                                                                                                                                                                                           not null
-        primary key,
-    created_by      bigint                                                                                                                                                                                                                                                                                                                           null,
-    created_on      datetime(6)                                                                                                                                                                                                                                                                                                                      not null,
-    deleted         bit                                                                                                                                                                                                                                                                                                                              not null,
-    updated_by      bigint                                                                                                                                                                                                                                                                                                                           null,
-    updated_on      datetime(6)                                                                                                                                                                                                                                                                                                                      null,
-    version         smallint                                                                                                                                                                                                                                                                                                                         null,
-    auto_rule_name  enum ('LIKED_YOUR_POST', 'LIKED_YOUR_COMMENT', 'LIKED_YOUR_REPLY', 'COMMENTED_ON_YOUR_POST', 'REPLIED_TO_YOUR_POST', 'FOLLOWED_YOUR_POST', 'FAVORITED_YOUR_POST', 'DISLIKED_YOUR_POST', 'DISLIKED_YOUR_COMMENT', 'DISLIKED_YOUR_REPLY', 'POST_APPROVED', 'POST_NOT_APPROVED', 'POST_PENDING_REVIEW', 'VISITED_YOUR_POST', 'POST_CREATE') null,
-    required_points int                                                                                                                                                                                                                                                                                                                              null,
-    constraint UK_7tbue8vin8u8e9c6tm6t9gsrp
-        unique (auto_rule_name)
-);
-
-create table if not exists point_auto_rule_entity_seq
-(
-    next_val bigint null
-);
-
-INSERT INTO point_auto_rule_entity_seq (next_val)
-VALUES (1);
-
 create table if not exists point_entity
 (
     id         bigint      not null
@@ -169,18 +145,43 @@ create table if not exists point_history_entity_seq
 INSERT INTO point_history_entity_seq (next_val)
 VALUES (1);
 
+create table if not exists point_permission_rule_entity
+(
+    id                   bigint                                                                                                                                                    not null
+        primary key,
+    created_by           bigint                                                                                                                                                    null,
+    created_on           datetime(6)                                                                                                                                               not null,
+    deleted              bit                                                                                                                                                       not null,
+    updated_by           bigint                                                                                                                                                    null,
+    updated_on           datetime(6)                                                                                                                                               null,
+    version              smallint                                                                                                                                                  null,
+    permission_rule_name enum ('CREATE_POST', 'CREATE_COMMENT', 'CREATE_REPLY', 'UPDATE_POST', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION') null,
+    required_points      int                                                                                                                                                       null,
+    constraint UK_hs5lxfgbbioweo9yadjvc71cq
+        unique (permission_rule_name)
+);
+
+create table if not exists point_permission_rule_entity_seq
+(
+    next_val bigint null
+);
+
+INSERT INTO point_permission_rule_entity_seq (next_val)
+VALUES (1);
+
 create table if not exists point_rule_entity
 (
-    id              bigint                                                                                                                                                                                                                 not null
+    id                      bigint                                                                                                                                                                                                                                                       not null
         primary key,
-    created_by      bigint                                                                                                                                                                                                                 null,
-    created_on      datetime(6)                                                                                                                                                                                                            not null,
-    deleted         bit                                                                                                                                                                                                                    not null,
-    updated_by      bigint                                                                                                                                                                                                                 null,
-    updated_on      datetime(6)                                                                                                                                                                                                            null,
-    version         smallint                                                                                                                                                                                                               null,
-    required_points int                                                                                                                                                                                                                    null,
-    rule_name       enum ('CREATE_POST', 'CREATE_COMMENT', 'LIKE_POST', 'LIKE_COMMENT', 'UPDATE_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'CREATE_REPLY', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION') null,
+    created_by              bigint                                                                                                                                                                                                                                                       null,
+    created_on              datetime(6)                                                                                                                                                                                                                                                  not null,
+    deleted                 bit                                                                                                                                                                                                                                                          not null,
+    updated_by              bigint                                                                                                                                                                                                                                                       null,
+    updated_on              datetime(6)                                                                                                                                                                                                                                                  null,
+    version                 smallint                                                                                                                                                                                                                                                     null,
+    initiator_reward_points int                                                                                                                                                                                                                                                          null,
+    receiver_reward_points  int                                                                                                                                                                                                                                                          null,
+    rule_name               enum ('LIKE_POST', 'LIKE_COMMENT', 'LIKE_REPLY', 'COMMENT_POST', 'REPLY_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'DISLIKE_POST', 'DISLIKE_COMMENT', 'DISLIKE_REPLY', 'POST_APPROVED', 'POST_NOT_APPROVED', 'POST_PENDING_REVIEW', 'VISIT_POST', 'CREATE_POST') null,
     constraint UK_5do4d4csxlsnk9coer6vkvdyl
         unique (rule_name)
 );
@@ -556,13 +557,13 @@ create table if not exists global_message_entity
     version       smallint     null,
     content       json         null,
     link          varchar(255) null,
+    links         json         null,
     message_range smallint     not null,
     message_type  smallint     not null,
     name          varchar(255) not null,
     overview      varchar(512) not null,
     sort          int          not null,
     sender_id     bigint       null,
-    links         json         null,
     constraint UK_pt1jenvifwkmyypi8m8856td5
         unique (sender_id),
     constraint FKm68afdpt9e6ycxdmvgjq9nln6
@@ -602,6 +603,7 @@ create table if not exists message_entity
     version       smallint     null,
     content       json         null,
     link          varchar(255) null,
+    links         json         null,
     message_range smallint     not null,
     message_type  smallint     not null,
     name          varchar(255) not null,
@@ -609,7 +611,6 @@ create table if not exists message_entity
     state         smallint     not null,
     receiver_id   bigint       null,
     sender_id     bigint       null,
-    links         json         null,
     constraint FKchngvnhlot2wncosjrnmd1qjp
         foreign key (sender_id) references user_entity (id),
     constraint FKf1eboma4d9p0wlj48qwpd2ban
@@ -625,23 +626,23 @@ alter table point_entity
 
 create table if not exists point_history_entity
 (
-    id             bigint                                                                                                                                                                                                                                                                                                                           not null
+    id                   bigint                                                                                                                                                                                                                                                       not null
         primary key,
-    created_by     bigint                                                                                                                                                                                                                                                                                                                           null,
-    created_on     datetime(6)                                                                                                                                                                                                                                                                                                                      not null,
-    deleted        bit                                                                                                                                                                                                                                                                                                                              not null,
-    updated_by     bigint                                                                                                                                                                                                                                                                                                                           null,
-    updated_on     datetime(6)                                                                                                                                                                                                                                                                                                                      null,
-    version        smallint                                                                                                                                                                                                                                                                                                                         null,
-    max_points     int                                                                                                                                                                                                                                                                                                                              null,
-    min_points     int                                                                                                                                                                                                                                                                                                                              null,
-    point_value    int                                                                                                                                                                                                                                                                                                                              null,
-    points         int                                                                                                                                                                                                                                                                                                                              null,
-    reason         varchar(255)                                                                                                                                                                                                                                                                                                                     null,
-    user_id        bigint                                                                                                                                                                                                                                                                                                                           null,
-    auto_rule_name enum ('LIKED_YOUR_POST', 'LIKED_YOUR_COMMENT', 'LIKED_YOUR_REPLY', 'COMMENTED_ON_YOUR_POST', 'REPLIED_TO_YOUR_POST', 'FOLLOWED_YOUR_POST', 'FAVORITED_YOUR_POST', 'DISLIKED_YOUR_POST', 'DISLIKED_YOUR_COMMENT', 'DISLIKED_YOUR_REPLY', 'POST_APPROVED', 'POST_NOT_APPROVED', 'POST_PENDING_REVIEW', 'VISITED_YOUR_POST', 'POST_CREATE') null,
-    rule_name      enum ('CREATE_POST', 'CREATE_COMMENT', 'LIKE_POST', 'LIKE_COMMENT', 'UPDATE_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'CREATE_REPLY', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION')                                                                                                           null,
-    sign           enum ('POSITIVE', 'NEGATIVE', 'ZERO')                                                                                                                                                                                                                                                                                            null,
+    created_by           bigint                                                                                                                                                                                                                                                       null,
+    created_on           datetime(6)                                                                                                                                                                                                                                                  not null,
+    deleted              bit                                                                                                                                                                                                                                                          not null,
+    updated_by           bigint                                                                                                                                                                                                                                                       null,
+    updated_on           datetime(6)                                                                                                                                                                                                                                                  null,
+    version              smallint                                                                                                                                                                                                                                                     null,
+    max_points           int                                                                                                                                                                                                                                                          null,
+    min_points           int                                                                                                                                                                                                                                                          null,
+    permission_rule_name enum ('CREATE_POST', 'CREATE_COMMENT', 'CREATE_REPLY', 'UPDATE_POST', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION')                                                                                                    null,
+    point_value          int                                                                                                                                                                                                                                                          null,
+    points               int                                                                                                                                                                                                                                                          null,
+    reason               varchar(255)                                                                                                                                                                                                                                                 null,
+    rule_name            enum ('LIKE_POST', 'LIKE_COMMENT', 'LIKE_REPLY', 'COMMENT_POST', 'REPLY_POST', 'FOLLOW_POST', 'FAVORITE_POST', 'DISLIKE_POST', 'DISLIKE_COMMENT', 'DISLIKE_REPLY', 'POST_APPROVED', 'POST_NOT_APPROVED', 'POST_PENDING_REVIEW', 'VISIT_POST', 'CREATE_POST') null,
+    sign                 enum ('POSITIVE', 'NEGATIVE', 'ZERO')                                                                                                                                                                                                                        null,
+    user_id              bigint                                                                                                                                                                                                                                                       null,
     constraint FKksk0vbx82ws1j6vrhn6j4y3wb
         foreign key (user_id) references user_entity (id)
 );

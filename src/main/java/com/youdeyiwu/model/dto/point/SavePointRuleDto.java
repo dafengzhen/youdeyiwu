@@ -7,14 +7,17 @@ import java.io.Serializable;
 /**
  * save point rule.
  *
- * @param ruleName       ruleName
- * @param requiredPoints requiredPoints
+ * @param ruleName              ruleName
+ * @param initiatorRewardPoints initiatorRewardPoints
+ * @param receiverRewardPoints  receiverRewardPoints
  */
 public record SavePointRuleDto(
     @NotNull
     RuleNameEnum ruleName,
 
-    Integer requiredPoints
+    Integer initiatorRewardPoints,
+
+    Integer receiverRewardPoints
 ) implements Serializable {
 
 }

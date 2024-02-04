@@ -1,6 +1,6 @@
 package com.youdeyiwu.model.vo.point;
 
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.model.vo.AbstractEntityVo;
@@ -43,14 +43,14 @@ public class PointHistoryEntityVo extends AbstractEntityVo {
   private Integer maxPoints;
 
   /**
-   * rule name (The name of the rule for manually managing points, which can be considered proactive).
+   * rule name.
    */
   private RuleNameEnum ruleName;
 
   /**
-   * auto rule name (The name of the rule used to automatically manage points, which can be considered passive).
+   * permission rule name.
    */
-  private AutoRuleNameEnum autoRuleName;
+  private PermissionRuleNameEnum permissionRuleName;
 
   /**
    * reason.

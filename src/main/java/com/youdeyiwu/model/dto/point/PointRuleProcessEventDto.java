@@ -5,12 +5,12 @@ import com.youdeyiwu.model.entity.user.UserEntity;
 import java.io.Serializable;
 
 /**
- * point auto rule.
+ * point rule.
  *
  * @param userEntity         userEntity
  * @param updatedPointEntity updatedPointEntity
  */
-public record PointAutoRuleProcessEventDto(
+public record PointRuleProcessEventDto(
     UserEntity userEntity,
 
     PointEntity updatedPointEntity

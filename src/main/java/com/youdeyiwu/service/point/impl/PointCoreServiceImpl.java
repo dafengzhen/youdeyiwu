@@ -4,8 +4,8 @@ import static com.youdeyiwu.tool.Tool.getSign;
 
 import com.youdeyiwu.constant.PointConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
 import com.youdeyiwu.enums.point.RuleNameEnum;
+import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.exception.PointNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -67,8 +67,8 @@ public class PointCoreServiceImpl implements PointCoreService {
       PointEntity pointEntity,
       Integer pointValue,
       SignEnum sign,
-      AutoRuleNameEnum autoRuleName,
       RuleNameEnum ruleName,
+      PermissionRuleNameEnum permissionRuleName,
       String reason
   ) {
     PointHistoryEntity pointHistoryEntity = pointMapper.entityToEntity(pointEntity);
@@ -80,12 +80,12 @@ public class PointCoreServiceImpl implements PointCoreService {
       pointHistoryEntity.setSign(sign);
     }
 
-    if (Objects.nonNull(autoRuleName)) {
-      pointHistoryEntity.setAutoRuleName(autoRuleName);
-    }
-
     if (Objects.nonNull(ruleName)) {
       pointHistoryEntity.setRuleName(ruleName);
+    }
+
+    if (Objects.nonNull(permissionRuleName)) {
+      pointHistoryEntity.setPermissionRuleName(permissionRuleName);
     }
 
     if (StringUtils.hasText(reason)) {

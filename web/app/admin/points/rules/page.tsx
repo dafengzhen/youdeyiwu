@@ -3,7 +3,7 @@ import PointRules from '@/app/admin/points/rules/point-rules';
 import QueryRulesPointsAction from '@/app/actions/points/rules/query-rules-points-action';
 
 export const metadata: Metadata = {
-  title: 'Point Rule',
+  title: 'Point Auto Rule',
 };
 
 export default async function Page() {

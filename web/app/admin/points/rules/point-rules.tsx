@@ -10,24 +10,28 @@ import { useMutation } from '@tanstack/react-query';
 import SaveRulesPointsAction from '@/app/actions/points/rules/save-rules-points-action';
 
 const tips = {
-  CREATE_POST: 'When you create a post',
-  CREATE_COMMENT: 'When you create a comment',
-  LIKE_POST: 'When you like a post',
-  LIKE_COMMENT: 'When you like a comment',
-  UPDATE_POST: 'When you update a post',
-  FOLLOW_POST: 'When you follow a post',
-  FAVORITE_POST: 'When you favorite a post',
-  CREATE_REPLY: 'When you create a reply',
-  ADD_POST_TAG: 'When you add a tag to a post',
-  ADD_POST_CONTENT_LINK: 'When you add a content link to a post',
-  ADD_POST_COVER_LINK: 'When you add a cover link to a post',
-  ADD_POST_SECTION: 'When you add a section to a post',
+  LIKE_POST: 'earning points for liking a post',
+  LIKE_COMMENT: 'earning points for liking a comment',
+  LIKE_REPLY: 'earning points for liking a reply',
+  COMMENT_POST: 'earning points for commenting on a post',
+  REPLY_POST: 'earning points for replying to a post',
+  FOLLOW_POST: 'earning points for following a post',
+  FAVORITE_POST: 'earning points for marking a post as a favorite',
+  DISLIKE_POST: 'earning points for disliking a post',
+  DISLIKE_COMMENT: 'earning points for disliking a comment',
+  DISLIKE_REPLY: 'earning points for disliking a reply',
+  POST_APPROVED: 'earning points for having a post approved',
+  POST_NOT_APPROVED: 'earning points for having a post not approved',
+  POST_PENDING_REVIEW: 'earning points for a post pending review',
+  VISIT_POST: 'earning points for visiting a post',
+  CREATE_POST: 'earning points for creating a new post',
 };
 
 const rules = Object.keys(RuleNameEnum).map((item) => {
   return {
     ruleName: item,
-    requiredPoints: 0,
+    initiatorRewardPoints: 0,
+    receiverRewardPoints: 0,
   };
 }) as IPointRule[];
 
@@ -61,7 +65,8 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
 
       const _content = content.map((item) => ({
         ruleName: item.ruleName,
-        requiredPoints: item.requiredPoints,
+        initiatorRewardPoints: item.initiatorRewardPoints,
+        receiverRewardPoints: item.receiverRewardPoints,
       }));
 
       for (let item of _content) {
@@ -120,7 +125,8 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
         <table className="table align-middle table-striped">
           <caption>
             <p className="mb-0">
-              The permission points required to perform these actions
+              You will automatically receive points rewards or refunds,
+              depending on the status of the target
             </p>
             <p>
               The default value is 0, and the value should be a positive number
@@ -128,8 +134,9 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
           </caption>
           <thead>
             <tr>
-              <th scope="col">RuleTip</th>
-              <th scope="col">RequiredPoints</th>
+              <th scope="col">Rule</th>
+              <th scope="col">InitiatorRewardPoints</th>
+              <th scope="col">ReceiverRewardPoints</th>
             </tr>
           </thead>
           <tbody>
@@ -144,8 +151,8 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                         disabled={saving}
                         type="number"
                         className="form-control"
-                        name="requiredPoints"
-                        value={item.requiredPoints}
+                        name="initiatorRewardPoints"
+                        value={item.initiatorRewardPoints}
                         onChange={(event) => {
                           const find = content.find(
                             (_item) => item.id === _item.id,
@@ -159,14 +166,46 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                             return;
                           }
 
-                          find.requiredPoints = value;
+                          find.initiatorRewardPoints = value;
                           setContent([...content]);
                         }}
                         placeholder="The default value is 0, and the value should be a positive number"
-                        aria-describedby="requiredPoints"
+                        aria-describedby="initiatorRewardPoints"
                       />
                     ) : (
-                      <>{item.requiredPoints}</>
+                      <>{item.initiatorRewardPoints}</>
+                    )}
+                  </td>
+                  <td>
+                    {isUpdate ? (
+                      <input
+                        required
+                        disabled={saving}
+                        type="number"
+                        className="form-control"
+                        name="receiverRewardPoints"
+                        value={item.receiverRewardPoints}
+                        onChange={(event) => {
+                          const find = content.find(
+                            (_item) => item.id === _item.id,
+                          );
+                          if (!find) {
+                            return;
+                          }
+
+                          const value = parseInt(event.target.value);
+                          if (isNaN(value)) {
+                            return;
+                          }
+
+                          find.receiverRewardPoints = value;
+                          setContent([...content]);
+                        }}
+                        placeholder="The default value is 0, and the value should be a positive number"
+                        aria-describedby="receiverRewardPoints"
+                      />
+                    ) : (
+                      <>{item.receiverRewardPoints}</>
                     )}
                   </td>
                 </tr>

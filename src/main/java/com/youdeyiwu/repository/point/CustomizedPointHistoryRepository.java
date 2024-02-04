@@ -1,6 +1,6 @@
 package com.youdeyiwu.repository.point;
 
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import java.util.Optional;
@@ -13,18 +13,6 @@ import java.util.Optional;
 public interface CustomizedPointHistoryRepository {
 
   /**
-   * findLatestPointsHistoryByUserIdAndAutoRuleName.
-   *
-   * @param userId       userId
-   * @param autoRuleName autoRuleName
-   * @return Optional
-   */
-  Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndAutoRuleName(
-      Long userId,
-      AutoRuleNameEnum autoRuleName
-  );
-
-  /**
    * findLatestPointsHistoryByUserIdAndRuleName.
    *
    * @param userId   userId
@@ -34,5 +22,17 @@ public interface CustomizedPointHistoryRepository {
   Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndRuleName(
       Long userId,
       RuleNameEnum ruleName
+  );
+
+  /**
+   * findLatestPointsHistoryByUserIdAndPermissionRuleName.
+   *
+   * @param userId             userId
+   * @param permissionRuleName permissionRuleName
+   * @return Optional
+   */
+  Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndPermissionRuleName(
+      Long userId,
+      PermissionRuleNameEnum permissionRuleName
   );
 }

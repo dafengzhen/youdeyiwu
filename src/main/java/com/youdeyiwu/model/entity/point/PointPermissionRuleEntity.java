@@ -1,7 +1,6 @@
 package com.youdeyiwu.model.entity.point;
 
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
-import com.youdeyiwu.enums.point.RuleNameEnum;
+import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
- * point auto rule.
+ * point permission rule.
  *
  * @author dafengzhen
  */
@@ -22,14 +21,14 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 @Entity
-public class PointAutoRuleEntity extends AbstractEntity {
+public class PointPermissionRuleEntity extends AbstractEntity {
 
   /**
-   * auto rule name (The name of the rule used to automatically manage points, which can be considered passive).
+   * permission rule name.
    */
   @Enumerated(EnumType.STRING)
   @Column(unique = true)
-  private AutoRuleNameEnum autoRuleName;
+  private PermissionRuleNameEnum permissionRuleName;
 
   /**
    * required points.

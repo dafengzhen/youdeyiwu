@@ -1,6 +1,6 @@
 package com.youdeyiwu.repository.point.impl;
 
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.repository.point.CustomizedPointHistoryRepository;
@@ -24,32 +24,10 @@ public class CustomizedPointHistoryRepositoryImpl implements CustomizedPointHist
   private final EntityManager entityManager;
 
   @Override
-  public Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndAutoRuleName(
+  public Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndRuleName(
       Long userId,
-      AutoRuleNameEnum autoRuleName
+      RuleNameEnum ruleName
   ) {
-    try {
-      return Optional.of(
-          entityManager.createQuery(
-                  """
-                      select ph from PointHistoryEntity ph
-                      where ph.user.id = :userId and ph.autoRuleName = :autoRuleName
-                      order by ph.id desc
-                      limit 1
-                      """,
-                  PointHistoryEntity.class
-              )
-              .setParameter("userId", userId)
-              .setParameter("autoRuleName", autoRuleName)
-              .getSingleResult()
-      );
-    } catch (NoResultException e) {
-      return Optional.empty();
-    }
-  }
-
-  @Override
-  public Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndRuleName(Long userId, RuleNameEnum ruleName) {
     try {
       return Optional.of(
           entityManager.createQuery(
@@ -63,6 +41,31 @@ public class CustomizedPointHistoryRepositoryImpl implements CustomizedPointHist
               )
               .setParameter("userId", userId)
               .setParameter("ruleName", ruleName)
+              .getSingleResult()
+      );
+    } catch (NoResultException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Optional<PointHistoryEntity> findLatestPointsHistoryByUserIdAndPermissionRuleName(
+      Long userId,
+      PermissionRuleNameEnum permissionRuleName
+  ) {
+    try {
+      return Optional.of(
+          entityManager.createQuery(
+                  """
+                      select ph from PointHistoryEntity ph
+                      where ph.user.id = :userId and ph.permissionRuleName = :permissionRuleName
+                      order by ph.id desc
+                      limit 1
+                      """,
+                  PointHistoryEntity.class
+              )
+              .setParameter("userId", userId)
+              .setParameter("permissionRuleName", permissionRuleName)
               .getSingleResult()
       );
     } catch (NoResultException e) {

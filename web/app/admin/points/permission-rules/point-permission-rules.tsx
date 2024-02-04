@@ -2,55 +2,55 @@
 
 import Box from '@/app/admin/common/box';
 import Nodata from '@/app/common/nodata';
-import { AutoRuleNameEnum, IPointAutoRule } from '@/app/interfaces/points';
+import {
+  IPointPermissionRule,
+  PermissionRuleNameEnum,
+} from '@/app/interfaces/points';
 import { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import SaveAutoRulesPointsAction from '@/app/actions/points/auto-rules/save-auto-rules-points-action';
+import SavePermissionRulesPointsAction from '@/app/actions/points/permission-rules/save-permission-rules-points-action';
 
 const tips = {
-  LIKED_YOUR_POST: 'When someone likes your post',
-  LIKED_YOUR_COMMENT: 'When someone likes your comment',
-  LIKED_YOUR_REPLY: 'When someone likes your reply',
-  COMMENTED_ON_YOUR_POST: 'When someone comments on your post',
-  REPLIED_TO_YOUR_POST: 'When someone replies to your post',
-  FOLLOWED_YOUR_POST: 'When someone follows your post',
-  FAVORITED_YOUR_POST: 'When someone favorites your post',
-  DISLIKED_YOUR_POST: 'When someone dislikes your post',
-  DISLIKED_YOUR_COMMENT: 'When someone dislikes your comment',
-  DISLIKED_YOUR_REPLY: 'When someone dislikes your reply',
-  POST_APPROVED: 'When your post is approved',
-  POST_NOT_APPROVED: 'When your post is not approved',
-  POST_PENDING_REVIEW: 'When your post is pending review',
-  VISITED_YOUR_POST: 'When someone visits your post',
-  POST_CREATE: 'When you create a post',
+  CREATE_POST: 'permission to create a new post',
+  CREATE_COMMENT: 'permission to create a comment',
+  CREATE_REPLY: 'permission to create a reply',
+  UPDATE_POST: 'permission to update a post',
+  ADD_POST_TAG: 'permission to add tags to a post',
+  ADD_POST_CONTENT_LINK: 'permission to add content links to a post',
+  ADD_POST_COVER_LINK: 'permission to add cover links to a post',
+  ADD_POST_SECTION: 'permission to add sections to a post',
 };
 
-const rules = Object.keys(AutoRuleNameEnum).map((item) => {
+const rules = Object.keys(PermissionRuleNameEnum).map((item) => {
   return {
-    autoRuleName: item,
+    permissionRuleName: item,
     requiredPoints: 0,
   };
-}) as IPointAutoRule[];
+}) as IPointPermissionRule[];
 
-export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
+export default function PointPermissionRules({
+  data,
+}: {
+  data: IPointPermissionRule[];
+}) {
   const { toast } = useContext(GlobalContext);
-  const [content, setContent] = useState<IPointAutoRule[]>(
+  const [content, setContent] = useState<IPointPermissionRule[]>(
     rules.map((item, index) => {
       const find = data.find(
-        (_item) => _item.autoRuleName === item.autoRuleName,
+        (_item) => _item.permissionRuleName === item.permissionRuleName,
       );
       return find
-        ? { ...find, _tip: tips[item.autoRuleName] }
-        : { ...item, id: index, _tip: tips[item.autoRuleName] };
+        ? { ...find, _tip: tips[item.permissionRuleName] }
+        : { ...item, id: index, _tip: tips[item.permissionRuleName] };
     }),
   );
   const [isUpdate, setIsUpdate] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const saveAutoRulesPointsActionMutation = useMutation({
-    mutationFn: SaveAutoRulesPointsAction,
+  const savePermissionRulesPointsActionMutation = useMutation({
+    mutationFn: SavePermissionRulesPointsAction,
   });
 
   function onClickUpdate() {
@@ -65,12 +65,12 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
       setSaving(true);
 
       const _content = content.map((item) => ({
-        autoRuleName: item.autoRuleName,
+        permissionRuleName: item.permissionRuleName,
         requiredPoints: item.requiredPoints,
       }));
 
       for (let item of _content) {
-        await saveAutoRulesPointsActionMutation.mutateAsync(item);
+        await savePermissionRulesPointsActionMutation.mutateAsync(item);
       }
 
       setIsUpdate(false);
@@ -79,7 +79,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
         message: 'Successfully updated',
       });
     } catch (e: any) {
-      saveAutoRulesPointsActionMutation.reset();
+      savePermissionRulesPointsActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -125,8 +125,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
         <table className="table align-middle table-striped">
           <caption>
             <p className="mb-0">
-              You will automatically receive points rewards or refunds,
-              depending on the status of the target
+              The permission points required to perform these actions
             </p>
             <p>
               The default value is 0, and the value should be a positive number
@@ -134,7 +133,7 @@ export default function PointAutoRules({ data }: { data: IPointAutoRule[] }) {
           </caption>
           <thead>
             <tr>
-              <th scope="col">AutoRuleTip</th>
+              <th scope="col">Rule</th>
               <th scope="col">RequiredPoints</th>
             </tr>
           </thead>

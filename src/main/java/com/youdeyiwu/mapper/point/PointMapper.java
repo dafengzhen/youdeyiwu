@@ -1,13 +1,13 @@
 package com.youdeyiwu.mapper.point;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
-import com.youdeyiwu.model.entity.point.PointAutoRuleEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
+import com.youdeyiwu.model.entity.point.PointPermissionRuleEntity;
 import com.youdeyiwu.model.entity.point.PointRuleEntity;
-import com.youdeyiwu.model.vo.point.PointAutoRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointEntityVo;
 import com.youdeyiwu.model.vo.point.PointHistoryEntityVo;
+import com.youdeyiwu.model.vo.point.PointPermissionRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -44,7 +44,7 @@ public interface PointMapper {
    * @param entity entity
    * @return PointAutoRuleEntityVo
    */
-  PointAutoRuleEntityVo entityToVo(PointAutoRuleEntity entity);
+  PointRuleEntityVo entityToVo(PointRuleEntity entity);
 
   /**
    * entityToVo.
@@ -52,7 +52,7 @@ public interface PointMapper {
    * @param entity entity
    * @return PointRuleEntityVo
    */
-  PointRuleEntityVo entityToVo(PointRuleEntity entity);
+  PointPermissionRuleEntityVo entityToVo(PointPermissionRuleEntity entity);
 
   /**
    * entityToEntity.

@@ -2,19 +2,19 @@ package com.youdeyiwu.service.point.impl;
 
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.point.PointMapper;
-import com.youdeyiwu.model.dto.point.SavePointAutoRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointPermissionRuleDto;
 import com.youdeyiwu.model.dto.point.SavePointRuleDto;
-import com.youdeyiwu.model.entity.point.PointAutoRuleEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
+import com.youdeyiwu.model.entity.point.PointPermissionRuleEntity;
 import com.youdeyiwu.model.entity.point.PointRuleEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.point.PointAutoRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointHistoryEntityVo;
+import com.youdeyiwu.model.vo.point.PointPermissionRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
 import com.youdeyiwu.repository.config.ConfigRepository;
-import com.youdeyiwu.repository.point.PointAutoRuleRepository;
 import com.youdeyiwu.repository.point.PointHistoryRepository;
+import com.youdeyiwu.repository.point.PointPermissionRuleRepository;
 import com.youdeyiwu.repository.point.PointRepository;
 import com.youdeyiwu.repository.point.PointRuleRepository;
 import com.youdeyiwu.repository.user.UserRepository;
@@ -40,9 +40,9 @@ public class PointServiceImpl implements PointService {
 
   private final PointRepository pointRepository;
 
-  private final PointAutoRuleRepository pointAutoRuleRepository;
-
   private final PointRuleRepository pointRuleRepository;
+
+  private final PointPermissionRuleRepository pointPermissionRuleRepository;
 
   private final PointHistoryRepository pointHistoryRepository;
 
@@ -56,44 +56,47 @@ public class PointServiceImpl implements PointService {
 
   @Transactional
   @Override
-  public void save(SavePointAutoRuleDto dto) {
-    PointAutoRuleEntity pointAutoRuleEntity = pointAutoRuleRepository
-        .findByAutoRuleName(dto.autoRuleName())
-        .orElseGet(PointAutoRuleEntity::new);
-
-    pointAutoRuleEntity.setAutoRuleName(dto.autoRuleName());
-    if (Objects.nonNull(dto.requiredPoints())) {
-      pointAutoRuleEntity.setRequiredPoints(dto.requiredPoints());
-    }
-
-    pointAutoRuleRepository.save(pointAutoRuleEntity);
-  }
-
-  @Transactional
-  @Override
   public void save(SavePointRuleDto dto) {
     PointRuleEntity pointRuleEntity = pointRuleRepository
         .findByRuleName(dto.ruleName())
         .orElseGet(PointRuleEntity::new);
 
     pointRuleEntity.setRuleName(dto.ruleName());
-    if (Objects.nonNull(dto.requiredPoints())) {
-      pointRuleEntity.setRequiredPoints(dto.requiredPoints());
+    if (Objects.nonNull(dto.initiatorRewardPoints())) {
+      pointRuleEntity.setInitiatorRewardPoints(dto.initiatorRewardPoints());
+    }
+    if (Objects.nonNull(dto.receiverRewardPoints())) {
+      pointRuleEntity.setReceiverRewardPoints(dto.receiverRewardPoints());
     }
 
     pointRuleRepository.save(pointRuleEntity);
   }
 
+  @Transactional
   @Override
-  public List<PointAutoRuleEntityVo> queryAutoRules() {
-    return StreamSupport.stream(pointAutoRuleRepository.findAll().spliterator(), false)
-        .map(pointMapper::entityToVo)
-        .toList();
+  public void save(SavePointPermissionRuleDto dto) {
+    PointPermissionRuleEntity pointPermissionRuleEntity = pointPermissionRuleRepository
+        .findByPermissionRuleName(dto.permissionRuleName())
+        .orElseGet(PointPermissionRuleEntity::new);
+
+    pointPermissionRuleEntity.setPermissionRuleName(dto.permissionRuleName());
+    if (Objects.nonNull(dto.requiredPoints())) {
+      pointPermissionRuleEntity.setRequiredPoints(dto.requiredPoints());
+    }
+
+    pointPermissionRuleRepository.save(pointPermissionRuleEntity);
   }
 
   @Override
   public List<PointRuleEntityVo> queryRules() {
     return StreamSupport.stream(pointRuleRepository.findAll().spliterator(), false)
+        .map(pointMapper::entityToVo)
+        .toList();
+  }
+
+  @Override
+  public List<PointPermissionRuleEntityVo> queryPermissionRules() {
+    return StreamSupport.stream(pointPermissionRuleRepository.findAll().spliterator(), false)
         .map(pointMapper::entityToVo)
         .toList();
   }

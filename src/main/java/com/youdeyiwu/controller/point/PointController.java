@@ -1,11 +1,11 @@
 package com.youdeyiwu.controller.point;
 
-import com.youdeyiwu.model.dto.point.SavePointAutoRuleDto;
 import com.youdeyiwu.model.dto.point.SavePointRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointPermissionRuleDto;
 import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.point.PointAutoRuleEntityVo;
-import com.youdeyiwu.model.vo.point.PointHistoryEntityVo;
 import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
+import com.youdeyiwu.model.vo.point.PointHistoryEntityVo;
+import com.youdeyiwu.model.vo.point.PointPermissionRuleEntityVo;
 import com.youdeyiwu.service.point.PointService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -33,26 +33,26 @@ public class PointController {
 
   private final PointService pointService;
 
-  @PostMapping(value = "/auto-rules")
-  public ResponseEntity<Void> save(@Valid @RequestBody SavePointAutoRuleDto dto) {
-    pointService.save(dto);
-    return ResponseEntity.ok().build();
-  }
-
   @PostMapping(value = "/rules")
   public ResponseEntity<Void> save(@Valid @RequestBody SavePointRuleDto dto) {
     pointService.save(dto);
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping(value = "/auto-rules")
-  public ResponseEntity<List<PointAutoRuleEntityVo>> queryAutoRules() {
-    return ResponseEntity.ok().body(pointService.queryAutoRules());
+  @PostMapping(value = "/permission-rules")
+  public ResponseEntity<Void> save(@Valid @RequestBody SavePointPermissionRuleDto dto) {
+    pointService.save(dto);
+    return ResponseEntity.ok().build();
   }
 
   @GetMapping(value = "/rules")
   public ResponseEntity<List<PointRuleEntityVo>> queryRules() {
     return ResponseEntity.ok().body(pointService.queryRules());
+  }
+
+  @GetMapping(value = "/permission-rules")
+  public ResponseEntity<List<PointPermissionRuleEntityVo>> queryPermissionRules() {
+    return ResponseEntity.ok().body(pointService.queryPermissionRules());
   }
 
   @GetMapping(value = "/histories")

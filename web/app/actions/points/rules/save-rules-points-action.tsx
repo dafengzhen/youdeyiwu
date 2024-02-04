@@ -9,7 +9,8 @@ import { RuleNameEnum } from '@/app/interfaces/points';
 
 export interface ISaveRulesPointsActionVariables {
   ruleName: RuleNameEnum;
-  requiredPoints?: number;
+  initiatorRewardPoints?: number;
+  receiverRewardPoints?: number;
 }
 
 export default async function SaveRulesPointsAction(

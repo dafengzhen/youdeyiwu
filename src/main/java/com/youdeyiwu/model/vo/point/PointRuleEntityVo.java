@@ -15,13 +15,18 @@ import lombok.EqualsAndHashCode;
 public class PointRuleEntityVo extends AbstractEntityVo {
 
   /**
-   * rule name (The name of the rule for manually managing points, which can be considered proactive).
+   * rule name.
    */
   private RuleNameEnum ruleName;
 
   /**
-   * required points.
+   * points awarded to the initiator user.
    */
-  private Integer requiredPoints;
+  private Integer initiatorRewardPoints;
+
+  /**
+   * points awarded to the receiver user.
+   */
+  private Integer receiverRewardPoints;
 
 }

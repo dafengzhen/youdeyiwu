@@ -1,12 +1,11 @@
 package com.youdeyiwu.model.entity.point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.youdeyiwu.enums.point.AutoRuleNameEnum;
+import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -56,16 +55,16 @@ public class PointHistoryEntity extends AbstractEntity {
   private Integer maxPoints = 10000;
 
   /**
-   * rule name (The name of the rule for manually managing points, which can be considered proactive).
+   * rule name.
    */
   @Enumerated(EnumType.STRING)
   private RuleNameEnum ruleName;
 
   /**
-   * auto rule name (The name of the rule used to automatically manage points, which can be considered passive).
+   * permission rule name.
    */
   @Enumerated(EnumType.STRING)
-  private AutoRuleNameEnum autoRuleName;
+  private PermissionRuleNameEnum permissionRuleName;
 
   /**
    * reason.
