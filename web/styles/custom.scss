@@ -85,6 +85,32 @@ $utilities: map-merge(
   )
 );
 
+$utilities: map-merge(
+  $utilities,
+  (
+    'width':
+      map-merge(
+        map-get($utilities, 'width'),
+        (
+          values:
+            map-merge(
+              map-get(map-get($utilities, 'width'), 'values'),
+              (
+                2: 2%,
+                5: 5%,
+                10: 10%,
+                15: 15%,
+                65: 65%,
+                70: 70%,
+                80: 80%,
+                85: 85%,
+              )
+            ),
+        )
+      ),
+  )
+);
+
 // Utilities
 @import 'bootstrap/scss/utilities/api';
 // scss-docs-end import-stack
