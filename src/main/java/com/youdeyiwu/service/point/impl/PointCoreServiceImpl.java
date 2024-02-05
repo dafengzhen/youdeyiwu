@@ -4,8 +4,8 @@ import static com.youdeyiwu.tool.Tool.getSign;
 
 import com.youdeyiwu.constant.PointConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
-import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
+import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.exception.PointNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -105,17 +105,6 @@ public class PointCoreServiceImpl implements PointCoreService {
         .orElseThrow(PointNotFoundException::new);
     entity.setOldPoints(entity.getPoints());
 
-    if (Objects.nonNull(dto.points())) {
-      getSign(dto.points(), sign -> {
-        int points = Math.abs(dto.points());
-        switch (sign) {
-          case POSITIVE, ZERO -> entity.setPoints(entity.getPoints() + points);
-          case NEGATIVE -> entity.setPoints(entity.getPoints() - points);
-          default -> throw new IllegalStateException("Unexpected value: " + sign);
-        }
-      });
-    }
-
     if (Objects.nonNull(dto.minPoints())) {
       entity.setMinPoints(dto.minPoints());
     }
@@ -124,11 +113,25 @@ public class PointCoreServiceImpl implements PointCoreService {
       entity.setMaxPoints(dto.maxPoints());
     }
 
-    if (
-        entity.getPoints() < entity.getMinPoints()
-            || entity.getPoints() > entity.getMaxPoints()
-    ) {
-      entity.setPoints(entity.getOldPoints());
+    if (Objects.nonNull(dto.points())) {
+      getSign(dto.points(), sign -> {
+        int points = Math.abs(dto.points());
+        switch (sign) {
+          case POSITIVE, ZERO -> {
+            if (entity.getPoints() > entity.getMaxPoints()) {
+              return;
+            }
+            entity.setPoints(entity.getPoints() + points);
+          }
+          case NEGATIVE -> {
+            if (entity.getPoints() < entity.getMinPoints()) {
+              return;
+            }
+            entity.setPoints(entity.getPoints() - points);
+          }
+          default -> throw new IllegalStateException("Unexpected value: " + sign);
+        }
+      });
     }
 
     return entity;

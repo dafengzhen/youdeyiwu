@@ -77,22 +77,29 @@ public class PointRuleNotifier
     }
 
     PointRuleEventDto dto = (PointRuleEventDto) event.getSource();
+    Optional<PointRuleEntity> byRuleName =
+        pointRuleRepository.findByRuleName(dto.ruleName());
+    if (byRuleName.isEmpty()) {
+      return;
+    }
+
+    PointRuleEntity pointRuleEntity = byRuleName.get();
     switch (dto.ruleName()) {
-      case LIKE_POST -> handleActionsOnPosts(dto, "Like Post");
-      case LIKE_COMMENT -> handleActionsOnPosts(dto, "Like Comment");
-      case LIKE_REPLY -> handleActionsOnPosts(dto, "Like Reply");
-      case COMMENT_POST -> handleActionsOnPosts(dto, "Create Comment");
-      case REPLY_POST -> handleActionsOnPosts(dto, "Create Reply");
-      case FOLLOW_POST -> handleActionsOnPosts(dto, "Follow Post");
-      case FAVORITE_POST -> handleActionsOnPosts(dto, "Favorite Post");
-      case DISLIKE_POST -> handleActionsOnPosts(dto, "Dislike Post");
-      case DISLIKE_COMMENT -> handleActionsOnPosts(dto, "Dislike Comment");
-      case DISLIKE_REPLY -> handleActionsOnPosts(dto, "Dislike Reply");
-      case POST_APPROVED -> handleActionsOnPosts(dto, "Post Approved");
-      case POST_NOT_APPROVED -> handleActionsOnPosts(dto, "Post Not Approved");
-      case POST_PENDING_REVIEW -> handleActionsOnPosts(dto, "Post Pending Review");
-      case VISIT_POST -> handleActionsOnPosts(dto, "Visit Post");
-      case CREATE_POST -> handleActionsOnPosts(dto, "Create Post");
+      case LIKE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Like Post");
+      case LIKE_COMMENT -> handleActionsOnPosts(dto, pointRuleEntity, "Like Comment");
+      case LIKE_REPLY -> handleActionsOnPosts(dto, pointRuleEntity, "Like Reply");
+      case COMMENT_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Create Comment");
+      case REPLY_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Create Reply");
+      case FOLLOW_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Follow Post");
+      case FAVORITE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Favorite Post");
+      case DISLIKE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Dislike Post");
+      case DISLIKE_COMMENT -> handleActionsOnPosts(dto, pointRuleEntity, "Dislike Comment");
+      case DISLIKE_REPLY -> handleActionsOnPosts(dto, pointRuleEntity, "Dislike Reply");
+      case POST_APPROVED -> handleActionsOnPosts(dto, pointRuleEntity, "Post Approved");
+      case POST_NOT_APPROVED -> handleActionsOnPosts(dto, pointRuleEntity, "Post Not Approved");
+      case POST_PENDING_REVIEW -> handleActionsOnPosts(dto, pointRuleEntity, "Post Pending Review");
+      case VISIT_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Visit Post");
+      case CREATE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Create Post");
       default -> throw new IllegalStateException("Unexpected value: " + dto.ruleName());
     }
   }
@@ -100,14 +107,19 @@ public class PointRuleNotifier
   /**
    * handle actions on posts.
    *
-   * @param dto  dto
-   * @param from from
+   * @param dto             dto
+   * @param pointRuleEntity pointRuleEntity
+   * @param from            from
    */
-  private void handleActionsOnPosts(PointRuleEventDto dto, String from) {
+  private void handleActionsOnPosts(
+      PointRuleEventDto dto,
+      PointRuleEntity pointRuleEntity,
+      String from
+  ) {
     UserEntity initiatorUser = getInitiatorUser();
 
     if (Objects.nonNull(initiatorUser)) {
-      updatePointsAndSendMessage(initiatorUser, dto.from(), dto.link(), true, dto);
+      updatePointsAndSendMessage(initiatorUser, dto.from(), dto.link(), true, dto, pointRuleEntity);
     }
 
     if (Boolean.FALSE.equals(dto.onlyInitiator())) {
@@ -131,7 +143,8 @@ public class PointRuleNotifier
                 .formatted(postEntity.getName(), from),
             "/posts/" + postEntity.getId(),
             false,
-            dto
+            dto,
+            pointRuleEntity
         ));
       } else {
         userIds.forEach(userId -> updatePointsAndSendMessage(
@@ -139,7 +152,8 @@ public class PointRuleNotifier
             dto.from(),
             dto.link(),
             false,
-            dto
+            dto,
+            pointRuleEntity
         ));
       }
     }
@@ -148,22 +162,22 @@ public class PointRuleNotifier
   /**
    * Update points and send messages for a user.
    *
-   * @param user        user
-   * @param from        from
-   * @param link        link
-   * @param isInitiator isInitiator
-   * @param dto         dto
+   * @param user            user
+   * @param from            from
+   * @param link            link
+   * @param isInitiator     isInitiator
+   * @param dto             dto
+   * @param pointRuleEntity pointRuleEntity
    */
   private void updatePointsAndSendMessage(
       UserEntity user,
       String from,
       String link,
       Boolean isInitiator,
-      PointRuleEventDto dto
+      PointRuleEventDto dto,
+      PointRuleEntity pointRuleEntity
   ) {
-    Optional<PointRuleEntity> byRuleName =
-        pointRuleRepository.findByRuleName(dto.ruleName());
-    if (byRuleName.isEmpty() || Objects.isNull(user)) {
+    if (Objects.isNull(user)) {
       return;
     }
 
@@ -172,8 +186,8 @@ public class PointRuleNotifier
         new UpdatePointDto(
             calculatePoints(
                 Boolean.TRUE.equals(isInitiator)
-                    ? byRuleName.get().getInitiatorRewardPoints()
-                    : byRuleName.get().getReceiverRewardPoints(),
+                    ? pointRuleEntity.getInitiatorRewardPoints()
+                    : pointRuleEntity.getReceiverRewardPoints(),
                 pointHistoryRepository.findLatestPointsHistoryByUserIdAndRuleName(
                         user.getId(),
                         dto.ruleName()

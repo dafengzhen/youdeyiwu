@@ -154,7 +154,7 @@ public class PostServiceImpl implements PostService {
                 """
                 .formatted(postEntity.getName(), "Create Post"),
             "/posts/" + postEntity.getId(),
-            postEntity.getId(),
+            null,
             null
         )
     ));

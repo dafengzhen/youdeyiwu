@@ -157,6 +157,7 @@ create table if not exists point_permission_rule_entity
     version              smallint                                                                                                                                                  null,
     permission_rule_name enum ('CREATE_POST', 'CREATE_COMMENT', 'CREATE_REPLY', 'UPDATE_POST', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION') null,
     required_points      int                                                                                                                                                       null,
+    operation_cost       int                                                                                                                                                       null,
     constraint UK_hs5lxfgbbioweo9yadjvc71cq
         unique (permission_rule_name)
 );

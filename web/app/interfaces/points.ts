@@ -30,6 +30,7 @@ export interface IPointRule extends IBase {
 export interface IPointPermissionRule extends IBase {
   permissionRuleName: PermissionRuleNameEnum;
   requiredPoints: number;
+  operationCost: number;
   _tip?: string;
 }
 

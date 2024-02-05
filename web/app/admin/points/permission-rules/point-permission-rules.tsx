@@ -27,6 +27,7 @@ const rules = Object.keys(PermissionRuleNameEnum).map((item) => {
   return {
     permissionRuleName: item,
     requiredPoints: 0,
+    operationCost: 0,
   };
 }) as IPointPermissionRule[];
 
@@ -67,6 +68,7 @@ export default function PointPermissionRules({
       const _content = content.map((item) => ({
         permissionRuleName: item.permissionRuleName,
         requiredPoints: item.requiredPoints,
+        operationCost: item.operationCost,
       }));
 
       for (let item of _content) {
@@ -124,17 +126,14 @@ export default function PointPermissionRules({
       <div className="table-responsive">
         <table className="table align-middle table-striped">
           <caption>
-            <p className="mb-0">
-              The permission points required to perform these actions
-            </p>
-            <p>
-              The default value is 0, and the value should be a positive number
-            </p>
+            The permission points required to execute this integration rule,
+            with a default value of 0. The value should be a positive number
           </caption>
           <thead>
             <tr>
               <th scope="col">Rule</th>
               <th scope="col">RequiredPoints</th>
+              <th scope="col">OperationCost</th>
             </tr>
           </thead>
           <tbody>
@@ -172,6 +171,38 @@ export default function PointPermissionRules({
                       />
                     ) : (
                       <>{item.requiredPoints}</>
+                    )}
+                  </td>
+                  <td>
+                    {isUpdate ? (
+                      <input
+                        required
+                        disabled={saving}
+                        type="number"
+                        className="form-control"
+                        name="operationCost"
+                        value={item.operationCost}
+                        onChange={(event) => {
+                          const find = content.find(
+                            (_item) => item.id === _item.id,
+                          );
+                          if (!find) {
+                            return;
+                          }
+
+                          const value = parseInt(event.target.value);
+                          if (isNaN(value)) {
+                            return;
+                          }
+
+                          find.operationCost = value;
+                          setContent([...content]);
+                        }}
+                        placeholder="The default value is 0, and the value should be a positive number"
+                        aria-describedby="operationCost"
+                      />
+                    ) : (
+                      <>{item.operationCost}</>
                     )}
                   </td>
                 </tr>

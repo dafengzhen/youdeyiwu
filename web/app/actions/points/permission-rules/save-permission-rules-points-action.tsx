@@ -10,6 +10,7 @@ import { PermissionRuleNameEnum } from '@/app/interfaces/points';
 export interface ISavePermissionRulesPointsActionVariables {
   permissionRuleName: PermissionRuleNameEnum;
   requiredPoints?: number;
+  operationCost?: number;
 }
 
 export default async function SavePermissionRulesPointsAction(

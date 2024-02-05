@@ -14,7 +14,9 @@ public record SavePointPermissionRuleDto(
     @NotNull
     PermissionRuleNameEnum permissionRuleName,
 
-    Integer requiredPoints
+    Integer requiredPoints,
+
+    Integer operationCost
 ) implements Serializable {
 
 }

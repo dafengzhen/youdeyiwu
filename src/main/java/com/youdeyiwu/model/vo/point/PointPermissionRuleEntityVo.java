@@ -24,4 +24,9 @@ public class PointPermissionRuleEntityVo extends AbstractEntityVo {
    */
   private Integer requiredPoints;
 
+  /**
+   * operation cost (points deducted from user's points when the required points are met).
+   */
+  private Integer operationCost;
+
 }

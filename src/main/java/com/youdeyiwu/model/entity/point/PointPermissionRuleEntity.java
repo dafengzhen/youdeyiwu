@@ -35,4 +35,9 @@ public class PointPermissionRuleEntity extends AbstractEntity {
    */
   private Integer requiredPoints = 0;
 
+  /**
+   * operation cost (points deducted from user's points when the required points are met).
+   */
+  private Integer operationCost = 0;
+
 }

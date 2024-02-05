@@ -124,13 +124,8 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
       <div className="table-responsive">
         <table className="table align-middle table-striped">
           <caption>
-            <p className="mb-0">
-              You will automatically receive points rewards or refunds,
-              depending on the status of the target
-            </p>
-            <p>
-              The default value is 0, and the value should be a positive number
-            </p>
+            The senders or receivers can be rewarded with points, with a default
+            value of 0. In most cases, the value should be a positive number
           </caption>
           <thead>
             <tr>
