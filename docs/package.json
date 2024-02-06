@@ -1,0 +1,37 @@
+{
+  "name": "youdeyiwu-docs",
+  "version": "1.0.0",
+  "description": "youdeyiwu is an open-source lightweight forum",
+  "author": "dafengzhen",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.15"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dafengzhen/youdeyiwu.git"
+  },
+  "keywords": [
+    "youdeyiwu",
+    "forum",
+    "blog",
+    "note",
+    "seo"
+  ],
+  "bugs": {
+    "url": "https://github.com/dafengzhen/youdeyiwu/issues"
+  },
+  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme",
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "vitepress": "^1.0.0-rc.41"
+  }
+}
