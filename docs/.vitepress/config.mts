@@ -1,10 +1,14 @@
-import { DefaultTheme, defineConfig } from 'vitepress';
-// @ts-ignore
-import pkg from '../package.json';
+import { defineConfig } from 'vitepress';
+import { en } from './en.mjs';
+import { zh } from './zh.mjs';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'en-US',
+  locales: {
+    root: { label: 'English', ...en },
+    zh: { label: '简体中文', ...zh },
+  },
   base: '/docs/',
   cleanUrls: true,
   title: 'Youdeyiwu',
@@ -64,13 +68,34 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/dafengzhen/youdeyiwu' },
     ],
-    nav: nav(),
-    sidebar: {
-      '/guide/': { base: '/guide/', items: sidebarGuide() },
-      '/reference/': { base: '/reference/', items: sidebarReference() },
+    search: {
+      provider: 'local',
+      options: {
+        locales: {
+          zh: {
+            translations: {
+              button: {
+                buttonText: '搜索文档',
+                buttonAriaLabel: '搜索文档',
+              },
+              modal: {
+                noResultsText: '无法找到相关结果',
+                resetButtonTitle: '清除查询条件',
+                displayDetails: '显示详细信息',
+                backButtonTitle: '返回按钮标题',
+                footer: {
+                  selectText: '选择',
+                  navigateText: '切换',
+                  closeText: '关闭',
+                },
+              },
+            },
+          },
+        },
+      },
     },
     editLink: {
-      pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
+      pattern: 'https://github.com/dafengzhen/youdeyiwu/edit/main/docs/:path',
       text: 'Edit this page on GitHub',
     },
     footer: {
@@ -79,64 +104,3 @@ export default defineConfig({
     },
   },
 });
-
-function nav(): DefaultTheme.NavItem[] {
-  return [
-    {
-      text: 'Guide',
-      link: '/guide/what-is-vitepress',
-      activeMatch: '/guide/',
-    },
-    {
-      text: 'Reference',
-      link: '/reference/site-config',
-      activeMatch: '/reference/',
-    },
-    {
-      text: pkg.version,
-      items: [
-        {
-          text: 'Changelog',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md',
-        },
-        {
-          text: 'Contributing',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md',
-        },
-      ],
-    },
-  ];
-}
-
-function sidebarGuide(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'Introduction',
-      collapsed: false,
-      items: [
-        { text: 'What is Youdeyiwu?', link: 'what-is-youdeyiwu' },
-        { text: 'Getting Started', link: 'getting-started' },
-      ],
-    },
-    {
-      text: 'API Reference',
-      base: '/reference/',
-      link: 'config-site',
-    },
-  ];
-}
-
-function sidebarReference(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'Reference',
-      items: [
-        {
-          text: 'Config',
-          base: '/reference/config-',
-          items: [{ text: 'Site Config', link: 'site' }],
-        },
-      ],
-    },
-  ];
-}

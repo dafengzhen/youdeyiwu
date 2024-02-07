@@ -12,6 +12,10 @@
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
   },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "vitepress": "^1.0.0-rc.42"
+  },
   "peerDependencies": {
     "vue": "^3.4.15"
   },
@@ -29,9 +33,5 @@
   "bugs": {
     "url": "https://github.com/dafengzhen/youdeyiwu/issues"
   },
-  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme",
-  "devDependencies": {
-    "prettier": "^3.2.5",
-    "vitepress": "^1.0.0-rc.41"
-  }
+  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme"
 }
