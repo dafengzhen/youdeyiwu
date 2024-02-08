@@ -8,9 +8,6 @@ import static com.youdeyiwu.tool.Tool.isValidImageFile;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
-import com.youdeyiwu.enums.point.RuleNameEnum;
-import com.youdeyiwu.enums.point.SignEnum;
-import com.youdeyiwu.event.PointRuleApplicationEvent;
 import com.youdeyiwu.event.PostReviewStateApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
@@ -35,7 +32,6 @@ import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
-import com.youdeyiwu.model.dto.point.PointRuleEventDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
@@ -144,20 +140,6 @@ public class PostServiceImpl implements PostService {
     }
 
     postRepository.save(postEntity);
-    publisher.publishEvent(new PointRuleApplicationEvent(
-        new PointRuleEventDto(
-            RuleNameEnum.CREATE_POST,
-            SignEnum.POSITIVE,
-            true,
-            """
-                %s [ %s ]
-                """
-                .formatted(postEntity.getName(), "Create Post"),
-            "/posts/" + postEntity.getId(),
-            null,
-            null
-        )
-    ));
     return postEntity;
   }
 
@@ -166,17 +148,6 @@ public class PostServiceImpl implements PostService {
   public void viewPage(Long id) {
     PostEntity postEntity = findPost(id);
     postEntity.setPageViews(postEntity.getPageViews() + 1);
-    publisher.publishEvent(new PointRuleApplicationEvent(
-        new PointRuleEventDto(
-            RuleNameEnum.VISIT_POST,
-            SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            postEntity.getId(),
-            null
-        )
-    ));
   }
 
   @Transactional
@@ -234,20 +205,6 @@ public class PostServiceImpl implements PostService {
             ? postEntity.getLikesCount() + 1
             : Math.max(0, postEntity.getLikesCount() - 1)
     );
-
-    publisher.publishEvent(new PointRuleApplicationEvent(
-        new PointRuleEventDto(
-            RuleNameEnum.LIKE_POST,
-            Boolean.TRUE.equals(postUserEntity.getLiked())
-                ? SignEnum.POSITIVE
-                : SignEnum.NEGATIVE,
-            false,
-            null,
-            null,
-            postEntity.getId(),
-            null
-        )
-    ));
   }
 
   @Transactional
@@ -280,20 +237,6 @@ public class PostServiceImpl implements PostService {
         Boolean.TRUE.equals(postUserEntity.getFavorited()) ? postEntity.getFavoritesCount() + 1
             : Math.max(0, postEntity.getFavoritesCount() - 1)
     );
-
-    publisher.publishEvent(new PointRuleApplicationEvent(
-        new PointRuleEventDto(
-            RuleNameEnum.FAVORITE_POST,
-            Boolean.TRUE.equals(postUserEntity.getFavorited())
-                ? SignEnum.POSITIVE
-                : SignEnum.NEGATIVE,
-            false,
-            null,
-            null,
-            postEntity.getId(),
-            null
-        )
-    ));
   }
 
   @Transactional
@@ -323,37 +266,6 @@ public class PostServiceImpl implements PostService {
       postEntity.setReviewState(dto.reviewState());
       postEntity.setReviewReason(dto.reviewReason());
       publisher.publishEvent(new PostReviewStateApplicationEvent(postEntity));
-
-      // === handle points start ===
-      RuleNameEnum ruleName;
-      SignEnum sign = switch (postEntity.getReviewState()) {
-        case APPROVED -> {
-          ruleName = RuleNameEnum.POST_APPROVED;
-          yield SignEnum.POSITIVE;
-        }
-        case REJECTED -> {
-          ruleName = RuleNameEnum.POST_NOT_APPROVED;
-          yield SignEnum.NEGATIVE;
-        }
-        case PENDING_REVIEW -> {
-          ruleName = RuleNameEnum.POST_PENDING_REVIEW;
-          yield SignEnum.NEGATIVE;
-        }
-        default -> throw new IllegalStateException("Unexpected value: " + postEntity.getReviewState());
-      };
-
-      publisher.publishEvent(new PointRuleApplicationEvent(
-          new PointRuleEventDto(
-              ruleName,
-              sign,
-              false,
-              null,
-              null,
-              postEntity.getId(),
-              null
-          )
-      ));
-      // === handle points end ===
     }
 
     if (Objects.nonNull(dto.sortState())) {

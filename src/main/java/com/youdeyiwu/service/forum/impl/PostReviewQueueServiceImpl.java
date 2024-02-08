@@ -3,10 +3,7 @@ package com.youdeyiwu.service.forum.impl;
 import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
-import com.youdeyiwu.enums.point.RuleNameEnum;
-import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.event.MessageApplicationEvent;
-import com.youdeyiwu.event.PointRuleApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.PostReviewQueueNotFoundException;
@@ -20,7 +17,6 @@ import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
-import com.youdeyiwu.model.dto.point.PointRuleEventDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostReviewQueueEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
@@ -176,18 +172,6 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     postReviewQueueRepository.delete(postReviewQueueEntity);
     String currentDateTime = getCurrentDateTime();
     sendApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
-
-    publisher.publishEvent(new PointRuleApplicationEvent(
-        new PointRuleEventDto(
-            RuleNameEnum.POST_APPROVED,
-            SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            postEntity.getId(),
-            null
-        )
-    ));
   }
 
   @Transactional
@@ -214,18 +198,6 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
     postReviewQueueRepository.delete(postReviewQueueEntity);
     String currentDateTime = getCurrentDateTime();
     sendNotApprovedMessageToUser(postReviewQueueEntity, currentDateTime, dto.reason());
-
-    publisher.publishEvent(new PointRuleApplicationEvent(
-        new PointRuleEventDto(
-            RuleNameEnum.POST_NOT_APPROVED,
-            SignEnum.NEGATIVE,
-            false,
-            null,
-            null,
-            postEntity.getId(),
-            null
-        )
-    ));
   }
 
   @Override

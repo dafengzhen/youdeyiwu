@@ -4,10 +4,7 @@ import static com.youdeyiwu.tool.Tool.cleanBasicContent;
 import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
-import com.youdeyiwu.enums.point.RuleNameEnum;
-import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.event.MessageApplicationEvent;
-import com.youdeyiwu.event.PointRuleApplicationEvent;
 import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.ReplyNotFoundException;
@@ -16,7 +13,6 @@ import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.mapper.forum.ReplyMapper;
 import com.youdeyiwu.model.dto.forum.CreateReplyDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
-import com.youdeyiwu.model.dto.point.PointRuleEventDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
@@ -32,7 +28,6 @@ import com.youdeyiwu.service.forum.ReplyService;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -163,23 +158,6 @@ public class ReplyServiceImpl implements ReplyService {
         messageEntity.setReceiver(commentOrReplyUserEntity.get());
         publisher.publishEvent(new MessageApplicationEvent(messageEntity));
       }
-
-      publisher.publishEvent(new PointRuleApplicationEvent(
-          new PointRuleEventDto(
-              RuleNameEnum.REPLY_POST,
-              SignEnum.POSITIVE,
-              false,
-              null,
-              null,
-              postEntity.get().getId(),
-              Objects.equals(
-                  userEntity,
-                  commentOrReplyUserEntity.orElse(null)
-              )
-                  ? null
-                  : commentOrReplyUserEntity.map(user -> Set.of(user.getId())).orElse(null)
-          )
-      ));
     }
 
     replyRepository.save(quoteReplyEntity);

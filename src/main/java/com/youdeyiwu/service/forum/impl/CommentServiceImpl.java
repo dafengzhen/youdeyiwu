@@ -4,17 +4,13 @@ import static com.youdeyiwu.tool.Tool.cleanBasicContent;
 import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
-import com.youdeyiwu.enums.point.RuleNameEnum;
-import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.event.MessageApplicationEvent;
-import com.youdeyiwu.event.PointRuleApplicationEvent;
 import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.model.dto.forum.CreateCommentDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateCommentDto;
-import com.youdeyiwu.model.dto.point.PointRuleEventDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
@@ -93,18 +89,6 @@ public class CommentServiceImpl implements CommentService {
         messageEntity.setReceiver(postEntity.getUser());
         publisher.publishEvent(new MessageApplicationEvent(messageEntity));
       }
-
-      publisher.publishEvent(new PointRuleApplicationEvent(
-          new PointRuleEventDto(
-              RuleNameEnum.COMMENT_POST,
-              SignEnum.POSITIVE,
-              false,
-              null,
-              null,
-              postEntity.getId(),
-              null
-          )
-      ));
     }
 
     commentRepository.save(commentEntity);
