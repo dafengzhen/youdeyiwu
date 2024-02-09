@@ -123,25 +123,28 @@ public class Tool {
       return false;
     }
 
-    byte[] fileHeader;
     try {
-      fileHeader = new byte[Math.min(file.getBytes().length, PNG_HEADER.length)];
-      System.arraycopy(file.getBytes(), 0, fileHeader, 0, fileHeader.length);
+      byte[] fileBytes = file.getBytes();
+      for (FileTypeEnum fileType : fileTypes) {
+        byte[] fileTypeHeader = switch (fileType) {
+          case PNG -> PNG_HEADER;
+          case JPG -> JPEG_HEADER;
+        };
+
+        if (
+            Arrays.equals(
+                Arrays.copyOf(fileBytes, Math.min(fileBytes.length, fileTypeHeader.length)),
+                fileTypeHeader
+            )
+        ) {
+          return true;
+        }
+      }
+
+      return false;
     } catch (IOException e) {
       return false;
     }
-
-    for (FileTypeEnum fileType : fileTypes) {
-      byte[] fileTypeHeader = switch (fileType) {
-        case PNG -> PNG_HEADER;
-        case JPG -> JPEG_HEADER;
-      };
-      if (Arrays.equals(fileHeader, fileTypeHeader)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**

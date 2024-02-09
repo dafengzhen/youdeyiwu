@@ -80,7 +80,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public SectionEntity create(CreateSectionDto dto) {
     SectionEntity sectionEntity = new SectionEntity();
-    sectionEntity.setName(dto.name());
+    sectionEntity.setName(dto.name().trim());
     sectionRepository.save(sectionEntity);
     return sectionEntity;
   }
@@ -137,7 +137,7 @@ public class SectionServiceImpl implements SectionService {
     }
 
     if (Objects.nonNull(dto.accessKey())) {
-      sectionEntity.setAccessKey(dto.accessKey());
+      sectionEntity.setAccessKey(dto.accessKey().trim());
     }
   }
 
