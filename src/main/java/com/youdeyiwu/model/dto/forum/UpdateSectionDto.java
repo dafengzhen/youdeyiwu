@@ -3,32 +3,29 @@ package com.youdeyiwu.model.dto.forum;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
+import org.hibernate.validator.constraints.URL;
 
 /**
  * update section.
  *
  * @param name       name
  * @param cover      cover
- * @param coverImage coverImage
  * @param overview   overview
  * @param content    content
  * @param sort       sort
  */
 public record UpdateSectionDto(
-    @Length(min = 1)
+    @Length(min = 1, max = 15, message = "{section.name.size}")
     String name,
 
-    // @URL(regexp = "^(http|https).*")
+    @URL(regexp = "^(http|https).*", message = "{section.cover.url}")
     String cover,
-
-    MultipartFile coverImage,
 
     String overview,
 
     String content,
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{section.sort.value}")
     Integer sort
 ) implements Serializable {
 

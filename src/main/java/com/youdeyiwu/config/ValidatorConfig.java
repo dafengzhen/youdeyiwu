@@ -17,5 +17,4 @@ public class ValidatorConfig implements ValidationConfigurationCustomizer {
         (HibernateValidatorConfiguration) configuration;
     hibernateValidatorConfiguration.failFast(true);
   }
-
 }

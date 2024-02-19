@@ -10,7 +10,6 @@ import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsSectionDto;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.TokenVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.service.forum.SectionService;
 import jakarta.validation.Valid;
@@ -47,7 +46,7 @@ public class SectionController {
   private final SectionService sectionService;
 
   @PostMapping
-  public ResponseEntity<TokenVo> create(@Valid @RequestBody CreateSectionDto dto) {
+  public ResponseEntity<Void> create(@Valid @RequestBody CreateSectionDto dto) {
     return ResponseEntity.created(URI.create("/sections/" + sectionService.create(dto).getId()))
         .build();
   }

@@ -2,7 +2,6 @@ package com.youdeyiwu.service.forum.impl;
 
 import static com.youdeyiwu.tool.Tool.cleanHtmlContent;
 import static com.youdeyiwu.tool.Tool.getFileType;
-import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.youdeyiwu.enums.file.FileTypeEnum;
@@ -35,9 +34,11 @@ import com.youdeyiwu.repository.forum.TagRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.SectionService;
+import com.youdeyiwu.tool.I18nTool;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -76,6 +77,8 @@ public class SectionServiceImpl implements SectionService {
 
   private final SecurityService securityService;
 
+  private final I18nTool i18nTool;
+
   @Transactional
   @Override
   public SectionEntity create(CreateSectionDto dto) {
@@ -94,7 +97,10 @@ public class SectionServiceImpl implements SectionService {
         EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
     )) {
       throw new CustomException(
-          "This doesn't seem to be a valid cover image file"
+          i18nTool.getMessage(
+              "section.cover.image.format",
+              Map.of("max", 500, "type", "JPG / PNG")
+          )
       );
     }
 
@@ -103,9 +109,7 @@ public class SectionServiceImpl implements SectionService {
       sectionEntity.setCoverImage(file.getBytes());
       sectionEntity.setCoverImageType(getFileType(file));
     } catch (IOException e) {
-      throw new CustomException(
-          "The setting of the cover image file failed : " + e.getMessage()
-      );
+      throw new RuntimeException(e);
     }
   }
 
@@ -194,34 +198,8 @@ public class SectionServiceImpl implements SectionService {
     SectionEntity sectionEntity = findSection(id);
     sectionMapper.dtoToEntity(dto, sectionEntity);
 
-    if (Objects.nonNull(dto.cover())) {
-      if (isHttpOrHttps(dto.cover())) {
-        sectionEntity.setCover(dto.cover());
-      } else {
-        sectionEntity.setCover(null);
-      }
-    }
-
-    if (
-        Objects.nonNull(dto.coverImage())
-            && isValidImageFile(
-            dto.coverImage(),
-            500,
-            EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
-        )
-    ) {
-      try {
-        sectionEntity.setCoverImage(dto.coverImage().getBytes());
-        sectionEntity.setCoverImageType(getFileType(dto.coverImage()));
-      } catch (IOException e) {
-        throw new CustomException(
-            "The setting of the cover image file failed : " + e.getMessage()
-        );
-      }
-    }
-
     if (Objects.nonNull(dto.content())) {
-      sectionEntity.setContent(cleanHtmlContent(dto.content().trim()));
+      sectionEntity.setContent(cleanHtmlContent(dto.content()));
     }
   }
 
@@ -257,7 +235,7 @@ public class SectionServiceImpl implements SectionService {
     SectionEntity sectionEntity = findSection(id);
     byte[] coverImage = sectionEntity.getCoverImage();
     if (Objects.isNull(coverImage)) {
-      throw new CustomException("The cover image file does not exist");
+      throw new CustomException(i18nTool.getMessage("section.cover.image.notfound"));
     }
 
     CoverVo vo = new CoverVo();
@@ -332,8 +310,7 @@ public class SectionServiceImpl implements SectionService {
    * @return SectionEntity
    */
   private SectionEntity findSection(Long id) {
-    return sectionRepository.findById(id)
-        .orElseThrow(SectionNotFoundException::new);
+    return sectionRepository.findById(id).orElseThrow(SectionNotFoundException::new);
   }
 
   /**
@@ -419,8 +396,7 @@ public class SectionServiceImpl implements SectionService {
         .anyMatch(Boolean.FALSE::equals);
 
     if (failed) {
-      throw new CustomException(
-          "Sorry, cannot access this section, or this section does not exist");
+      throw new CustomException(i18nTool.getMessage("section.access"));
     }
   }
 
@@ -443,11 +419,10 @@ public class SectionServiceImpl implements SectionService {
       UserEntity user,
       UserEntity root
   ) {
-    if (Objects.nonNull(root)) {
-      return true;
-    }
-
-    if (anonymous && state == SectionStateEnum.SHOW) {
+    if (
+        Objects.nonNull(root)
+            || (anonymous && state == SectionStateEnum.SHOW)
+    ) {
       return true;
     }
 

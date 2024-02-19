@@ -1,0 +1,1040 @@
+openapi: "3.1.0"
+info:
+  title: "Youdeyiwu"
+  description: "youdeyiwu is an open-source lightweight forum"
+  contact:
+    name: "Github"
+    url: "https://github.com/dafengzhen/youdeyiwu"
+  license:
+    name: "MIT"
+    url: "https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  /sections:
+    post:
+      summary: "POST sections"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSectionDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          headers:
+            Location:
+              schema:
+                type: string
+              example: '/sections/1'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET sections"
+      operationId: "queryAll"
+      parameters:
+        - in: query
+          name: page
+          description: "Page number, starting from 0"
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: "Number of items per page"
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: "Sorting criteria"
+          schema:
+            type: string
+            default: "sort,id,desc"
+            example: "sort,id,desc"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SectionEntityVo"
+  /sections/{id}/upload-cover:
+    post:
+      summary: "POST sections/{id}/upload-cover"
+      operationId: "uploadCover"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "file"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            format: "binary"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /sections/{id}/states:
+    put:
+      summary: "PUT sections/{id}/states"
+      operationId: "updateStates"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStatesSectionDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /sections/{id}/admins:
+    put:
+      summary: "PUT sections/{id}/admins"
+      operationId: "updateAdmins"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAdminsSectionDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /sections/{id}/tags:
+    put:
+      summary: "PUT sections/{id}/tags"
+      operationId: "updateTags"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTagsSectionDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /sections/{id}/tag-groups:
+    put:
+      summary: "PUT sections/{id}/tag-groups"
+      operationId: "updateTagGroups"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTagGroupsSectionDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /sections/{id}:
+    put:
+      summary: "PUT sections/{id}"
+      operationId: "update"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSectionDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET sections/{id}"
+      operationId: "query"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SectionEntityVo"
+    delete:
+      summary: "DELETE sections/{id}"
+      operationId: "delete"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /sections/select-all:
+    get:
+      summary: "GET sections/select-all"
+      operationId: "selectAll"
+      parameters:
+        - name: "sectionKey"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/SectionEntityVo"
+  /sections/{id}/details:
+    get:
+      summary: "GET sections/{id}/details"
+      operationId: "queryDetails"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+        - name: "sectionKey"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SectionEntityVo"
+  /sections/{id}/cover:
+    get:
+      summary: "GET sections/{id}/cover"
+      operationId: "queryCover"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+                  format: "byte"
+components:
+  schemas:
+    CreateSectionDto:
+      type: "object"
+      properties:
+        name:
+          description: "section name"
+          type: "string"
+          required: true
+    Void:
+      type: "object"
+      properties: { }
+    UpdateStatesSectionDto:
+      type: "object"
+      properties:
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        allows:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        blocks:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        accessKey:
+          type: "string"
+    UpdateAdminsSectionDto:
+      type: "object"
+      properties:
+        admins:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagsSectionDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagGroupsSectionDto:
+      type: "object"
+      properties:
+        tagGroups:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateSectionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    PermissionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matcher:
+          $ref: "#/components/schemas/PermissionEntityVo"
+        matchers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    RoleEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostBadgeEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        styles:
+          type: "string"
+        classes:
+          type: "string"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostImageEntityVo:
+      type: "object"
+      properties:
+        url:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    TagEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    CommentEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        likesCount:
+          type: "integer"
+          format: "int64"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        uniqueIdentifier:
+          type: "string"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    QuoteReplyEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        likesCount:
+          type: "integer"
+          format: "int64"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        comment:
+          $ref: "#/components/schemas/CommentEntityVo"
+        quoteReply:
+          $ref: "#/components/schemas/QuoteReplyEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        uniqueIdentifier:
+          type: "string"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    CommentReplyVo:
+      type: "object"
+      properties:
+        comment:
+          $ref: "#/components/schemas/CommentEntityVo"
+        reply:
+          $ref: "#/components/schemas/QuoteReplyEntityVo"
+    PostReviewQueueEntityVo:
+      type: "object"
+      properties:
+        received:
+          type: "boolean"
+        latestReviewResultTime:
+          type: "string"
+          format: "date"
+        receiver:
+          $ref: "#/components/schemas/UserEntityVo"
+        post:
+          $ref: "#/components/schemas/PostEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        coverImage:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+        coverImageType:
+          type: "string"
+          enum:
+            - "PNG"
+            - "JPG"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        badges:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostBadgeEntityVo"
+        images:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostImageEntityVo"
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        sortState:
+          type: "string"
+          enum:
+            - "DEFAULT"
+            - "POPULAR"
+            - "CURRENT_TOP"
+            - "GLOBAL_TOP"
+        allows:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        blocks:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        accessKey:
+          type: "string"
+        pageViews:
+          type: "integer"
+          format: "int64"
+        commentsCount:
+          type: "integer"
+          format: "int64"
+        repliesCount:
+          type: "integer"
+          format: "int64"
+        likesCount:
+          type: "integer"
+          format: "int64"
+        followersCount:
+          type: "integer"
+          format: "int64"
+        favoritesCount:
+          type: "integer"
+          format: "int64"
+        section:
+          $ref: "#/components/schemas/SectionEntityVo"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        liked:
+          type: "boolean"
+        followed:
+          type: "boolean"
+        favorited:
+          type: "boolean"
+        comments:
+          $ref: "#/components/schemas/CommentReplyVo"
+        postReviewQueue:
+          $ref: "#/components/schemas/PostReviewQueueEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostFavoriteEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        postId:
+          type: "integer"
+          format: "int64"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    UserStatisticsVo:
+      type: "object"
+      properties:
+        sections:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "integer"
+          format: "int32"
+        posts:
+          type: "integer"
+          format: "int32"
+        comments:
+          type: "integer"
+          format: "int32"
+        replies:
+          type: "integer"
+          format: "int32"
+        views:
+          type: "integer"
+          format: "int32"
+    UserEntityVo:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+        avatar:
+          type: "string"
+        oneSentence:
+          type: "string"
+        username:
+          type: "string"
+        email:
+          type: "string"
+        lastLoginTime:
+          type: "string"
+          format: "date-time"
+        root:
+          type: "boolean"
+        accountNonExpired:
+          type: "boolean"
+        credentialsNonExpired:
+          type: "boolean"
+        accountNonLocked:
+          type: "boolean"
+        enabled:
+          type: "boolean"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        posts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostEntityVo"
+        favorites:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostFavoriteEntityVo"
+        relatedSections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        relatedTags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        relatedStatistics:
+          $ref: "#/components/schemas/UserStatisticsVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    TagGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SectionGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        sections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SectionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        coverImage:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+        coverImageType:
+          type: "string"
+          enum:
+            - "PNG"
+            - "JPG"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        admins:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        allows:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        blocks:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        accessKey:
+          type: "string"
+        tagGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagGroupEntityVo"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        sectionGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionGroupEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"

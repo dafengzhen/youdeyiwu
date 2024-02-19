@@ -23,7 +23,6 @@ public interface SectionMapper {
    * @param dto    dto
    * @param entity entity
    */
-  @Mapping(target = "cover", ignore = true)
   @Mapping(target = "content", ignore = true)
   @Mapping(target = "coverImage", ignore = true)
   void dtoToEntity(UpdateSectionDto dto, @MappingTarget SectionEntity entity);
