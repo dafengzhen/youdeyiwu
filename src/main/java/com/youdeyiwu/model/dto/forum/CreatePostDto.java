@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Set;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -11,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @param name        name
  * @param cover       cover
- * @param coverImage  coverImage
  * @param overview    overview
  * @param content     content
  * @param contentLink contentLink
@@ -19,18 +19,18 @@ import org.springframework.web.multipart.MultipartFile;
  * @param sectionId   sectionId
  */
 public record CreatePostDto(
-    @Length(min = 1)
-    @NotBlank
+    @Length(min = 1, max = 120, message = "{post.name.size}")
+    @NotBlank(message = "{post.name.required}")
     String name,
 
+    @URL(regexp = "^(http|https).*", message = "{post.cover.url}")
     String cover,
-
-    MultipartFile coverImage,
 
     String overview,
 
     String content,
 
+    @URL(regexp = "^(http|https).*", message = "{post.content.link}")
     String contentLink,
 
     Set<String> tags,

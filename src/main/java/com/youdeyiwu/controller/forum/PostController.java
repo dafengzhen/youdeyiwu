@@ -2,8 +2,6 @@ package com.youdeyiwu.controller.forum;
 
 import static com.youdeyiwu.tool.Tool.getMediaType;
 
-import com.google.common.net.InetAddresses;
-import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
@@ -54,20 +52,9 @@ public class PostController {
         .build();
   }
 
-  /**
-   * view page.
-   *
-   * @param id id
-   * @param ip ip
-   * @return ResponseEntity
-   */
   @PostMapping("/{id}/view-page")
   public ResponseEntity<Void> viewPage(@PathVariable Long id, @RequestParam String ip) {
-    if (!InetAddresses.isInetAddress(ip)) {
-      throw new CustomException("Invalid IP address. Please provide a valid IP address");
-    }
-
-    postService.viewPage(id);
+    postService.viewPage(id, ip);
     return ResponseEntity.noContent().build();
   }
 
@@ -138,7 +125,7 @@ public class PostController {
       @Valid QueryParamsPostDto dto,
       @RequestParam(required = false) String postKey
   ) {
-    return ResponseEntity.ok().body(postService.selectAll(pageable, dto, postKey));
+    return ResponseEntity.ok(postService.selectAll(pageable, dto, postKey));
   }
 
   @GetMapping(value = "/{id}/comment-reply")
@@ -148,7 +135,7 @@ public class PostController {
       Pageable pageable,
       @PathVariable Long id
   ) {
-    return ResponseEntity.ok().body(postService.queryCommentReply(pageable, id));
+    return ResponseEntity.ok(postService.queryCommentReply(pageable, id));
   }
 
   @GetMapping(value = "/{id}/details")
@@ -159,7 +146,7 @@ public class PostController {
       @PathVariable Long id,
       @RequestParam(required = false) String postKey
   ) {
-    return ResponseEntity.ok().body(postService.queryDetails(pageable, id, postKey));
+    return ResponseEntity.ok(postService.queryDetails(pageable, id, postKey));
   }
 
   /**
@@ -179,7 +166,7 @@ public class PostController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<PostEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(postService.query(id));
+    return ResponseEntity.ok(postService.query(id));
   }
 
   @GetMapping
@@ -188,7 +175,7 @@ public class PostController {
       @SortDefault(value = {"initialScore", "sortState", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(postService.queryAll(pageable));
+    return ResponseEntity.ok(postService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")

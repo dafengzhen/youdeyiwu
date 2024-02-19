@@ -1,15 +1,13 @@
 package com.youdeyiwu.repository.point;
 
 import com.youdeyiwu.model.entity.point.PointEntity;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * point.
  *
  * @author dafengzhen
  */
-public interface PointRepository extends CrudRepository<PointEntity, Long>,
-    PagingAndSortingRepository<PointEntity, Long> {
+public interface PointRepository extends JpaRepositoryImplementation<PointEntity, Long> {
 
 }

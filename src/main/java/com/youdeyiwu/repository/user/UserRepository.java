@@ -1,16 +1,14 @@
 package com.youdeyiwu.repository.user;
 
 import com.youdeyiwu.model.entity.user.UserEntity;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * user.
  *
  * @author dafengzhen
  */
-public interface UserRepository extends CrudRepository<UserEntity, Long>,
-    PagingAndSortingRepository<UserEntity, Long>, CustomizedUserRepository {
+public interface UserRepository extends JpaRepositoryImplementation<UserEntity, Long>, CustomizedUserRepository {
 
   /**
    * existsByUsername.

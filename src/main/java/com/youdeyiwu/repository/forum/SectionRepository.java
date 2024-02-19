@@ -1,15 +1,13 @@
 package com.youdeyiwu.repository.forum;
 
 import com.youdeyiwu.model.entity.forum.SectionEntity;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * section.
  *
  * @author dafengzhen
  */
-public interface SectionRepository extends CrudRepository<SectionEntity, Long>,
-    PagingAndSortingRepository<SectionEntity, Long>, CustomizedSectionRepository {
+public interface SectionRepository extends JpaRepositoryImplementation<SectionEntity, Long>, CustomizedSectionRepository {
 
 }

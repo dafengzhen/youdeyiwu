@@ -4,16 +4,14 @@ import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * comment.
  *
  * @author dafengzhen
  */
-public interface CommentRepository extends CrudRepository<CommentEntity, Long>,
-    PagingAndSortingRepository<CommentEntity, Long> {
+public interface CommentRepository extends JpaRepositoryImplementation<CommentEntity, Long> {
 
   /**
    * findAllByPost.

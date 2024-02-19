@@ -3,16 +3,14 @@ package com.youdeyiwu.repository.forum;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import java.util.Set;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * post favorite.
  *
  * @author dafengzhen
  */
-public interface PostFavoriteRepository extends CrudRepository<PostFavoriteEntity, Long>,
-    PagingAndSortingRepository<PostFavoriteEntity, Long>, CustomizedPostRepository {
+public interface PostFavoriteRepository extends JpaRepositoryImplementation<PostFavoriteEntity, Long>, CustomizedPostRepository {
 
   /**
    * findAllByUser.

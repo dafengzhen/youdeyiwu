@@ -109,7 +109,7 @@ public class SectionServiceImpl implements SectionService {
       sectionEntity.setCoverImage(file.getBytes());
       sectionEntity.setCoverImageType(getFileType(file));
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new CustomException(e.getMessage());
     }
   }
 

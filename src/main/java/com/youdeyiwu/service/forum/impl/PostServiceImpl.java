@@ -2,13 +2,12 @@ package com.youdeyiwu.service.forum.impl;
 
 import static com.youdeyiwu.tool.Tool.cleanHtmlContent;
 import static com.youdeyiwu.tool.Tool.getFileType;
-import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
+import com.google.common.net.InetAddresses;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
-import com.youdeyiwu.event.PostReviewStateApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionGroupNotFoundException;
@@ -20,7 +19,6 @@ import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.mapper.forum.PostMapper;
 import com.youdeyiwu.mapper.forum.ReplyMapper;
 import com.youdeyiwu.mapper.forum.SectionMapper;
-import com.youdeyiwu.mapper.forum.TagGroupMapper;
 import com.youdeyiwu.mapper.forum.TagMapper;
 import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.PaginationPositionDto;
@@ -45,8 +43,6 @@ import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
-import com.youdeyiwu.repository.forum.CommentRepository;
-import com.youdeyiwu.repository.forum.PostFavoriteRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.SectionGroupRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
@@ -56,15 +52,16 @@ import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.PostService;
 import com.youdeyiwu.service.forum.TagService;
+import com.youdeyiwu.tool.I18nTool;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -83,10 +80,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostServiceImpl implements PostService {
 
   private final PostRepository postRepository;
-
-  private final PostFavoriteRepository postFavoriteRepository;
-
-  private final CommentRepository commentRepository;
 
   private final SectionGroupRepository sectionGroupRepository;
 
@@ -108,26 +101,23 @@ public class PostServiceImpl implements PostService {
 
   private final TagMapper tagMapper;
 
-  private final TagGroupMapper tagGroupMapper;
-
   private final SecurityService securityService;
 
   private final CommentMapper commentMapper;
 
   private final ReplyMapper replyMapper;
 
-  private final ApplicationEventPublisher publisher;
+  private final I18nTool i18nTool;
 
   @Transactional
   @Override
   public PostEntity create(CreatePostDto dto) {
     PostEntity postEntity = new PostEntity();
     postMapper.dtoToEntity(dto, postEntity);
-    setContentAndRelatedLinks(
+    setContent(
+        dto.name(),
+        dto.overview(),
         dto.content(),
-        dto.cover(),
-        dto.coverImage(),
-        dto.contentLink(),
         postEntity
     );
     setSectionAndTags(dto.sectionId(), false, dto.tags(), postEntity);
@@ -145,7 +135,11 @@ public class PostServiceImpl implements PostService {
 
   @Transactional
   @Override
-  public void viewPage(Long id) {
+  public void viewPage(Long id, String ip) {
+    if (!InetAddresses.isInetAddress(ip)) {
+      throw new CustomException(i18nTool.getMessage("post.viewPage.ip.invalid"));
+    }
+
     PostEntity postEntity = findPost(id);
     postEntity.setPageViews(postEntity.getPageViews() + 1);
   }
@@ -159,7 +153,10 @@ public class PostServiceImpl implements PostService {
         EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
     )) {
       throw new CustomException(
-          "This doesn't seem to be a valid cover image file"
+          i18nTool.getMessage(
+              "post.cover.image.format",
+              Map.of("max", 500, "type", "JPG / PNG")
+          )
       );
     }
 
@@ -168,9 +165,7 @@ public class PostServiceImpl implements PostService {
       postEntity.setCoverImage(file.getBytes());
       postEntity.setCoverImageType(getFileType(file));
     } catch (IOException e) {
-      throw new CustomException(
-          "The setting of the cover image file failed : " + e.getMessage()
-      );
+      throw new CustomException(e.getMessage());
     }
   }
 
@@ -265,7 +260,6 @@ public class PostServiceImpl implements PostService {
       postEntity.setOldReviewState(postEntity.getReviewState());
       postEntity.setReviewState(dto.reviewState());
       postEntity.setReviewReason(dto.reviewReason());
-      publisher.publishEvent(new PostReviewStateApplicationEvent(postEntity));
     }
 
     if (Objects.nonNull(dto.sortState())) {
@@ -303,7 +297,6 @@ public class PostServiceImpl implements PostService {
   @Override
   public void updateTags(Long id, UpdateTagsPostDto dto) {
     PostEntity postEntity = findPost(id);
-
     if (Objects.nonNull(dto.tags())) {
       postEntity.setTags(
           dto.tags()
@@ -319,14 +312,12 @@ public class PostServiceImpl implements PostService {
   public void update(Long id, UpdatePostDto dto) {
     PostEntity postEntity = findPost(id);
     postMapper.dtoToEntity(dto, postEntity);
-    setContentAndRelatedLinks(
+    setContent(
+        dto.name(),
+        dto.overview(),
         dto.content(),
-        dto.cover(),
-        dto.coverImage(),
-        dto.contentLink(),
         postEntity
     );
-
     setSectionAndTags(dto.sectionId(), dto.removeSection(), dto.tags(), postEntity);
   }
 
@@ -433,7 +424,7 @@ public class PostServiceImpl implements PostService {
     PostEntity postEntity = findPost(id);
     byte[] coverImage = postEntity.getCoverImage();
     if (Objects.isNull(coverImage)) {
-      throw new CustomException("The cover image file does not exist");
+      throw new CustomException(i18nTool.getMessage("post.cover.image.notfound"));
     }
 
     CoverVo vo = new CoverVo();
@@ -479,53 +470,25 @@ public class PostServiceImpl implements PostService {
   }
 
   /**
-   * set content and related links.
+   * set content.
    *
-   * @param content     content
-   * @param cover       cover
-   * @param coverImage  coverImage
-   * @param contentLink contentLink
-   * @param postEntity  postEntity
+   * @param name       name
+   * @param overview   overview
+   * @param content    content
+   * @param postEntity postEntity
    */
-  private void setContentAndRelatedLinks(
+  private void setContent(
+      String name,
+      String overview,
       String content,
-      String cover,
-      MultipartFile coverImage,
-      String contentLink,
       PostEntity postEntity
   ) {
-    if (Objects.nonNull(cover)) {
-      if (isHttpOrHttps(cover)) {
-        postEntity.setCover(cover);
-      } else {
-        postEntity.setCover(null);
-      }
+    if (Objects.nonNull(name)) {
+      postEntity.setName(name.trim());
     }
 
-    if (
-        Objects.nonNull(coverImage)
-            && isValidImageFile(
-            coverImage,
-            500,
-            EnumSet.of(FileTypeEnum.JPG, FileTypeEnum.PNG)
-        )
-    ) {
-      try {
-        postEntity.setCoverImage(coverImage.getBytes());
-        postEntity.setCoverImageType(getFileType(coverImage));
-      } catch (IOException e) {
-        throw new CustomException(
-            "The setting of the cover image file failed : " + e.getMessage()
-        );
-      }
-    }
-
-    if (Objects.nonNull(contentLink)) {
-      if (isHttpOrHttps(contentLink)) {
-        postEntity.setContentLink(contentLink);
-      } else {
-        postEntity.setContentLink(null);
-      }
+    if (Objects.nonNull(overview)) {
+      postEntity.setOverview(overview.trim());
     }
 
     if (Objects.nonNull(content)) {
@@ -795,8 +758,7 @@ public class PostServiceImpl implements PostService {
         .anyMatch(Boolean.FALSE::equals);
 
     if (failed) {
-      throw new CustomException(
-          "Sorry, cannot access this post, or this post does not exist");
+      throw new CustomException(i18nTool.getMessage("post.access"));
     }
   }
 
@@ -825,8 +787,7 @@ public class PostServiceImpl implements PostService {
     };
 
     if (!successful) {
-      throw new CustomException(
-          "Sorry, unable to access the post. The post is either under review or has not been approved");
+      throw new CustomException(i18nTool.getMessage("post.access.pendingReview"));
     }
   }
 

@@ -1,15 +1,13 @@
 package com.youdeyiwu.repository.forum;
 
 import com.youdeyiwu.model.entity.forum.TagGroupEntity;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * tag group.
  *
  * @author dafengzhen
  */
-public interface TagGroupRepository extends CrudRepository<TagGroupEntity, Long>,
-    PagingAndSortingRepository<TagGroupEntity, Long> {
+public interface TagGroupRepository extends JpaRepositoryImplementation<TagGroupEntity, Long> {
 
 }

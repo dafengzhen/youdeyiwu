@@ -34,8 +34,9 @@ public interface PostService {
    * view page.
    *
    * @param id id
+   * @param ip ip
    */
-  void viewPage(Long id);
+  void viewPage(Long id, String ip);
 
   /**
    * upload cover.

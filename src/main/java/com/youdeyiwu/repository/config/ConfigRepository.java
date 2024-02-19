@@ -2,14 +2,14 @@ package com.youdeyiwu.repository.config;
 
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * config.
  *
  * @author dafengzhen
  */
-public interface ConfigRepository extends CrudRepository<ConfigEntity, Long> {
+public interface ConfigRepository extends JpaRepositoryImplementation<ConfigEntity, Long> {
 
   /**
    * findByName.

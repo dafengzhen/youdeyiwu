@@ -4,16 +4,14 @@ import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
  * message.
  *
  * @author dafengzhen
  */
-public interface MessageRepository extends CrudRepository<MessageEntity, Long>,
-    PagingAndSortingRepository<MessageEntity, Long> {
+public interface MessageRepository extends JpaRepositoryImplementation<MessageEntity, Long> {
 
   /**
    * findByIdAndSenderIsNull.
