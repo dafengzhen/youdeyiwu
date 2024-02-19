@@ -11,10 +11,10 @@ import java.time.LocalDate;
  * @param postId                 postId
  */
 public record ReceivePostReviewQueueDto(
-    @NotNull
+    @NotNull(message = "{postReviewQueue.latestReviewResultTime.required}")
     LocalDate latestReviewResultTime,
 
-    @NotNull
+    @NotNull(message = "{postReviewQueue.postId.required}")
     Long postId
 ) implements Serializable {
 

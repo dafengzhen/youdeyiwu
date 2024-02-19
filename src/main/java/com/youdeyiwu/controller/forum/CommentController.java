@@ -45,6 +45,6 @@ public class CommentController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<CommentEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(commentService.query(id));
+    return ResponseEntity.ok(commentService.query(id));
   }
 }

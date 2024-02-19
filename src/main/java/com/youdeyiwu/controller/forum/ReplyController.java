@@ -2,8 +2,6 @@ package com.youdeyiwu.controller.forum;
 
 import com.youdeyiwu.model.dto.forum.CreateReplyDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
-import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
-import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.service.forum.ReplyService;
 import jakarta.validation.Valid;
@@ -47,6 +45,6 @@ public class ReplyController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<QuoteReplyEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(replyService.query(id));
+    return ResponseEntity.ok(replyService.query(id));
   }
 }

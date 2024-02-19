@@ -69,7 +69,7 @@ public class PostReviewQueueController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<PostReviewQueueEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(postReviewQueueService.query(id));
+    return ResponseEntity.ok(postReviewQueueService.query(id));
   }
 
   @GetMapping
@@ -78,6 +78,6 @@ public class PostReviewQueueController {
       @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(postReviewQueueService.queryAll(pageable));
+    return ResponseEntity.ok(postReviewQueueService.queryAll(pageable));
   }
 }
