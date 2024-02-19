@@ -38,6 +38,28 @@ paths:
     get:
       summary: "GET tag-groups"
       operationId: "queryAll"
+      parameters:
+        - in: query
+          name: page
+          description: "Page number, starting from 0"
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: "Number of items per page"
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: "Sorting criteria"
+          schema:
+            type: string
+            default: "sort,id,desc"
+            example: "sort,id,desc"
       responses:
         "200":
           description: "OK"

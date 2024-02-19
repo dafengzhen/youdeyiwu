@@ -1,5 +1,6 @@
 package com.youdeyiwu.model.dto.forum;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
  * @param postId                 postId
  */
 public record ReceivePostReviewQueueDto(
+    @Future(message = "{postReviewQueue.latestReviewResultTime.future}")
     @NotNull(message = "{postReviewQueue.latestReviewResultTime.required}")
     LocalDate latestReviewResultTime,
 

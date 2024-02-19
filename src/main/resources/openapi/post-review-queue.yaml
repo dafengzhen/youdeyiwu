@@ -13,30 +13,116 @@ servers:
   - url: "http://localhost:8080"
     description: "Development server"
 paths:
-  /section-groups:
+  /posts/review-queues/receive:
     post:
-      summary: "POST section-groups"
-      operationId: "create"
+      summary: "POST posts/review-queues/receive"
+      operationId: "receive"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateSectionGroupDto"
+              $ref: "#/components/schemas/ReceivePostReviewQueueDto"
         required: true
       responses:
-        "201":
-          description: "Created"
-          headers:
-            Location:
-              schema:
-                type: string
-              example: '/section-groups/1'
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Void"
+  /posts/review-queues/{id}/refund:
+    post:
+      summary: "POST posts/review-queues/{id}/refund"
+      operationId: "refund"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefundPostReviewQueueDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /posts/review-queues/{id}/approved:
+    post:
+      summary: "POST posts/review-queues/{id}/approved"
+      operationId: "approved"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovedPostReviewQueueDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /posts/review-queues/{id}/not-approved:
+    post:
+      summary: "POST posts/review-queues/{id}/not-approved"
+      operationId: "notApproved"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotApprovedPostReviewQueueDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /posts/review-queues/{id}:
     get:
-      summary: "GET section-groups"
+      summary: "GET posts/review-queues/{id}"
+      operationId: "query"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostReviewQueueEntityVo"
+  /posts/review-queues:
+    get:
+      summary: "GET posts/review-queues"
       operationId: "queryAll"
       parameters:
         - in: query
@@ -58,138 +144,48 @@ paths:
           description: "Sorting criteria"
           schema:
             type: string
-            default: "sort,id,desc"
-            example: "sort,id,desc"
+            default: "id,desc"
+            example: "id,desc"
       responses:
         "200":
           description: "OK"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageVoSectionGroupEntityVo"
-  /section-groups/{id}/sections:
-    put:
-      summary: "PUT section-groups/{id}/sections"
-      operationId: "updateSections"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateSectionsSectionGroupDto"
-        required: true
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-  /section-groups/{id}:
-    put:
-      summary: "PUT section-groups/{id}"
-      operationId: "update"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateSectionGroupDto"
-        required: true
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-    get:
-      summary: "GET section-groups/{id}"
-      operationId: "query"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SectionGroupEntityVo"
-    delete:
-      summary: "DELETE section-groups/{id}"
-      operationId: "delete"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-  /section-groups/select-all:
-    get:
-      summary: "GET section-groups/select-all"
-      operationId: "selectAll"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/SectionGroupEntityVo"
+                $ref: "#/components/schemas/PageVoPostEntityVo"
 components:
   schemas:
-    CreateSectionGroupDto:
+    ReceivePostReviewQueueDto:
       type: "object"
       properties:
-        name:
+        latestReviewResultTime:
           type: "string"
-          description: "section group name"
+          format: "date"
+          description: "The estimated completion time of the review must be in the future"
+          required: true
+        postId:
+          type: "integer"
+          format: "int64"
+          description: "post id"
           required: true
     Void:
       type: "object"
       properties: { }
-    UpdateSectionsSectionGroupDto:
+    RefundPostReviewQueueDto:
       type: "object"
       properties:
-        sections:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateSectionGroupDto:
-      type: "object"
-      properties:
-        name:
+        reason:
           type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
+    ApprovedPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
+    NotApprovedPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
     PermissionEntityVo:
       type: "object"
       properties:
@@ -361,6 +357,144 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
+    TagGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SectionGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        sections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SectionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        coverImage:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+        coverImageType:
+          type: "string"
+          enum:
+            - "PNG"
+            - "JPG"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        admins:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        allows:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        blocks:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        accessKey:
+          type: "string"
+        tagGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagGroupEntityVo"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        sectionGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionGroupEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
     CommentEntityVo:
       type: "object"
       properties:
@@ -442,35 +576,6 @@ components:
           $ref: "#/components/schemas/CommentEntityVo"
         reply:
           $ref: "#/components/schemas/QuoteReplyEntityVo"
-    PostReviewQueueEntityVo:
-      type: "object"
-      properties:
-        received:
-          type: "boolean"
-        latestReviewResultTime:
-          type: "string"
-          format: "date"
-        receiver:
-          $ref: "#/components/schemas/UserEntityVo"
-        post:
-          $ref: "#/components/schemas/PostEntityVo"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
     PostEntityVo:
       type: "object"
       properties:
@@ -706,127 +811,18 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    TagGroupEntityVo:
+    PostReviewQueueEntityVo:
       type: "object"
       properties:
-        name:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        tags:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/TagEntityVo"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
+        received:
           type: "boolean"
-    SectionEntityVo:
-      type: "object"
-      properties:
-        name:
+        latestReviewResultTime:
           type: "string"
-        cover:
-          type: "string"
-        coverImage:
-          type: "array"
-          items:
-            type: "string"
-            format: "byte"
-        coverImageType:
-          type: "string"
-          enum:
-            - "PNG"
-            - "JPG"
-        overview:
-          type: "string"
-        content:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        states:
-          type: "array"
-          items:
-            type: "string"
-            enum:
-              - "SHOW"
-              - "HIDE"
-              - "LOCK"
-              - "ALLOW"
-              - "BLOCK"
-              - "VISIBLE_AFTER_LOGIN"
-        admins:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/UserEntityVo"
-        allows:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/UserEntityVo"
-        blocks:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/UserEntityVo"
-        accessKey:
-          type: "string"
-        tagGroups:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/TagGroupEntityVo"
-        tags:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/TagEntityVo"
-        sectionGroups:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SectionGroupEntityVo"
-        user:
+          format: "date"
+        receiver:
           $ref: "#/components/schemas/UserEntityVo"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
-    SectionGroupEntityVo:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        sections:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SectionEntityVo"
+        post:
+          $ref: "#/components/schemas/PostEntityVo"
         id:
           type: "integer"
           format: "int64"
@@ -860,12 +856,12 @@ components:
           type: "boolean"
         previous:
           type: "boolean"
-    PageVoSectionGroupEntityVo:
+    PageVoPostEntityVo:
       type: "object"
       properties:
         content:
           type: "array"
           items:
-            $ref: "#/components/schemas/SectionGroupEntityVo"
+            $ref: "#/components/schemas/PostEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
