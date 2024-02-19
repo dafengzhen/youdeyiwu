@@ -8,7 +8,6 @@ import { checkResponseStatus } from '@/app/common/server';
 
 export default async function CreateTagGroupAction(variables: {
   name: string;
-  sort: number;
 }) {
   const response = await fetch(process.env.API_SERVER + '/tag-groups', {
     method: POST,

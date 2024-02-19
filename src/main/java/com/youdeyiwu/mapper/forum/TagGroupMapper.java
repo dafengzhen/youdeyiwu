@@ -17,14 +17,6 @@ import org.mapstruct.MappingTarget;
 public interface TagGroupMapper {
 
   /**
-   * dtoToEntity.
-   *
-   * @param dto    dto
-   * @param entity entity
-   */
-  void dtoToEntity(CreateTagGroupDto dto, @MappingTarget TagGroupEntity entity);
-
-  /**
    * entityToVo.
    *
    * @param entity entity

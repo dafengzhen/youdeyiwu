@@ -10,10 +10,8 @@ export default function Create() {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
     name: string;
-    sort: number;
   }>({
     name: '',
-    sort: 0,
   });
 
   const createTagGroupActionMutation = useMutation({
@@ -34,9 +32,8 @@ export default function Create() {
         return;
       }
 
-      const sort = form.sort;
-      await createTagGroupActionMutation.mutateAsync({ name, sort });
-      setForm({ ...form, name: '', sort: 0 });
+      await createTagGroupActionMutation.mutateAsync({ name });
+      setForm({ ...form, name: '' });
 
       toast.current.show({
         type: 'success',
@@ -82,28 +79,6 @@ export default function Create() {
           </div>
           <div className="form-text">
             The tag group name must not be duplicated and needs to be unique
-          </div>
-        </div>
-
-        <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Sort
-          </label>
-          <input
-            required
-            min={0}
-            type="number"
-            className="form-control"
-            name="sort"
-            value={form.sort}
-            onChange={onChangeForm}
-            placeholder="Please enter the tag group sort"
-            aria-describedby="sort"
-          />
-          <div className="form-text">
-            Please enter the sorting value for the tag group, with a minimum
-            value of 0
           </div>
         </div>
 

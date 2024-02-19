@@ -1,6 +1,8 @@
 package com.youdeyiwu.model.dto.forum;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * update tag group.
@@ -9,8 +11,10 @@ import java.io.Serializable;
  * @param sort sort
  */
 public record UpdateTagGroupDto(
+    @Length(min = 1, max = 15, message = "{tagGroup.name.size}")
     String name,
 
+    @PositiveOrZero(message = "{tagGroup.sort.value}")
     Integer sort
 ) implements Serializable {
 

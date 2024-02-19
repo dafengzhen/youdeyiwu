@@ -1,0 +1,211 @@
+openapi: "3.1.0"
+info:
+  title: "Youdeyiwu"
+  description: "youdeyiwu is an open-source lightweight forum"
+  contact:
+    name: "Github"
+    url: "https://github.com/dafengzhen/youdeyiwu"
+  license:
+    name: "MIT"
+    url: "https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  /tag-groups:
+    post:
+      summary: "POST tag-groups"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTagGroupDto"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          headers:
+            Location:
+              schema:
+                type: string
+              example: '/tags/1'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET tag-groups"
+      operationId: "queryAll"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagGroupEntityVo"
+  /tag-groups/{id}/tags:
+    put:
+      summary: "PUT tag-groups/{id}/tags"
+      operationId: "updateTags"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTagsTagGroupDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /tag-groups/{id}:
+    put:
+      summary: "PUT tag-groups/{id}"
+      operationId: "update"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTagGroupDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET tag-groups/{id}"
+      operationId: "query"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagGroupEntityVo"
+    delete:
+      summary: "DELETE tag-groups/{id}"
+      operationId: "delete"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+components:
+  schemas:
+    CreateTagGroupDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "tag group name"
+          required: true
+    Void:
+      type: "object"
+      properties: { }
+    UpdateTagsTagGroupDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagGroupDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    TagEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    TagGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"

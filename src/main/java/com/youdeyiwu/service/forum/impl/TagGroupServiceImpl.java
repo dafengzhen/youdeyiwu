@@ -43,7 +43,7 @@ public class TagGroupServiceImpl implements TagGroupService {
   @Override
   public TagGroupEntity create(CreateTagGroupDto dto) {
     TagGroupEntity tagGroupEntity = new TagGroupEntity();
-    tagGroupMapper.dtoToEntity(dto, tagGroupEntity);
+    tagGroupEntity.setName(dto.name().trim());
     tagGroupRepository.save(tagGroupEntity);
     return tagGroupEntity;
   }
@@ -83,12 +83,7 @@ public class TagGroupServiceImpl implements TagGroupService {
   public PageVo<TagGroupEntityVo> queryAll(Pageable pageable) {
     return new PageVo<>(tagGroupRepository.findAll(pageable).map(tagGroupEntity -> {
       TagGroupEntityVo vo = tagGroupMapper.entityToVo(tagGroupEntity);
-      vo.setTags(
-          tagGroupEntity.getTags()
-              .stream()
-              .map(tagMapper::entityToVo)
-              .collect(Collectors.toSet())
-      );
+      setTags(tagGroupEntity, vo);
       return vo;
     }));
   }
@@ -97,14 +92,8 @@ public class TagGroupServiceImpl implements TagGroupService {
   public TagGroupEntityVo query(Long id) {
     TagGroupEntity tagGroupEntity = tagGroupRepository.findById(id)
         .orElseThrow(TagGroupNotFoundException::new);
-
     TagGroupEntityVo vo = tagGroupMapper.entityToVo(tagGroupEntity);
-    vo.setTags(
-        tagGroupEntity.getTags()
-            .stream()
-            .map(tagMapper::entityToVo)
-            .collect(Collectors.toSet())
-    );
+    setTags(tagGroupEntity, vo);
     return vo;
   }
 
@@ -114,5 +103,20 @@ public class TagGroupServiceImpl implements TagGroupService {
     TagGroupEntity tagGroupEntity = tagGroupRepository.findById(id)
         .orElseThrow(TagGroupNotFoundException::new);
     tagGroupRepository.delete(tagGroupEntity);
+  }
+
+  /**
+   * set tags.
+   *
+   * @param tagGroupEntity tagGroupEntity
+   * @param vo             vo
+   */
+  private void setTags(TagGroupEntity tagGroupEntity, TagGroupEntityVo vo) {
+    vo.setTags(
+        tagGroupEntity.getTags()
+            .stream()
+            .map(tagMapper::entityToVo)
+            .collect(Collectors.toSet())
+    );
   }
 }

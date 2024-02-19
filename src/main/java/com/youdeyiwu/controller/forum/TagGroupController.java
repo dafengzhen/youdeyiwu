@@ -65,12 +65,12 @@ public class TagGroupController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(tagGroupService.queryAll(pageable));
+    return ResponseEntity.ok(tagGroupService.queryAll(pageable));
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<TagGroupEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(tagGroupService.query(id));
+    return ResponseEntity.ok(tagGroupService.query(id));
   }
 
   @DeleteMapping(value = "/{id}")
