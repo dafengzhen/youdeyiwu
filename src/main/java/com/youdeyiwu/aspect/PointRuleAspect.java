@@ -17,9 +17,7 @@ import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
-import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
-import com.youdeyiwu.repository.forum.ReplyRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import java.util.Objects;
@@ -48,10 +46,6 @@ public class PointRuleAspect {
   private final UserRepository userRepository;
 
   private final PostRepository postRepository;
-
-  private final CommentRepository commentRepository;
-
-  private final ReplyRepository replyRepository;
 
   private final SecurityService securityService;
 

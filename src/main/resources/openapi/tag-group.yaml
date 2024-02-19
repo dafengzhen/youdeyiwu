@@ -30,7 +30,7 @@ paths:
             Location:
               schema:
                 type: string
-              example: '/tags/1'
+              example: '/tag-groups/1'
           content:
             application/json:
               schema:
