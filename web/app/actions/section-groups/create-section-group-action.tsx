@@ -8,7 +8,6 @@ import { checkResponseStatus } from '@/app/common/server';
 
 export default async function CreateSectionGroupAction(variables: {
   name: string;
-  sort: number;
 }) {
   const response = await fetch(process.env.API_SERVER + '/section-groups', {
     method: POST,

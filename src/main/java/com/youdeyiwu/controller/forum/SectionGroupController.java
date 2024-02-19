@@ -8,7 +8,7 @@ import com.youdeyiwu.model.vo.forum.SectionGroupEntityVo;
 import com.youdeyiwu.service.forum.SectionGroupService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -73,17 +73,17 @@ public class SectionGroupController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(sectionGroupService.queryAll(pageable));
+    return ResponseEntity.ok(sectionGroupService.queryAll(pageable));
   }
 
   @GetMapping(value = "/select-all")
-  public ResponseEntity<Set<SectionGroupEntityVo>> selectAll() {
-    return ResponseEntity.ok().body(sectionGroupService.selectAll());
+  public ResponseEntity<List<SectionGroupEntityVo>> selectAll() {
+    return ResponseEntity.ok(sectionGroupService.selectAll());
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<SectionGroupEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(sectionGroupService.query(id));
+    return ResponseEntity.ok(sectionGroupService.query(id));
   }
 
   @DeleteMapping(value = "/{id}")

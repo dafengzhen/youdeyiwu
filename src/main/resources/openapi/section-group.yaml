@@ -13,15 +13,15 @@ servers:
   - url: "http://localhost:8080"
     description: "Development server"
 paths:
-  /sections:
+  /section-groups:
     post:
-      summary: "POST sections"
+      summary: "POST section-groups"
       operationId: "create"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateSectionDto"
+              $ref: "#/components/schemas/CreateSectionGroupDto"
         required: true
       responses:
         "201":
@@ -30,71 +30,25 @@ paths:
             Location:
               schema:
                 type: string
-              example: '/sections/1'
+              example: '/tags/1'
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Void"
     get:
-      summary: "GET sections"
+      summary: "GET section-groups"
       operationId: "queryAll"
-      parameters:
-        - in: query
-          name: page
-          description: "Page number, starting from 0"
-          schema:
-            type: integer
-            format: int32
-            default: 0
-        - in: query
-          name: size
-          description: "Number of items per page"
-          schema:
-            type: integer
-            format: int32
-            default: 15
-        - in: query
-          name: sort
-          description: "Sorting criteria"
-          schema:
-            type: string
-            default: "sort,id,desc"
-            example: "sort,id,desc"
       responses:
         "200":
           description: "OK"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PageVoSectionEntityVo"
-  /sections/{id}/upload-cover:
-    post:
-      summary: "POST sections/{id}/upload-cover"
-      operationId: "uploadCover"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "file"
-          in: "query"
-          required: true
-          schema:
-            type: "string"
-            format: "binary"
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-  /sections/{id}/states:
+                $ref: "#/components/schemas/PageVoSectionGroupEntityVo"
+  /section-groups/{id}/sections:
     put:
-      summary: "PUT sections/{id}/states"
-      operationId: "updateStates"
+      summary: "PUT section-groups/{id}/sections"
+      operationId: "updateSections"
       parameters:
         - name: "id"
           in: "path"
@@ -106,7 +60,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateStatesSectionDto"
+              $ref: "#/components/schemas/UpdateSectionsSectionGroupDto"
         required: true
       responses:
         "204":
@@ -115,81 +69,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Void"
-  /sections/{id}/admins:
+  /section-groups/{id}:
     put:
-      summary: "PUT sections/{id}/admins"
-      operationId: "updateAdmins"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateAdminsSectionDto"
-        required: true
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-  /sections/{id}/tags:
-    put:
-      summary: "PUT sections/{id}/tags"
-      operationId: "updateTags"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateTagsSectionDto"
-        required: true
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-  /sections/{id}/tag-groups:
-    put:
-      summary: "PUT sections/{id}/tag-groups"
-      operationId: "updateTagGroups"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateTagGroupsSectionDto"
-        required: true
-      responses:
-        "204":
-          description: "No Content"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Void"
-  /sections/{id}:
-    put:
-      summary: "PUT sections/{id}"
+      summary: "PUT section-groups/{id}"
       operationId: "update"
       parameters:
         - name: "id"
@@ -202,7 +84,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateSectionDto"
+              $ref: "#/components/schemas/UpdateSectionGroupDto"
         required: true
       responses:
         "204":
@@ -212,7 +94,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Void"
     get:
-      summary: "GET sections/{id}"
+      summary: "GET section-groups/{id}"
       operationId: "query"
       parameters:
         - name: "id"
@@ -227,9 +109,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SectionEntityVo"
+                $ref: "#/components/schemas/SectionGroupEntityVo"
     delete:
-      summary: "DELETE sections/{id}"
+      summary: "DELETE section-groups/{id}"
       operationId: "delete"
       parameters:
         - name: "id"
@@ -245,16 +127,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Void"
-  /sections/select-all:
+  /section-groups/select-all:
     get:
-      summary: "GET sections/select-all"
+      summary: "GET section-groups/select-all"
       operationId: "selectAll"
-      parameters:
-        - name: "sectionKey"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
       responses:
         "200":
           description: "OK"
@@ -263,123 +139,31 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/SectionEntityVo"
-  /sections/{id}/details:
-    get:
-      summary: "GET sections/{id}/details"
-      operationId: "queryDetails"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-        - name: "sectionKey"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SectionEntityVo"
-  /sections/{id}/cover:
-    get:
-      summary: "GET sections/{id}/cover"
-      operationId: "queryCover"
-      parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
-      responses:
-        "200":
-          description: "OK"
-          content:
-            application/json:
-              schema:
-                type: "array"
-                items:
-                  type: "string"
-                  format: "byte"
+                  $ref: "#/components/schemas/SectionGroupEntityVo"
 components:
   schemas:
-    CreateSectionDto:
+    CreateSectionGroupDto:
       type: "object"
       properties:
         name:
           type: "string"
-          description: "section name"
+          description: "section group name"
           required: true
     Void:
       type: "object"
       properties: { }
-    UpdateStatesSectionDto:
+    UpdateSectionsSectionGroupDto:
       type: "object"
       properties:
-        states:
-          type: "array"
-          items:
-            type: "string"
-            enum:
-              - "SHOW"
-              - "HIDE"
-              - "LOCK"
-              - "ALLOW"
-              - "BLOCK"
-              - "VISIBLE_AFTER_LOGIN"
-        allows:
+        sections:
           type: "array"
           items:
             type: "integer"
             format: "int64"
-        blocks:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-        accessKey:
-          type: "string"
-    UpdateAdminsSectionDto:
-      type: "object"
-      properties:
-        admins:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateTagsSectionDto:
-      type: "object"
-      properties:
-        tags:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateTagGroupsSectionDto:
-      type: "object"
-      properties:
-        tagGroups:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateSectionDto:
+    UpdateSectionGroupDto:
       type: "object"
       properties:
         name:
-          type: "string"
-        cover:
-          type: "string"
-        overview:
-          type: "string"
-        content:
           type: "string"
         sort:
           type: "integer"
@@ -929,35 +713,6 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    SectionGroupEntityVo:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        sections:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SectionEntityVo"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
     SectionEntityVo:
       type: "object"
       properties:
@@ -1038,6 +793,35 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
+    SectionGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        sections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
     PageableVo:
       type: "object"
       properties:
@@ -1054,12 +838,12 @@ components:
           type: "boolean"
         previous:
           type: "boolean"
-    PageVoSectionEntityVo:
+    PageVoSectionGroupEntityVo:
       type: "object"
       properties:
         content:
           type: "array"
           items:
-            $ref: "#/components/schemas/SectionEntityVo"
+            $ref: "#/components/schemas/SectionGroupEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"

@@ -16,8 +16,8 @@ import com.youdeyiwu.model.vo.forum.SectionGroupEntityVo;
 import com.youdeyiwu.repository.forum.SectionGroupRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
 import com.youdeyiwu.service.forum.SectionGroupService;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class SectionGroupServiceImpl implements SectionGroupService {
   @Override
   public SectionGroupEntity create(CreateSectionGroupDto dto) {
     SectionGroupEntity sectionGroupEntity = new SectionGroupEntity();
-    sectionGroupMapper.dtoToEntity(dto, sectionGroupEntity);
+    sectionGroupEntity.setName(dto.name().trim());
     sectionGroupRepository.save(sectionGroupEntity);
     return sectionGroupEntity;
   }
@@ -80,7 +80,7 @@ public class SectionGroupServiceImpl implements SectionGroupService {
         .orElseThrow(TagGroupNotFoundException::new);
 
     if (StringUtils.hasText(dto.name())) {
-      sectionGroupEntity.setName(dto.name());
+      sectionGroupEntity.setName(dto.name().trim());
     }
 
     if (Objects.nonNull(dto.sort())) {
@@ -101,14 +101,14 @@ public class SectionGroupServiceImpl implements SectionGroupService {
   }
 
   @Override
-  public Set<SectionGroupEntityVo> selectAll() {
+  public List<SectionGroupEntityVo> selectAll() {
     return StreamSupport.stream(sectionGroupRepository.findAll().spliterator(), false)
         .map(sectionGroupEntity -> {
           SectionGroupEntityVo vo = sectionGroupMapper.entityToVo(sectionGroupEntity);
           setSections(vo, sectionGroupEntity);
           return vo;
         })
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Override

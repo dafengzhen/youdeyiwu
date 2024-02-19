@@ -8,14 +8,11 @@ import org.hibernate.validator.constraints.Length;
  * create section group.
  *
  * @param name name
- * @param sort sort
  */
 public record CreateSectionGroupDto(
-    @Length(min = 1)
-    @NotBlank
-    String name,
-
-    Integer sort
+    @Length(min = 1, max = 15, message = "{sectionGroup.name.size}")
+    @NotBlank(message = "{sectionGroup.name.required}")
+    String name
 ) implements Serializable {
 
 }

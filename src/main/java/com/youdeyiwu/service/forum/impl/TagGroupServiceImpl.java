@@ -71,7 +71,7 @@ public class TagGroupServiceImpl implements TagGroupService {
         .orElseThrow(TagGroupNotFoundException::new);
 
     if (StringUtils.hasText(dto.name())) {
-      tagGroupEntity.setName(dto.name());
+      tagGroupEntity.setName(dto.name().trim());
     }
 
     if (Objects.nonNull(dto.sort())) {

@@ -6,7 +6,7 @@ import com.youdeyiwu.model.dto.forum.UpdateSectionsSectionGroupDto;
 import com.youdeyiwu.model.entity.forum.SectionGroupEntity;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.SectionGroupEntityVo;
-import java.util.Set;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -51,9 +51,9 @@ public interface SectionGroupService {
   /**
    * select all.
    *
-   * @return Set
+   * @return List
    */
-  Set<SectionGroupEntityVo> selectAll();
+  List<SectionGroupEntityVo> selectAll();
 
   /**
    * query.

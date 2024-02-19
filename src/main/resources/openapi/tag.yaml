@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TagEntityVo"
+                $ref: "#/components/schemas/PageVoTagEntityVo"
   /tags/{id}:
     put:
       summary: "PUT tags/{id}"
@@ -161,3 +161,28 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
+    PageableVo:
+      type: "object"
+      properties:
+        size:
+          type: "integer"
+          format: "int32"
+        page:
+          type: "integer"
+          format: "int32"
+        pages:
+          type: "integer"
+          format: "int32"
+        next:
+          type: "boolean"
+        previous:
+          type: "boolean"
+    PageVoTagEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
