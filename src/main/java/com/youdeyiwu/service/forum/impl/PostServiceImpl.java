@@ -561,7 +561,7 @@ public class PostServiceImpl implements PostService {
     if (Objects.nonNull(tags)) {
       postEntity.setTags(
           tags.stream()
-              .map(tag -> tagService.create(new CreateTagDto(tag, 0), false))
+              .map(tag -> tagService.create(new CreateTagDto(tag), false))
               .collect(Collectors.toSet())
       );
     }

@@ -44,13 +44,7 @@ public class I18nTool {
    */
   public String getMessage(String code, Map<String, Object> args) {
     Locale locale = LocaleContextHolder.getLocale();
-    String messageTemplate =
-        messageSource.getMessage(
-            code,
-            null,
-            null,
-            locale
-        );
+    String messageTemplate = getMessage(code);
 
     if (Objects.isNull(messageTemplate)) {
       return "Message template not found";

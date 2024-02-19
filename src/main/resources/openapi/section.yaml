@@ -24,8 +24,8 @@ paths:
               $ref: "#/components/schemas/CreateSectionDto"
         required: true
       responses:
-        "200":
-          description: "OK"
+        "201":
+          description: "Created"
           headers:
             Location:
               schema:
@@ -85,8 +85,8 @@ paths:
             type: "string"
             format: "binary"
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -109,8 +109,8 @@ paths:
               $ref: "#/components/schemas/UpdateStatesSectionDto"
         required: true
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -133,8 +133,8 @@ paths:
               $ref: "#/components/schemas/UpdateAdminsSectionDto"
         required: true
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -157,8 +157,8 @@ paths:
               $ref: "#/components/schemas/UpdateTagsSectionDto"
         required: true
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -181,8 +181,8 @@ paths:
               $ref: "#/components/schemas/UpdateTagGroupsSectionDto"
         required: true
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -205,8 +205,8 @@ paths:
               $ref: "#/components/schemas/UpdateSectionDto"
         required: true
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -239,8 +239,8 @@ paths:
             type: "integer"
             format: "int64"
       responses:
-        "200":
-          description: "OK"
+        "204":
+          description: "No Content"
           content:
             application/json:
               schema:
@@ -314,8 +314,8 @@ components:
       type: "object"
       properties:
         name:
-          description: "section name"
           type: "string"
+          description: "section name"
           required: true
     Void:
       type: "object"

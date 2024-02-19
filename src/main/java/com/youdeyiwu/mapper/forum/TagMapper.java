@@ -1,11 +1,9 @@
 package com.youdeyiwu.mapper.forum;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
-import com.youdeyiwu.model.dto.forum.CreateTagDto;
 import com.youdeyiwu.model.entity.forum.TagEntity;
 import com.youdeyiwu.model.vo.forum.TagEntityVo;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
 /**
  * tag.
@@ -14,14 +12,6 @@ import org.mapstruct.MappingTarget;
  */
 @Mapper(config = MapperTemplateConfig.class)
 public interface TagMapper {
-
-  /**
-   * dtoToEntity.
-   *
-   * @param dto    dto
-   * @param entity entity
-   */
-  void dtoToEntity(CreateTagDto dto, @MappingTarget TagEntity entity);
 
   /**
    * entityToVo.

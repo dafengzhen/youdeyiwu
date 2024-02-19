@@ -5,7 +5,7 @@ import com.youdeyiwu.model.dto.forum.UpdateTagDto;
 import com.youdeyiwu.model.entity.forum.TagEntity;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.TagEntityVo;
-import java.util.Set;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -43,9 +43,9 @@ public interface TagService {
   /**
    * select all.
    *
-   * @return Set
+   * @return List
    */
-  Set<TagEntityVo> selectAll();
+  List<TagEntityVo> selectAll();
 
   /**
    * query.

@@ -7,7 +7,7 @@ import com.youdeyiwu.model.vo.forum.TagEntityVo;
 import com.youdeyiwu.service.forum.TagService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -56,17 +56,17 @@ public class TagController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(tagService.queryAll(pageable));
+    return ResponseEntity.ok(tagService.queryAll(pageable));
   }
 
   @GetMapping(value = "/select-all")
-  public ResponseEntity<Set<TagEntityVo>> selectAll() {
-    return ResponseEntity.ok().body(tagService.selectAll());
+  public ResponseEntity<List<TagEntityVo>> selectAll() {
+    return ResponseEntity.ok(tagService.selectAll());
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<TagEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(tagService.query(id));
+    return ResponseEntity.ok(tagService.query(id));
   }
 
   @DeleteMapping(value = "/{id}")

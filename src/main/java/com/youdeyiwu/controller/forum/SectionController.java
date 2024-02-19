@@ -106,7 +106,7 @@ public class SectionController {
   public ResponseEntity<List<SectionEntityVo>> selectAll(
       @RequestParam(required = false) String sectionKey
   ) {
-    return ResponseEntity.ok().body(sectionService.selectAll(sectionKey));
+    return ResponseEntity.ok(sectionService.selectAll(sectionKey));
   }
 
   @GetMapping(value = "/{id}/details")
@@ -114,7 +114,7 @@ public class SectionController {
       @PathVariable Long id,
       @RequestParam(required = false) String sectionKey
   ) {
-    return ResponseEntity.ok().body(sectionService.queryDetails(id, sectionKey));
+    return ResponseEntity.ok(sectionService.queryDetails(id, sectionKey));
   }
 
   /**
@@ -134,7 +134,7 @@ public class SectionController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<SectionEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(sectionService.query(id));
+    return ResponseEntity.ok(sectionService.query(id));
   }
 
   @GetMapping
@@ -143,7 +143,7 @@ public class SectionController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(sectionService.queryAll(pageable));
+    return ResponseEntity.ok(sectionService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")

@@ -10,10 +10,9 @@ import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.TagEntityVo;
 import com.youdeyiwu.repository.forum.TagRepository;
 import com.youdeyiwu.service.forum.TagService;
-import java.time.LocalDateTime;
+import com.youdeyiwu.tool.I18nTool;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -36,21 +35,22 @@ public class TagServiceImpl implements TagService {
 
   private final TagMapper tagMapper;
 
+  private final I18nTool i18nTool;
+
   @Transactional
   @Override
   public TagEntity create(CreateTagDto dto, boolean throwErrorIfDuplicate) {
-    TagEntity tagEntity = new TagEntity();
-    tagEntity.setCreatedOn(LocalDateTime.now());
-    tagMapper.dtoToEntity(dto, tagEntity);
-
-    if (tagRepository.existsByName(dto.name())) {
+    String name = dto.name().trim();
+    if (tagRepository.existsByName(name)) {
       if (throwErrorIfDuplicate) {
-        throw new CustomException("The tag name already exists, cannot create duplicates");
+        throw new CustomException(i18nTool.getMessage("tag.name.duplicate"));
       } else {
-        return tagRepository.findByName(dto.name());
+        return tagRepository.findByName(name);
       }
     }
 
+    TagEntity tagEntity = new TagEntity();
+    tagEntity.setName(name);
     tagRepository.save(tagEntity);
     return tagEntity;
   }
@@ -65,8 +65,8 @@ public class TagServiceImpl implements TagService {
       String name = dto.name().trim();
       if (tagEntity.getName().equalsIgnoreCase(name)) {
         tagEntity.setName(name);
-      } else if (Boolean.TRUE.equals(tagRepository.existsByName(name))) {
-        throw new CustomException("The tag name already exists, cannot create duplicates");
+      } else if (tagRepository.existsByName(name)) {
+        throw new CustomException(i18nTool.getMessage("tag.name.duplicate"));
       } else {
         tagEntity.setName(name);
       }
@@ -83,14 +83,14 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public Set<TagEntityVo> selectAll() {
+  public List<TagEntityVo> selectAll() {
     return StreamSupport.stream(
             tagRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
                 .spliterator(),
             false
         )
         .map(tagMapper::entityToVo)
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Override
