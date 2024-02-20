@@ -1,6 +1,7 @@
 package com.youdeyiwu.mapper.user;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.mapper.other.StringMapper;
 import com.youdeyiwu.model.dto.user.CreateMenuDto;
 import com.youdeyiwu.model.dto.user.UpdateMenuDto;
 import com.youdeyiwu.model.entity.user.MenuEntity;
@@ -14,7 +15,7 @@ import org.mapstruct.MappingTarget;
  *
  * @author dafengzhen
  */
-@Mapper(config = MapperTemplateConfig.class)
+@Mapper(config = MapperTemplateConfig.class, uses = StringMapper.class)
 public interface MenuMapper {
 
   /**
@@ -23,6 +24,7 @@ public interface MenuMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
   void dtoToEntity(CreateMenuDto dto, @MappingTarget MenuEntity entity);
 
   /**
@@ -31,6 +33,7 @@ public interface MenuMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
   @Mapping(target = "submenus", ignore = true)
   @Mapping(target = "actions", ignore = true)
   void dtoToEntity(UpdateMenuDto dto, @MappingTarget MenuEntity entity);

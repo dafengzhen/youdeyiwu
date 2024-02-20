@@ -46,15 +46,6 @@ public class RoleServiceImpl implements RoleService {
   public RoleEntity create(CreateRoleDto dto) {
     RoleEntity roleEntity = new RoleEntity();
     roleMapper.dtoToEntity(dto, roleEntity);
-
-    if (Objects.nonNull(dto.name())) {
-      roleEntity.setName(dto.name().trim());
-    }
-
-    if (Objects.nonNull(dto.overview())) {
-      roleEntity.setOverview(dto.overview().trim());
-    }
-
     roleRepository.save(roleEntity);
     return roleEntity;
   }
@@ -118,14 +109,6 @@ public class RoleServiceImpl implements RoleService {
     RoleEntity roleEntity = roleRepository.findById(id)
         .orElseThrow(RoleNotFoundException::new);
     roleMapper.dtoToEntity(dto, roleEntity);
-
-    if (Objects.nonNull(dto.name())) {
-      roleEntity.setName(dto.name().trim());
-    }
-
-    if (Objects.nonNull(dto.overview())) {
-      roleEntity.setOverview(dto.overview().trim());
-    }
   }
 
   @Override

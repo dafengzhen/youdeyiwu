@@ -18,7 +18,7 @@ public record UpdateSectionDto(
     @Length(min = 1, max = 15, message = "{section.name.size}")
     String name,
 
-    @URL(regexp = "^(http|https).*", message = "{section.cover.url}")
+    @URL(regexp = "^(http://|https://|/).*", message = "{section.cover.url}")
     String cover,
 
     String overview,

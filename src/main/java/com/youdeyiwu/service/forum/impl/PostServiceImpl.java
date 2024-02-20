@@ -114,12 +114,7 @@ public class PostServiceImpl implements PostService {
   public PostEntity create(CreatePostDto dto) {
     PostEntity postEntity = new PostEntity();
     postMapper.dtoToEntity(dto, postEntity);
-    setContent(
-        dto.name(),
-        dto.overview(),
-        dto.content(),
-        postEntity
-    );
+    setContent(dto.content(), postEntity);
     setSectionAndTags(dto.sectionId(), false, dto.tags(), postEntity);
 
     if (securityService.isAuthenticated()) {
@@ -312,12 +307,7 @@ public class PostServiceImpl implements PostService {
   public void update(Long id, UpdatePostDto dto) {
     PostEntity postEntity = findPost(id);
     postMapper.dtoToEntity(dto, postEntity);
-    setContent(
-        dto.name(),
-        dto.overview(),
-        dto.content(),
-        postEntity
-    );
+    setContent(dto.content(), postEntity);
     setSectionAndTags(dto.sectionId(), dto.removeSection(), dto.tags(), postEntity);
   }
 
@@ -472,25 +462,10 @@ public class PostServiceImpl implements PostService {
   /**
    * set content.
    *
-   * @param name       name
-   * @param overview   overview
    * @param content    content
    * @param postEntity postEntity
    */
-  private void setContent(
-      String name,
-      String overview,
-      String content,
-      PostEntity postEntity
-  ) {
-    if (Objects.nonNull(name)) {
-      postEntity.setName(name.trim());
-    }
-
-    if (Objects.nonNull(overview)) {
-      postEntity.setOverview(overview.trim());
-    }
-
+  private void setContent(String content, PostEntity postEntity) {
     if (Objects.nonNull(content)) {
       postEntity.setContent(cleanHtmlContent(content.trim()));
     }

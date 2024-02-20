@@ -38,8 +38,6 @@ public class PointCoreServiceImpl implements PointCoreService {
 
   private final PointRepository pointRepository;
 
-  private final PointHistoryRepository pointHistoryRepository;
-
   private final ConfigRepository configRepository;
 
   private final UserRepository userRepository;

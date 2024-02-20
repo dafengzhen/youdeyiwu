@@ -20,8 +20,8 @@ import com.youdeyiwu.repository.user.MenuRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
 import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.service.user.MenuService;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -126,7 +126,7 @@ public class MenuServiceImpl implements MenuService {
   }
 
   @Override
-  public Set<MenuEntityVo> queryAll() {
+  public List<MenuEntityVo> queryAll() {
     return menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
         .stream()
         .map(menuEntity -> {
@@ -136,7 +136,7 @@ public class MenuServiceImpl implements MenuService {
           setRoles(vo, menuEntity);
           return vo;
         })
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Transactional

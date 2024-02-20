@@ -44,7 +44,6 @@ public class PermissionServiceImpl implements PermissionService {
   public PermissionEntity create(CreatePermissionDto dto) {
     PermissionEntity permissionEntity = new PermissionEntity();
     permissionMapper.dtoToEntity(dto, permissionEntity);
-    updateName(dto.name(), permissionEntity);
     updateMatchers(dto.matchers(), permissionEntity);
     permissionRepository.save(permissionEntity);
     return permissionEntity;
@@ -73,9 +72,7 @@ public class PermissionServiceImpl implements PermissionService {
   public void update(Long id, UpdatePermissionDto dto) {
     PermissionEntity permissionEntity = permissionRepository.findById(id)
         .orElseThrow(PermissionNotFoundException::new);
-
     permissionMapper.dtoToEntity(dto, permissionEntity);
-    updateName(dto.name(), permissionEntity);
     updateMatchers(dto.matchers(), permissionEntity);
   }
 
@@ -136,18 +133,6 @@ public class PermissionServiceImpl implements PermissionService {
             .map(permissionMapper::entityToVo)
             .collect(Collectors.toSet())
     );
-  }
-
-  /**
-   * update name.
-   *
-   * @param name             name
-   * @param permissionEntity permissionEntity
-   */
-  private void updateName(String name, PermissionEntity permissionEntity) {
-    if (Objects.nonNull(name)) {
-      permissionEntity.setName(name.trim());
-    }
   }
 
   /**

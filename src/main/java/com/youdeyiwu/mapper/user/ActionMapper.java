@@ -1,6 +1,7 @@
 package com.youdeyiwu.mapper.user;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.mapper.other.StringMapper;
 import com.youdeyiwu.model.dto.user.CreateActionDto;
 import com.youdeyiwu.model.dto.user.UpdateActionDto;
 import com.youdeyiwu.model.entity.user.ActionEntity;
@@ -14,7 +15,7 @@ import org.mapstruct.MappingTarget;
  *
  * @author dafengzhen
  */
-@Mapper(config = MapperTemplateConfig.class)
+@Mapper(config = MapperTemplateConfig.class, uses = StringMapper.class)
 public interface ActionMapper {
 
   /**
@@ -23,6 +24,8 @@ public interface ActionMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "alias", qualifiedByName = "trim")
   void dtoToEntity(CreateActionDto dto, @MappingTarget ActionEntity entity);
 
   /**
@@ -31,6 +34,8 @@ public interface ActionMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "alias", qualifiedByName = "trim")
   @Mapping(target = "menu", ignore = true)
   @Mapping(target = "submenu", ignore = true)
   void dtoToEntity(UpdateActionDto dto, @MappingTarget ActionEntity entity);
@@ -45,5 +50,4 @@ public interface ActionMapper {
   @Mapping(target = "submenu", ignore = true)
   @Mapping(target = "role", ignore = true)
   ActionEntityVo entityToVo(ActionEntity entity);
-
 }

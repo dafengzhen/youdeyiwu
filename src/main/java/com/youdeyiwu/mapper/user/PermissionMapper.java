@@ -1,6 +1,7 @@
 package com.youdeyiwu.mapper.user;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.mapper.other.StringMapper;
 import com.youdeyiwu.model.dto.user.CreatePermissionDto;
 import com.youdeyiwu.model.dto.user.UpdatePermissionDto;
 import com.youdeyiwu.model.entity.user.PermissionEntity;
@@ -14,7 +15,7 @@ import org.mapstruct.MappingTarget;
  *
  * @author dafengzhen
  */
-@Mapper(config = MapperTemplateConfig.class)
+@Mapper(config = MapperTemplateConfig.class, uses = StringMapper.class)
 public interface PermissionMapper {
 
   /**
@@ -23,6 +24,9 @@ public interface PermissionMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "alias", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   @Mapping(target = "matchers", ignore = true)
   void dtoToEntity(CreatePermissionDto dto, @MappingTarget PermissionEntity entity);
 
@@ -32,6 +36,9 @@ public interface PermissionMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "alias", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   @Mapping(target = "matchers", ignore = true)
   void dtoToEntity(UpdatePermissionDto dto, @MappingTarget PermissionEntity entity);
 

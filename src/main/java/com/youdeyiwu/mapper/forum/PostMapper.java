@@ -1,6 +1,7 @@
 package com.youdeyiwu.mapper.forum;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.mapper.other.StringMapper;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.entity.forum.PostBadgeEntity;
@@ -20,7 +21,7 @@ import org.mapstruct.MappingTarget;
  *
  * @author dafengzhen
  */
-@Mapper(config = MapperTemplateConfig.class)
+@Mapper(config = MapperTemplateConfig.class, uses = StringMapper.class)
 public interface PostMapper {
 
   /**
@@ -46,6 +47,8 @@ public interface PostMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   @Mapping(target = "cover", ignore = true)
   @Mapping(target = "contentLink", ignore = true)
   @Mapping(target = "content", ignore = true)
@@ -59,6 +62,8 @@ public interface PostMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   @Mapping(target = "cover", ignore = true)
   @Mapping(target = "contentLink", ignore = true)
   @Mapping(target = "content", ignore = true)

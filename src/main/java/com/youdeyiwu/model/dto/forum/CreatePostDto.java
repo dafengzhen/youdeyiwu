@@ -22,14 +22,14 @@ public record CreatePostDto(
     @NotBlank(message = "{post.name.required}")
     String name,
 
-    @URL(regexp = "^(http|https).*", message = "{post.cover.url}")
+    @URL(regexp = "^(http://|https://|/).*", message = "{post.cover.url}")
     String cover,
 
     String overview,
 
     String content,
 
-    @URL(regexp = "^(http|https).*", message = "{post.content.link}")
+    @URL(regexp = "^(http://|https://|/).*", message = "{post.contentLink.url}")
     String contentLink,
 
     Set<String> tags,

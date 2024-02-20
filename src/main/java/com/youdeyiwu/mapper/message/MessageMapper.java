@@ -1,6 +1,7 @@
 package com.youdeyiwu.mapper.message;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.mapper.other.StringMapper;
 import com.youdeyiwu.model.dto.message.CreateGlobalMessageDto;
 import com.youdeyiwu.model.dto.message.CreateMessageDto;
 import com.youdeyiwu.model.entity.message.GlobalMessageEntity;
@@ -16,7 +17,7 @@ import org.mapstruct.MappingTarget;
  *
  * @author dafengzhen
  */
-@Mapper(config = MapperTemplateConfig.class)
+@Mapper(config = MapperTemplateConfig.class, uses = StringMapper.class)
 public interface MessageMapper {
 
   /**
@@ -25,8 +26,8 @@ public interface MessageMapper {
    * @param dto    dto
    * @param entity entity
    */
-  @Mapping(target = "link", ignore = true)
-  @Mapping(target = "links", ignore = true)
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   void dtoToEntity(CreateGlobalMessageDto dto, @MappingTarget GlobalMessageEntity entity);
 
   /**
@@ -35,8 +36,8 @@ public interface MessageMapper {
    * @param dto    dto
    * @param entity entity
    */
-  @Mapping(target = "link", ignore = true)
-  @Mapping(target = "links", ignore = true)
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   @Mapping(target = "receiver", ignore = true)
   void dtoToEntity(CreateMessageDto dto, @MappingTarget MessageEntity entity);
 

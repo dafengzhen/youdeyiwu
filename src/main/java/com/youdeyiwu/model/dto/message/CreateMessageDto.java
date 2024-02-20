@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Map;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 /**
  * create message.
@@ -25,9 +26,10 @@ public record CreateMessageDto(
     @NotBlank(message = "{message.overview.required}")
     String overview,
 
+    @URL(regexp = "^(http://|https://|/).*", message = "{message.link.url}")
     String link,
 
-    Map<String, String> links,
+    Map<String, @URL(regexp = "^(http://|https://|/).*", message = "{message.link.url}") String> links,
 
     Map<String, String> content,
 

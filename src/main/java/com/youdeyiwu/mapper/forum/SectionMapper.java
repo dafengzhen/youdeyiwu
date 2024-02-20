@@ -1,6 +1,7 @@
 package com.youdeyiwu.mapper.forum;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.mapper.other.StringMapper;
 import com.youdeyiwu.model.dto.forum.UpdateSectionDto;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
@@ -14,7 +15,7 @@ import org.mapstruct.MappingTarget;
  *
  * @author dafengzhen
  */
-@Mapper(config = MapperTemplateConfig.class)
+@Mapper(config = MapperTemplateConfig.class, uses = StringMapper.class)
 public interface SectionMapper {
 
   /**
@@ -23,6 +24,8 @@ public interface SectionMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "name", qualifiedByName = "trim")
+  @Mapping(target = "overview", qualifiedByName = "trim")
   @Mapping(target = "content", ignore = true)
   @Mapping(target = "coverImage", ignore = true)
   void dtoToEntity(UpdateSectionDto dto, @MappingTarget SectionEntity entity);

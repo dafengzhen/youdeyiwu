@@ -199,7 +199,7 @@ public class SectionServiceImpl implements SectionService {
     sectionMapper.dtoToEntity(dto, sectionEntity);
 
     if (Objects.nonNull(dto.content())) {
-      sectionEntity.setContent(cleanHtmlContent(dto.content()));
+      sectionEntity.setContent(cleanHtmlContent(dto.content().trim()));
     }
   }
 

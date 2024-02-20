@@ -7,7 +7,7 @@ import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import com.youdeyiwu.service.user.MenuService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +33,8 @@ public class MenuController {
 
   @PostMapping
   public ResponseEntity<Void> create(@Valid @RequestBody CreateMenuDto dto) {
-    return ResponseEntity.created(URI.create("/menus/" + menuService.create(dto).getId())).build();
+    return ResponseEntity.created(URI.create("/menus/" + menuService.create(dto).getId()))
+        .build();
   }
 
   @PutMapping(value = "/{id}/roles")
@@ -60,7 +61,7 @@ public class MenuController {
   }
 
   @GetMapping
-  public ResponseEntity<Set<MenuEntityVo>> queryAll() {
+  public ResponseEntity<List<MenuEntityVo>> queryAll() {
     return ResponseEntity.ok(menuService.queryAll());
   }
 
