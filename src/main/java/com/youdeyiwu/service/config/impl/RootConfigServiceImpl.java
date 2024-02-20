@@ -13,9 +13,9 @@ import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.config.RootConfigService;
+import com.youdeyiwu.tool.I18nTool;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,7 +25,6 @@ import org.springframework.util.StringUtils;
  *
  * @author dafengzhen
  */
-@Log4j2
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -37,6 +36,8 @@ public class RootConfigServiceImpl implements RootConfigService {
 
   private final SecurityService securityService;
 
+  private final I18nTool i18nTool;
+
   @Transactional
   @Override
   public void update(UpdateRootConfigDto dto) {
@@ -47,18 +48,13 @@ public class RootConfigServiceImpl implements RootConfigService {
       );
 
       if (!Objects.equals(configEntity.getValue(), dto.secret())) {
-        throw new CustomException(
-            "Apologies, the secret cannot be decrypted, setting it as the forum administrator has failed");
+        throw new CustomException(i18nTool.getMessage("config.root.secret.invalid"));
       }
 
       UserEntity userEntity = userRepository.findById(securityService.getUserId())
           .orElseThrow(UserNotFoundException::new);
       userEntity.setRoot(true);
       configEntity.setValue(randomUuId());
-      log.info(
-          "=== Config === Update root.secret option === Operating user ID: {}",
-          userEntity.getId()
-      );
     }
   }
 }

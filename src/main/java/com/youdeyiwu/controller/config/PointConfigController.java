@@ -26,7 +26,7 @@ public class PointConfigController {
 
   @GetMapping
   public ResponseEntity<PointConfigVo> query() {
-    return ResponseEntity.ok().body(pointConfigService.query());
+    return ResponseEntity.ok(pointConfigService.query());
   }
 
   @PutMapping

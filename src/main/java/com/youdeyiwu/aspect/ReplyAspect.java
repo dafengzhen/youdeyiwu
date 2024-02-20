@@ -44,8 +44,10 @@ public class ReplyAspect {
    * after returning advice.
    */
   @AfterReturning(value = "createReplyPointcut(dto)", returning = "quoteReplyEntity", argNames = "quoteReplyEntity,dto")
-  public void createReplyAfterReturningAdvice(QuoteReplyEntity quoteReplyEntity,
-                                              CreateReplyDto dto) {
+  public void createReplyAfterReturningAdvice(
+      QuoteReplyEntity quoteReplyEntity,
+      CreateReplyDto dto
+  ) {
     final String currentDateTime = getCurrentDateTime();
     PostEntity postEntity = quoteReplyEntity.getPost();
     UserEntity userEntity = quoteReplyEntity.getUser();

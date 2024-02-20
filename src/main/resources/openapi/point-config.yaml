@@ -1,0 +1,63 @@
+openapi: "3.1.0"
+info:
+  title: "Youdeyiwu"
+  description: "youdeyiwu is an open-source lightweight forum"
+  contact:
+    name: "Github"
+    url: "https://github.com/dafengzhen/youdeyiwu"
+  license:
+    name: "MIT"
+    url: "https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  /configs/point:
+    get:
+      summary: "GET configs/point"
+      operationId: "query"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PointConfigVo"
+    put:
+      summary: "PUT configs/point"
+      operationId: "update"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePointConfigDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+components:
+  schemas:
+    PointConfigVo:
+      type: "object"
+      properties:
+        enable:
+          type: "boolean"
+        initPoints:
+          type: "integer"
+          format: "int32"
+    UpdatePointConfigDto:
+      type: "object"
+      properties:
+        enable:
+          type: "boolean"
+        initPoints:
+          type: "integer"
+          format: "int32"
+    Void:
+      type: "object"
+      properties: { }

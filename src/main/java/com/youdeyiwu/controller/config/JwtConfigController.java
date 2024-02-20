@@ -26,12 +26,12 @@ public class JwtConfigController {
 
   @GetMapping(value = "/generate-random-secret")
   public ResponseEntity<String> generateRandomSecret() {
-    return ResponseEntity.ok().body(jwtConfigService.generateRandomSecret());
+    return ResponseEntity.ok(jwtConfigService.generateRandomSecret());
   }
 
   @GetMapping
   public ResponseEntity<JwtConfigVo> query() {
-    return ResponseEntity.ok().body(jwtConfigService.query());
+    return ResponseEntity.ok(jwtConfigService.query());
   }
 
   @PutMapping

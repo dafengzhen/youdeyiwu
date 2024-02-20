@@ -75,13 +75,35 @@ paths:
     get:
       summary: "GET points/histories"
       operationId: "queryAll"
+      parameters:
+        - in: query
+          name: page
+          description: "Page number, starting from 0"
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: "Number of items per page"
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: "Sorting criteria"
+          schema:
+            type: string
+            default: "id,desc"
+            example: "id,desc"
       responses:
         "200":
           description: "OK"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PointHistoryEntityVo"
+                $ref: "#/components/schemas/PageVoPointHistoryEntityVo"
 components:
   schemas:
     SavePointRuleDto:
@@ -948,3 +970,28 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
+    PageableVo:
+      type: "object"
+      properties:
+        size:
+          type: "integer"
+          format: "int32"
+        page:
+          type: "integer"
+          format: "int32"
+        pages:
+          type: "integer"
+          format: "int32"
+        next:
+          type: "boolean"
+        previous:
+          type: "boolean"
+    PageVoPointHistoryEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PointHistoryEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"

@@ -61,7 +61,7 @@ public class JwtConfigServiceImpl implements JwtConfigService {
         createJwt(decodeSecret(dto.secret()), 0L, Duration.ofDays(1));
         configEntity.setValue(dto.secret());
       } catch (JwtException e) {
-        throw new CustomException("Invalid JWT token secret");
+        throw new CustomException(e.getMessage());
       }
     }
   }
