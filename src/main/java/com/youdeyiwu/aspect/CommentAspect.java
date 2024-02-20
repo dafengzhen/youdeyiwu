@@ -9,6 +9,8 @@ import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.security.SecurityService;
+import com.youdeyiwu.tool.I18nTool;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class CommentAspect {
 
   private final SecurityService securityService;
 
+  private final I18nTool i18nTool;
+
   /**
    * create comment.
    */
@@ -46,30 +50,31 @@ public class CommentAspect {
   @AfterReturning(value = "createCommentPointcut(dto)", returning = "commentEntity", argNames = "commentEntity,dto")
   public void createCommentAfterReturningAdvice(CommentEntity commentEntity, CreateCommentDto dto) {
     PostEntity postEntity = commentEntity.getPost();
-    UserEntity userEntity = commentEntity.getUser();
-    if (Objects.isNull(postEntity.getUser()) || Objects.isNull(userEntity)) {
+    if (Objects.isNull(postEntity.getUser())) {
       return;
     }
 
-    MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setName("You have received a new comment");
-    messageEntity.setOverview(
-        """
-            %s user commented on your article in %s at %s. The comment says: %s.
-            """
-            .formatted(
-                securityService.getAliasAndId(userEntity),
-                getCurrentDateTime(),
-                postEntity.getName(),
-                commentEntity.getContent()
-            )
-    );
+    Map<String, Object> overviewArgs = new HashMap<>();
+    overviewArgs.put("name", postEntity.getNameAndId());
+    overviewArgs.put("content", commentEntity.getContent());
+    overviewArgs.put("time", getCurrentDateTime());
 
-    Map<String, String> content = messageEntity.getContent();
-    content.put("postId", postEntity.getId().toString());
-    content.put("sender", userEntity.getId().toString());
-    content.put("receiver", postEntity.getUser().getId().toString());
-    messageEntity.setLink("/posts/" + postEntity.getId());
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName(i18nTool.getMessage("comment.create.message.name"));
+    UserEntity userEntity = commentEntity.getUser();
+
+    if (Objects.isNull(userEntity)) {
+      messageEntity.setOverview(i18nTool.getMessage("comment.create.message.overview.anonymous", overviewArgs));
+    } else {
+      if (Objects.equals(postEntity.getUser(), userEntity)) {
+        return;
+      }
+
+      overviewArgs.put("alias", securityService.getAliasAndId(userEntity));
+      messageEntity.setOverview(i18nTool.getMessage("comment.create.message.overview", overviewArgs));
+    }
+
+    messageEntity.setLink(postEntity.getLink());
     messageEntity.setReceiver(postEntity.getUser());
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
   }

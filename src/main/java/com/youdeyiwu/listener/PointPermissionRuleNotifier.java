@@ -16,7 +16,6 @@ import com.youdeyiwu.service.point.PointCoreService;
 import com.youdeyiwu.service.point.PointService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +38,6 @@ public class PointPermissionRuleNotifier
   private final PointService pointService;
 
   private final PointCoreService pointCoreService;
-
-  private final ApplicationEventPublisher publisher;
 
   @Override
   public void onApplicationEvent(PointPermissionRuleApplicationEvent event) {

@@ -316,8 +316,6 @@ public class PointRuleAspect {
    */
   @AfterReturning(value = "createCommentPointcut(dto)", returning = "commentEntity", argNames = "commentEntity,dto")
   public void createCommentAfterReturningAdvice(CommentEntity commentEntity, CreateCommentDto dto) {
-    PostEntity postEntity = postRepository.findById(dto.postId())
-        .orElseThrow(PostNotFoundException::new);
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.COMMENT_POST,
@@ -325,7 +323,7 @@ public class PointRuleAspect {
             false,
             null,
             null,
-            postEntity.getId(),
+            commentEntity.getPost().getId(),
             null
         )
     ));

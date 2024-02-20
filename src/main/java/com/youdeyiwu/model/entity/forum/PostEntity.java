@@ -288,4 +288,21 @@ public class PostEntity extends AbstractEntity {
   @Transient
   private String reviewReason;
 
+  /**
+   * get name and id.
+   *
+   * @return String
+   */
+  public String getNameAndId() {
+    return getName() + "#" + getId();
+  }
+
+  /**
+   * get link.
+   *
+   * @return String
+   */
+  public String getLink() {
+    return "/posts/" + getId();
+  }
 }

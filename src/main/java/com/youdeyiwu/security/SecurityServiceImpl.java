@@ -136,9 +136,7 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Override
   public String getAliasAndId(UserEntity entity) {
-    return getAlias(entity) + """
-         (ID. %s)
-        """.formatted(entity.getId());
+    return getAlias(entity) + "#" + entity.getId();
   }
 
   @Override
