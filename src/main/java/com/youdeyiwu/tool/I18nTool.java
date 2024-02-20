@@ -1,10 +1,9 @@
 package com.youdeyiwu.tool;
 
-import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.text.StringSubstitutor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
@@ -43,13 +42,15 @@ public class I18nTool {
    * @return String
    */
   public String getMessage(String code, Map<String, Object> args) {
-    Locale locale = LocaleContextHolder.getLocale();
     String messageTemplate = getMessage(code);
 
     if (Objects.isNull(messageTemplate)) {
       return "Message template not found";
     }
 
-    return new MessageFormat(messageTemplate, locale).format(args.values().toArray());
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(args);
+    stringSubstitutor.setVariablePrefix("{");
+    stringSubstitutor.setVariableSuffix("}");
+    return stringSubstitutor.replace(messageTemplate);
   }
 }
