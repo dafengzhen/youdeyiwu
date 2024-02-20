@@ -97,4 +97,12 @@ public class QuoteReplyEntity extends AbstractEntity {
    */
   private String uniqueIdentifier;
 
+  /**
+   * get content and id.
+   *
+   * @return String
+   */
+  public String getContentAndId() {
+    return getContent() + "#" + getId();
+  }
 }

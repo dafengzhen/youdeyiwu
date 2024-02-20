@@ -7,7 +7,6 @@ import com.youdeyiwu.model.dto.forum.CreateCommentDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
-import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.tool.I18nTool;
 import java.util.HashMap;
@@ -54,28 +53,35 @@ public class CommentAspect {
       return;
     }
 
+    MessageEntity messageEntity = createMessageEntity(commentEntity);
+    messageEntity.setReceiver(postEntity.getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * create message entity.
+   *
+   * @param commentEntity commentEntity
+   * @return MessageEntity
+   */
+  private MessageEntity createMessageEntity(CommentEntity commentEntity) {
+    PostEntity postEntity = commentEntity.getPost();
     Map<String, Object> overviewArgs = new HashMap<>();
     overviewArgs.put("name", postEntity.getNameAndId());
-    overviewArgs.put("content", commentEntity.getContent());
+    overviewArgs.put("content", commentEntity.getContentAndId());
     overviewArgs.put("time", getCurrentDateTime());
 
     MessageEntity messageEntity = new MessageEntity();
     messageEntity.setName(i18nTool.getMessage("comment.create.message.name"));
-    UserEntity userEntity = commentEntity.getUser();
 
-    if (Objects.isNull(userEntity)) {
+    if (Objects.isNull(commentEntity.getUser())) {
       messageEntity.setOverview(i18nTool.getMessage("comment.create.message.overview.anonymous", overviewArgs));
     } else {
-      if (Objects.equals(postEntity.getUser(), userEntity)) {
-        return;
-      }
-
-      overviewArgs.put("alias", securityService.getAliasAndId(userEntity));
+      overviewArgs.put("alias", securityService.getAliasAndId(commentEntity.getUser()));
       messageEntity.setOverview(i18nTool.getMessage("comment.create.message.overview", overviewArgs));
     }
 
     messageEntity.setLink(postEntity.getLink());
-    messageEntity.setReceiver(postEntity.getUser());
-    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+    return messageEntity;
   }
 }

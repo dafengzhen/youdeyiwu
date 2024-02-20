@@ -4,11 +4,13 @@ import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 
 import com.youdeyiwu.event.MessageApplicationEvent;
 import com.youdeyiwu.model.dto.forum.CreateReplyDto;
+import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
-import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.security.SecurityService;
+import com.youdeyiwu.tool.I18nTool;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class ReplyAspect {
 
   private final SecurityService securityService;
 
+  private final I18nTool i18nTool;
+
   /**
    * create reply.
    */
@@ -48,66 +52,83 @@ public class ReplyAspect {
       QuoteReplyEntity quoteReplyEntity,
       CreateReplyDto dto
   ) {
-    final String currentDateTime = getCurrentDateTime();
+    sendToPostCreator(quoteReplyEntity);
+    sendToCommentCreator(quoteReplyEntity);
+    sendToReplyCreator(quoteReplyEntity);
+  }
+
+  /**
+   * send to post creator.
+   *
+   * @param quoteReplyEntity quoteReplyEntity
+   */
+  private void sendToPostCreator(QuoteReplyEntity quoteReplyEntity) {
     PostEntity postEntity = quoteReplyEntity.getPost();
-    UserEntity userEntity = quoteReplyEntity.getUser();
-
-    if (Objects.nonNull(postEntity.getUser()) && Objects.nonNull(userEntity)) {
-      MessageEntity messageEntity = new MessageEntity();
-      messageEntity.setName("You have received a new reply");
-      messageEntity.setOverview(
-          """
-              %s user replied to your article in %s at %s. The reply says: %s.
-              """
-              .formatted(
-                  securityService.getAliasAndId(userEntity),
-                  currentDateTime,
-                  postEntity.getName(),
-                  quoteReplyEntity.getContent()
-              )
-      );
-      Map<String, String> content = messageEntity.getContent();
-      content.put("postId", postEntity.getId().toString());
-      content.put("sender", userEntity.getId().toString());
-      content.put("receiver", postEntity.getUser().getId().toString());
-      messageEntity.setLink("/posts/" + postEntity.getId());
-      messageEntity.setReceiver(postEntity.getUser());
-      publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+    if (Objects.isNull(postEntity.getUser())) {
+      return;
     }
 
-    if (
-        Objects.nonNull(userEntity)
-            && !Objects.equals(postEntity.getUser(), userEntity)
-    ) {
-      MessageEntity messageEntity = new MessageEntity();
-      messageEntity.setName("You have received a new reply");
-      messageEntity.setOverview(
-          """
-              %s user replied to your comment in the article %s at %s. The reply says: %s
-              """
-              .formatted(
-                  securityService.getAliasAndId(userEntity),
-                  currentDateTime,
-                  postEntity.getName(),
-                  quoteReplyEntity.getContent()
-              )
-      );
-      Map<String, String> content = messageEntity.getContent();
-      content.put("postId", postEntity.getId().toString());
+    MessageEntity messageEntity = createMessageEntity(quoteReplyEntity);
+    messageEntity.setReceiver(postEntity.getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
 
-      if (Objects.nonNull(dto.commentId())) {
-        content.put("commentId", quoteReplyEntity.getComment().getId().toString());
-      }
-      if (Objects.nonNull(dto.replyId())) {
-        content.put("commentId", quoteReplyEntity.getComment().getId().toString());
-        content.put("replyId", quoteReplyEntity.getQuoteReply().getId().toString());
-      }
-
-      content.put("sender", userEntity.getId().toString());
-      content.put("receiver", userEntity.getId().toString());
-      messageEntity.setLink("/posts/" + postEntity.getId());
-      messageEntity.setReceiver(userEntity);
-      publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  /**
+   * send to comment creator.
+   *
+   * @param quoteReplyEntity quoteReplyEntity
+   */
+  private void sendToCommentCreator(QuoteReplyEntity quoteReplyEntity) {
+    CommentEntity commentEntity = quoteReplyEntity.getComment();
+    if (Objects.isNull(commentEntity) || Objects.isNull(commentEntity.getUser())) {
+      return;
     }
+
+    MessageEntity messageEntity = createMessageEntity(quoteReplyEntity);
+    messageEntity.setReceiver(commentEntity.getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * send to reply creator.
+   *
+   * @param quoteReplyEntity quoteReplyEntity
+   */
+  private void sendToReplyCreator(QuoteReplyEntity quoteReplyEntity) {
+    QuoteReplyEntity quoteReply = quoteReplyEntity.getQuoteReply();
+    if (Objects.isNull(quoteReply) || Objects.isNull(quoteReply.getUser())) {
+      return;
+    }
+
+    MessageEntity messageEntity = createMessageEntity(quoteReplyEntity);
+    messageEntity.setReceiver(quoteReply.getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * create message entity.
+   *
+   * @param quoteReplyEntity quoteReplyEntity
+   * @return MessageEntity
+   */
+  private MessageEntity createMessageEntity(QuoteReplyEntity quoteReplyEntity) {
+    PostEntity postEntity = quoteReplyEntity.getPost();
+    Map<String, Object> overviewArgs = new HashMap<>();
+    overviewArgs.put("name", postEntity.getNameAndId());
+    overviewArgs.put("content", quoteReplyEntity.getContentAndId());
+    overviewArgs.put("time", getCurrentDateTime());
+
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName(i18nTool.getMessage("reply.create.message.name"));
+
+    if (Objects.isNull(quoteReplyEntity.getUser())) {
+      messageEntity.setOverview(i18nTool.getMessage("reply.create.message.overview.anonymous", overviewArgs));
+    } else {
+      overviewArgs.put("alias", securityService.getAliasAndId(quoteReplyEntity.getUser()));
+      messageEntity.setOverview(i18nTool.getMessage("reply.create.message.overview", overviewArgs));
+    }
+
+    messageEntity.setLink(postEntity.getLink());
+    return messageEntity;
   }
 }
