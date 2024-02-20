@@ -1,6 +1,5 @@
 package com.youdeyiwu.service.user.impl;
 
-import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PermissionNotFoundException;
 import com.youdeyiwu.exception.RoleNotFoundException;
 import com.youdeyiwu.mapper.user.PermissionMapper;
@@ -9,22 +8,20 @@ import com.youdeyiwu.model.dto.user.AssignPermissionsDto;
 import com.youdeyiwu.model.dto.user.CreateRoleDto;
 import com.youdeyiwu.model.dto.user.UpdatePermissionsRoleDto;
 import com.youdeyiwu.model.dto.user.UpdateRoleDto;
-import com.youdeyiwu.model.entity.user.PermissionEntity;
 import com.youdeyiwu.model.entity.user.RoleEntity;
 import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.user.PermissionEntityVo;
 import com.youdeyiwu.model.vo.user.RoleEntityVo;
 import com.youdeyiwu.model.vo.user.RolePermissionsVo;
 import com.youdeyiwu.repository.user.PermissionRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
 import com.youdeyiwu.service.user.RoleService;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * role.
@@ -49,6 +46,15 @@ public class RoleServiceImpl implements RoleService {
   public RoleEntity create(CreateRoleDto dto) {
     RoleEntity roleEntity = new RoleEntity();
     roleMapper.dtoToEntity(dto, roleEntity);
+
+    if (Objects.nonNull(dto.name())) {
+      roleEntity.setName(dto.name().trim());
+    }
+
+    if (Objects.nonNull(dto.overview())) {
+      roleEntity.setOverview(dto.overview().trim());
+    }
+
     roleRepository.save(roleEntity);
     return roleEntity;
   }
@@ -56,16 +62,20 @@ public class RoleServiceImpl implements RoleService {
   @Transactional
   @Override
   public void addPermissions(Long id, AssignPermissionsDto dto) {
+    if (CollectionUtils.isEmpty(dto.ids())) {
+      return;
+    }
+
     RoleEntity roleEntity = roleRepository.findById(id)
         .orElseThrow(RoleNotFoundException::new);
-
-    List<PermissionEntity> permissions = dto.ids().stream()
-        .map(pid -> permissionRepository.findById(pid)
-            .orElseThrow(PermissionNotFoundException::new)
-        )
-        .toList();
-
-    roleEntity.getPermissions().addAll(permissions);
+    roleEntity.getPermissions().addAll(
+        dto.ids()
+            .stream()
+            .map(pid -> permissionRepository.findById(pid)
+                .orElseThrow(PermissionNotFoundException::new)
+            )
+            .toList()
+    );
   }
 
   @Transactional
@@ -74,13 +84,14 @@ public class RoleServiceImpl implements RoleService {
     RoleEntity roleEntity = roleRepository.findById(id)
         .orElseThrow(RoleNotFoundException::new);
 
-    List<PermissionEntity> permissions = dto.ids().stream()
-        .map(pid -> permissionRepository.findById(pid)
-            .orElseThrow(PermissionNotFoundException::new)
-        )
-        .toList();
-
-    permissions.forEach(roleEntity.getPermissions()::remove);
+    if (Objects.nonNull(dto.ids())) {
+      dto.ids()
+          .stream()
+          .map(pid -> permissionRepository.findById(pid)
+              .orElseThrow(PermissionNotFoundException::new)
+          )
+          .forEach(roleEntity.getPermissions()::remove);
+    }
   }
 
   @Transactional
@@ -107,21 +118,29 @@ public class RoleServiceImpl implements RoleService {
     RoleEntity roleEntity = roleRepository.findById(id)
         .orElseThrow(RoleNotFoundException::new);
     roleMapper.dtoToEntity(dto, roleEntity);
+
+    if (Objects.nonNull(dto.name())) {
+      roleEntity.setName(dto.name().trim());
+    }
+
+    if (Objects.nonNull(dto.overview())) {
+      roleEntity.setOverview(dto.overview().trim());
+    }
   }
 
   @Override
   public RolePermissionsVo getPermissions(Long id) {
     RoleEntity roleEntity = roleRepository.findById(id)
-        .orElseThrow(() -> new CustomException("The role does not exist"));
-
-    List<PermissionEntityVo> permissions =
-        roleEntity.getPermissions().stream()
-            .map(permissionMapper::entityToVo)
-            .toList();
+        .orElseThrow(RoleNotFoundException::new);
 
     RolePermissionsVo vo = new RolePermissionsVo();
     vo.setRole(roleMapper.entityToVo(roleEntity));
-    vo.setPermissions(permissions);
+    vo.setPermissions(
+        roleEntity.getPermissions()
+            .stream()
+            .map(permissionMapper::entityToVo)
+            .toList()
+    );
     return vo;
   }
 

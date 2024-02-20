@@ -1,0 +1,390 @@
+openapi: "3.1.0"
+info:
+  title: "Youdeyiwu"
+  description: "youdeyiwu is an open-source lightweight forum"
+  contact:
+    name: "Github"
+    url: "https://github.com/dafengzhen/youdeyiwu"
+  license:
+    name: "MIT"
+    url: "https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  /roles:
+    post:
+      summary: "POST roles"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoleDto"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          headers:
+            Location:
+              schema:
+                type: string
+              example: '/roles/1'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET roles"
+      operationId: "queryAll"
+      parameters:
+        - in: query
+          name: page
+          description: "Page number, starting from 0"
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: "Number of items per page"
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: "Sorting criteria"
+          schema:
+            type: string
+            default: "sort,id,desc"
+            example: "sort,id,desc"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageVoRoleEntityVo"
+  /roles/{id}/add-permissions:
+    post:
+      summary: "POST roles/{id}/add-permissions"
+      operationId: "addPermissions"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignPermissionsDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /roles/{id}/remove-permissions:
+    post:
+      summary: "POST roles/{id}/remove-permissions"
+      operationId: "removePermissions"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignPermissionsDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /roles/{id}/permissions:
+    put:
+      summary: "PUT roles/{id}/permissions"
+      operationId: "updatePermissions"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePermissionsRoleDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET roles/{id}/permissions"
+      operationId: "getPermissions"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolePermissionsVo"
+  /roles/{id}:
+    put:
+      summary: "PUT roles/{id}"
+      operationId: "update"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET roles/{id}"
+      operationId: "query"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoleEntityVo"
+    delete:
+      summary: "DELETE roles/{id}"
+      operationId: "delete"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+components:
+  schemas:
+    CreateRoleDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "role name"
+          required: true
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+    Void:
+      type: "object"
+      properties: { }
+    AssignPermissionsDto:
+      type: "object"
+      properties:
+        ids:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdatePermissionsRoleDto:
+      type: "object"
+      properties:
+        permissions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateRoleDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+    PermissionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matcher:
+          $ref: "#/components/schemas/PermissionEntityVo"
+        matchers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    RoleEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    RolePermissionsVo:
+      type: "object"
+      properties:
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+    PageableVo:
+      type: "object"
+      properties:
+        size:
+          type: "integer"
+          format: "int32"
+        page:
+          type: "integer"
+          format: "int32"
+        pages:
+          type: "integer"
+          format: "int32"
+        next:
+          type: "boolean"
+        previous:
+          type: "boolean"
+    PageVoRoleEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+          

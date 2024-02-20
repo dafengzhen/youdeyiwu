@@ -13,12 +13,12 @@ import org.hibernate.validator.constraints.Length;
  * @param display  display
  */
 public record UpdateRoleDto(
-    @Length(min = 1, max = 10)
+    @Length(min = 1, max = 10, message = "{role.name.size}")
     String name,
 
     String overview,
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{role.sort.value}")
     Integer sort,
 
     Boolean display
