@@ -1,0 +1,5102 @@
+openapi: "3.1.0"
+info:
+  title: "Youdeyiwu"
+  description: "youdeyiwu is an open-source lightweight forum"
+  contact:
+    name: "Github"
+    url: "https://github.com/dafengzhen/youdeyiwu"
+  license:
+    name: "MIT"
+    url: "https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  # === user ===
+  /users/register:
+    post:
+      summary: POST users/register
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVo'
+      tags:
+        - users
+  /users/login:
+    post:
+      summary: POST users/login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVo'
+      tags:
+        - users
+  /users/logout:
+    post:
+      summary: POST users/logout
+      operationId: logout
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/add-roles:
+    post:
+      summary: POST users/{id}/add-roles
+      operationId: addRoles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRolesDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/remove-roles:
+    post:
+      summary: POST users/{id}/remove-roles
+      operationId: removeRoles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRolesDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/roles:
+    put:
+      summary: PUT users/{id}/roles
+      operationId: updateRoles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRolesUserDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/profile:
+    put:
+      summary: PUT users/{id}/profile
+      operationId: updateProfile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserProfileDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/username:
+    put:
+      summary: PUT users/{id}/username
+      operationId: updateUsername
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserUsernameDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/password:
+    put:
+      summary: PUT users/{id}/password
+      operationId: updatePassword
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPasswordDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/states:
+    put:
+      summary: PUT users/{id}/states
+      operationId: updateStates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserStatesDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users/{id}/roles-permissions:
+    get:
+      summary: GET users/{id}/roles-permissions
+      operationId: getRolesPermissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRolesPermissionsVo'
+      tags:
+        - users
+  /users/menus:
+    get:
+      summary: GET users/menus
+      operationId: getMenus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuEntityVo'
+      tags:
+        - users
+  /users/login-info:
+    get:
+      summary: GET users/login-info
+      operationId: getLoginInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntityVo'
+      tags:
+        - users
+  /users/count-by-date:
+    get:
+      summary: GET users/count-by-date
+      operationId: getUsersCountByDate
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsersCountByDateVo'
+      tags:
+        - users
+  /users/select-all:
+    get:
+      summary: GET users/select-all
+      operationId: selectAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: id,desc
+            example: id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoUserEntityVo'
+      tags:
+        - users
+  /users/{id}/details:
+    get:
+      summary: GET users/{id}/details
+      operationId: queryDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntityVo'
+      tags:
+        - users
+  /users/{id}:
+    get:
+      summary: GET users/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntityVo'
+      tags:
+        - users
+    delete:
+      summary: DELETE users/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - users
+  /users:
+    get:
+      summary: GET users
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: id,desc
+            example: id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoUserEntityVo'
+      tags:
+        - users
+
+  # === role ===
+  /roles:
+    post:
+      summary: POST roles
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /roles/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - roles
+    get:
+      summary: GET roles
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoRoleEntityVo'
+      tags:
+        - roles
+  /roles/{id}/add-permissions:
+    post:
+      summary: POST roles/{id}/add-permissions
+      operationId: addPermissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignPermissionsDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - roles
+  /roles/{id}/remove-permissions:
+    post:
+      summary: POST roles/{id}/remove-permissions
+      operationId: removePermissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignPermissionsDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - roles
+  /roles/{id}/permissions:
+    put:
+      summary: PUT roles/{id}/permissions
+      operationId: updatePermissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePermissionsRoleDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - roles
+    get:
+      summary: GET roles/{id}/permissions
+      operationId: getPermissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePermissionsVo'
+      tags:
+        - roles
+  /roles/{id}:
+    put:
+      summary: PUT roles/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - roles
+    get:
+      summary: GET roles/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleEntityVo'
+      tags:
+        - roles
+    delete:
+      summary: DELETE roles/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - roles
+
+  # === permission ===
+  /permissions:
+    post:
+      summary: POST permissions
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePermissionDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /permissions/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - permissions
+    get:
+      summary: GET permissions
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoPermissionEntityVo'
+      tags:
+        - permissions
+  /permissions/{id}/roles:
+    put:
+      summary: PUT permissions/{id}/roles
+      operationId: updateRoles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRolesPermissionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - permissions
+  /permissions/{id}:
+    put:
+      summary: PUT permissions/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePermissionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - permissions
+    get:
+      summary: GET permissions/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionEntityVo'
+      tags:
+        - permissions
+    delete:
+      summary: DELETE permissions/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - permissions
+
+  # === menu ===
+  /menus:
+    post:
+      summary: POST menus
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMenuDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /menus/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - menus
+    get:
+      summary: GET menus
+      operationId: queryAll
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuEntityVo'
+      tags:
+        - menus
+  /menus/{id}/roles:
+    put:
+      summary: PUT menus/{id}/roles
+      operationId: updateRoles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRolesMenuDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - menus
+  /menus/{id}:
+    put:
+      summary: PUT menus/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMenuDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - menus
+    get:
+      summary: GET menus/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuEntityVo'
+      tags:
+        - menus
+    delete:
+      summary: DELETE menus/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - menus
+
+  # === submenu ===
+  /submenus:
+    post:
+      summary: POST submenus
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubmenuDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /submenus/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - submenus
+    get:
+      summary: GET submenus
+      operationId: queryAll
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubmenuEntityVo'
+      tags:
+        - submenus
+  /submenus/{id}/roles:
+    put:
+      summary: PUT submenus/{id}/roles
+      operationId: updateRoles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRolesSubmenuDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - submenus
+  /submenus/{id}:
+    put:
+      summary: PUT submenus/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubmenuDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - submenus
+    get:
+      summary: GET submenus/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmenuEntityVo'
+      tags:
+        - submenus
+    delete:
+      summary: DELETE submenus/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - submenus
+
+  # === action ===
+  /actions:
+    post:
+      summary: POST actions
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActionDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /actions/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - actions
+    get:
+      summary: GET actions
+      operationId: queryAll
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActionEntityVo'
+      tags:
+        - actions
+  /actions/{id}/role:
+    put:
+      summary: PUT actions/{id}/role
+      operationId: updateRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleActionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - actions
+  /actions/{id}:
+    put:
+      summary: PUT actions/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateActionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - actions
+    get:
+      summary: GET actions/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionEntityVo'
+      tags:
+        - actions
+    delete:
+      summary: DELETE actions/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - actions
+
+  # === point ===
+  /points/rules:
+    post:
+      summary: POST points/rules
+      operationId: save
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavePointRuleDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - points
+    get:
+      summary: GET points/rules
+      operationId: queryRules
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointRuleEntityVo'
+      tags:
+        - points
+  /points/permission-rules:
+    post:
+      summary: POST points/permission-rules
+      operationId: save
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavePointPermissionRuleDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - points
+    get:
+      summary: GET points/permission-rules
+      operationId: queryPermissionRules
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointPermissionRuleEntityVo'
+      tags:
+        - points
+  /points/histories:
+    get:
+      summary: GET points/histories
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: id,desc
+            example: id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoPointHistoryEntityVo'
+      tags:
+        - points
+
+  # === message ===
+  /messages/global-messages:
+    post:
+      summary: POST messages/global-messages
+      operationId: createGlobalMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGlobalMessageDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /messages/global-messages/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - messages
+    get:
+      summary: GET messages/global-messages
+      operationId: queryAllGlobalMessage
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoGlobalMessageEntityVo'
+      tags:
+        - messages
+  /messages:
+    post:
+      summary: POST messages
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /messages/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - messages
+    get:
+      summary: GET messages
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: state,asc,id,desc
+            example: state,asc,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoMessageEntityVo'
+      tags:
+        - messages
+  /messages/global-messages/{id}/state:
+    put:
+      summary: PUT messages/global-messages/{id}/state
+      operationId: updateGlobalMessageState
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - messages
+  /messages/{id}/state:
+    put:
+      summary: PUT messages/{id}/state
+      operationId: updateState
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - messages
+  /messages/global-messages/{id}:
+    get:
+      summary: GET messages/global-messages/{id}
+      operationId: queryGlobalMessage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalMessageEntityVo'
+      tags:
+        - messages
+  /messages/{id}:
+    get:
+      summary: GET messages/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageEntityVo'
+      tags:
+        - messages
+    delete:
+      summary: DELETE messages/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - messages
+
+  # === jwtConfig ===
+  /configs/jwt/generate-random-secret:
+    get:
+      summary: GET configs/jwt/generate-random-secret
+      operationId: generateRandomSecret
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+        - configs
+  /configs/jwt:
+    get:
+      summary: GET configs/jwt
+      operationId: query
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtConfigVo'
+      tags:
+        - configs
+    put:
+      summary: PUT configs/jwt
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateJwtConfigDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - configs
+
+  # === rootConfig ===
+  /configs/root:
+    put:
+      summary: PUT configs/root
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRootConfigDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - configs
+
+  # === pointConfig ===
+  /configs/point:
+    get:
+      summary: GET configs/point
+      operationId: query
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointConfigVo'
+      tags:
+        - configs
+    put:
+      summary: PUT configs/point
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePointConfigDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - configs
+
+  # === section ===
+  /sections:
+    post:
+      summary: POST sections
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSectionDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /sections/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+    get:
+      summary: GET sections
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoSectionEntityVo'
+      tags:
+        - sections
+  /sections/{id}/upload-cover:
+    post:
+      summary: POST sections/{id}/upload-cover
+      operationId: uploadCover
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: file
+          in: query
+          required: true
+          schema:
+            type: string
+            format: binary
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+  /sections/{id}/states:
+    put:
+      summary: PUT sections/{id}/states
+      operationId: updateStates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatesSectionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+  /sections/{id}/admins:
+    put:
+      summary: PUT sections/{id}/admins
+      operationId: updateAdmins
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAdminsSectionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+  /sections/{id}/tags:
+    put:
+      summary: PUT sections/{id}/tags
+      operationId: updateTags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTagsSectionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+  /sections/{id}/tag-groups:
+    put:
+      summary: PUT sections/{id}/tag-groups
+      operationId: updateTagGroups
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTagGroupsSectionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+  /sections/{id}:
+    put:
+      summary: PUT sections/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSectionDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+    get:
+      summary: GET sections/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionEntityVo'
+      tags:
+        - sections
+    delete:
+      summary: DELETE sections/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - sections
+  /sections/select-all:
+    get:
+      summary: GET sections/select-all
+      operationId: selectAll
+      parameters:
+        - name: sectionKey
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SectionEntityVo'
+      tags:
+        - sections
+  /sections/{id}/details:
+    get:
+      summary: GET sections/{id}/details
+      operationId: queryDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: sectionKey
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionEntityVo'
+      tags:
+        - sections
+  /sections/{id}/cover:
+    get:
+      summary: GET sections/{id}/cover
+      operationId: queryCover
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+      tags:
+        - sections
+
+  # === tag ===
+  /tags:
+    post:
+      summary: POST tags
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTagDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /tags/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tags
+    get:
+      summary: GET tags
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoTagEntityVo'
+      tags:
+        - tags
+  /tags/{id}:
+    put:
+      summary: PUT tags/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTagDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tags
+    get:
+      summary: GET tags/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagEntityVo'
+      tags:
+        - tags
+    delete:
+      summary: DELETE tags/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tags
+  /tags/select-all:
+    get:
+      summary: GET tags/select-all
+      operationId: selectAll
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagEntityVo'
+      tags:
+        - tags
+
+  # === post ===
+  /posts:
+    post:
+      summary: POST posts
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /posts/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+    get:
+      summary: GET posts
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: initialScore,sortState,id,desc
+            example: initialScore,sortState,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoPostEntityVo'
+      tags:
+        - posts
+  /posts/{id}/view-page:
+    post:
+      summary: POST posts/{id}/view-page
+      operationId: viewPage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: ip
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}/upload-cover:
+    post:
+      summary: POST posts/{id}/upload-cover
+      operationId: uploadCover
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: file
+          in: query
+          required: true
+          schema:
+            type: string
+            format: binary
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}/like:
+    put:
+      summary: PUT posts/{id}/like
+      operationId: updateLike
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}/favorite:
+    put:
+      summary: PUT posts/{id}/favorite
+      operationId: updateFavorite
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}/section:
+    put:
+      summary: PUT posts/{id}/section
+      operationId: updateSection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSectionPostDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}/states:
+    put:
+      summary: PUT posts/{id}/states
+      operationId: updateStates
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatesPostDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}/tags:
+    put:
+      summary: PUT posts/{id}/tags
+      operationId: updateTags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTagsPostDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/{id}:
+    put:
+      summary: PUT posts/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+    get:
+      summary: GET posts/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostEntityVo'
+      tags:
+        - posts
+    delete:
+      summary: DELETE posts/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/random:
+    get:
+      summary: GET posts/random
+      operationId: queryRandom
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostEntityVo'
+      tags:
+        - posts
+  /posts/select-all:
+    get:
+      summary: GET posts/select-all
+      operationId: selectAll
+      parameters:
+        - name: postKey
+          in: query
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: initialScore,sortState,id,desc
+            example: initialScore,sortState,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoPostEntityVo'
+      tags:
+        - posts
+  /posts/{id}/comment-reply:
+    get:
+      summary: GET posts/{id}/comment-reply
+      operationId: queryCommentReply
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: id,desc
+            example: id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoCommentReplyVo'
+      tags:
+        - posts
+  /posts/{id}/details:
+    get:
+      summary: GET posts/{id}/details
+      operationId: queryDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: postKey
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostEntityVo'
+      tags:
+        - posts
+  /posts/{id}/cover:
+    get:
+      summary: GET posts/{id}/cover
+      operationId: queryCover
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+      tags:
+        - posts
+
+  # === comment ===
+  /comments:
+    post:
+      summary: POST comments
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /comments/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - comments
+  /comments/{id}/state:
+    put:
+      summary: PUT comments/{id}/state
+      operationId: updateState
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStateCommentDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - comments
+  /comments/{id}:
+    get:
+      summary: GET comments/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentEntityVo'
+      tags:
+        - comments
+
+  # === reply ===
+  /replies:
+    post:
+      summary: POST replies
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReplyDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /replies/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - replies
+  /replies/{id}/state:
+    put:
+      summary: PUT replies/{id}/state
+      operationId: updateState
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStateReplyDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - replies
+  /replies/{id}:
+    get:
+      summary: GET replies/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteReplyEntityVo'
+      tags:
+        - replies
+
+  # === sectionGroup ===
+  /section-groups:
+    post:
+      summary: POST section-groups
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSectionGroupDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /section-groups/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - section-groups
+    get:
+      summary: GET section-groups
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoSectionGroupEntityVo'
+      tags:
+        - section-groups
+  /section-groups/{id}/sections:
+    put:
+      summary: PUT section-groups/{id}/sections
+      operationId: updateSections
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSectionsSectionGroupDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - section-groups
+  /section-groups/{id}:
+    put:
+      summary: PUT section-groups/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSectionGroupDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - section-groups
+    get:
+      summary: GET section-groups/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SectionGroupEntityVo'
+      tags:
+        - section-groups
+    delete:
+      summary: DELETE section-groups/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - section-groups
+  /section-groups/select-all:
+    get:
+      summary: GET section-groups/select-all
+      operationId: selectAll
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SectionGroupEntityVo'
+      tags:
+        - section-groups
+
+  # === tagGroup ===
+  /tag-groups:
+    post:
+      summary: POST tag-groups
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTagGroupDto'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              example: /tag-groups/1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tag-groups
+    get:
+      summary: GET tag-groups
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: sort,id,desc
+            example: sort,id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoTagGroupEntityVo'
+      tags:
+        - tag-groups
+  /tag-groups/{id}/tags:
+    put:
+      summary: PUT tag-groups/{id}/tags
+      operationId: updateTags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTagsTagGroupDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tag-groups
+  /tag-groups/{id}:
+    put:
+      summary: PUT tag-groups/{id}
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTagGroupDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tag-groups
+    get:
+      summary: GET tag-groups/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagGroupEntityVo'
+      tags:
+        - tag-groups
+    delete:
+      summary: DELETE tag-groups/{id}
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - tag-groups
+
+  # === postReviewQueue ===
+  /posts/review-queues/receive:
+    post:
+      summary: POST posts/review-queues/receive
+      operationId: receive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceivePostReviewQueueDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/review-queues/{id}/refund:
+    post:
+      summary: POST posts/review-queues/{id}/refund
+      operationId: refund
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundPostReviewQueueDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/review-queues/{id}/approved:
+    post:
+      summary: POST posts/review-queues/{id}/approved
+      operationId: approved
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovedPostReviewQueueDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/review-queues/{id}/not-approved:
+    post:
+      summary: POST posts/review-queues/{id}/not-approved
+      operationId: notApproved
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotApprovedPostReviewQueueDto'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - posts
+  /posts/review-queues/{id}:
+    get:
+      summary: GET posts/review-queues/{id}
+      operationId: query
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostReviewQueueEntityVo'
+      tags:
+        - posts
+  /posts/review-queues:
+    get:
+      summary: GET posts/review-queues
+      operationId: queryAll
+      parameters:
+        - in: query
+          name: page
+          description: Page number, starting from 0
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - in: query
+          name: size
+          description: Number of items per page
+          schema:
+            type: integer
+            format: int32
+            default: 15
+        - in: query
+          name: sort
+          description: Sorting criteria
+          schema:
+            type: string
+            default: id,desc
+            example: id,desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageVoPostEntityVo'
+      tags:
+        - posts
+components:
+  schemas:
+    RegisterDto:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+        username:
+          type: "string"
+          required: true
+        password:
+          type: "string"
+          required: true
+    TokenVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        alias:
+          type: "string"
+        token:
+          type: "string"
+        expDays:
+          type: "integer"
+          format: "int32"
+    LoginDto:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+          required: true
+        password:
+          type: "string"
+          required: true
+    Void:
+      type: "object"
+      properties: { }
+    AssignRolesDto:
+      type: "object"
+      properties:
+        ids:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateRolesUserDto:
+      type: "object"
+      properties:
+        roles:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateUserProfileDto:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+        avatar:
+          type: "string"
+        oneSentence:
+          type: "string"
+    UpdateUserUsernameDto:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+    UpdateUserPasswordDto:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+        newPassword:
+          type: "string"
+    UpdateUserStatesDto:
+      type: "object"
+      properties:
+        accountNonExpired:
+          type: "boolean"
+        credentialsNonExpired:
+          type: "boolean"
+        accountNonLocked:
+          type: "boolean"
+        enabled:
+          type: "boolean"
+    PermissionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matcher:
+          $ref: "#/components/schemas/PermissionEntityVo"
+        matchers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    RoleEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostBadgeEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        styles:
+          type: "string"
+        classes:
+          type: "string"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostImageEntityVo:
+      type: "object"
+      properties:
+        url:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    TagEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    TagGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SectionGroupEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        sections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SectionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        coverImage:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+        coverImageType:
+          type: "string"
+          enum:
+            - "PNG"
+            - "JPG"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        admins:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        allows:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        blocks:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        accessKey:
+          type: "string"
+        tagGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagGroupEntityVo"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        sectionGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionGroupEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    CommentEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        likesCount:
+          type: "integer"
+          format: "int64"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        uniqueIdentifier:
+          type: "string"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    QuoteReplyEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        likesCount:
+          type: "integer"
+          format: "int64"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        comment:
+          $ref: "#/components/schemas/CommentEntityVo"
+        quoteReply:
+          $ref: "#/components/schemas/QuoteReplyEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        uniqueIdentifier:
+          type: "string"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    CommentReplyVo:
+      type: "object"
+      properties:
+        comment:
+          $ref: "#/components/schemas/CommentEntityVo"
+        reply:
+          $ref: "#/components/schemas/QuoteReplyEntityVo"
+    PostReviewQueueEntityVo:
+      type: "object"
+      properties:
+        received:
+          type: "boolean"
+        latestReviewResultTime:
+          type: "string"
+          format: "date"
+        receiver:
+          $ref: "#/components/schemas/UserEntityVo"
+        post:
+          $ref: "#/components/schemas/PostEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        coverImage:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+        coverImageType:
+          type: "string"
+          enum:
+            - "PNG"
+            - "JPG"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        badges:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostBadgeEntityVo"
+        images:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostImageEntityVo"
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        sortState:
+          type: "string"
+          enum:
+            - "DEFAULT"
+            - "POPULAR"
+            - "CURRENT_TOP"
+            - "GLOBAL_TOP"
+        allows:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        blocks:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        accessKey:
+          type: "string"
+        pageViews:
+          type: "integer"
+          format: "int64"
+        commentsCount:
+          type: "integer"
+          format: "int64"
+        repliesCount:
+          type: "integer"
+          format: "int64"
+        likesCount:
+          type: "integer"
+          format: "int64"
+        followersCount:
+          type: "integer"
+          format: "int64"
+        favoritesCount:
+          type: "integer"
+          format: "int64"
+        section:
+          $ref: "#/components/schemas/SectionEntityVo"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        liked:
+          type: "boolean"
+        followed:
+          type: "boolean"
+        favorited:
+          type: "boolean"
+        comments:
+          $ref: "#/components/schemas/CommentReplyVo"
+        postReviewQueue:
+          $ref: "#/components/schemas/PostReviewQueueEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostFavoriteEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        postId:
+          type: "integer"
+          format: "int64"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    UserStatisticsVo:
+      type: "object"
+      properties:
+        sections:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "integer"
+          format: "int32"
+        posts:
+          type: "integer"
+          format: "int32"
+        comments:
+          type: "integer"
+          format: "int32"
+        replies:
+          type: "integer"
+          format: "int32"
+        views:
+          type: "integer"
+          format: "int32"
+    UserEntityVo:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+        avatar:
+          type: "string"
+        oneSentence:
+          type: "string"
+        username:
+          type: "string"
+        email:
+          type: "string"
+        lastLoginTime:
+          type: "string"
+          format: "date-time"
+        root:
+          type: "boolean"
+        accountNonExpired:
+          type: "boolean"
+        credentialsNonExpired:
+          type: "boolean"
+        accountNonLocked:
+          type: "boolean"
+        enabled:
+          type: "boolean"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        posts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostEntityVo"
+        favorites:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostFavoriteEntityVo"
+        relatedSections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        relatedTags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        relatedStatistics:
+          $ref: "#/components/schemas/UserStatisticsVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    UserRolesPermissionsVo:
+      type: "object"
+      properties:
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+    ActionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          $ref: "#/components/schemas/MenuEntityVo"
+        submenu:
+          $ref: "#/components/schemas/SubmenuEntityVo"
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SubmenuEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          $ref: "#/components/schemas/MenuEntityVo"
+        actions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ActionEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    MenuEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        submenus:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SubmenuEntityVo"
+        actions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ActionEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    UsersCountByDateVo:
+      type: "object"
+      properties:
+        date:
+          type: "string"
+          format: "date"
+        count:
+          type: "integer"
+          format: "int64"
+    PageVoUserEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreateRoleDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "role name"
+          required: true
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+    AssignPermissionsDto:
+      type: "object"
+      properties:
+        ids:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdatePermissionsRoleDto:
+      type: "object"
+      properties:
+        permissions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateRoleDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+    RolePermissionsVo:
+      type: "object"
+      properties:
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+    PageVoRoleEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreatePermissionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matchers:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateRolesPermissionDto:
+      type: "object"
+      properties:
+        roles:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdatePermissionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matchers:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    PageableVo:
+      type: "object"
+      properties:
+        size:
+          type: "integer"
+          format: "int32"
+        page:
+          type: "integer"
+          format: "int32"
+        pages:
+          type: "integer"
+          format: "int32"
+        next:
+          type: "boolean"
+        previous:
+          type: "boolean"
+    PageVoPermissionEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreateMenuDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "menu name"
+          required: true
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    UpdateRolesMenuDto:
+      type: "object"
+      properties:
+        roles:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateMenuDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        submenus:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        actions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    CreateSubmenuDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "submenu name"
+          required: true
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    UpdateRolesSubmenuDto:
+      type: "object"
+      properties:
+        roles:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateSubmenuDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          type: "integer"
+          format: "int64"
+        actions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    CreateActionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "action name"
+          required: true
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    UpdateRoleActionDto:
+      type: "object"
+      properties:
+        role:
+          type: "integer"
+          format: "int64"
+    UpdateActionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          type: "integer"
+          format: "int64"
+        submenu:
+          type: "integer"
+          format: "int64"
+    SavePointRuleDto:
+      type: "object"
+      properties:
+        ruleName:
+          type: "string"
+          enum:
+            - "LIKE_POST"
+            - "LIKE_COMMENT"
+            - "LIKE_REPLY"
+            - "COMMENT_POST"
+            - "REPLY_POST"
+            - "FOLLOW_POST"
+            - "FAVORITE_POST"
+            - "DISLIKE_POST"
+            - "DISLIKE_COMMENT"
+            - "DISLIKE_REPLY"
+            - "POST_APPROVED"
+            - "POST_NOT_APPROVED"
+            - "POST_PENDING_REVIEW"
+            - "VISIT_POST"
+            - "CREATE_POST"
+          description: "point rule name"
+          required: true
+        initiatorRewardPoints:
+          type: "integer"
+          format: "int32"
+          description: "initiator reward points"
+        receiverRewardPoints:
+          type: "integer"
+          format: "int32"
+          description: "receiver reward points"
+    SavePointPermissionRuleDto:
+      type: "object"
+      properties:
+        permissionRuleName:
+          type: "string"
+          enum:
+            - "CREATE_POST"
+            - "CREATE_COMMENT"
+            - "CREATE_REPLY"
+            - "UPDATE_POST"
+            - "ADD_POST_TAG"
+            - "ADD_POST_CONTENT_LINK"
+            - "ADD_POST_COVER_LINK"
+            - "ADD_POST_SECTION"
+          description: "point permission rule name"
+          required: true
+        requiredPoints:
+          type: "integer"
+          format: "int32"
+          description: "required points"
+        operationCost:
+          type: "integer"
+          format: "int32"
+          description: "operation cost"
+    PointRuleEntityVo:
+      type: "object"
+      properties:
+        ruleName:
+          type: "string"
+          enum:
+            - "LIKE_POST"
+            - "LIKE_COMMENT"
+            - "LIKE_REPLY"
+            - "COMMENT_POST"
+            - "REPLY_POST"
+            - "FOLLOW_POST"
+            - "FAVORITE_POST"
+            - "DISLIKE_POST"
+            - "DISLIKE_COMMENT"
+            - "DISLIKE_REPLY"
+            - "POST_APPROVED"
+            - "POST_NOT_APPROVED"
+            - "POST_PENDING_REVIEW"
+            - "VISIT_POST"
+            - "CREATE_POST"
+        initiatorRewardPoints:
+          type: "integer"
+          format: "int32"
+        receiverRewardPoints:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PointPermissionRuleEntityVo:
+      type: "object"
+      properties:
+        permissionRuleName:
+          type: "string"
+          enum:
+            - "CREATE_POST"
+            - "CREATE_COMMENT"
+            - "CREATE_REPLY"
+            - "UPDATE_POST"
+            - "ADD_POST_TAG"
+            - "ADD_POST_CONTENT_LINK"
+            - "ADD_POST_COVER_LINK"
+            - "ADD_POST_SECTION"
+        requiredPoints:
+          type: "integer"
+          format: "int32"
+        operationCost:
+          type: "integer"
+          format: "int32"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PointHistoryEntityVo:
+      type: "object"
+      properties:
+        pointValue:
+          type: "integer"
+          format: "int32"
+        sign:
+          type: "string"
+          enum:
+            - "POSITIVE"
+            - "NEGATIVE"
+            - "ZERO"
+        points:
+          type: "integer"
+          format: "int32"
+        minPoints:
+          type: "integer"
+          format: "int32"
+        maxPoints:
+          type: "integer"
+          format: "int32"
+        ruleName:
+          type: "string"
+          enum:
+            - "LIKE_POST"
+            - "LIKE_COMMENT"
+            - "LIKE_REPLY"
+            - "COMMENT_POST"
+            - "REPLY_POST"
+            - "FOLLOW_POST"
+            - "FAVORITE_POST"
+            - "DISLIKE_POST"
+            - "DISLIKE_COMMENT"
+            - "DISLIKE_REPLY"
+            - "POST_APPROVED"
+            - "POST_NOT_APPROVED"
+            - "POST_PENDING_REVIEW"
+            - "VISIT_POST"
+            - "CREATE_POST"
+        permissionRuleName:
+          type: "string"
+          enum:
+            - "CREATE_POST"
+            - "CREATE_COMMENT"
+            - "CREATE_REPLY"
+            - "UPDATE_POST"
+            - "ADD_POST_TAG"
+            - "ADD_POST_CONTENT_LINK"
+            - "ADD_POST_COVER_LINK"
+            - "ADD_POST_SECTION"
+        reason:
+          type: "string"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PageVoPointHistoryEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PointHistoryEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreateGlobalMessageDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "message name"
+          required: true
+        overview:
+          type: "string"
+          description: "message overview"
+          required: true
+        link:
+          type: "string"
+          description: "message link"
+        links:
+          type: "string"
+          description: "message links"
+        content:
+          type: "string"
+          description: "message content"
+        sort:
+          type: "integer"
+          format: "int32"
+          description: "message sort"
+    CreateMessageDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "message name"
+          required: true
+        overview:
+          type: "string"
+          description: "message overview"
+          required: true
+        link:
+          type: "string"
+          description: "message link"
+        links:
+          type: "string"
+          description: "message links"
+        content:
+          type: "string"
+          description: "message content"
+        receiver:
+          type: "integer"
+          format: "int64"
+          description: "message receiver"
+          required: true
+    GlobalMessageEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        link:
+          type: "string"
+        links:
+          type: "string"
+        content:
+          type: "string"
+        messageType:
+          type: "string"
+          enum:
+            - "SYSTEM"
+            - "GLOBAL_MESSAGE"
+            - "MESSAGE"
+            - "CONFIG"
+            - "FILE"
+            - "USER"
+            - "ROLE"
+            - "PERMISSION"
+            - "MENU"
+            - "SUBMENU"
+            - "ACTION"
+            - "SECTION"
+            - "SECTION_GROUP"
+            - "POST"
+            - "TAG"
+            - "TAG_GROUP"
+            - "COMMENT"
+            - "REPLY"
+            - "POINT"
+        messageRange:
+          type: "string"
+          enum:
+            - "ALL_USER"
+            - "USER"
+        state:
+          type: "string"
+          enum:
+            - "UNREAD"
+            - "READ"
+        sort:
+          type: "integer"
+          format: "int32"
+        sender:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    MessageEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        link:
+          type: "string"
+        links:
+          type: "string"
+        content:
+          type: "string"
+        messageType:
+          type: "string"
+          enum:
+            - "SYSTEM"
+            - "GLOBAL_MESSAGE"
+            - "MESSAGE"
+            - "CONFIG"
+            - "FILE"
+            - "USER"
+            - "ROLE"
+            - "PERMISSION"
+            - "MENU"
+            - "SUBMENU"
+            - "ACTION"
+            - "SECTION"
+            - "SECTION_GROUP"
+            - "POST"
+            - "TAG"
+            - "TAG_GROUP"
+            - "COMMENT"
+            - "REPLY"
+            - "POINT"
+        messageRange:
+          type: "string"
+          enum:
+            - "ALL_USER"
+            - "USER"
+        state:
+          type: "string"
+          enum:
+            - "UNREAD"
+            - "READ"
+        sender:
+          $ref: "#/components/schemas/UserEntityVo"
+        receiver:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PageVoGlobalMessageEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/GlobalMessageEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    PageVoMessageEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/MessageEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    JwtConfigVo:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
+    UpdateJwtConfigDto:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
+    UpdateRootConfigDto:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
+    PointConfigVo:
+      type: "object"
+      properties:
+        enable:
+          type: "boolean"
+        initPoints:
+          type: "integer"
+          format: "int32"
+    UpdatePointConfigDto:
+      type: "object"
+      properties:
+        enable:
+          type: "boolean"
+        initPoints:
+          type: "integer"
+          format: "int32"
+    CreateSectionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "section name"
+          required: true
+    UpdateStatesSectionDto:
+      type: "object"
+      properties:
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        allows:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        blocks:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        accessKey:
+          type: "string"
+    UpdateAdminsSectionDto:
+      type: "object"
+      properties:
+        admins:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagsSectionDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagGroupsSectionDto:
+      type: "object"
+      properties:
+        tagGroups:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateSectionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    PageVoSectionEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreateTagDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "tag name"
+          required: true
+    UpdateTagDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    PageVoTagEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreatePostDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "post name"
+          required: true
+        cover:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        tags:
+          type: "array"
+          items:
+            type: "string"
+        sectionId:
+          type: "integer"
+          format: "int64"
+    UpdateSectionPostDto:
+      type: "object"
+      properties:
+        sectionId:
+          type: "integer"
+          format: "int64"
+        removeSection:
+          type: "boolean"
+    UpdateStatesPostDto:
+      type: "object"
+      properties:
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        sortState:
+          type: "string"
+          enum:
+            - "DEFAULT"
+            - "POPULAR"
+            - "CURRENT_TOP"
+            - "GLOBAL_TOP"
+        allows:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        blocks:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        accessKey:
+          type: "string"
+        reason:
+          type: "string"
+        reviewReason:
+          type: "string"
+    UpdateTagsPostDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdatePostDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        tags:
+          type: "array"
+          items:
+            type: "string"
+        sectionId:
+          type: "integer"
+          format: "int64"
+        removeSection:
+          type: "boolean"
+    PageVoPostEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    PageVoCommentReplyVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReplyVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreateCommentDto:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+          description: "comment content"
+          required: true
+        postId:
+          type: "integer"
+          format: "int64"
+          description: "comment post id"
+          required: true
+    UpdateStateCommentDto:
+      type: "object"
+      properties:
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        reason:
+          type: "string"
+    CreateReplyDto:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+          description: "reply content"
+          required: true
+        commentId:
+          type: "integer"
+          format: "int64"
+          description: "comment id"
+        replyId:
+          type: "integer"
+          format: "int64"
+          description: "reply id"
+    UpdateStateReplyDto:
+      type: "object"
+      properties:
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        reason:
+          type: "string"
+    CreateSectionGroupDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "section group name"
+          required: true
+    UpdateSectionsSectionGroupDto:
+      type: "object"
+      properties:
+        sections:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateSectionGroupDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    PageVoSectionGroupEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionGroupEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    CreateTagGroupDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "tag group name"
+          required: true
+    UpdateTagsTagGroupDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagGroupDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    PageVoTagGroupEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagGroupEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    ReceivePostReviewQueueDto:
+      type: "object"
+      properties:
+        latestReviewResultTime:
+          type: "string"
+          format: "date"
+          description: "The estimated completion time of the review must be in the future"
+          required: true
+        postId:
+          type: "integer"
+          format: "int64"
+          description: "post id"
+          required: true
+    RefundPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
+    ApprovedPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
+    NotApprovedPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
