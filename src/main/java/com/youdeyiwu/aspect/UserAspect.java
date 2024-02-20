@@ -9,7 +9,9 @@ import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.TokenVo;
 import com.youdeyiwu.repository.user.UserRepository;
-import com.youdeyiwu.security.SecurityService;
+import com.youdeyiwu.tool.I18nTool;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,9 +31,9 @@ public class UserAspect {
 
   private final ApplicationEventPublisher publisher;
 
-  private final SecurityService securityService;
-
   private final UserRepository userRepository;
+
+  private final I18nTool i18nTool;
 
   /**
    * register.
@@ -55,19 +57,11 @@ public class UserAspect {
   @AfterReturning(value = "registerPointcut(dto)", returning = "vo", argNames = "vo,dto")
   public void registerAfterReturningAdvice(TokenVo vo, RegisterDto dto) {
     UserEntity userEntity = userRepository.getReferenceById(vo.getId());
-    MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setName("Welcome notification");
-    messageEntity.setOverview(
-        """
-            Welcome, %s!
-            Thank you for registering with us.
-            Your registration was successful at %s.
-            We are excited to have you on board!
-            """
-            .formatted(securityService.getAliasAndId(userEntity), getCurrentDateTime())
+    MessageEntity messageEntity = createMessageEntity(
+        userEntity,
+        "user.register.message.name",
+        "user.register.message.overview"
     );
-    messageEntity.setLink("/users/" + userEntity.getId());
-    messageEntity.setReceiver(userEntity);
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
   }
 
@@ -77,16 +71,31 @@ public class UserAspect {
   @AfterReturning(value = "loginPointcut(dto)", returning = "vo", argNames = "vo,dto")
   public void loginAfterReturningAdvice(TokenVo vo, LoginDto dto) {
     UserEntity userEntity = userRepository.getReferenceById(vo.getId());
-    MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setName("Login notification");
-    messageEntity.setOverview(
-        """
-            Congratulations on your successful login.
-            You performed an operation at %s time
-            """
-            .formatted(getCurrentDateTime())
+    MessageEntity messageEntity = createMessageEntity(
+        userEntity,
+        "user.login.message.name",
+        "user.login.message.overview"
     );
-    messageEntity.setReceiver(userEntity);
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * create message entity.
+   *
+   * @param userEntity       userEntity
+   * @param eventNameKey     eventNameKey
+   * @param eventOverviewKey eventOverviewKey
+   * @return MessageEntity
+   */
+  private MessageEntity createMessageEntity(UserEntity userEntity, String eventNameKey, String eventOverviewKey) {
+    Map<String, Object> overviewArgs = new HashMap<>();
+    overviewArgs.put("time", userEntity.getId() + "#" + getCurrentDateTime());
+
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setName(i18nTool.getMessage(eventNameKey));
+    messageEntity.setOverview(i18nTool.getMessage(eventOverviewKey, overviewArgs));
+    messageEntity.setLink(userEntity.getLink());
+    messageEntity.setReceiver(userEntity);
+    return messageEntity;
   }
 }

@@ -309,4 +309,12 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     return enabled;
   }
 
+  /**
+   * get link.
+   *
+   * @return String
+   */
+  public String getLink() {
+    return "/users/" + getId();
+  }
 }
