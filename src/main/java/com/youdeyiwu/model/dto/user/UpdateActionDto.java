@@ -1,6 +1,8 @@
 package com.youdeyiwu.model.dto.user;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * update action.
@@ -12,10 +14,12 @@ import java.io.Serializable;
  * @param submenu submenu
  */
 public record UpdateActionDto(
+    @Length(min = 1, max = 15, message = "{action.name.size}")
     String name,
 
     String alias,
 
+    @PositiveOrZero(message = "{action.sort.value}")
     Integer sort,
 
     Long menu,

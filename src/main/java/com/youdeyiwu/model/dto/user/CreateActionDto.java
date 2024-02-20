@@ -3,6 +3,7 @@ package com.youdeyiwu.model.dto.user;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * create action.
@@ -12,12 +13,13 @@ import java.io.Serializable;
  * @param sort  sort
  */
 public record CreateActionDto(
-    @NotBlank
+    @Length(min = 1, max = 15, message = "{action.name.size}")
+    @NotBlank(message = "{action.name.required}")
     String name,
 
     String alias,
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{action.sort.value}")
     Integer sort
 ) implements Serializable {
 

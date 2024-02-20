@@ -5,7 +5,7 @@ import com.youdeyiwu.model.dto.user.UpdateActionDto;
 import com.youdeyiwu.model.dto.user.UpdateRoleActionDto;
 import com.youdeyiwu.model.entity.user.ActionEntity;
 import com.youdeyiwu.model.vo.user.ActionEntityVo;
-import java.util.Set;
+import java.util.List;
 
 /**
  * action.
@@ -49,9 +49,9 @@ public interface ActionService {
   /**
    * query all.
    *
-   * @return Set
+   * @return List
    */
-  Set<ActionEntityVo> queryAll();
+  List<ActionEntityVo> queryAll();
 
   /**
    * delete.

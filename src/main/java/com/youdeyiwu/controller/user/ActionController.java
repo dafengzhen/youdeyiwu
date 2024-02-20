@@ -7,7 +7,7 @@ import com.youdeyiwu.model.vo.user.ActionEntityVo;
 import com.youdeyiwu.service.user.ActionService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,7 +68,7 @@ public class ActionController {
   }
 
   @GetMapping
-  public ResponseEntity<Set<ActionEntityVo>> queryAll() {
+  public ResponseEntity<List<ActionEntityVo>> queryAll() {
     return ResponseEntity.ok(actionService.queryAll());
   }
 

@@ -1,0 +1,371 @@
+openapi: "3.1.0"
+info:
+  title: "Youdeyiwu"
+  description: "youdeyiwu is an open-source lightweight forum"
+  contact:
+    name: "Github"
+    url: "https://github.com/dafengzhen/youdeyiwu"
+  license:
+    name: "MIT"
+    url: "https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Development server"
+paths:
+  /actions:
+    post:
+      summary: "POST actions"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateActionDto"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          headers:
+            Location:
+              schema:
+                type: string
+              example: '/actions/1'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET actions"
+      operationId: "queryAll"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ActionEntityVo"
+  /actions/{id}/role:
+    put:
+      summary: "PUT actions/{id}/role"
+      operationId: "updateRole"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleActionDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+  /actions/{id}:
+    put:
+      summary: "PUT actions/{id}"
+      operationId: "update"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateActionDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: "GET actions/{id}"
+      operationId: "query"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionEntityVo"
+    delete:
+      summary: "DELETE actions/{id}"
+      operationId: "delete"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+components:
+  schemas:
+    CreateActionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "action name"
+          required: true
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    Void:
+      type: "object"
+      properties: { }
+    UpdateRoleActionDto:
+      type: "object"
+      properties:
+        role:
+          type: "integer"
+          format: "int64"
+    UpdateActionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          type: "integer"
+          format: "int64"
+        submenu:
+          type: "integer"
+          format: "int64"
+    PermissionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matcher:
+          $ref: "#/components/schemas/PermissionEntityVo"
+        matchers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    RoleEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SubmenuEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          $ref: "#/components/schemas/MenuEntityVo"
+        actions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ActionEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    MenuEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        submenus:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SubmenuEntityVo"
+        actions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ActionEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    ActionEntityVo:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          $ref: "#/components/schemas/MenuEntityVo"
+        submenu:
+          $ref: "#/components/schemas/SubmenuEntityVo"
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"

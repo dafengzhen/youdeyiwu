@@ -18,9 +18,8 @@ import com.youdeyiwu.repository.user.MenuRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
 import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.service.user.ActionService;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -65,7 +64,6 @@ public class ActionServiceImpl implements ActionService {
   @Override
   public void updateRole(Long id, UpdateRoleActionDto dto) {
     ActionEntity actionEntity = findAction(id);
-
     actionEntity.setRole(
         roleRepository.findById(dto.role()).orElseThrow(RoleNotFoundException::new)
     );
@@ -103,7 +101,7 @@ public class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public Set<ActionEntityVo> queryAll() {
+  public List<ActionEntityVo> queryAll() {
     return actionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
         .stream()
         .map(actionEntity -> {
@@ -113,7 +111,7 @@ public class ActionServiceImpl implements ActionService {
           setRole(vo, actionEntity);
           return vo;
         })
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Transactional
