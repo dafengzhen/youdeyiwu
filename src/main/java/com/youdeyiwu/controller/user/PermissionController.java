@@ -68,7 +68,7 @@ public class PermissionController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<PermissionEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(permissionService.query(id));
+    return ResponseEntity.ok(permissionService.query(id));
   }
 
   @GetMapping
@@ -77,7 +77,7 @@ public class PermissionController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(permissionService.queryAll(pageable));
+    return ResponseEntity.ok(permissionService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")

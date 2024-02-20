@@ -64,12 +64,12 @@ public class SubmenuController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<SubmenuEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(submenuService.query(id));
+    return ResponseEntity.ok(submenuService.query(id));
   }
 
   @GetMapping
   public ResponseEntity<Set<SubmenuEntityVo>> queryAll() {
-    return ResponseEntity.ok().body(submenuService.queryAll());
+    return ResponseEntity.ok(submenuService.queryAll());
   }
 
   @DeleteMapping(value = "/{id}")

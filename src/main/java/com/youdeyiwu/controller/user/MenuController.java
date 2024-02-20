@@ -56,12 +56,12 @@ public class MenuController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<MenuEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(menuService.query(id));
+    return ResponseEntity.ok(menuService.query(id));
   }
 
   @GetMapping
   public ResponseEntity<Set<MenuEntityVo>> queryAll() {
-    return ResponseEntity.ok().body(menuService.queryAll());
+    return ResponseEntity.ok(menuService.queryAll());
   }
 
   @DeleteMapping(value = "/{id}")

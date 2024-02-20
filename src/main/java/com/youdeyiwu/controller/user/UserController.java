@@ -48,12 +48,12 @@ public class UserController {
 
   @PostMapping(value = "/register")
   public ResponseEntity<TokenVo> register(@Valid @RequestBody RegisterDto dto) {
-    return ResponseEntity.ok().body(userService.register(dto));
+    return ResponseEntity.ok(userService.register(dto));
   }
 
   @PostMapping(value = "/login")
   public ResponseEntity<TokenVo> login(@Valid @RequestBody LoginDto dto) {
-    return ResponseEntity.ok().body(userService.login(dto));
+    return ResponseEntity.ok(userService.login(dto));
   }
 
   @PostMapping(value = "/logout")
@@ -127,24 +127,24 @@ public class UserController {
 
   @GetMapping("/{id}/roles-permissions")
   public ResponseEntity<UserRolesPermissionsVo> getRolesPermissions(@PathVariable Long id) {
-    return ResponseEntity.ok().body(userService.getRolesPermissions(id));
+    return ResponseEntity.ok(userService.getRolesPermissions(id));
   }
 
   @GetMapping("/menus")
   public ResponseEntity<Set<MenuEntityVo>> getMenus() {
-    return ResponseEntity.ok().body(userService.getMenus());
+    return ResponseEntity.ok(userService.getMenus());
   }
 
   @GetMapping("/login-info")
   public ResponseEntity<UserEntityVo> getLoginInfo() {
-    return ResponseEntity.ok().body(userService.getLoginInfo());
+    return ResponseEntity.ok(userService.getLoginInfo());
   }
 
   @GetMapping("/count-by-date")
   public ResponseEntity<List<UsersCountByDateVo>> getUsersCountByDate(
       @Valid UsersCountByDateDto dto
   ) {
-    return ResponseEntity.ok().body(userService.getUsersCountByDate(dto));
+    return ResponseEntity.ok(userService.getUsersCountByDate(dto));
   }
 
   @GetMapping(value = "/select-all")
@@ -153,17 +153,17 @@ public class UserController {
       @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(userService.selectAll(pageable));
+    return ResponseEntity.ok(userService.selectAll(pageable));
   }
 
   @GetMapping(value = "/{id}/details")
   public ResponseEntity<UserEntityVo> queryDetails(@PathVariable Long id) {
-    return ResponseEntity.ok().body(userService.queryDetails(id));
+    return ResponseEntity.ok(userService.queryDetails(id));
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<UserEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(userService.query(id));
+    return ResponseEntity.ok(userService.query(id));
   }
 
   @GetMapping
@@ -172,7 +172,7 @@ public class UserController {
       @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(userService.queryAll(pageable));
+    return ResponseEntity.ok(userService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")

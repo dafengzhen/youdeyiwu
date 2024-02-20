@@ -11,12 +11,12 @@ import org.hibernate.validator.constraints.Length;
  * @param newPassword newPassword
  */
 public record UpdateUserPasswordDto(
-    @Length(min = 6, max = 18)
-    @NotBlank
+    @Length(min = 6, max = 18, message = "{user.password.old.size}")
+    @NotBlank(message = "{user.password.old.required}")
     String oldPassword,
 
-    @Length(min = 6, max = 18)
-    @NotBlank
+    @Length(min = 6, max = 18, message = "{user.password.size}")
+    @NotBlank(message = "{user.password.required}")
     String newPassword
 ) implements Serializable {
 

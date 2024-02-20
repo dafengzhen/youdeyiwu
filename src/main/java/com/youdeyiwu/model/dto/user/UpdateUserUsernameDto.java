@@ -10,8 +10,8 @@ import org.hibernate.validator.constraints.Length;
  * @param username username
  */
 public record UpdateUserUsernameDto(
-    @Length(min = 3, max = 16)
-    @NotBlank
+    @Length(min = 3, max = 16, message = "{user.username.size}")
+    @NotBlank(message = "{user.username.required}")
     String username
 ) implements Serializable {
 

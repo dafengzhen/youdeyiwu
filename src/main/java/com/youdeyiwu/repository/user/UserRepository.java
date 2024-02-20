@@ -15,9 +15,9 @@ public interface UserRepository
    * existsByUsername.
    *
    * @param username username
-   * @return Boolean
+   * @return boolean
    */
-  Boolean existsByUsername(String username);
+  boolean existsByUsername(String username);
 
   /**
    * findByUsername.

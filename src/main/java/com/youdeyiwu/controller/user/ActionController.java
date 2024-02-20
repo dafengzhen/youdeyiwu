@@ -64,12 +64,12 @@ public class ActionController {
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<ActionEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(actionService.query(id));
+    return ResponseEntity.ok(actionService.query(id));
   }
 
   @GetMapping
   public ResponseEntity<Set<ActionEntityVo>> queryAll() {
-    return ResponseEntity.ok().body(actionService.queryAll());
+    return ResponseEntity.ok(actionService.queryAll());
   }
 
   @DeleteMapping(value = "/{id}")

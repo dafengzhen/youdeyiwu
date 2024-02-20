@@ -2,11 +2,10 @@ package com.youdeyiwu.service.user.impl;
 
 import static com.youdeyiwu.tool.JwtTool.createJwt;
 import static com.youdeyiwu.tool.JwtTool.decodeSecret;
-import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
+import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
-import com.youdeyiwu.event.MessageApplicationEvent;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.RoleNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -29,9 +28,7 @@ import com.youdeyiwu.model.dto.user.UpdateUserStatesDto;
 import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
-import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.ActionEntity;
-import com.youdeyiwu.model.entity.user.RoleEntity;
 import com.youdeyiwu.model.entity.user.SubmenuEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.PageVo;
@@ -49,13 +46,12 @@ import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostFavoriteRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
-import com.youdeyiwu.repository.user.ActionRepository;
 import com.youdeyiwu.repository.user.MenuRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
-import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.user.UserService;
+import com.youdeyiwu.tool.I18nTool;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -67,13 +63,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -122,11 +118,7 @@ public class UserServiceImpl implements UserService {
 
   private final MenuRepository menuRepository;
 
-  private final SubmenuRepository submenuRepository;
-
-  private final ActionRepository actionRepository;
-
-  private final ApplicationEventPublisher publisher;
+  private final I18nTool i18nTool;
 
   @Transactional
   @Override
@@ -136,30 +128,14 @@ public class UserServiceImpl implements UserService {
     final String alias = StringUtils.hasText(dto.alias()) ? dto.alias().trim() : username;
 
     if (Boolean.TRUE.equals(userRepository.existsByUsername(username))) {
-      throw new CustomException("This username already exists");
+      throw new CustomException(i18nTool.getMessage("user.username.exist"));
     }
 
     UserEntity entity = new UserEntity();
     entity.setAlias(alias);
     entity.setUsername(username);
     entity.setPassword(passwordEncoder.encode(password));
-    UserEntity userEntity = userRepository.save(entity);
-
-    MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setName("Welcome notification");
-    messageEntity.setOverview(
-        """
-            Welcome, %s!
-            Thank you for registering with us.
-            Your registration was successful at %s.
-            We are excited to have you on board!
-            """
-            .formatted(securityService.getAliasAndId(userEntity), getCurrentDateTime())
-    );
-    messageEntity.setLink("/users/" + userEntity.getId());
-    messageEntity.setReceiver(userEntity);
-    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
-    return createToken(userEntity);
+    return createToken(userRepository.save(entity));
   }
 
   @Transactional
@@ -174,20 +150,9 @@ public class UserServiceImpl implements UserService {
 
     UserEntity userEntity = userRepository.findByUsername(username);
     if (!passwordEncoder.matches(password, userEntity.getPassword())) {
-      throw new CustomException("Wrong username or password");
+      throw new CustomException(i18nTool.getMessage("user.usernameOrPassword.error"));
     }
 
-    MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setName("Login notification");
-    messageEntity.setOverview(
-        """
-            Congratulations on your successful login.
-            You performed an operation at %s time
-            """
-            .formatted(getCurrentDateTime())
-    );
-    messageEntity.setReceiver(userEntity);
-    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
     return createToken(userEntity);
   }
 
@@ -206,14 +171,19 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Override
   public void addRoles(Long id, AssignRolesDto dto) {
-    UserEntity userEntity = findUser(id);
-    List<RoleEntity> roles = dto.ids().stream()
-        .map(rid -> roleRepository.findById(rid)
-            .orElseThrow(RoleNotFoundException::new)
-        )
-        .toList();
+    if (CollectionUtils.isEmpty(dto.ids())) {
+      return;
+    }
 
-    userEntity.getRoles().addAll(roles);
+    UserEntity userEntity = findUser(id);
+    userEntity.getRoles().addAll(
+        dto.ids()
+            .stream()
+            .map(rid -> roleRepository.findById(rid)
+                .orElseThrow(RoleNotFoundException::new)
+            )
+            .toList()
+    );
   }
 
   @Transactional
@@ -221,13 +191,14 @@ public class UserServiceImpl implements UserService {
   public void removeRoles(Long id, AssignRolesDto dto) {
     UserEntity userEntity = findUser(id);
 
-    List<RoleEntity> roles = dto.ids().stream()
-        .map(rid -> roleRepository.findById(rid)
-            .orElseThrow(RoleNotFoundException::new)
-        )
-        .toList();
-
-    roles.forEach(userEntity.getRoles()::remove);
+    if (Objects.nonNull(dto.ids())) {
+      dto.ids()
+          .stream()
+          .map(rid -> roleRepository.findById(rid)
+              .orElseThrow(RoleNotFoundException::new)
+          )
+          .forEach(userEntity.getRoles()::remove);
+    }
   }
 
   @Transactional
@@ -277,14 +248,11 @@ public class UserServiceImpl implements UserService {
       userEntity.setAlias(dto.alias().trim());
     }
 
-    if (
-        StringUtils.hasText(dto.avatar())
-            && (dto.avatar().startsWith("http") || dto.avatar().startsWith("https"))
-    ) {
-      userEntity.setAvatar(dto.avatar().trim());
+    if (StringUtils.hasText(dto.avatar()) && isHttpOrHttps(dto.avatar())) {
+      userEntity.setAvatar(dto.avatar());
     }
 
-    if (StringUtils.hasText(dto.oneSentence())) {
+    if (Objects.nonNull(dto.oneSentence())) {
       userEntity.setOneSentence(dto.oneSentence().trim());
     }
   }
@@ -294,11 +262,11 @@ public class UserServiceImpl implements UserService {
   public void updateUsername(Long id, UpdateUserUsernameDto dto) {
     UserEntity userEntity = findUser(id);
 
-    if (Boolean.TRUE.equals(userRepository.existsByUsername(dto.username()))) {
-      throw new CustomException("This username already exists");
+    if (userRepository.existsByUsername(dto.username())) {
+      throw new CustomException(i18nTool.getMessage("user.username.exist"));
     }
 
-    userEntity.setUsername(dto.username());
+    userEntity.setUsername(dto.username().trim());
   }
 
   @Transactional
@@ -306,11 +274,13 @@ public class UserServiceImpl implements UserService {
   public void updatePassword(Long id, UpdateUserPasswordDto dto) {
     UserEntity userEntity = findUser(id);
 
-    if (!passwordEncoder.matches(dto.oldPassword(), userEntity.getPassword())) {
-      throw new CustomException("Does not match old password, update failed");
+    String oldPassword = dto.oldPassword().trim();
+    String password = userEntity.getPassword().trim();
+    if (!passwordEncoder.matches(oldPassword, password)) {
+      throw new CustomException(i18nTool.getMessage("user.password.notMatch"));
     }
 
-    userEntity.setPassword(passwordEncoder.encode(dto.newPassword()));
+    userEntity.setPassword(passwordEncoder.encode(dto.newPassword().trim()));
   }
 
   @Transactional

@@ -80,12 +80,12 @@ public class RoleController {
 
   @GetMapping("/{id}/permissions")
   public ResponseEntity<RolePermissionsVo> getPermissions(@PathVariable Long id) {
-    return ResponseEntity.ok().body(roleService.getPermissions(id));
+    return ResponseEntity.ok(roleService.getPermissions(id));
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<RoleEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(roleService.query(id));
+    return ResponseEntity.ok(roleService.query(id));
   }
 
   @GetMapping
@@ -94,7 +94,7 @@ public class RoleController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(roleService.queryAll(pageable));
+    return ResponseEntity.ok(roleService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")
