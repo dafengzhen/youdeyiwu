@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.Map;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * create global message.
@@ -16,10 +17,12 @@ import java.util.Map;
  * @param sort     sort
  */
 public record CreateGlobalMessageDto(
-    @NotBlank
+    @Length(min = 1, max = 120, message = "{message.name.size}")
+    @NotBlank(message = "{message.name.required}")
     String name,
 
-    @NotBlank
+    @Length(min = 1, max = 512, message = "{message.overview.size}")
+    @NotBlank(message = "{message.overview.required}")
     String overview,
 
     String link,
@@ -28,7 +31,7 @@ public record CreateGlobalMessageDto(
 
     Map<String, String> content,
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{message.sort.value}")
     Integer sort
 ) implements Serializable {
 

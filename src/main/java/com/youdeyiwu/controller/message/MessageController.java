@@ -43,10 +43,8 @@ public class MessageController {
    */
   @PostMapping(value = "/global-messages")
   public ResponseEntity<Void> createGlobalMessage(@Valid @RequestBody CreateGlobalMessageDto dto) {
-    return ResponseEntity
-        .created(
-            URI.create(
-                "/messages/global-messages" + messageService.createGlobalMessage(dto).getId())
+    return ResponseEntity.created(
+            URI.create("/messages/global-messages" + messageService.createGlobalMessage(dto).getId())
         )
         .build();
   }
@@ -78,12 +76,12 @@ public class MessageController {
 
   @GetMapping(value = "/global-messages/{id}")
   public ResponseEntity<GlobalMessageEntityVo> queryGlobalMessage(@PathVariable Long id) {
-    return ResponseEntity.ok().body(messageService.queryGlobalMessage(id));
+    return ResponseEntity.ok(messageService.queryGlobalMessage(id));
   }
 
   @GetMapping(value = "/{id}")
   public ResponseEntity<MessageEntityVo> query(@PathVariable Long id) {
-    return ResponseEntity.ok().body(messageService.query(id));
+    return ResponseEntity.ok(messageService.query(id));
   }
 
   @GetMapping(value = "/global-messages")
@@ -92,7 +90,7 @@ public class MessageController {
       @SortDefault(value = {"sort", "id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(messageService.queryAllGlobalMessage(pageable));
+    return ResponseEntity.ok(messageService.queryAllGlobalMessage(pageable));
   }
 
   @GetMapping
@@ -104,7 +102,7 @@ public class MessageController {
       })
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(messageService.queryAll(pageable));
+    return ResponseEntity.ok(messageService.queryAll(pageable));
   }
 
   @DeleteMapping(value = "/{id}")

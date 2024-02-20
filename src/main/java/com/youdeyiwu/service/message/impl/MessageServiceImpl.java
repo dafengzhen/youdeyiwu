@@ -1,5 +1,7 @@
 package com.youdeyiwu.service.message.impl;
 
+import static com.youdeyiwu.tool.Tool.isValidLink;
+
 import com.youdeyiwu.enums.message.MessageStateEnum;
 import com.youdeyiwu.exception.GlobalMessageNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -33,6 +35,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * message.
@@ -61,7 +65,18 @@ public class MessageServiceImpl implements MessageService {
   public GlobalMessageEntity createGlobalMessage(CreateGlobalMessageDto dto) {
     GlobalMessageEntity globalMessageEntity = new GlobalMessageEntity();
     messageMapper.dtoToEntity(dto, globalMessageEntity);
-    globalMessageRepository.save(globalMessageEntity);
+
+    if (StringUtils.hasText(dto.link()) && isValidLink(dto.link())) {
+      globalMessageEntity.setLink(dto.link());
+    }
+
+    if (!CollectionUtils.isEmpty(dto.links())) {
+      dto.links().forEach((key, value) -> {
+        if (isValidLink(value)) {
+          globalMessageEntity.getLinks().put(key, value);
+        }
+      });
+    }
 
     if (securityService.isAuthenticated()) {
       globalMessageEntity.setSender(
@@ -70,6 +85,7 @@ public class MessageServiceImpl implements MessageService {
       );
     }
 
+    globalMessageRepository.save(globalMessageEntity);
     return globalMessageEntity;
   }
 
@@ -78,7 +94,18 @@ public class MessageServiceImpl implements MessageService {
   public MessageEntity create(CreateMessageDto dto) {
     MessageEntity messageEntity = new MessageEntity();
     messageMapper.dtoToEntity(dto, messageEntity);
-    messageRepository.save(messageEntity);
+
+    if (StringUtils.hasText(dto.link()) && isValidLink(dto.link())) {
+      messageEntity.setLink(dto.link());
+    }
+
+    if (!CollectionUtils.isEmpty(dto.links())) {
+      dto.links().forEach((key, value) -> {
+        if (isValidLink(value)) {
+          messageEntity.getLinks().put(key, value);
+        }
+      });
+    }
 
     if (securityService.isAuthenticated()) {
       messageEntity.setSender(
@@ -91,6 +118,8 @@ public class MessageServiceImpl implements MessageService {
         userRepository.findById(dto.receiver())
             .orElseThrow(UserNotFoundException::new)
     );
+
+    messageRepository.save(messageEntity);
     return messageEntity;
   }
 

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Map;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * create message.
@@ -16,10 +17,12 @@ import java.util.Map;
  * @param receiver receiver
  */
 public record CreateMessageDto(
-    @NotBlank
+    @Length(min = 1, max = 120, message = "{message.name.size}")
+    @NotBlank(message = "{message.name.required}")
     String name,
 
-    @NotBlank
+    @Length(min = 1, max = 512, message = "{message.overview.size}")
+    @NotBlank(message = "{message.overview.required}")
     String overview,
 
     String link,
@@ -28,7 +31,7 @@ public record CreateMessageDto(
 
     Map<String, String> content,
 
-    @NotNull
+    @NotNull(message = "{message.receiver.required}")
     Long receiver
 ) implements Serializable {
 

@@ -89,11 +89,21 @@ public class Tool {
   /**
    * whether the protocol is http or https.
    *
-   * @param value value
+   * @param link link
    * @return boolean
    */
-  public static boolean isHttpOrHttps(String value) {
-    return value.startsWith("http://") || value.startsWith("https://");
+  public static boolean isHttpOrHttps(String link) {
+    return link.startsWith("http://") || link.startsWith("https://");
+  }
+
+  /**
+   * is valid link.
+   *
+   * @param link link
+   * @return boolean
+   */
+  public static boolean isValidLink(String link) {
+    return isHttpOrHttps(link) || link.startsWith("/");
   }
 
   /**

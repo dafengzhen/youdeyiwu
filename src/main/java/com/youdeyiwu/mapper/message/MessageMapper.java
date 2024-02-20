@@ -25,6 +25,8 @@ public interface MessageMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "link", ignore = true)
+  @Mapping(target = "links", ignore = true)
   void dtoToEntity(CreateGlobalMessageDto dto, @MappingTarget GlobalMessageEntity entity);
 
   /**
@@ -33,6 +35,8 @@ public interface MessageMapper {
    * @param dto    dto
    * @param entity entity
    */
+  @Mapping(target = "link", ignore = true)
+  @Mapping(target = "links", ignore = true)
   @Mapping(target = "receiver", ignore = true)
   void dtoToEntity(CreateMessageDto dto, @MappingTarget MessageEntity entity);
 
