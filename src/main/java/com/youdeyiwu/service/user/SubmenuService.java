@@ -5,7 +5,7 @@ import com.youdeyiwu.model.dto.user.UpdateRolesSubmenuDto;
 import com.youdeyiwu.model.dto.user.UpdateSubmenuDto;
 import com.youdeyiwu.model.entity.user.SubmenuEntity;
 import com.youdeyiwu.model.vo.user.SubmenuEntityVo;
-import java.util.Set;
+import java.util.List;
 
 /**
  * submenu.
@@ -49,9 +49,9 @@ public interface SubmenuService {
   /**
    * query all.
    *
-   * @return Set
+   * @return List
    */
-  Set<SubmenuEntityVo> queryAll();
+  List<SubmenuEntityVo> queryAll();
 
   /**
    * delete.

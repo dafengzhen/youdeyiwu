@@ -20,8 +20,8 @@ import com.youdeyiwu.repository.user.MenuRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
 import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.service.user.SubmenuService;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -117,7 +117,7 @@ public class SubmenuServiceImpl implements SubmenuService {
   }
 
   @Override
-  public Set<SubmenuEntityVo> queryAll() {
+  public List<SubmenuEntityVo> queryAll() {
     return submenuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
         .stream()
         .map(submenuEntity -> {
@@ -127,7 +127,7 @@ public class SubmenuServiceImpl implements SubmenuService {
           setRoles(vo, submenuEntity);
           return vo;
         })
-        .collect(Collectors.toSet());
+        .toList();
   }
 
   @Transactional
@@ -166,7 +166,8 @@ public class SubmenuServiceImpl implements SubmenuService {
    */
   private void setActions(SubmenuEntityVo vo, SubmenuEntity submenuEntity) {
     vo.setActions(
-        submenuEntity.getActions().stream()
+        submenuEntity.getActions()
+            .stream()
             .map(actionMapper::entityToVo)
             .collect(Collectors.toSet())
     );
@@ -180,7 +181,8 @@ public class SubmenuServiceImpl implements SubmenuService {
    */
   private void setRoles(SubmenuEntityVo vo, SubmenuEntity submenuEntity) {
     vo.setRoles(
-        submenuEntity.getRoles().stream()
+        submenuEntity.getRoles()
+            .stream()
             .map(roleMapper::entityToVo)
             .collect(Collectors.toSet())
     );

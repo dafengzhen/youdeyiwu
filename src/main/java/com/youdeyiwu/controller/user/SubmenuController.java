@@ -7,7 +7,7 @@ import com.youdeyiwu.model.vo.user.SubmenuEntityVo;
 import com.youdeyiwu.service.user.SubmenuService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,7 +68,7 @@ public class SubmenuController {
   }
 
   @GetMapping
-  public ResponseEntity<Set<SubmenuEntityVo>> queryAll() {
+  public ResponseEntity<List<SubmenuEntityVo>> queryAll() {
     return ResponseEntity.ok(submenuService.queryAll());
   }
 

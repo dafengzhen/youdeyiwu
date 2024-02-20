@@ -19,6 +19,7 @@ public record CreateMenuDto(
     String name,
 
     @URL(regexp = "^(http://|https://|/).*", message = "{menu.link.url}")
+    @NotBlank(message = "{menu.link.required}")
     String link,
 
     @PositiveOrZero(message = "{menu.sort.value}")
