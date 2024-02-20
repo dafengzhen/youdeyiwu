@@ -13,7 +13,7 @@ import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
-import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.ReturnPostReviewQueueDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostReviewQueueEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
@@ -105,7 +105,7 @@ public class PostReviewQueueServiceImpl implements PostReviewQueueService {
 
   @Transactional
   @Override
-  public void refund(Long id, RefundPostReviewQueueDto dto) {
+  public void refund(Long id, ReturnPostReviewQueueDto dto) {
     PostReviewQueueEntity postReviewQueueEntity = postReviewQueueRepository.findById(id)
         .orElseThrow(PostReviewQueueNotFoundException::new);
     UserEntity userEntity = userRepository.findById(securityService.getUserId())

@@ -2999,9 +2999,9 @@ paths:
                 $ref: '#/components/schemas/Void'
       tags:
         - posts
-  /posts/review-queues/{id}/refund:
+  /posts/review-queues/{id}/return:
     post:
-      summary: POST posts/review-queues/{id}/refund
+      summary: POST posts/review-queues/{id}/return
       operationId: refund
       parameters:
         - name: id
@@ -3014,7 +3014,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefundPostReviewQueueDto'
+              $ref: '#/components/schemas/ReturnPostReviewQueueDto'
         required: true
       responses:
         '204':
@@ -5085,7 +5085,7 @@ components:
           format: "int64"
           description: "post id"
           required: true
-    RefundPostReviewQueueDto:
+    ReturnPostReviewQueueDto:
       type: "object"
       properties:
         reason:

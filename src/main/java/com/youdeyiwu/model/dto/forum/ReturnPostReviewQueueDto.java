@@ -3,11 +3,11 @@ package com.youdeyiwu.model.dto.forum;
 import java.io.Serializable;
 
 /**
- * refund post review queue.
+ * return post review queue.
  *
  * @param reason reason
  */
-public record RefundPostReviewQueueDto(
+public record ReturnPostReviewQueueDto(
     String reason
 ) implements Serializable {
 

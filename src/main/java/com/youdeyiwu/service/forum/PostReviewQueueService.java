@@ -3,7 +3,7 @@ package com.youdeyiwu.service.forum;
 import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
-import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.ReturnPostReviewQueueDto;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostReviewQueueEntityVo;
@@ -29,7 +29,7 @@ public interface PostReviewQueueService {
    * @param id  id
    * @param dto dto
    */
-  void refund(Long id, RefundPostReviewQueueDto dto);
+  void refund(Long id, ReturnPostReviewQueueDto dto);
 
   /**
    * approved.

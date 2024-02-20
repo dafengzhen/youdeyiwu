@@ -48,7 +48,9 @@ public class I18nTool {
       return "Message template not found";
     }
 
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(args);
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(
+        key -> args.getOrDefault(key, "-").toString()
+    );
     stringSubstitutor.setVariablePrefix("{");
     stringSubstitutor.setVariableSuffix("}");
     return stringSubstitutor.replace(messageTemplate);

@@ -3,7 +3,7 @@ package com.youdeyiwu.controller.forum;
 import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.ReceivePostReviewQueueDto;
-import com.youdeyiwu.model.dto.forum.RefundPostReviewQueueDto;
+import com.youdeyiwu.model.dto.forum.ReturnPostReviewQueueDto;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostReviewQueueEntityVo;
@@ -40,10 +40,10 @@ public class PostReviewQueueController {
     return ResponseEntity.noContent().build();
   }
 
-  @PostMapping(value = "/{id}/refund")
+  @PostMapping(value = "/{id}/return")
   public ResponseEntity<Void> refund(
       @PathVariable Long id,
-      @Valid @RequestBody RefundPostReviewQueueDto dto
+      @Valid @RequestBody ReturnPostReviewQueueDto dto
   ) {
     postReviewQueueService.refund(id, dto);
     return ResponseEntity.noContent().build();
