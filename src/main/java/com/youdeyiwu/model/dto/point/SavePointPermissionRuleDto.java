@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @param requiredPoints     requiredPoints
  */
 public record SavePointPermissionRuleDto(
-    @NotNull
+    @NotNull(message = "{point.permissionRuleName.required}")
     PermissionRuleNameEnum permissionRuleName,
 
     Integer requiredPoints,

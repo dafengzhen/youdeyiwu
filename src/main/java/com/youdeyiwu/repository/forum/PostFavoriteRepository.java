@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface PostFavoriteRepository extends JpaRepositoryImplementation<PostFavoriteEntity, Long>, CustomizedPostRepository {
+public interface PostFavoriteRepository
+    extends JpaRepositoryImplementation<PostFavoriteEntity, Long>, CustomizedPostRepository {
 
   /**
    * findAllByUser.

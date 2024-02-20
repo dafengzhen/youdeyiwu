@@ -21,7 +21,6 @@ import com.youdeyiwu.service.user.ActionService;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -105,11 +104,8 @@ public class ActionServiceImpl implements ActionService {
 
   @Override
   public Set<ActionEntityVo> queryAll() {
-    return StreamSupport.stream(
-            actionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
-                .spliterator(),
-            false
-        )
+    return actionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+        .stream()
         .map(actionEntity -> {
           ActionEntityVo vo = actionMapper.entityToVo(actionEntity);
           setMenu(vo, actionEntity);

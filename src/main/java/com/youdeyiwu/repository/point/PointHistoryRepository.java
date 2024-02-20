@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface PointHistoryRepository extends JpaRepositoryImplementation<PointHistoryEntity, Long>, CustomizedPointHistoryRepository {
+public interface PointHistoryRepository
+    extends JpaRepositoryImplementation<PointHistoryEntity, Long>,
+    CustomizedPointHistoryRepository {
 
 }

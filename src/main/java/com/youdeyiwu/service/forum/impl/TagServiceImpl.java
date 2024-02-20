@@ -13,7 +13,6 @@ import com.youdeyiwu.service.forum.TagService;
 import com.youdeyiwu.tool.I18nTool;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -84,11 +83,8 @@ public class TagServiceImpl implements TagService {
 
   @Override
   public List<TagEntityVo> selectAll() {
-    return StreamSupport.stream(
-            tagRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
-                .spliterator(),
-            false
-        )
+    return tagRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+        .stream()
         .map(tagMapper::entityToVo)
         .toList();
   }

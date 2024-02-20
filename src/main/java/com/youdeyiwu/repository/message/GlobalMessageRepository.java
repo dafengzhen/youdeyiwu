@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface GlobalMessageRepository extends JpaRepositoryImplementation<GlobalMessageEntity, Long>, CustomizedMessageRepository {
+public interface GlobalMessageRepository
+    extends JpaRepositoryImplementation<GlobalMessageEntity, Long>, CustomizedMessageRepository {
 
   /**
    * findAllBySenderIsNull.

@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface PostRepository extends JpaRepositoryImplementation<PostEntity, Long>, CustomizedPostRepository {
+public interface PostRepository
+    extends JpaRepositoryImplementation<PostEntity, Long>, CustomizedPostRepository {
 
   /**
    * findAllByUser.

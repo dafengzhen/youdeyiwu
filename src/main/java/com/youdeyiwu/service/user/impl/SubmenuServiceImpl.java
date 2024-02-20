@@ -23,7 +23,6 @@ import com.youdeyiwu.service.user.SubmenuService;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -119,11 +118,8 @@ public class SubmenuServiceImpl implements SubmenuService {
 
   @Override
   public Set<SubmenuEntityVo> queryAll() {
-    return StreamSupport.stream(
-            submenuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
-                .spliterator(),
-            false
-        )
+    return submenuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+        .stream()
         .map(submenuEntity -> {
           SubmenuEntityVo vo = submenuMapper.entityToVo(submenuEntity);
           setMenu(vo, submenuEntity);

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Set;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * create post.

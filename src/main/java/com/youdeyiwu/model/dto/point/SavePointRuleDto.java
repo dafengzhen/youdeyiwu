@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @param receiverRewardPoints  receiverRewardPoints
  */
 public record SavePointRuleDto(
-    @NotNull
+    @NotNull(message = "{point.ruleName.required}")
     RuleNameEnum ruleName,
 
     Integer initiatorRewardPoints,

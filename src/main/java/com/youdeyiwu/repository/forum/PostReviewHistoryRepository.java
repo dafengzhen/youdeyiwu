@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface PostReviewHistoryRepository extends JpaRepositoryImplementation<PostReviewHistoryEntity, Long> {
+public interface PostReviewHistoryRepository
+    extends JpaRepositoryImplementation<PostReviewHistoryEntity, Long> {
 
 }

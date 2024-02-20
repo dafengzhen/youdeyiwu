@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface UserRepository extends JpaRepositoryImplementation<UserEntity, Long>, CustomizedUserRepository {
+public interface UserRepository
+    extends JpaRepositoryImplementation<UserEntity, Long>, CustomizedUserRepository {
 
   /**
    * existsByUsername.

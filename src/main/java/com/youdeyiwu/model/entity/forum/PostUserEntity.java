@@ -37,7 +37,7 @@ public class PostUserEntity extends IdLessAbstractEntity {
   private Boolean followed = false;
 
   /**
-   *  favorited.
+   * favorited.
    */
   private Boolean favorited = false;
 

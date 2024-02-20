@@ -1,8 +1,6 @@
 package com.youdeyiwu.controller.config;
 
-import com.youdeyiwu.model.dto.config.UpdateJwtConfigDto;
 import com.youdeyiwu.model.dto.config.UpdatePointConfigDto;
-import com.youdeyiwu.model.vo.config.JwtConfigVo;
 import com.youdeyiwu.model.vo.config.PointConfigVo;
 import com.youdeyiwu.service.config.PointConfigService;
 import jakarta.validation.Valid;

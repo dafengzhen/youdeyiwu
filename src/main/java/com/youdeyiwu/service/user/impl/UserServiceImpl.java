@@ -66,7 +66,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -559,10 +558,7 @@ public class UserServiceImpl implements UserService {
    * @return Set
    */
   private Set<MenuEntityVo> getAnonymousUserMenus() {
-    return StreamSupport.stream(
-            menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id")).spliterator(),
-            false
-        )
+    return menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id")).stream()
         .filter(menuEntity -> menuEntity.getRoles().isEmpty())
         .map(menuEntity -> {
           MenuEntityVo vo = menuMapper.entityToVo(menuEntity);

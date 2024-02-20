@@ -1,6 +1,8 @@
 package com.youdeyiwu.mapper.point;
 
 import com.youdeyiwu.config.MapperTemplateConfig;
+import com.youdeyiwu.model.dto.point.SavePointPermissionRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointRuleDto;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.point.PointPermissionRuleEntity;
@@ -11,6 +13,7 @@ import com.youdeyiwu.model.vo.point.PointPermissionRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 /**
  * point.
@@ -19,6 +22,22 @@ import org.mapstruct.Mapping;
  */
 @Mapper(config = MapperTemplateConfig.class)
 public interface PointMapper {
+
+  /**
+   * dtoToEntity.
+   *
+   * @param dto    dto
+   * @param entity entity
+   */
+  void dtoToEntity(SavePointRuleDto dto, @MappingTarget PointRuleEntity entity);
+
+  /**
+   * dtoToEntity.
+   *
+   * @param dto    dto
+   * @param entity entity
+   */
+  void dtoToEntity(SavePointPermissionRuleDto dto, @MappingTarget PointPermissionRuleEntity entity);
 
   /**
    * entityToVo.

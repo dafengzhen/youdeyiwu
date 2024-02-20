@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface PointPermissionRuleRepository extends JpaRepositoryImplementation<PointPermissionRuleEntity, Long> {
+public interface PointPermissionRuleRepository
+    extends JpaRepositoryImplementation<PointPermissionRuleEntity, Long> {
 
   /**
    * findByPermissionRuleName.
@@ -18,5 +19,6 @@ public interface PointPermissionRuleRepository extends JpaRepositoryImplementati
    * @param permissionRuleName permissionRuleName
    * @return Optional
    */
-  Optional<PointPermissionRuleEntity> findByPermissionRuleName(PermissionRuleNameEnum permissionRuleName);
+  Optional<PointPermissionRuleEntity> findByPermissionRuleName(
+      PermissionRuleNameEnum permissionRuleName);
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface SectionGroupRepository extends JpaRepositoryImplementation<SectionGroupEntity, Long> {
+public interface SectionGroupRepository
+    extends JpaRepositoryImplementation<SectionGroupEntity, Long> {
 
 }

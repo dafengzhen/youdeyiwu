@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface PostReviewQueueRepository extends JpaRepositoryImplementation<PostReviewQueueEntity, Long> {
+public interface PostReviewQueueRepository
+    extends JpaRepositoryImplementation<PostReviewQueueEntity, Long> {
 
   /**
    * existsByPost.

@@ -19,7 +19,6 @@ import com.youdeyiwu.service.forum.SectionGroupService;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -102,7 +101,7 @@ public class SectionGroupServiceImpl implements SectionGroupService {
 
   @Override
   public List<SectionGroupEntityVo> selectAll() {
-    return StreamSupport.stream(sectionGroupRepository.findAll().spliterator(), false)
+    return sectionGroupRepository.findAll().stream()
         .map(sectionGroupEntity -> {
           SectionGroupEntityVo vo = sectionGroupMapper.entityToVo(sectionGroupEntity);
           setSections(vo, sectionGroupEntity);

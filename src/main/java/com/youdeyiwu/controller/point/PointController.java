@@ -1,11 +1,11 @@
 package com.youdeyiwu.controller.point;
 
-import com.youdeyiwu.model.dto.point.SavePointRuleDto;
 import com.youdeyiwu.model.dto.point.SavePointPermissionRuleDto;
+import com.youdeyiwu.model.dto.point.SavePointRuleDto;
 import com.youdeyiwu.model.vo.PageVo;
-import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
 import com.youdeyiwu.model.vo.point.PointHistoryEntityVo;
 import com.youdeyiwu.model.vo.point.PointPermissionRuleEntityVo;
+import com.youdeyiwu.model.vo.point.PointRuleEntityVo;
 import com.youdeyiwu.service.point.PointService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -36,23 +36,23 @@ public class PointController {
   @PostMapping(value = "/rules")
   public ResponseEntity<Void> save(@Valid @RequestBody SavePointRuleDto dto) {
     pointService.save(dto);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @PostMapping(value = "/permission-rules")
   public ResponseEntity<Void> save(@Valid @RequestBody SavePointPermissionRuleDto dto) {
     pointService.save(dto);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping(value = "/rules")
   public ResponseEntity<List<PointRuleEntityVo>> queryRules() {
-    return ResponseEntity.ok().body(pointService.queryRules());
+    return ResponseEntity.ok(pointService.queryRules());
   }
 
   @GetMapping(value = "/permission-rules")
   public ResponseEntity<List<PointPermissionRuleEntityVo>> queryPermissionRules() {
-    return ResponseEntity.ok().body(pointService.queryPermissionRules());
+    return ResponseEntity.ok(pointService.queryPermissionRules());
   }
 
   @GetMapping(value = "/histories")
@@ -61,6 +61,6 @@ public class PointController {
       @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
       Pageable pageable
   ) {
-    return ResponseEntity.ok().body(pointService.queryAll(pageable));
+    return ResponseEntity.ok(pointService.queryAll(pageable));
   }
 }

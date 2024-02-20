@@ -23,7 +23,6 @@ import com.youdeyiwu.service.user.MenuService;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -128,11 +127,8 @@ public class MenuServiceImpl implements MenuService {
 
   @Override
   public Set<MenuEntityVo> queryAll() {
-    return StreamSupport.stream(
-            menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
-                .spliterator(),
-            false
-        )
+    return menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+        .stream()
         .map(menuEntity -> {
           MenuEntityVo vo = menuMapper.entityToVo(menuEntity);
           setSubmenus(vo, menuEntity);

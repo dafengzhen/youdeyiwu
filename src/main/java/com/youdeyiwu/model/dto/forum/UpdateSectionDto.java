@@ -8,11 +8,11 @@ import org.hibernate.validator.constraints.URL;
 /**
  * update section.
  *
- * @param name       name
- * @param cover      cover
- * @param overview   overview
- * @param content    content
- * @param sort       sort
+ * @param name     name
+ * @param cover    cover
+ * @param overview overview
+ * @param content  content
+ * @param sort     sort
  */
 public record UpdateSectionDto(
     @Length(min = 1, max = 15, message = "{section.name.size}")
