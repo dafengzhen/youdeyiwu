@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.Set;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * create permission.
@@ -20,7 +21,8 @@ import java.util.Set;
  * @param matchers        matchers
  */
 public record CreatePermissionDto(
-    @NotBlank
+    @Length(min = 1, max = 120, message = "{permission.name.size}")
+    @NotBlank(message = "{permission.name.required}")
     String name,
 
     String alias,
@@ -33,7 +35,7 @@ public record CreatePermissionDto(
 
     Boolean caseInsensitive,
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{permission.sort.value}")
     Integer sort,
 
     Set<Long> matchers

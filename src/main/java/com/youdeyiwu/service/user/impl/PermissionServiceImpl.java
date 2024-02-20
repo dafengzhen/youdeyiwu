@@ -44,6 +44,7 @@ public class PermissionServiceImpl implements PermissionService {
   public PermissionEntity create(CreatePermissionDto dto) {
     PermissionEntity permissionEntity = new PermissionEntity();
     permissionMapper.dtoToEntity(dto, permissionEntity);
+    updateName(dto.name(), permissionEntity);
     updateMatchers(dto.matchers(), permissionEntity);
     permissionRepository.save(permissionEntity);
     return permissionEntity;
@@ -74,6 +75,7 @@ public class PermissionServiceImpl implements PermissionService {
         .orElseThrow(PermissionNotFoundException::new);
 
     permissionMapper.dtoToEntity(dto, permissionEntity);
+    updateName(dto.name(), permissionEntity);
     updateMatchers(dto.matchers(), permissionEntity);
   }
 
@@ -137,6 +139,18 @@ public class PermissionServiceImpl implements PermissionService {
   }
 
   /**
+   * update name.
+   *
+   * @param name             name
+   * @param permissionEntity permissionEntity
+   */
+  private void updateName(String name, PermissionEntity permissionEntity) {
+    if (Objects.nonNull(name)) {
+      permissionEntity.setName(name.trim());
+    }
+  }
+
+  /**
    * update matchers.
    *
    * @param ids              ids
@@ -144,13 +158,14 @@ public class PermissionServiceImpl implements PermissionService {
    */
   private void updateMatchers(Set<Long> ids, PermissionEntity permissionEntity) {
     if (Objects.nonNull(ids)) {
-      Set<PermissionEntity> matchers = ids
-          .stream()
-          .map(pid -> permissionRepository.findById(pid)
-              .orElseThrow(PermissionNotFoundException::new)
-          )
-          .collect(Collectors.toSet());
-      permissionEntity.setMatchers(matchers);
+      permissionEntity.setMatchers(
+          ids
+              .stream()
+              .map(pid -> permissionRepository.findById(pid)
+                  .orElseThrow(PermissionNotFoundException::new)
+              )
+              .collect(Collectors.toSet())
+      );
     }
   }
 }

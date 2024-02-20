@@ -5,6 +5,7 @@ import com.youdeyiwu.enums.permission.MethodTypeEnum;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.Set;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * update permission.
@@ -19,6 +20,7 @@ import java.util.Set;
  * @param matchers        matchers
  */
 public record UpdatePermissionDto(
+    @Length(min = 1, max = 120, message = "{permission.name.size}")
     String name,
 
     String alias,
@@ -31,7 +33,7 @@ public record UpdatePermissionDto(
 
     Boolean caseInsensitive,
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "{permission.sort.value}")
     Integer sort,
 
     Set<Long> matchers
