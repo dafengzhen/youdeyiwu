@@ -14,6 +14,8 @@ import com.youdeyiwu.repository.point.PointPermissionRuleRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.point.PointCoreService;
 import com.youdeyiwu.service.point.PointService;
+import com.youdeyiwu.tool.I18nTool;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -38,6 +40,8 @@ public class PointPermissionRuleNotifier
   private final PointService pointService;
 
   private final PointCoreService pointCoreService;
+
+  private final I18nTool i18nTool;
 
   @Override
   public void onApplicationEvent(PointPermissionRuleApplicationEvent event) {
@@ -64,12 +68,7 @@ public class PointPermissionRuleNotifier
     }
 
     if (securityService.isAnonymous()) {
-      throw new CustomException(
-          """
-              Sorry, the system's points mechanism has been enabled.
-              Unauthenticated users are unable to access this resource
-              """
-      );
+      throw new CustomException(i18nTool.getMessage("point.permissionRule.anonymous"));
     }
 
     handleActions(pointPermissionRuleEntity);
@@ -80,20 +79,19 @@ public class PointPermissionRuleNotifier
    *
    * @param pointPermissionRuleEntity pointPermissionRuleEntity
    */
-  private void handleActions(
-      PointPermissionRuleEntity pointPermissionRuleEntity
-  ) {
+  private void handleActions(PointPermissionRuleEntity pointPermissionRuleEntity) {
     PointEntity pointEntity = pointService.findPointByUserId(securityService.getUserId());
     int points = Math.abs(pointEntity.getPoints());
     int requiredPoints = Math.abs(pointPermissionRuleEntity.getRequiredPoints());
     if (points < requiredPoints) {
       throw new CustomException(
-          """
-              Sorry, you do not have sufficient privileges to access this resource.
-              The required points are %s,
-              and your current points are %s
-               """
-              .formatted(requiredPoints, points)
+          i18nTool.getMessage(
+              "point.permissionRule.points",
+              Map.of(
+                  "requiredPoints", requiredPoints,
+                  "points", points
+              )
+          )
       );
     }
 

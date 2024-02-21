@@ -31,25 +31,26 @@ public class PostReviewStateNotifier
 
   @Override
   public void onApplicationEvent(PostReviewStateApplicationEvent event) {
-    PostEntity entity = (PostEntity) event.getSource();
+    PostEntity postEntity = (PostEntity) event.getSource();
     String currentDateTime = getCurrentDateTime();
-    String reviewReason = entity.getReviewReason();
+    String reviewReason = postEntity.getReviewReason();
 
-    if (Objects.isNull(entity.getUser())) {
+    if (Objects.isNull(postEntity.getUser())) {
       return;
     }
 
-    switch (entity.getReviewState()) {
+    switch (postEntity.getReviewState()) {
       case APPROVED -> {
         sendPostReviewStateMessage(
             "post.reviewState.approved.user.message.name",
             "post.reviewState.approved.user.message.overview",
             Map.of(
+                "name", postEntity.getNameAndId(),
                 "time", currentDateTime,
                 "reason", reviewReason
             ),
-            entity,
-            entity.getUser()
+            postEntity,
+            postEntity.getUser()
         );
       }
       case REJECTED -> {
@@ -57,11 +58,12 @@ public class PostReviewStateNotifier
             "post.reviewState.rejected.user.message.name",
             "post.reviewState.rejected.user.message.overview",
             Map.of(
+                "name", postEntity.getNameAndId(),
                 "time", currentDateTime,
                 "reason", reviewReason
             ),
-            entity,
-            entity.getUser()
+            postEntity,
+            postEntity.getUser()
         );
       }
       case PENDING_REVIEW -> {
@@ -69,13 +71,14 @@ public class PostReviewStateNotifier
             "post.reviewState.pendingReview.user.message.name",
             "post.reviewState.pendingReview.user.message.overview",
             Map.of(
+                "name", postEntity.getNameAndId(),
                 "time", currentDateTime
             ),
-            entity,
-            entity.getUser()
+            postEntity,
+            postEntity.getUser()
         );
       }
-      default -> throw new IllegalStateException("Unexpected value: " + entity.getReviewState());
+      default -> throw new IllegalStateException("Unexpected value: " + postEntity.getReviewState());
     }
   }
 
