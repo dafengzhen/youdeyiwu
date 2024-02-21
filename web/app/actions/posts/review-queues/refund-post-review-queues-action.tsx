@@ -17,7 +17,7 @@ export default async function RefundPostReviewQueuesAction({
   variables: IRefundPostReviewQueuesActionVariables;
 }) {
   const response = await fetch(
-    process.env.API_SERVER + `/posts/review-queues/${id}/refund`,
+    process.env.API_SERVER + `/posts/review-queues/${id}/return`,
     {
       method: POST,
       headers: {

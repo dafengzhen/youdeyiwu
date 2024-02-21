@@ -2,8 +2,18 @@ package com.youdeyiwu.aspect;
 
 import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.event.PointPermissionRuleApplicationEvent;
+import com.youdeyiwu.exception.PostNotFoundException;
+import com.youdeyiwu.exception.SectionNotFoundException;
+import com.youdeyiwu.exception.TagNotFoundException;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.point.PointPermissionRuleEventDto;
+import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.forum.SectionEntity;
+import com.youdeyiwu.model.entity.forum.TagEntity;
+import com.youdeyiwu.repository.forum.PostRepository;
+import com.youdeyiwu.repository.forum.SectionRepository;
+import com.youdeyiwu.repository.forum.TagRepository;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,6 +35,12 @@ import org.springframework.util.StringUtils;
 public class PointPermissionRuleAspect {
 
   private final ApplicationEventPublisher publisher;
+
+  private final PostRepository postRepository;
+
+  private final TagRepository tagRepository;
+
+  private final SectionRepository sectionRepository;
 
   /**
    * create post.
@@ -119,7 +135,20 @@ public class PointPermissionRuleAspect {
    */
   @Before(value = "updatePostByIdAndDtoPointcut(id, dto)", argNames = "id,dto")
   public void updatePostByIdAndDtoBeforeAdvice(Long id, UpdatePostDto dto) {
+    PostEntity postEntity = postRepository.findById(id)
+        .orElseThrow(PostNotFoundException::new);
+
     if (!CollectionUtils.isEmpty(dto.tags())) {
+      List<TagEntity> tags = dto.tags()
+          .stream()
+          .map(tid -> tagRepository.findById(Long.valueOf(tid))
+              .orElseThrow(TagNotFoundException::new))
+          .toList();
+
+      if (postEntity.getTags().containsAll(tags)) {
+        return;
+      }
+
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_TAG
@@ -127,7 +156,10 @@ public class PointPermissionRuleAspect {
       ));
     }
 
-    if (StringUtils.hasText(dto.contentLink())) {
+    if (
+        StringUtils.hasText(dto.contentLink())
+            && !dto.contentLink().equals(postEntity.getContentLink())
+    ) {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_CONTENT_LINK
@@ -135,7 +167,10 @@ public class PointPermissionRuleAspect {
       ));
     }
 
-    if (StringUtils.hasText(dto.cover())) {
+    if (
+        StringUtils.hasText(dto.cover())
+            && !dto.cover().equals(postEntity.getCover())
+    ) {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_COVER_LINK
@@ -144,6 +179,12 @@ public class PointPermissionRuleAspect {
     }
 
     if (Objects.nonNull(dto.sectionId())) {
+      SectionEntity sectionEntity = sectionRepository.findById(dto.sectionId())
+          .orElseThrow(SectionNotFoundException::new);
+      if (Objects.equals(postEntity.getSection(), sectionEntity)) {
+        return;
+      }
+
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_SECTION

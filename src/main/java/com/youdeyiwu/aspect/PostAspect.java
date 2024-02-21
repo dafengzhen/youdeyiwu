@@ -41,7 +41,10 @@ public class PostAspect {
   public void updateStatesAfterAdvice(Long id, UpdateStatesPostDto dto) {
     PostEntity postEntity = postRepository.getReferenceById(id);
 
-    if (Objects.nonNull(dto.reviewState())) {
+    if (
+        Objects.nonNull(dto.reviewState())
+            && dto.reviewState() != postEntity.getOldReviewState()
+    ) {
       publisher.publishEvent(new PostReviewStateApplicationEvent(postEntity));
     }
   }
