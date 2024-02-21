@@ -1,0 +1,18 @@
+INSERT INTO menu_entity (id, created_by, created_on, deleted, updated_by, updated_on, version, link, name, sort)
+VALUES (1, null, now(), false, null, now(), 0, '/admin', 'Backend Mgmt', 17),
+       (2, null, now(), false, null, now(), 0, '/admin/sections', 'Section Mgmt', 16),
+       (3, null, now(), false, null, now(), 0, '/admin/section-groups', 'Section Group Mgmt', 15),
+       (4, null, now(), false, null, now(), 0, '/admin/tags', 'Tag Mgmt', 14),
+       (5, null, now(), false, null, now(), 0, '/admin/tag-groups', 'Tag Group Mgmt', 13),
+       (6, null, now(), false, null, now(), 0, '/admin/posts', 'Post Mgmt', 12),
+       (7, null, now(), false, null, now(), 0, '/admin/comments', 'Comment Mgmt', 11),
+       (8, null, now(), false, null, now(), 0, '/admin/replies', 'Reply Mgmt', 10),
+       (9, null, now(), false, null, now(), 0, '/admin/messages', 'Message Mgmt', 9),
+       (10, null, now(), false, null, now(), 0, '/admin/points', 'Points Mgmt', 8),
+       (11, null, now(), false, null, now(), 0, '/admin/users', 'User Mgmt', 7),
+       (12, null, now(), false, null, now(), 0, '/admin/roles', 'Role Mgmt', 6),
+       (13, null, now(), false, null, now(), 0, '/admin/permissions', 'Permission Mgmt', 5),
+       (14, null, now(), false, null, now(), 0, '/admin/menus', 'Menu Mgmt', 4),
+       (15, null, now(), false, null, now(), 0, '/admin/submenus', 'Submenu Mgmt', 3),
+       (16, null, now(), false, null, now(), 0, '/admin/actions', 'Action Mgmt', 2),
+       (17, null, now(), false, null, now(), 0, '/admin/configs', 'Config Mgmt', 1);

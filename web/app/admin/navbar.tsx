@@ -21,24 +21,29 @@ export default function Navbar({
   const { selectedMenu, setSelectedMenu, setSelectedSubmenu } =
     useContext(AdminContext);
   const segments = useSelectedLayoutSegments();
-  const path = '/admin' + '/' + segments.join('/');
+  const path = '/admin/' + segments.join('/');
 
   useEffect(() => {
-    if (path !== '/admin') {
-      const find = menus.find((item) => item.link.startsWith(path));
+    if (path === '/admin/') {
+      const find = menus.find((item) => item.link === '/admin');
       if (find) {
         setSelectedMenu!(find);
-      } else {
-        for (let i = 0; i < menus.length; i++) {
-          const item = menus[i];
-          const find = item.submenus.find((item) => item.link.startsWith(path));
-          if (find) {
-            setSelectedMenu!(item);
-            setSelectedSubmenu!(find);
-            break;
-          }
-        }
       }
+      return;
+    }
+
+    let selected = menus.find((item) => item.link.startsWith(path));
+    if (!selected) {
+      selected = menus.find((item) =>
+        item.submenus?.find((submenu) => submenu.link.startsWith(path)),
+      );
+    }
+
+    if (selected) {
+      setSelectedMenu!(selected);
+      setSelectedSubmenu!(
+        selected.submenus?.find((submenu) => submenu.link.startsWith(path)),
+      );
     }
   }, []);
 
