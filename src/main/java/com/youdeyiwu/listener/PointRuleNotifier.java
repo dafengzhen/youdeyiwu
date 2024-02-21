@@ -27,7 +27,9 @@ import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.point.PointCoreService;
 import com.youdeyiwu.service.point.PointService;
+import com.youdeyiwu.tool.I18nTool;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -65,6 +67,8 @@ public class PointRuleNotifier
 
   private final ApplicationEventPublisher publisher;
 
+  private final I18nTool i18nTool;
+
   @Override
   public void onApplicationEvent(PointRuleApplicationEvent event) {
     ConfigEntity enable = configRepository.findByTypeAndName(
@@ -85,21 +89,21 @@ public class PointRuleNotifier
 
     PointRuleEntity pointRuleEntity = byRuleName.get();
     switch (dto.ruleName()) {
-      case LIKE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Like Post");
-      case LIKE_COMMENT -> handleActionsOnPosts(dto, pointRuleEntity, "Like Comment");
-      case LIKE_REPLY -> handleActionsOnPosts(dto, pointRuleEntity, "Like Reply");
-      case COMMENT_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Create Comment");
-      case REPLY_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Create Reply");
-      case FOLLOW_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Follow Post");
-      case FAVORITE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Favorite Post");
-      case DISLIKE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Dislike Post");
-      case DISLIKE_COMMENT -> handleActionsOnPosts(dto, pointRuleEntity, "Dislike Comment");
-      case DISLIKE_REPLY -> handleActionsOnPosts(dto, pointRuleEntity, "Dislike Reply");
-      case POST_APPROVED -> handleActionsOnPosts(dto, pointRuleEntity, "Post Approved");
-      case POST_NOT_APPROVED -> handleActionsOnPosts(dto, pointRuleEntity, "Post Not Approved");
-      case POST_PENDING_REVIEW -> handleActionsOnPosts(dto, pointRuleEntity, "Post Pending Review");
-      case VISIT_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Visit Post");
-      case CREATE_POST -> handleActionsOnPosts(dto, pointRuleEntity, "Create Post");
+      case LIKE_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.likePost"));
+      case LIKE_COMMENT -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.likeComment"));
+      case LIKE_REPLY -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.likeReply"));
+      case COMMENT_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.commentPost"));
+      case REPLY_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.replyPost"));
+      case FOLLOW_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.followPost"));
+      case FAVORITE_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.favoritePost"));
+      case DISLIKE_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.dislikePost"));
+      case DISLIKE_COMMENT -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.dislikeComment"));
+      case DISLIKE_REPLY -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.dislikeReply"));
+      case POST_APPROVED -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.postApproved"));
+      case POST_NOT_APPROVED -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.postNotApproved"));
+      case POST_PENDING_REVIEW -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.postPendingReview"));
+      case VISIT_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.visitPost"));
+      case CREATE_POST -> handleActionsOnPosts(dto, pointRuleEntity, i18nTool.getMessage("point.createPost"));
       default -> throw new IllegalStateException("Unexpected value: " + dto.ruleName());
     }
   }
@@ -122,40 +126,45 @@ public class PointRuleNotifier
       updatePointsAndSendMessage(initiatorUser, dto.from(), dto.link(), true, dto, pointRuleEntity);
     }
 
-    if (Boolean.FALSE.equals(dto.onlyInitiator())) {
-      Set<Long> userIds = new HashSet<>();
+    if (Boolean.TRUE.equals(dto.onlyInitiator())) {
+      return;
+    }
 
-      if (!CollectionUtils.isEmpty(dto.receiverUserIds())) {
-        userIds.addAll(dto.receiverUserIds());
+    Set<Long> userIds = new HashSet<>();
+
+    if (!CollectionUtils.isEmpty(dto.receiverUserIds())) {
+      userIds.addAll(dto.receiverUserIds());
+    }
+
+    if (Objects.nonNull(dto.postId())) {
+      PostEntity postEntity = postRepository.findById(dto.postId())
+          .orElseThrow(PostNotFoundException::new);
+
+      if (Objects.equals(postEntity.getUser(), initiatorUser)) {
+        return;
       }
 
-      if (Objects.nonNull(dto.postId())) {
-        PostEntity postEntity = getPostEntity(dto.postId(), initiatorUser);
-        if (Objects.nonNull(postEntity.getUser())) {
-          userIds.add(postEntity.getUser().getId());
-        }
-
-        userIds.forEach(userId -> updatePointsAndSendMessage(
-            getUserEntity(userId),
-            """
-                %s [ %s ]
-                """
-                .formatted(postEntity.getName(), from),
-            "/posts/" + postEntity.getId(),
-            false,
-            dto,
-            pointRuleEntity
-        ));
-      } else {
-        userIds.forEach(userId -> updatePointsAndSendMessage(
-            getUserEntity(userId),
-            dto.from(),
-            dto.link(),
-            false,
-            dto,
-            pointRuleEntity
-        ));
+      if (Objects.nonNull(postEntity.getUser())) {
+        userIds.add(postEntity.getUser().getId());
       }
+
+      userIds.forEach(userId -> updatePointsAndSendMessage(
+          getUserEntity(userId),
+          postEntity.getNameAndId(),
+          postEntity.getLink(),
+          false,
+          dto,
+          pointRuleEntity
+      ));
+    } else {
+      userIds.forEach(userId -> updatePointsAndSendMessage(
+          getUserEntity(userId),
+          dto.from(),
+          dto.link(),
+          false,
+          dto,
+          pointRuleEntity
+      ));
     }
   }
 
@@ -216,16 +225,12 @@ public class PointRuleNotifier
               POINT_REWARD_BY_SYSTEM
           );
           sendMessage(
-              """
-                  Your points have changed, originating from [ %s ].
-                  Points have increased by [ %s ], decreased by [ %s ], and the remaining points are [ %s ]
-                  """
-                  .formatted(
-                      Objects.isNull(from) ? "System service" : from,
-                      flag == SignEnum.POSITIVE ? difference : 0,
-                      flag == SignEnum.NEGATIVE ? difference : 0,
-                      pointEntity.getPoints()
-                  ),
+              Map.of(
+                  "increased", flag == SignEnum.POSITIVE ? difference : 0,
+                  "decreased", flag == SignEnum.NEGATIVE ? difference : 0,
+                  "remaining", pointEntity.getPoints(),
+                  "source", Objects.isNull(from) ? i18nTool.getMessage("point.systemService") : from
+              ),
               link,
               user
           );
@@ -236,22 +241,22 @@ public class PointRuleNotifier
   /**
    * send message.
    *
-   * @param overview overview
-   * @param link     link
-   * @param receiver receiver
+   * @param overviewArgs overviewArgs
+   * @param link         link
+   * @param receiver     receiver
    */
   private void sendMessage(
-      String overview,
+      Map<String, Object> overviewArgs,
       String link,
       UserEntity receiver
   ) {
-    if (Objects.isNull(overview)) {
+    if (Objects.isNull(overviewArgs)) {
       return;
     }
 
     MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setName("Your points have changed");
-    messageEntity.setOverview(overview);
+    messageEntity.setName(i18nTool.getMessage("point.pointRule.message.name"));
+    messageEntity.setOverview(i18nTool.getMessage("point.pointRule.message.overview", overviewArgs));
     messageEntity.setLink(link);
     messageEntity.setReceiver(receiver);
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
@@ -267,19 +272,6 @@ public class PointRuleNotifier
         ? userRepository.findById(securityService.getUserId())
         .orElseThrow(UserNotFoundException::new)
         : null;
-  }
-
-  /**
-   * get post entity.
-   *
-   * @param postId        postId
-   * @param initiatorUser initiatorUser
-   * @return PostEntity
-   */
-  private PostEntity getPostEntity(Long postId, UserEntity initiatorUser) {
-    return postRepository.findById(postId)
-        .filter(postEntity -> !Objects.equals(initiatorUser, postEntity.getUser()))
-        .orElseThrow(PostNotFoundException::new);
   }
 
   /**
