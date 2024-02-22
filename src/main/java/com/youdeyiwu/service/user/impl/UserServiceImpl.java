@@ -538,7 +538,7 @@ public class UserServiceImpl implements UserService {
                     .stream()
                     .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
                     .sorted(
-                        Comparator.comparing(ActionEntity::getSort).reversed()
+                        Comparator.comparing(ActionEntity::getSort)
                             .thenComparing(ActionEntity::getId).reversed()
                     )
                     .map(actionMapper::entityToVo)
@@ -551,7 +551,7 @@ public class UserServiceImpl implements UserService {
                     .stream()
                     .filter(submenuEntity -> submenuEntity.getRoles().isEmpty())
                     .sorted(
-                        Comparator.comparing(SubmenuEntity::getSort).reversed()
+                        Comparator.comparing(SubmenuEntity::getSort)
                             .thenComparing(SubmenuEntity::getId).reversed()
                     )
                     .map(submenuEntity -> {
@@ -561,7 +561,7 @@ public class UserServiceImpl implements UserService {
                               .stream()
                               .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
                               .sorted(
-                                  Comparator.comparing(ActionEntity::getSort).reversed()
+                                  Comparator.comparing(ActionEntity::getSort)
                                       .thenComparing(ActionEntity::getId).reversed()
                               )
                               .map(actionMapper::entityToVo)
@@ -600,7 +600,7 @@ public class UserServiceImpl implements UserService {
                         .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
                             roleEntity))
                         .sorted(
-                            Comparator.comparing(ActionEntity::getSort).reversed()
+                            Comparator.comparing(ActionEntity::getSort)
                                 .thenComparing(ActionEntity::getId).reversed()
                         )
                         .map(actionMapper::entityToVo)
@@ -612,7 +612,7 @@ public class UserServiceImpl implements UserService {
                     .stream()
                     .filter(submenuEntity -> submenuEntity.getRoles().contains(roleEntity))
                     .sorted(
-                        Comparator.comparing(SubmenuEntity::getSort).reversed()
+                        Comparator.comparing(SubmenuEntity::getSort)
                             .thenComparing(SubmenuEntity::getId).reversed()
                     )
                     .map(submenuEntity -> {
@@ -623,7 +623,7 @@ public class UserServiceImpl implements UserService {
                               .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
                                   roleEntity))
                               .sorted(
-                                  Comparator.comparing(ActionEntity::getSort).reversed()
+                                  Comparator.comparing(ActionEntity::getSort)
                                       .thenComparing(ActionEntity::getId).reversed()
                               )
                               .map(actionMapper::entityToVo)

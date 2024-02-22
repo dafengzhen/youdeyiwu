@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
  * @param name name
  */
 public record CreateTagDto(
-    @Length(min = 1, max = 15, message = "{tag.name.size}")
+    @Length(min = 1, max = 50, message = "{tag.name.size}")
     @NotBlank(message = "{tag.name.required}")
     String name
 ) implements Serializable {

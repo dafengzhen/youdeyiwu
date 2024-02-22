@@ -7,7 +7,7 @@ import Box from '@/app/admin/common/box';
 import { trimObjectStrings } from '@/app/common/client';
 import RefundPostReviewQueuesAction from '@/app/actions/posts/review-queues/refund-post-review-queues-action';
 
-export default function CancelReception({ id }: { id: number }) {
+export default function Return({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
     reason: string;

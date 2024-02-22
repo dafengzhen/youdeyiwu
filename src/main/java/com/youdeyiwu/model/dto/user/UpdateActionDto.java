@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
  * @param submenu submenu
  */
 public record UpdateActionDto(
-    @Length(min = 1, max = 15, message = "{action.name.size}")
+    @Length(min = 1, max = 50, message = "{action.name.size}")
     String name,
 
     String alias,

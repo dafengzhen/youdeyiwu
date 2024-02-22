@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
  * @param sort sort
  */
 public record UpdateTagGroupDto(
-    @Length(min = 1, max = 15, message = "{tagGroup.name.size}")
+    @Length(min = 1, max = 50, message = "{tagGroup.name.size}")
     String name,
 
     @PositiveOrZero(message = "{tagGroup.sort.value}")

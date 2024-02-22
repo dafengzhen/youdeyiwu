@@ -6,12 +6,9 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
 import CreateActionAction from '@/app/actions/actions/create-action-action';
-import {
-  TActionName,
-  TActionPage,
-  TActionPageButton,
-} from '@/app/interfaces/menus';
-import { ACTION_PAGE_BUTTONS, ACTION_PAGES } from '@/app/constants';
+import { ACTION_PAGES_DATA } from '@/app/constants';
+
+const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -22,7 +19,9 @@ export default function Create() {
     sort: number;
   }>({
     page: ACTION_PAGES[0] ?? '',
-    button: ACTION_PAGE_BUTTONS[0] ?? '',
+    button: ACTION_PAGES[0]
+      ? (ACTION_PAGES_DATA as any)[ACTION_PAGES[0]][0] ?? ''
+      : '',
     alias: '',
     sort: 0,
   });
@@ -51,9 +50,7 @@ export default function Create() {
         return;
       }
 
-      variables.name = `${variables.page as TActionPage}_${
-        variables.button as TActionPageButton
-      }` as TActionName;
+      variables.name = `${variables.page}#${variables.button}`;
 
       delete variables.page;
       delete variables.button;
@@ -120,7 +117,7 @@ export default function Create() {
             value={form.button}
             aria-label="button"
           >
-            {ACTION_PAGE_BUTTONS.map((item) => {
+            {(ACTION_PAGES_DATA as any)[form.page].map((item: string) => {
               return (
                 <option key={item} value={item}>
                   {item}
@@ -131,6 +128,12 @@ export default function Create() {
           <div className="form-text">
             Then choose an action within that page
           </div>
+          {(ACTION_PAGES_DATA as any)[form.page].length === 0 && (
+            <div className="form-text text-decoration-underline">
+              The current selection has no options available, cannot proceed
+              with the creation
+            </div>
+          )}
         </div>
 
         <div>
@@ -171,7 +174,10 @@ export default function Create() {
 
         <div>
           <button
-            disabled={createActionActionMutation.isPending}
+            disabled={
+              (ACTION_PAGES_DATA as any)[form.page].length === 0 ||
+              createActionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >

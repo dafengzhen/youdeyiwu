@@ -1,10 +1,10 @@
 package com.youdeyiwu.model.dto.user;
 
+import com.youdeyiwu.annotation.UrlIfNotEmpty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 /**
  * create menu.
@@ -14,11 +14,11 @@ import org.hibernate.validator.constraints.URL;
  * @param sort sort
  */
 public record CreateMenuDto(
-    @Length(min = 1, max = 15, message = "{menu.name.size}")
+    @Length(min = 1, max = 50, message = "{menu.name.size}")
     @NotBlank(message = "{menu.name.required}")
     String name,
 
-    @URL(regexp = "^(http://|https://|/).*", message = "{menu.link.url}")
+    @UrlIfNotEmpty(message = "{menu.link.url}")
     @NotBlank(message = "{menu.link.required}")
     String link,
 

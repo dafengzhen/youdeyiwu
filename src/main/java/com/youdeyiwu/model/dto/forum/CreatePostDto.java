@@ -1,10 +1,10 @@
 package com.youdeyiwu.model.dto.forum;
 
+import com.youdeyiwu.annotation.UrlIfNotEmpty;
 import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Set;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 /**
  * create post.
@@ -22,14 +22,14 @@ public record CreatePostDto(
     @NotBlank(message = "{post.name.required}")
     String name,
 
-    @URL(regexp = "^(http://|https://|/).*", message = "{post.cover.url}")
+    @UrlIfNotEmpty(message = "{post.cover.url}")
     String cover,
 
     String overview,
 
     String content,
 
-    @URL(regexp = "^(http://|https://|/).*", message = "{post.contentLink.url}")
+    @UrlIfNotEmpty(message = "{post.contentLink.url}")
     String contentLink,
 
     Set<String> tags,

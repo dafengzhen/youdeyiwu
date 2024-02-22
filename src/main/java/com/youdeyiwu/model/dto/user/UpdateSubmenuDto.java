@@ -1,10 +1,10 @@
 package com.youdeyiwu.model.dto.user;
 
+import com.youdeyiwu.annotation.UrlIfNotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.Set;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 /**
  * update submenu.
@@ -16,10 +16,10 @@ import org.hibernate.validator.constraints.URL;
  * @param actions actions
  */
 public record UpdateSubmenuDto(
-    @Length(min = 1, max = 15, message = "{submenu.name.size}")
+    @Length(min = 1, max = 50, message = "{submenu.name.size}")
     String name,
 
-    @URL(regexp = "^(http://|https://|/).*", message = "{submenu.link.url}")
+    @UrlIfNotEmpty(message = "{submenu.link.url}")
     String link,
 
     @PositiveOrZero(message = "{submenu.sort.value}")

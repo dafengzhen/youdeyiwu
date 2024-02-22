@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
  * @param sort sort
  */
 public record UpdateSectionGroupDto(
-    @Length(min = 1, max = 15, message = "{sectionGroup.name.size}")
+    @Length(min = 1, max = 50, message = "{sectionGroup.name.size}")
     String name,
 
     @PositiveOrZero(message = "{sectionGroup.sort.value}")

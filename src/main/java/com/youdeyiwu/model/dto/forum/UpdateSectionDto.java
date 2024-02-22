@@ -1,9 +1,9 @@
 package com.youdeyiwu.model.dto.forum;
 
+import com.youdeyiwu.annotation.UrlIfNotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.URL;
 
 /**
  * update section.
@@ -15,10 +15,10 @@ import org.hibernate.validator.constraints.URL;
  * @param sort     sort
  */
 public record UpdateSectionDto(
-    @Length(min = 1, max = 15, message = "{section.name.size}")
+    @Length(min = 1, max = 50, message = "{section.name.size}")
     String name,
 
-    @URL(regexp = "^(http://|https://|/).*", message = "{section.cover.url}")
+    @UrlIfNotEmpty(message = "{section.cover.url}")
     String cover,
 
     String overview,

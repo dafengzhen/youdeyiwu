@@ -20,6 +20,8 @@ import com.youdeyiwu.repository.user.MenuRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
 import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.service.user.MenuService;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -165,9 +167,14 @@ public class MenuServiceImpl implements MenuService {
    */
   private void setSubmenus(MenuEntityVo vo, MenuEntity menuEntity) {
     vo.setSubmenus(
-        menuEntity.getSubmenus().stream()
+        menuEntity.getSubmenus()
+            .stream()
+            .sorted(
+                Comparator.comparing(SubmenuEntity::getSort)
+                    .thenComparing(SubmenuEntity::getId).reversed()
+            )
             .map(submenuMapper::entityToVo)
-            .collect(Collectors.toSet())
+            .collect(Collectors.toCollection(LinkedHashSet::new))
     );
   }
 
@@ -179,7 +186,8 @@ public class MenuServiceImpl implements MenuService {
    */
   private void setActions(MenuEntityVo vo, MenuEntity menuEntity) {
     vo.setActions(
-        menuEntity.getActions().stream()
+        menuEntity.getActions()
+            .stream()
             .map(actionMapper::entityToVo)
             .collect(Collectors.toSet())
     );
@@ -193,7 +201,8 @@ public class MenuServiceImpl implements MenuService {
    */
   private void setRoles(MenuEntityVo vo, MenuEntity menuEntity) {
     vo.setRoles(
-        menuEntity.getRoles().stream()
+        menuEntity.getRoles()
+            .stream()
             .map(roleMapper::entityToVo)
             .collect(Collectors.toSet())
     );

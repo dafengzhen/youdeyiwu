@@ -1,5 +1,4 @@
 import { obtainCredentials } from '@/app/common/server';
-import type { TActionPage, TActionPageButton } from '@/app/interfaces/menus';
 
 export const GET = 'GET';
 export const POST = 'POST';
@@ -39,27 +38,31 @@ export const TEST_AUTHENTICATION_HEADER = (tk = '') => {
   };
 };
 
-export const ACTION_PAGES: TActionPage[] = [
-  'Dashboard',
-  'Sections',
-  'Posts',
-  'Tags',
-  'Tag Groups',
-  'Section Groups',
-  'Users',
-  'Roles',
-  'Permissions',
-  'Messages',
-  'Configs',
-  'Menus',
-  'Submenus',
-  'Actions',
-];
-
-export const ACTION_PAGE_BUTTONS: TActionPageButton[] = [
-  'Create',
-  'Delete',
-  'Update',
-  'Query',
-  'Query All',
-];
+export const ACTION_PAGES_DATA = {
+  Dashboard: [],
+  Sections: [
+    'Create',
+    'Update',
+    'Update States',
+    'Update Admins',
+    'Update Tags',
+    'Update Tag Groups',
+    'Delete',
+  ],
+  'Section Groups': ['Create', 'Update', 'Update Sections', 'Delete'],
+  Tags: ['Create', 'Update', 'Delete'],
+  'Tag Groups': ['Create', 'Update', 'Update Tags', 'Delete'],
+  Posts: ['Update States', 'Update Tags', 'Update Section'],
+  'Post Review Queues': ['Receive', 'Return', 'Approved', 'NotApproved'],
+  Comments: [],
+  Messages: ['Create'],
+  'Point Rules': ['Update'],
+  'Point Permissions': ['Update'],
+  Users: ['Create', 'Update States', 'Update Roles', 'Delete'],
+  Roles: ['Create', 'Update', 'Update Permissions', 'Delete'],
+  Permissions: ['Create', 'Update', 'Update Roles', 'Delete'],
+  Menus: ['Create', 'Update', 'Update Roles', 'Delete'],
+  Submenus: ['Create', 'Update', 'Update Roles', 'Delete'],
+  Actions: ['Create', 'Update', 'Update Role', 'Delete'],
+  Configs: [],
+};

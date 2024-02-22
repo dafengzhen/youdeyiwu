@@ -50,7 +50,7 @@ export default function Actions({ data }: { data: IAction[] }) {
           </thead>
           <tbody>
             {content.map((item) => {
-              const actionNames = item.name.split('_');
+              const actionNames = item.name.split('#');
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>

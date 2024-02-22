@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
  * @param sort  sort
  */
 public record CreateActionDto(
-    @Length(min = 1, max = 15, message = "{action.name.size}")
+    @Length(min = 1, max = 50, message = "{action.name.size}")
     @NotBlank(message = "{action.name.required}")
     String name,
 

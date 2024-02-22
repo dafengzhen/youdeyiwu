@@ -26,6 +26,7 @@ public class ActionEntity extends AbstractEntity {
 
   /**
    * name.
+   * example: page#action > section#create
    */
   @Column(nullable = false)
   private String name;

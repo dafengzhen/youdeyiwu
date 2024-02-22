@@ -1,14 +1,15 @@
 .box {
-  width: 14.5rem;
+  width: 15rem;
   direction: rtl;
+  padding-bottom: 7rem;
 }
 
 .boxMarginLeft {
-  margin-left: 14.5rem;
+  margin-left: 15rem;
 }
 
 .boxMarginLeft2 {
-  margin-left: 29rem;
+  margin-left: 30rem;
 }
 
 .box::-webkit-scrollbar {
@@ -26,12 +27,12 @@
 }
 
 .item {
-  width: 10.75rem;
+  width: 11.75rem;
   color: black;
 }
 
 .itemWidth {
-  width: 10.75rem;
+  width: 11.75rem;
 }
 
 .itemHover:hover {
@@ -40,6 +41,10 @@
 
 .itemInfoHover:hover {
   color: rgb(var(--bs-info-rgb)) !important;
+}
+
+.itemSpan {
+  direction: ltr;
 }
 
 .tagBg {

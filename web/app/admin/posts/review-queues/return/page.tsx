@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import { isNum } from '@/app/common/server';
 import { notFound } from 'next/navigation';
-import CancelReception from '@/app/admin/posts/review-queues/cancel-reception/cancel-reception';
+import Return from '@/app/admin/posts/review-queues/return/return';
 
 export const metadata: Metadata = {
   title: 'Cancel Reception',
@@ -17,5 +17,5 @@ export default async function Page({
     notFound();
   }
 
-  return <CancelReception id={parseInt(id)} />;
+  return <Return id={parseInt(id)} />;
 }

@@ -5,19 +5,16 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { nonNum, trimObjectStrings } from '@/app/common/client';
-import {
-  IAction,
-  TActionName,
-  TActionPage,
-  TActionPageButton,
-} from '@/app/interfaces/menus';
+import { IAction } from '@/app/interfaces/menus';
 import UpdateActionAction, {
   IUpdateActionActionVariables,
 } from '@/app/actions/actions/update-action-action';
-import { ACTION_PAGE_BUTTONS, ACTION_PAGES } from '@/app/constants';
+import { ACTION_PAGES_DATA } from '@/app/constants';
+
+const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 
 export default function Update({ action }: { action: IAction }) {
-  const actionNames = (action.name ?? '').split('_');
+  const actionNames = (action.name ?? '').split('#');
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
     page: string;
@@ -28,11 +25,12 @@ export default function Update({ action }: { action: IAction }) {
     submenu: string;
   }>({
     page: actionNames[0] ?? ACTION_PAGES[0] ?? '',
-    button: actionNames[1] ?? ACTION_PAGE_BUTTONS[0] ?? '',
+    button:
+      actionNames[1] ?? (ACTION_PAGES_DATA as any)[ACTION_PAGES[0]][0] ?? '',
     alias: action.alias ?? '',
     sort: action.sort ?? 0,
     menu: (action.menu?.id ?? '') + '' ?? '',
-    submenu: (action.menu?.id ?? '') + '' ?? '',
+    submenu: (action.submenu?.id ?? '') + '' ?? '',
   });
 
   const updateActionActionMutation = useMutation({
@@ -47,8 +45,8 @@ export default function Update({ action }: { action: IAction }) {
       const variables = trimObjectStrings({
         ...form,
       }) as IUpdateActionActionVariables & {
-        page?: TActionPage;
-        button?: TActionPageButton;
+        page?: any;
+        button?: any;
       };
 
       if (!variables.page) {
@@ -65,9 +63,7 @@ export default function Update({ action }: { action: IAction }) {
         return;
       }
 
-      variables.name = `${variables.page as TActionPage}_${
-        variables.button as TActionPageButton
-      }` as TActionName;
+      variables.name = `${variables.page}#${variables.button}`;
 
       delete variables.page;
       delete variables.button;
@@ -144,7 +140,7 @@ export default function Update({ action }: { action: IAction }) {
             value={form.button}
             aria-label="button"
           >
-            {ACTION_PAGE_BUTTONS.map((item) => {
+            {(ACTION_PAGES_DATA as any)[form.page].map((item: string) => {
               return (
                 <option key={item} value={item}>
                   {item}
@@ -225,7 +221,10 @@ export default function Update({ action }: { action: IAction }) {
 
         <div>
           <button
-            disabled={updateActionActionMutation.isPending}
+            disabled={
+              (ACTION_PAGES_DATA as any)[form.page].length === 0 ||
+              updateActionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >

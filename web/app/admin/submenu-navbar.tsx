@@ -54,7 +54,14 @@ export default function SubmenuNavbar() {
                 },
               )}
             >
-              <span className="text-start flex-grow-1">{item.name}</span>
+              <span
+                className={clsx(
+                  'text-start flex-grow-1 text-truncate',
+                  styles.itemSpan,
+                )}
+              >
+                {item.name}
+              </span>
               <i
                 className={clsx(
                   'bi',

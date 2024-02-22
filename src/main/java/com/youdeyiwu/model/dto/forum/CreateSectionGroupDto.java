@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
  * @param name name
  */
 public record CreateSectionGroupDto(
-    @Length(min = 1, max = 15, message = "{sectionGroup.name.size}")
+    @Length(min = 1, max = 50, message = "{sectionGroup.name.size}")
     @NotBlank(message = "{sectionGroup.name.required}")
     String name
 ) implements Serializable {

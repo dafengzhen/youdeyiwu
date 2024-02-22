@@ -20,32 +20,10 @@ export interface ISubmenu extends IBase {
 }
 
 export interface IAction extends IBase {
-  name: TActionName;
+  name: string;
   alias?: string;
   sort: number;
   menu?: IMenu;
   submenu?: ISubmenu;
   role?: IRole;
 }
-
-export type TActionPage =
-  | 'Dashboard'
-  | 'Sections'
-  | 'Posts'
-  | 'Tags'
-  | 'Tag Groups'
-  | 'Section Groups'
-  | 'Users'
-  | 'Roles'
-  | 'Permissions'
-  | 'Messages'
-  | 'Configs'
-  | 'Menus'
-  | 'Submenus'
-  | 'Actions';
-
-export type TActionPageButton = Partial<
-  'Create' | 'Delete' | 'Update' | 'Query' | 'Query All'
->;
-
-export type TActionName = `${TActionPage}_${TActionPageButton}`;
