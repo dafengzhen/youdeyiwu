@@ -26,7 +26,7 @@
     "photoswipe": "^5.4.3",
     "react": "^18",
     "react-dom": "^18",
-    "sanitize-html": "^2.11.0",
+    "sanitize-html": "^2.12.1",
     "sharp": "^0.33.2"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "eslint-config-next": "14.1.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
-    "sass": "^1.71.0",
+    "sass": "^1.71.1",
     "typescript": "^5"
   },
   "repository": {
