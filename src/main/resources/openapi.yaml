@@ -1110,10 +1110,10 @@ paths:
                   $ref: '#/components/schemas/ActionEntityVo'
       tags:
         - actions
-  /actions/{id}/role:
+  /actions/{id}/roles:
     put:
-      summary: PUT actions/{id}/role
-      operationId: updateRole
+      summary: PUT actions/{id}/roles
+      operationId: updateRoles
       parameters:
         - name: id
           in: path
@@ -1125,7 +1125,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateRoleActionDto'
+              $ref: '#/components/schemas/UpdateRolesActionDto'
         required: true
       responses:
         '204':
@@ -4265,12 +4265,14 @@ components:
         sort:
           type: "integer"
           format: "int32"
-    UpdateRoleActionDto:
+    UpdateRolesActionDto:
       type: "object"
       properties:
-        role:
-          type: "integer"
-          format: "int64"
+        roles:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
     UpdateActionDto:
       type: "object"
       properties:

@@ -2,10 +2,13 @@ package com.youdeyiwu.model.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -59,11 +62,16 @@ public class ActionEntity extends AbstractEntity {
   private SubmenuEntity submenu;
 
   /**
-   * role.
+   * roles.
    */
-  @OneToOne
+  @ManyToMany(cascade = {
+      CascadeType.DETACH,
+      CascadeType.MERGE,
+      CascadeType.PERSIST,
+      CascadeType.REFRESH
+  })
   @JsonIgnore
   @ToString.Exclude
-  private RoleEntity role;
+  private Set<RoleEntity> roles = new HashSet<>();
 
 }

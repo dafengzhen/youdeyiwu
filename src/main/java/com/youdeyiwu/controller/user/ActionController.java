@@ -2,7 +2,7 @@ package com.youdeyiwu.controller.user;
 
 import com.youdeyiwu.model.dto.user.CreateActionDto;
 import com.youdeyiwu.model.dto.user.UpdateActionDto;
-import com.youdeyiwu.model.dto.user.UpdateRoleActionDto;
+import com.youdeyiwu.model.dto.user.UpdateRolesActionDto;
 import com.youdeyiwu.model.vo.user.ActionEntityVo;
 import com.youdeyiwu.service.user.ActionService;
 import jakarta.validation.Valid;
@@ -44,12 +44,12 @@ public class ActionController {
         .build();
   }
 
-  @PutMapping(value = "/{id}/role")
-  public ResponseEntity<Void> updateRole(
+  @PutMapping(value = "/{id}/roles")
+  public ResponseEntity<Void> updateRoles(
       @PathVariable Long id,
-      @Valid @RequestBody UpdateRoleActionDto dto
+      @Valid @RequestBody UpdateRolesActionDto dto
   ) {
-    actionService.updateRole(id, dto);
+    actionService.updateRoles(id, dto);
     return ResponseEntity.noContent().build();
   }
 

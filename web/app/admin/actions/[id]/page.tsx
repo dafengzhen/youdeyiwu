@@ -4,7 +4,7 @@ import Delete from '@/app/admin/actions/[id]/delete';
 import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryActionAction from '@/app/actions/actions/query-action-action';
-import UpdateRole from '@/app/admin/actions/[id]/update-role';
+import UpdateRoles from '@/app/admin/actions/[id]/update-roles';
 
 export const metadata: Metadata = {
   title: 'Update Action',
@@ -32,7 +32,7 @@ export default async function Page({
     case 'del':
       return <Delete action={action} />;
     case 'role':
-      return <UpdateRole action={action} />;
+      return <UpdateRoles action={action} />;
     default:
       return <Update action={action} />;
   }

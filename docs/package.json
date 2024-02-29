@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "vitepress": "^1.0.0-rc.42"
+    "vitepress": "^1.0.0-rc.44"
   },
   "peerDependencies": {
     "vue": "^3.4.15"

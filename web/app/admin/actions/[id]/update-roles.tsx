@@ -5,15 +5,18 @@ import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { IAction } from '@/app/interfaces/menus';
-import UpdateRoleActionAction from '@/app/actions/actions/update-role-action-action';
+import UpdateRolesActionAction from '@/app/actions/actions/update-roles-action-action';
 import { nonNum } from '@/app/common/client';
+import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
-export default function UpdateRole({ action }: { action: IAction }) {
+export default function UpdateRoles({ action }: { action: IAction }) {
   const { toast } = useContext(GlobalContext);
-  const [role, setRole] = useState<string>((action.role?.id ?? '') + '');
+  const [roles, setRoles] = useState<string[]>(
+    action.roles.map((item) => item.id + ''),
+  );
 
-  const updateRoleActionActionMutation = useMutation({
-    mutationFn: UpdateRoleActionAction,
+  const updateRolesActionActionMutation = useMutation({
+    mutationFn: UpdateRolesActionAction,
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -21,19 +24,15 @@ export default function UpdateRole({ action }: { action: IAction }) {
       e.stopPropagation();
       e.preventDefault();
 
-      if (role && nonNum(role)) {
-        toast.current.show({
-          type: 'danger',
-          message: 'Please enter a valid role ID',
-        });
-        return;
-      }
+      const _roles = roles
+        .filter((item) => item !== '' && !nonNum(item))
+        .map((item) => parseInt(item));
 
       const id = action.id;
-      await updateRoleActionActionMutation.mutateAsync({
+      await updateRolesActionActionMutation.mutateAsync({
         id,
         variables: {
-          role: parseInt(role),
+          roles: _roles,
         },
       });
 
@@ -42,7 +41,7 @@ export default function UpdateRole({ action }: { action: IAction }) {
         message: 'Roles updated successfully',
       });
     } catch (e: any) {
-      updateRoleActionActionMutation.reset();
+      updateRolesActionActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -54,16 +53,16 @@ export default function UpdateRole({ action }: { action: IAction }) {
     <Box title={`${action.name} (ID. ${action.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Role</label>
-          <input
-            type="text"
-            className="form-control"
-            name="role"
-            value={role}
-            onChange={(event) => setRole(event.target.value)}
-            placeholder="Please enter the role ID"
-            aria-describedby="role"
-          />
+          <label className="form-label">Roles</label>
+          <div className="card rounded-2">
+            <div className="card-body">
+              <SimpleDynamicInput
+                items={roles}
+                setItems={setRoles}
+                showSourceInfo={action.roles}
+              />
+            </div>
+          </div>
           <div className="form-text">
             Please enter the role ID. If you haven&apos;t created a role yet,
             please create a role first
@@ -72,11 +71,11 @@ export default function UpdateRole({ action }: { action: IAction }) {
 
         <div>
           <button
-            disabled={updateRoleActionActionMutation.isPending}
+            disabled={updateRolesActionActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
-            {updateRoleActionActionMutation.isPending
+            {updateRolesActionActionMutation.isPending
               ? 'Updating'
               : 'Update Action Role'}
           </button>

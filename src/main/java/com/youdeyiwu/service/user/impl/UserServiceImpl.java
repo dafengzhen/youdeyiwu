@@ -536,7 +536,7 @@ public class UserServiceImpl implements UserService {
             vo.setActions(
                 menuEntity.getActions()
                     .stream()
-                    .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
+                    .filter(actionEntity -> actionEntity.getRoles().isEmpty())
                     .sorted(
                         Comparator.comparing(ActionEntity::getSort)
                             .thenComparing(ActionEntity::getId).reversed()
@@ -559,7 +559,7 @@ public class UserServiceImpl implements UserService {
                       submenuEntityVo.setActions(
                           submenuEntity.getActions()
                               .stream()
-                              .filter(actionEntity -> Objects.isNull(actionEntity.getRole()))
+                              .filter(actionEntity -> actionEntity.getRoles().isEmpty())
                               .sorted(
                                   Comparator.comparing(ActionEntity::getSort)
                                       .thenComparing(ActionEntity::getId).reversed()
@@ -597,8 +597,7 @@ public class UserServiceImpl implements UserService {
                 vo.setActions(
                     menuEntity.getActions()
                         .stream()
-                        .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
-                            roleEntity))
+                        .filter(actionEntity -> actionEntity.getRoles().contains(roleEntity))
                         .sorted(
                             Comparator.comparing(ActionEntity::getSort)
                                 .thenComparing(ActionEntity::getId).reversed()
@@ -620,8 +619,7 @@ public class UserServiceImpl implements UserService {
                       submenuEntityVo.setActions(
                           submenuEntity.getActions()
                               .stream()
-                              .filter(actionEntity -> Objects.equals(actionEntity.getRole(),
-                                  roleEntity))
+                              .filter(actionEntity -> actionEntity.getRoles().contains(roleEntity))
                               .sorted(
                                   Comparator.comparing(ActionEntity::getSort)
                                       .thenComparing(ActionEntity::getId).reversed()

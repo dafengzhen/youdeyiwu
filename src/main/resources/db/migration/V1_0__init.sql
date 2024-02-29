@@ -155,9 +155,9 @@ create table if not exists point_permission_rule_entity
     updated_by           bigint                                                                                                                                                    null,
     updated_on           datetime(6)                                                                                                                                               null,
     version              smallint                                                                                                                                                  null,
+    operation_cost       int                                                                                                                                                       null,
     permission_rule_name enum ('CREATE_POST', 'CREATE_COMMENT', 'CREATE_REPLY', 'UPDATE_POST', 'ADD_POST_TAG', 'ADD_POST_CONTENT_LINK', 'ADD_POST_COVER_LINK', 'ADD_POST_SECTION') null,
     required_points      int                                                                                                                                                       null,
-    operation_cost       int                                                                                                                                                       null,
     constraint UK_hs5lxfgbbioweo9yadjvc71cq
         unique (permission_rule_name)
 );
@@ -400,16 +400,22 @@ create table if not exists action_entity
     name       varchar(255) not null,
     sort       int          not null,
     menu_id    bigint       null,
-    role_id    bigint       null,
     submenu_id bigint       null,
-    constraint UK_c4yrem3jw4rbreob0v0lsbkp1
-        unique (role_id),
     constraint FK1ebgngak0984tgntr54pd26qg
         foreign key (submenu_id) references submenu_entity (id),
     constraint FK6x66faap9dixvrvu9nwy4uink
-        foreign key (menu_id) references menu_entity (id),
-    constraint FKg8yurqmjqna7nufmkia8ncfmt
-        foreign key (role_id) references role_entity (id)
+        foreign key (menu_id) references menu_entity (id)
+);
+
+create table if not exists action_entity_roles
+(
+    actions_id bigint not null,
+    roles_id   bigint not null,
+    primary key (actions_id, roles_id),
+    constraint FKf4d9rq3mi7yj6pycli5rro2k0
+        foreign key (roles_id) references role_entity (id),
+    constraint FKjfb8cfwifhccn3k6ge4reyrsu
+        foreign key (actions_id) references action_entity (id)
 );
 
 create table if not exists submenu_entity_roles

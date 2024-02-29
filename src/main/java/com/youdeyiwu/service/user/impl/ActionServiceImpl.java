@@ -10,7 +10,7 @@ import com.youdeyiwu.mapper.user.RoleMapper;
 import com.youdeyiwu.mapper.user.SubmenuMapper;
 import com.youdeyiwu.model.dto.user.CreateActionDto;
 import com.youdeyiwu.model.dto.user.UpdateActionDto;
-import com.youdeyiwu.model.dto.user.UpdateRoleActionDto;
+import com.youdeyiwu.model.dto.user.UpdateRolesActionDto;
 import com.youdeyiwu.model.entity.user.ActionEntity;
 import com.youdeyiwu.model.vo.user.ActionEntityVo;
 import com.youdeyiwu.repository.user.ActionRepository;
@@ -20,6 +20,7 @@ import com.youdeyiwu.repository.user.SubmenuRepository;
 import com.youdeyiwu.service.user.ActionService;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -62,11 +63,17 @@ public class ActionServiceImpl implements ActionService {
 
   @Transactional
   @Override
-  public void updateRole(Long id, UpdateRoleActionDto dto) {
+  public void updateRoles(Long id, UpdateRolesActionDto dto) {
     ActionEntity actionEntity = findAction(id);
-    actionEntity.setRole(
-        roleRepository.findById(dto.role()).orElseThrow(RoleNotFoundException::new)
-    );
+
+    if (Objects.nonNull(dto.roles())) {
+      actionEntity.setRoles(
+          dto.roles()
+              .stream()
+              .map(rid -> roleRepository.findById(rid).orElseThrow(RoleNotFoundException::new))
+              .collect(Collectors.toSet())
+      );
+    }
   }
 
   @Transactional
@@ -96,7 +103,7 @@ public class ActionServiceImpl implements ActionService {
     ActionEntityVo vo = actionMapper.entityToVo(actionEntity);
     setMenu(vo, actionEntity);
     setSubmenu(vo, actionEntity);
-    setRole(vo, actionEntity);
+    setRoles(vo, actionEntity);
     return vo;
   }
 
@@ -108,7 +115,7 @@ public class ActionServiceImpl implements ActionService {
           ActionEntityVo vo = actionMapper.entityToVo(actionEntity);
           setMenu(vo, actionEntity);
           setSubmenu(vo, actionEntity);
-          setRole(vo, actionEntity);
+          setRoles(vo, actionEntity);
           return vo;
         })
         .toList();
@@ -153,12 +160,17 @@ public class ActionServiceImpl implements ActionService {
   }
 
   /**
-   * set role.
+   * set roles.
    *
    * @param vo           vo
    * @param actionEntity actionEntity
    */
-  private void setRole(ActionEntityVo vo, ActionEntity actionEntity) {
-    vo.setRole(roleMapper.entityToVo(actionEntity.getRole()));
+  private void setRoles(ActionEntityVo vo, ActionEntity actionEntity) {
+    vo.setRoles(
+        actionEntity.getRoles()
+            .stream()
+            .map(roleMapper::entityToVo)
+            .collect(Collectors.toSet())
+    );
   }
 }

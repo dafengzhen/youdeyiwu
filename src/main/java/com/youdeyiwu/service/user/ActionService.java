@@ -2,7 +2,7 @@ package com.youdeyiwu.service.user;
 
 import com.youdeyiwu.model.dto.user.CreateActionDto;
 import com.youdeyiwu.model.dto.user.UpdateActionDto;
-import com.youdeyiwu.model.dto.user.UpdateRoleActionDto;
+import com.youdeyiwu.model.dto.user.UpdateRolesActionDto;
 import com.youdeyiwu.model.entity.user.ActionEntity;
 import com.youdeyiwu.model.vo.user.ActionEntityVo;
 import java.util.List;
@@ -28,7 +28,7 @@ public interface ActionService {
    * @param id  id
    * @param dto dto
    */
-  void updateRole(Long id, UpdateRoleActionDto dto);
+  void updateRoles(Long id, UpdateRolesActionDto dto);
 
   /**
    * update.

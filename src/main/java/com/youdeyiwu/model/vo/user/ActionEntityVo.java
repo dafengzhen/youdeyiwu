@@ -1,6 +1,7 @@
 package com.youdeyiwu.model.vo.user;
 
 import com.youdeyiwu.model.vo.AbstractEntityVo;
+import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,8 +40,8 @@ public class ActionEntityVo extends AbstractEntityVo {
   private SubmenuEntityVo submenu;
 
   /**
-   * role.
+   * roles.
    */
-  private RoleEntityVo role;
+  private Set<RoleEntityVo> roles;
 
 }

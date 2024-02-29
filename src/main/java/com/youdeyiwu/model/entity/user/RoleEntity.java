@@ -74,6 +74,14 @@ public class RoleEntity extends AbstractEntity {
   private Set<SubmenuEntity> submenus = new HashSet<>();
 
   /**
+   * actions.
+   */
+  @ManyToMany(mappedBy = "roles")
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<ActionEntity> actions = new HashSet<>();
+
+  /**
    * permissions.
    */
   @ManyToMany(cascade = {

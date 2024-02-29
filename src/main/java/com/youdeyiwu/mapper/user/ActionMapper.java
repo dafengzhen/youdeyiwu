@@ -48,6 +48,6 @@ public interface ActionMapper {
    */
   @Mapping(target = "menu", ignore = true)
   @Mapping(target = "submenu", ignore = true)
-  @Mapping(target = "role", ignore = true)
+  @Mapping(target = "roles", ignore = true)
   ActionEntityVo entityToVo(ActionEntity entity);
 }

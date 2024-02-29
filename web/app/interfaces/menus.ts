@@ -25,5 +25,5 @@ export interface IAction extends IBase {
   sort: number;
   menu?: IMenu;
   submenu?: ISubmenu;
-  role?: IRole;
+  roles: IRole[];
 }

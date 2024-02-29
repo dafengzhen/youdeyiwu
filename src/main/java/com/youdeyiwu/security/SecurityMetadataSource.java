@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -48,7 +49,8 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
 
   @Override
   public Collection<ConfigAttribute> getAttributes(Object object) {
-    return requestMap.entrySet().parallelStream()
+    return requestMap.entrySet()
+        .parallelStream()
         .filter(requestMatcherCollectionEntry -> requestMatcherCollectionEntry
             .getKey()
             .matches(((RequestAuthorizationContext) object).getRequest())
@@ -69,8 +71,9 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
    */
   public void initMetadata() {
     UrlPathHelper helper = UrlPathHelper.defaultInstance;
-    permissionRepository.findAll()
+    permissionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
         .forEach(permissionEntity -> update(helper, permissionEntity));
+    System.out.println("xxx");
   }
 
   /**
@@ -124,7 +127,7 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
     requestMap.computeIfPresent(
         requestMatcher,
         (matcher, configAttributes) -> configAttributes
-            .stream()
+            .parallelStream()
             .filter(configAttribute -> !configAttribute.equals(
                     new SecurityConfig(
                         RoleConstant.ROLE_PREFIX + roleEntity.getName() + "_" + roleEntity.getId()
