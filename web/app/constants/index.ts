@@ -63,7 +63,7 @@ export const ACTION_PAGES_DATA = {
   Permissions: ['Create', 'Update', 'Update Roles', 'Delete'],
   Menus: ['Create', 'Update', 'Update Roles', 'Delete'],
   Submenus: ['Create', 'Update', 'Update Roles', 'Delete'],
-  Actions: ['Create', 'Update', 'Update Role', 'Delete'],
+  Actions: ['Create', 'Update', 'Update Roles', 'Delete'],
   JwtConfigs: ['Update'],
   PointConfigs: ['Update'],
 };

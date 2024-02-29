@@ -5,13 +5,12 @@ import com.youdeyiwu.model.entity.user.PermissionEntity;
 import com.youdeyiwu.model.entity.user.RoleEntity;
 import com.youdeyiwu.repository.user.PermissionRepository;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -29,7 +28,6 @@ import org.springframework.web.util.UrlPathHelper;
  *
  * @author dafengzhen
  */
-@Log4j2
 @RequiredArgsConstructor
 @Service
 public class SecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
@@ -70,30 +68,17 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
    * initialize metadata.
    */
   public void initMetadata() {
-    UrlPathHelper helper = UrlPathHelper.defaultInstance;
-    permissionRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
-        .forEach(permissionEntity -> update(helper, permissionEntity));
-    System.out.println("xxx");
+    permissionRepository.findAll().forEach(this::update);
   }
 
   /**
    * update permissions.
    *
-   * @param helper           helper
    * @param permissionEntity permissionEntity
    */
-  public void update(UrlPathHelper helper, PermissionEntity permissionEntity) {
-    Set<PermissionEntity> matchers = permissionEntity.getMatchers();
-    RequestMatcher requestMatcher =
-        matchers.isEmpty()
-            ? getMatcher(permissionEntity, helper)
-            : new AndRequestMatcher(
-            matchers.parallelStream()
-                .map(entity -> getMatcher(entity, helper))
-                .toList()
-        );
+  public void update(PermissionEntity permissionEntity) {
     requestMap.put(
-        requestMatcher,
+        createRequestMatcher(permissionEntity),
         permissionEntity.getRoles()
             .parallelStream()
             .map(roleEntity -> (ConfigAttribute) new SecurityConfig(
@@ -107,25 +92,11 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
   /**
    * remove permissions.
    *
-   * @param helper           helper
    * @param permissionEntity permissionEntity
    */
-  public void remove(
-      UrlPathHelper helper,
-      PermissionEntity permissionEntity,
-      RoleEntity roleEntity
-  ) {
-    Set<PermissionEntity> matchers = permissionEntity.getMatchers();
-    RequestMatcher requestMatcher =
-        matchers.isEmpty()
-            ? getMatcher(permissionEntity, helper)
-            : new AndRequestMatcher(
-            matchers.parallelStream()
-                .map(entity -> getMatcher(entity, helper))
-                .toList()
-        );
+  public void remove(PermissionEntity permissionEntity, RoleEntity roleEntity) {
     requestMap.computeIfPresent(
-        requestMatcher,
+        createRequestMatcher(permissionEntity),
         (matcher, configAttributes) -> configAttributes
             .parallelStream()
             .filter(configAttribute -> !configAttribute.equals(
@@ -139,22 +110,37 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
   }
 
   /**
+   * create request matcher.
+   *
+   * @param permissionEntity permissionEntity
+   * @return RequestMatcher
+   */
+  private RequestMatcher createRequestMatcher(PermissionEntity permissionEntity) {
+    List<PermissionEntity> matchers = permissionEntity.getMatchers()
+        .parallelStream()
+        .sorted(
+            Comparator.comparing(PermissionEntity::getSort)
+                .thenComparing(PermissionEntity::getId).reversed()
+        )
+        .toList();
+    return matchers.isEmpty()
+        ? getMatcher(permissionEntity)
+        : new AndRequestMatcher(matchers.parallelStream().map(this::getMatcher).toList());
+  }
+
+  /**
    * get matcher.
    *
    * @param permissionEntity permissionEntity
-   * @param helper           helper
    * @return RequestMatcher
    */
-  private RequestMatcher getMatcher(
-      PermissionEntity permissionEntity,
-      UrlPathHelper helper
-  ) {
+  private RequestMatcher getMatcher(PermissionEntity permissionEntity) {
     return switch (permissionEntity.getType()) {
       case ANT -> new AntPathRequestMatcher(
           permissionEntity.getName(),
           permissionEntity.getMethod().name(),
           permissionEntity.getCaseInsensitive(),
-          helper
+          UrlPathHelper.defaultInstance
       );
       case REGEX -> new RegexRequestMatcher(
           permissionEntity.getName(),
