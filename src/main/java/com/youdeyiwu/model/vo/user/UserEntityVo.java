@@ -5,7 +5,7 @@ import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostFavoriteEntityVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.model.vo.forum.TagEntityVo;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +47,7 @@ public class UserEntityVo extends AbstractEntityVo {
   /**
    * last login time.
    */
-  private LocalDateTime lastLoginTime;
+  private OffsetDateTime lastLoginTime;
 
   /**
    * root.

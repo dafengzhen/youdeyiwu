@@ -5,7 +5,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -42,13 +42,13 @@ public abstract class IdLessAbstractEntity implements Serializable {
    */
   @CreatedDate
   @Column(nullable = false)
-  private LocalDateTime createdOn;
+  private OffsetDateTime createdOn;
 
   /**
    * updatedOn.
    */
   @LastModifiedDate
-  private LocalDateTime updatedOn;
+  private OffsetDateTime updatedOn;
 
   /**
    * deleted.

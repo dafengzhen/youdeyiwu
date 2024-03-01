@@ -2,20 +2,25 @@
 
 import { type IError, IPage, TQueryParams } from '@/app/interfaces';
 import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus, getQueryParams } from '@/app/common/server';
+import { checkResponseStatus } from '@/app/common/server';
 import { AUTHENTICATION_HEADER } from '@/app/constants';
 import { IRole } from '@/app/interfaces/roles';
+import queryString from 'query-string';
 
 export default async function QueryAllRoleAction(queryParams?: TQueryParams) {
-  let url = process.env.API_SERVER + '/roles';
-  if (queryParams) {
-    url = url + '?' + getQueryParams(queryParams);
-  }
+  const _queryParams = queryParams ?? {};
+  const { url, str } = {
+    url: queryString.stringifyUrl({
+      url: process.env.API_SERVER + '/roles',
+      query: _queryParams,
+    }),
+    str: queryString.stringify(_queryParams),
+  };
 
   const response = await fetch(url, {
     headers: AUTHENTICATION_HEADER(),
     next: {
-      tags: ['/admin/roles'],
+      tags: ['/admin/roles', str],
     },
   });
 

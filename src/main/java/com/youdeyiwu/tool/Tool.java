@@ -10,7 +10,7 @@ import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
@@ -198,7 +198,7 @@ public class Tool {
    * @return String
    */
   public static String getCurrentDateTime() {
-    return getCurrentDateTime(LocalDateTime.now());
+    return getCurrentDateTime(OffsetDateTime.now());
   }
 
   /**
@@ -207,7 +207,7 @@ public class Tool {
    * @param dateTime dateTime
    * @return String
    */
-  public static String getCurrentDateTime(LocalDateTime dateTime) {
+  public static String getCurrentDateTime(OffsetDateTime dateTime) {
     return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }
 

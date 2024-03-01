@@ -5,7 +5,7 @@ import com.youdeyiwu.repository.user.CustomizedUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import java.sql.Date;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,8 +25,8 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository {
 
   @Override
   public List<UsersCountByDateVo> getUsersCountByDate(
-      LocalDateTime startDate,
-      LocalDateTime endDate
+      OffsetDateTime startDate,
+      OffsetDateTime endDate
   ) {
     List<Tuple> tuples = entityManager.createQuery(
             """

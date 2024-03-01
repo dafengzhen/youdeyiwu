@@ -3,8 +3,9 @@
 import { type IError, IPage, TQueryParams } from '@/app/interfaces';
 import FetchDataException from '@/app/exception/fetch-data-exception';
 import { ICommentReply } from '@/app/interfaces/posts';
-import { checkResponseStatus, getQueryParams } from '@/app/common/server';
+import { checkResponseStatus } from '@/app/common/server';
 import { AUTHENTICATION_HEADER } from '@/app/constants';
+import queryString from 'query-string';
 
 export default async function CommentReplyPostAction({
   id,
@@ -13,17 +14,19 @@ export default async function CommentReplyPostAction({
   id: string | number;
   queryParams?: TQueryParams;
 }) {
-  let url = process.env.API_SERVER + `/posts/${id}/comment-reply`;
-  let params = '';
-  if (queryParams) {
-    params = getQueryParams(queryParams);
-    url = url + '?' + params;
-  }
+  const _queryParams = queryParams ?? {};
+  const { url, str } = {
+    url: queryString.stringifyUrl({
+      url: process.env.API_SERVER + `/posts/${id}/comment-reply`,
+      query: _queryParams,
+    }),
+    str: queryString.stringify(_queryParams),
+  };
 
   const response = await fetch(url, {
     headers: AUTHENTICATION_HEADER(),
     next: {
-      tags: [`/posts/${id}/comment-reply` + params ? '?' + params : ''],
+      tags: [`/posts/${id}/comment-reply`, str],
     },
   });
 

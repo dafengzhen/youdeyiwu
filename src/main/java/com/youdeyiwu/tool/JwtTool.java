@@ -6,7 +6,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
 import java.util.Date;
@@ -132,8 +132,11 @@ public class JwtTool {
    * @return Date
    */
   public static Date generateDate(Long amountToAdd, TemporalUnit temporalUnit) {
-    return Date.from(LocalDateTime.now(ZoneOffset.UTC).plus(amountToAdd, temporalUnit)
-        .toInstant(ZoneOffset.UTC));
+    return Date.from(
+        OffsetDateTime.now(ZoneOffset.UTC)
+            .plus(amountToAdd, temporalUnit)
+            .toInstant()
+    );
   }
 
   /**
@@ -143,6 +146,6 @@ public class JwtTool {
    * @return Date
    */
   public static Date generateDate(Duration duration) {
-    return Date.from(LocalDateTime.now(ZoneOffset.UTC).plus(duration).toInstant(ZoneOffset.UTC));
+    return Date.from(OffsetDateTime.now(ZoneOffset.UTC).plus(duration).toInstant());
   }
 }

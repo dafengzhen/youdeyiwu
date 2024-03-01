@@ -3,7 +3,7 @@
 import { cookies, headers } from 'next/headers';
 import { SECURE_TK, TK } from '@/app/constants';
 import { redirect } from 'next/navigation';
-import type { IToken, TQueryParams } from '@/app/interfaces';
+import type { IToken } from '@/app/interfaces';
 import type { IUser } from '@/app/interfaces/users';
 import type { Metadata } from 'next';
 
@@ -25,10 +25,6 @@ export const obtainCredentials = (checkLogin?: boolean) => {
 export const deleteTicket = () => {
   const isHttpsSite = process.env.IS_HTTPS_SITE === 'true';
   cookies().delete(isHttpsSite ? SECURE_TK : TK);
-};
-
-export const getQueryParams = (init?: TQueryParams) => {
-  return new URLSearchParams(init).toString();
 };
 
 export const checkResponseStatus = (status: number) => {

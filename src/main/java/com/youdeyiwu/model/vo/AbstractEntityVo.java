@@ -1,7 +1,7 @@
 package com.youdeyiwu.model.vo;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,12 +33,12 @@ public abstract class AbstractEntityVo implements Serializable {
   /**
    * createdOn.
    */
-  private LocalDateTime createdOn;
+  private OffsetDateTime createdOn;
 
   /**
    * updatedOn.
    */
-  private LocalDateTime updatedOn;
+  private OffsetDateTime updatedOn;
 
   /**
    * deleted.

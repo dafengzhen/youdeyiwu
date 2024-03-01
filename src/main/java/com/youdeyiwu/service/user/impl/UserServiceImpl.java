@@ -53,7 +53,7 @@ import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.user.UserService;
 import com.youdeyiwu.tool.I18nTool;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -327,8 +327,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UsersCountByDateVo> getUsersCountByDate(UsersCountByDateDto dto) {
-    LocalDateTime today = LocalDateTime.now();
-    LocalDateTime pastDate = today.minusDays(Objects.isNull(dto.pastDays()) ? 15 : dto.pastDays());
+    OffsetDateTime today = OffsetDateTime.now();
+    OffsetDateTime pastDate = today.minusDays(Objects.isNull(dto.pastDays()) ? 15 : dto.pastDays());
     return userRepository.getUsersCountByDate(pastDate, today);
   }
 
@@ -422,7 +422,7 @@ public class UserServiceImpl implements UserService {
 
     String token = createJwt(decodeSecret(secret), userEntity.getId(), Duration.ofDays(expDays));
     userEntity.setToken(token);
-    userEntity.setLastLoginTime(LocalDateTime.now());
+    userEntity.setLastLoginTime(OffsetDateTime.now());
     TokenVo tokenVo = new TokenVo();
     tokenVo.setId(userEntity.getId());
     tokenVo.setAlias(userEntity.getAlias());

@@ -17,7 +17,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
  */
 @ConfigurationPropertiesScan
 @EnableSpringDataWebSupport
-@EnableJpaAuditing
+@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
 @Import(ValidatorConfig.class)
 @Configuration
 public class Config {

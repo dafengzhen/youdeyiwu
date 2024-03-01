@@ -18,7 +18,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -85,7 +85,7 @@ public class UserEntity extends AbstractEntity implements UserDetails {
    * last login time.
    */
   @Column(nullable = false)
-  private LocalDateTime lastLoginTime = LocalDateTime.now();
+  private OffsetDateTime lastLoginTime = OffsetDateTime.now();
 
   /**
    * root refers to whether someone is a forum administrator.

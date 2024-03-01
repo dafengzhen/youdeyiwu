@@ -1,3 +1,5 @@
+import type { StringifiableRecord } from 'query-string';
+
 export interface IToken {
   id: number;
   username: string;
@@ -26,11 +28,7 @@ export interface IPageable {
   pages: number;
 }
 
-export type TQueryParams =
-  | string[][]
-  | Record<string, string>
-  | string
-  | URLSearchParams;
+export type TQueryParams = StringifiableRecord;
 
 export interface IQueryParams {
   sgid?: number | string;

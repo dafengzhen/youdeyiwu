@@ -1,7 +1,7 @@
 package com.youdeyiwu.repository.user;
 
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -18,5 +18,8 @@ public interface CustomizedUserRepository {
    * @param endDate   endDate
    * @return List
    */
-  List<UsersCountByDateVo> getUsersCountByDate(LocalDateTime startDate, LocalDateTime endDate);
+  List<UsersCountByDateVo> getUsersCountByDate(
+      OffsetDateTime startDate,
+      OffsetDateTime endDate
+  );
 }

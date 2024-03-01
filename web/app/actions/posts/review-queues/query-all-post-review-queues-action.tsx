@@ -2,22 +2,27 @@
 
 import { type IError, IPage, TQueryParams } from '@/app/interfaces';
 import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus, getQueryParams } from '@/app/common/server';
+import { checkResponseStatus } from '@/app/common/server';
 import { IPost } from '@/app/interfaces/posts';
 import { AUTHENTICATION_HEADER } from '@/app/constants';
+import queryString from 'query-string';
 
 export default async function QueryAllPostReviewQueuesAction(
   queryParams?: TQueryParams,
 ) {
-  let url = process.env.API_SERVER + '/posts/review-queues';
-  if (queryParams) {
-    url = url + '?' + getQueryParams(queryParams);
-  }
+  const _queryParams = queryParams ?? {};
+  const { url, str } = {
+    url: queryString.stringifyUrl({
+      url: process.env.API_SERVER + '/posts/review-queues',
+      query: _queryParams,
+    }),
+    str: queryString.stringify(_queryParams),
+  };
 
   const response = await fetch(url, {
     headers: AUTHENTICATION_HEADER(),
     next: {
-      tags: ['/admin/posts/review-queues'],
+      tags: ['/admin/posts/review-queues', str],
     },
   });
 
