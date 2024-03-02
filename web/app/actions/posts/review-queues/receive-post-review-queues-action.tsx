@@ -1,9 +1,13 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
+import { POST } from '@/app/constants';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IReceivePostReviewQueuesActionVariables {
   latestReviewResultTime: string;
@@ -13,21 +17,23 @@ export interface IReceivePostReviewQueuesActionVariables {
 export default async function ReceivePostReviewQueuesAction(
   variables: IReceivePostReviewQueuesActionVariables,
 ) {
-  const response = await fetch(
-    process.env.API_SERVER + '/posts/review-queues/receive',
-    {
-      method: POST,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+  try {
+    const { url, str } = createRequestUrl('/posts/review-queues/receive');
+    const response = await createRequest({
+      url,
+      options: {
+        method: POST,
+        body: variables,
       },
-      body: JSON.stringify(variables),
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
 }

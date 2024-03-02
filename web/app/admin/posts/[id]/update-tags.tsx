@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { nonNum } from '@/app/common/client';
-import { IPost } from '@/app/interfaces/posts';
-import UpdateTagsPostAction from '@/app/actions/posts/update-tags-post-action';
+import type { IPost } from '@/app/interfaces/posts';
+import UpdateTagsPostAction, {
+  type IUpdateTagsPostActionVariables,
+} from '@/app/actions/posts/update-tags-post-action';
 
 export default function UpdateTags({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function UpdateTags({ post }: { post: IPost }) {
   );
 
   const updateTagsPostActionMutation = useMutation({
-    mutationFn: UpdateTagsPostAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateTagsPostActionVariables;
+    }) => {
+      const response = await UpdateTagsPostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

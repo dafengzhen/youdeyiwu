@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { nonNum } from '@/app/common/client';
-import { ITagGroup } from '@/app/interfaces/tag-groups';
-import UpdateTagsTagGroupAction from '@/app/actions/tag-groups/update-tags-tag-group-action';
+import type { ITagGroup } from '@/app/interfaces/tag-groups';
+import UpdateTagsTagGroupAction, {
+  type IUpdateTagsTagGroupActionVariables,
+} from '@/app/actions/tag-groups/update-tags-tag-group-action';
 
 export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
   );
 
   const updateTagsTagGroupActionMutation = useMutation({
-    mutationFn: UpdateTagsTagGroupAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateTagsTagGroupActionVariables;
+    }) => {
+      const response = await UpdateTagsTagGroupAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

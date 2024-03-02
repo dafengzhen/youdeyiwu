@@ -1,36 +1,35 @@
 'use server';
 
-import { type IError, IPage, TQueryParams } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus } from '@/app/common/server';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { IPermission } from '@/app/interfaces/permissions';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { IPermission } from '@/app/interfaces/permissions';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryAllPermissionAction(
   queryParams?: TQueryParams,
 ) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + '/permissions',
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl('/permissions', queryParams);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/permissions', str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/admin/permissions', str],
-    },
-  });
+    const data = (await response.json()) as IPage<IPermission[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<IPermission[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<IPermission[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<IPermission[]>;
 }

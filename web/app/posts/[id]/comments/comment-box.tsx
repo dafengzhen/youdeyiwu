@@ -1,5 +1,5 @@
-import { IPostDetails } from '@/app/interfaces/posts';
-import { ChangeEvent, useContext, useState } from 'react';
+import type { IPostDetails } from '@/app/interfaces/posts';
+import { type ChangeEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { PostIdContext } from '@/app/contexts/postid';
 import {
@@ -8,7 +8,9 @@ import {
   trimObjectStrings,
 } from '@/app/common/client';
 import { useMutation } from '@tanstack/react-query';
-import CreateCommentAction from '@/app/actions/comments/create-comment-action';
+import CreateCommentAction, {
+  type ICreateCommentActionVariables,
+} from '@/app/actions/comments/create-comment-action';
 import { sanitizeHtmlContent } from '@/app/common/editor';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -30,7 +32,12 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
   }
 
   const createCommentActionMutation = useMutation({
-    mutationFn: CreateCommentAction,
+    mutationFn: async (variables: ICreateCommentActionVariables) => {
+      const response = await CreateCommentAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   function onClickCancelReplyBox() {

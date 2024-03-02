@@ -4,14 +4,16 @@ import Box from '@/app/admin/common/box';
 import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { ISection, ISectionState } from '@/app/interfaces/sections';
+import type { ISection, ISectionState } from '@/app/interfaces/sections';
 import {
   convertToCamelCase,
   nonNum,
   removeDuplicatesByProperty,
 } from '@/app/common/client';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
-import UpdateStatesSectionAction from '@/app/actions/sections/update-states-section-action';
+import UpdateStatesSectionAction, {
+  type IUpdateStatesSectionActionVariables,
+} from '@/app/actions/sections/update-states-section-action';
 
 interface IState {
   id: number | string;
@@ -49,7 +51,15 @@ export default function UpdateStates({ section }: { section: ISection }) {
   );
 
   const updateStatesSectionActionMutation = useMutation({
-    mutationFn: UpdateStatesSectionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateStatesSectionActionVariables;
+    }) => {
+      const response = await UpdateStatesSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

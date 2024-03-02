@@ -1,34 +1,44 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
-import { checkResponseStatus, getXRealIp } from '@/app/common/server';
+import { POST } from '@/app/constants';
+import { getXRealIp } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function ViewPagePostAction(variables: {
   id: number | string;
 }) {
-  const id = getXRealIp();
-  if (!id) {
-    console.info('The IP address is empty, skip recording post page views');
-    return;
-  }
+  try {
+    const id = getXRealIp();
+    if (!id) {
+      return createErrorResponse(
+        'The IP address is empty, skip recording post page views',
+      );
+    }
 
-  const response = await fetch(
-    process.env.API_SERVER + `/posts/${variables.id}/view-page?ip=${id}`,
-    {
-      method: POST,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+    const { url } = createRequestUrl(
+      `/posts/${variables.id}/view-page?ip=${id}`,
+    );
+    const response = await createRequest({
+      url,
+      options: {
+        method: POST,
+        body: variables,
       },
-      body: JSON.stringify(variables),
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
 }

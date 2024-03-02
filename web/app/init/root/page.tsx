@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
 import InitRoot from '@/app/init/root/root';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Init Root',
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return <InitRoot currentUser={await LoginInfoUserAction()} />;
+  const response = await LoginInfoUserAction();
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
+  return <InitRoot currentUser={response.data} />;
 }

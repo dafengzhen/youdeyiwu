@@ -1,10 +1,14 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
+import { PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IUpdateActionActionVariables {
   name?: string;
@@ -21,22 +25,27 @@ export default async function UpdateActionAction({
   id: number;
   variables: IUpdateActionActionVariables;
 }) {
-  const response = await fetch(process.env.API_SERVER + `/actions/${id}`, {
-    method: PUT,
-    headers: {
-      ...AUTHENTICATION_HEADER(),
-      ...JSON_HEADER,
-    },
-    body: JSON.stringify(variables),
-    cache: 'no-store',
-  });
+  try {
+    const { url, str } = createRequestUrl(`/actions/${id}`);
+    const response = await createRequest({
+      url,
+      options: {
+        method: PUT,
+        body: variables,
+        cache: 'no-store',
+      },
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/actions');
+    revalidateTag(`/admin/actions/${id}`);
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/actions');
-  revalidateTag(`/admin/actions/${id}`);
 }

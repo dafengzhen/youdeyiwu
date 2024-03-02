@@ -5,8 +5,10 @@ import { ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { getUserAlias } from '@/app/common/client';
-import { IUser } from '@/app/interfaces/users';
-import UpdateStatesUserAction from '@/app/actions/users/update-states-user-action';
+import type { IUser } from '@/app/interfaces/users';
+import UpdateStatesUserAction, {
+  type IUpdateStatesUserActionVariables,
+} from '@/app/actions/users/update-states-user-action';
 
 export default function UpdateStates({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
@@ -23,7 +25,15 @@ export default function UpdateStates({ user }: { user: IUser }) {
   });
 
   const updateStatesUserActionMutation = useMutation({
-    mutationFn: UpdateStatesUserAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateStatesUserActionVariables;
+    }) => {
+      const response = await UpdateStatesUserAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

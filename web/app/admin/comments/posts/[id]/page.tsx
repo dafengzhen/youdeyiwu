@@ -1,13 +1,13 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { errorContent, isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/server';
 import CommentReply from '@/app/admin/comments/posts/[id]/comment-reply';
 import QueryDetailsPostAction from '@/app/actions/posts/query-details-post-action';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import UpdateState from '@/app/admin/comments/posts/[id]/update-state';
 import QueryCommentAction from '@/app/actions/comments/query-comment-action';
 import QueryReplyAction from '@/app/actions/replies/query-reply-action';
-import ClientErrorHandler from '@/app/common/client-error-handler';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Comment',
@@ -45,28 +45,51 @@ export default async function Page({
       notFound();
     }
 
-    const details = cid
-      ? await QueryCommentAction({ id: cid })
-      : await QueryReplyAction({
-          id: rid!,
-        });
+    const responses = await Promise.all([
+      QueryCommentAction({ id: cid as string }),
+      QueryReplyAction({
+        id: rid!,
+      }),
+    ]);
+    const commentResponse = responses[0];
+    const replyResponse = responses[1];
+
+    if (commentResponse.isError) {
+      return <ErrorPage message={commentResponse.message} />;
+    }
+
+    if (replyResponse.isError) {
+      return <ErrorPage message={replyResponse.message} />;
+    }
+
     return (
       <UpdateState
-        details={details}
+        details={cid ? commentResponse.data : replyResponse.data}
         cid={cid ? parseInt(cid) : undefined}
         rid={rid ? parseInt(rid) : undefined}
       />
     );
   }
 
-  try {
-    return (
-      <CommentReply
-        details={await QueryDetailsPostAction({ id })}
-        currentUser={await LoginInfoUserAction()}
-      />
-    );
-  } catch (e) {
-    return <ClientErrorHandler message={errorContent(e)} />;
+  const responses = await Promise.all([
+    QueryDetailsPostAction({ id }),
+    LoginInfoUserAction(),
+  ]);
+  const postResponse = responses[0];
+  const currentUserResponse = responses[1];
+
+  if (postResponse.isError) {
+    return <ErrorPage message={postResponse.message} />;
   }
+
+  if (currentUserResponse.isError) {
+    return <ErrorPage message={currentUserResponse.message} />;
+  }
+
+  return (
+    <CommentReply
+      details={postResponse.data}
+      currentUser={currentUserResponse.data}
+    />
+  );
 }

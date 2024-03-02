@@ -13,7 +13,12 @@ export default function Delete({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
 
   const deleteSectionActionMutation = useMutation({
-    mutationFn: DeleteSectionAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

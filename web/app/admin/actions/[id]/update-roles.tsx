@@ -4,8 +4,10 @@ import Box from '@/app/admin/common/box';
 import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { IAction } from '@/app/interfaces/menus';
-import UpdateRolesActionAction from '@/app/actions/actions/update-roles-action-action';
+import type { IAction } from '@/app/interfaces/menus';
+import UpdateRolesActionAction, {
+  type IUpdateRolesActionActionVariables,
+} from '@/app/actions/actions/update-roles-action-action';
 import { nonNum } from '@/app/common/client';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
@@ -16,7 +18,15 @@ export default function UpdateRoles({ action }: { action: IAction }) {
   );
 
   const updateRolesActionActionMutation = useMutation({
-    mutationFn: UpdateRolesActionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateRolesActionActionVariables;
+    }) => {
+      const response = await UpdateRolesActionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

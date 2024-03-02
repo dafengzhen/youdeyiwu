@@ -1,34 +1,33 @@
 'use server';
 
-import { IError, IPage, TQueryParams } from '@/app/interfaces';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { IPost } from '@/app/interfaces/posts';
-import { checkResponseStatus } from '@/app/common/server';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { IPost } from '@/app/interfaces/posts';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function SelectAllPostAction(queryParams?: TQueryParams) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + '/posts/select-all',
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl('/posts/select-all', queryParams);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/posts/select-all', str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/posts/select-all', str],
-    },
-  });
+    const data = (await response.json()) as IPage<IPost[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<IPost[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<IPost[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<IPost[]>;
 }

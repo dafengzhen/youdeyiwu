@@ -1,10 +1,14 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { IReplyReviewState } from '@/app/interfaces/replies';
+import type { IError } from '@/app/interfaces';
+import { PUT } from '@/app/constants';
+import type { IReplyReviewState } from '@/app/interfaces/replies';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IUpdateStateReplyActionVariables {
   reviewState: IReplyReviewState;
@@ -18,22 +22,24 @@ export default async function UpdateStateReplyAction({
   id: number;
   variables: IUpdateStateReplyActionVariables;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/replies/${id}/state`,
-    {
-      method: PUT,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+  try {
+    const { url, str } = createRequestUrl(`/replies/${id}/state`);
+    const response = await createRequest({
+      url,
+      options: {
+        method: PUT,
+        body: variables,
+        cache: 'no-store',
       },
-      body: JSON.stringify(variables),
-      cache: 'no-store',
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
 }

@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { IRole } from '@/app/interfaces/roles';
+import type { IError } from '@/app/interfaces';
+import type { IRole } from '@/app/interfaces/roles';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryRoleAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/roles/${variables.id}`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/roles/${variables.id}`],
+  try {
+    const { url } = createRequestUrl(`/roles/${variables.id}`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/roles/${variables.id}`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as IRole | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IRole | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IRole);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IRole;
 }

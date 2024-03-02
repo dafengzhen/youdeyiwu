@@ -5,14 +5,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { IRole } from '@/app/interfaces/roles';
+import type { IRole } from '@/app/interfaces/roles';
 import DeleteRoleAction from '@/app/actions/roles/delete-role-action';
 
 export default function Delete({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
 
   const deleteRoleActionMutation = useMutation({
-    mutationFn: DeleteRoleAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteRoleAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

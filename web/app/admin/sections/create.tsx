@@ -15,7 +15,12 @@ export default function Create() {
   });
 
   const createSectionActionMutation = useMutation({
-    mutationFn: CreateSectionAction,
+    mutationFn: async (variables: { name: string }) => {
+      const response = await CreateSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

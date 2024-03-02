@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import MenusUserAction from '@/app/actions/users/menus-user-action';
 import { Providers } from '@/app/admin/providers';
@@ -8,8 +8,22 @@ export default async function RootLayout({
 }: {
   children: ReactNode;
 }) {
-  const user = await LoginInfoUserAction();
-  const menus = await MenusUserAction();
+  let user;
+  let menus;
+  const responses = await Promise.all([
+    LoginInfoUserAction(),
+    MenusUserAction(),
+  ]);
+  const userResponse = responses[0];
+  const menuResponse = responses[1];
+
+  if (userResponse.isSuccess) {
+    user = userResponse.data;
+  }
+
+  if (menuResponse.isSuccess) {
+    menus = menuResponse.data;
+  }
 
   return (
     <div className="row mx-0">

@@ -1,9 +1,9 @@
-import { ISection } from '@/app/interfaces/sections';
+import type { ISection } from '@/app/interfaces/sections';
 import Nodata from '@/app/common/nodata';
 import Link from 'next/link';
-import { TQueryParams } from '@/app/interfaces';
+import type { TQueryParams } from '@/app/interfaces';
 import clsx from 'clsx';
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Sections({

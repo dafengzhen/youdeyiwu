@@ -1,19 +1,27 @@
 'use server';
 
 import type { IError, IHealth } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function HealthAction() {
-  const response = await fetch(process.env.API_SERVER + '/actuator/health', {
-    headers: AUTHENTICATION_HEADER(),
-  });
+  try {
+    const { url, str } = createRequestUrl('/actuator/health');
+    const response = await createRequest({
+      url,
+    });
 
-  const data = (await response.json()) as IHealth | IError;
-  if (!response.ok) {
-    console.error(data);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IHealth | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IHealth);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IHealth;
 }

@@ -3,13 +3,13 @@
 import LoadMore from '@/app/home/load-more';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
-import { IPage } from '@/app/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import type { IPage } from '@/app/interfaces';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/common/nodata';
-import { ITagGroup } from '@/app/interfaces/tag-groups';
+import type { ITagGroup } from '@/app/interfaces/tag-groups';
 import QueryAllTagGroupAction from '@/app/actions/tag-groups/query-all-tag-group-action';
 
 export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
@@ -20,7 +20,14 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
   const tagGroupsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/tag-groups', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllTagGroupAction({ page: context.pageParam.page + '' });
+      const response = await QueryAllTagGroupAction({
+        page: context.pageParam.page + '',
+      });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

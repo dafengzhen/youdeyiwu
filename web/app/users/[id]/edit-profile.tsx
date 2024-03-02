@@ -1,9 +1,11 @@
-import { TTabId } from '@/app/users/[id]/userid';
+import type { TTabId } from '@/app/users/[id]/userid';
 import clsx from 'clsx';
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
-import { IUserDetails } from '@/app/interfaces/users';
+import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
+import type { IUserDetails } from '@/app/interfaces/users';
 import { useMutation } from '@tanstack/react-query';
-import UpdateProfileUserAction from '@/app/actions/users/update-profile-user-action';
+import UpdateProfileUserAction, {
+  type IUpdateProfileUserActionVariables,
+} from '@/app/actions/users/update-profile-user-action';
 import { GlobalContext } from '@/app/contexts';
 import { trimObjectStrings } from '@/app/common/client';
 
@@ -26,7 +28,15 @@ export default function EditProfile({
   });
 
   const updateProfileUserActionMutation = useMutation({
-    mutationFn: UpdateProfileUserAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateProfileUserActionVariables;
+    }) => {
+      const response = await UpdateProfileUserAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

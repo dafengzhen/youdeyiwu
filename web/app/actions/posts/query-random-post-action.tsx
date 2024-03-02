@@ -1,24 +1,33 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { IPost } from '@/app/interfaces/posts';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
+import type { IError } from '@/app/interfaces';
+import type { IPost } from '@/app/interfaces/posts';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryRandomPostAction() {
-  const response = await fetch(process.env.API_SERVER + '/posts/random', {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/admin/posts/random'],
-    },
-  });
+  try {
+    const { url } = createRequestUrl('/posts/random');
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/posts/random'],
+        },
+      },
+    });
 
-  const data = (await response.json()) as IPost[] | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IPost[] | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IPost[]);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPost[];
 }

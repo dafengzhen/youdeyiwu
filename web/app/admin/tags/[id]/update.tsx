@@ -5,8 +5,10 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import { ITag } from '@/app/interfaces/tags';
-import UpdateTagAction from '@/app/actions/tags/update-tag-action';
+import type { ITag } from '@/app/interfaces/tags';
+import UpdateTagAction, {
+  type IUpdateTagActionVariables,
+} from '@/app/actions/tags/update-tag-action';
 
 export default function Update({ tag }: { tag: ITag }) {
   const { toast } = useContext(GlobalContext);
@@ -19,7 +21,15 @@ export default function Update({ tag }: { tag: ITag }) {
   });
 
   const updateTagActionMutation = useMutation({
-    mutationFn: UpdateTagAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateTagActionVariables;
+    }) => {
+      const response = await UpdateTagAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

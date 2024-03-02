@@ -4,9 +4,11 @@ import Box from '@/app/admin/common/box';
 import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { ISection } from '@/app/interfaces/sections';
+import type { ISection } from '@/app/interfaces/sections';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
-import UpdateAdminsSectionAction from '@/app/actions/sections/update-admins-section-action';
+import UpdateAdminsSectionAction, {
+  type IUpdateAdminsSectionActionVariables,
+} from '@/app/actions/sections/update-admins-section-action';
 import { nonNum } from '@/app/common/client';
 
 export default function UpdateAdmins({ section }: { section: ISection }) {
@@ -16,7 +18,15 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
   );
 
   const updateAdminsSectionActionMutation = useMutation({
-    mutationFn: UpdateAdminsSectionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateAdminsSectionActionVariables;
+    }) => {
+      const response = await UpdateAdminsSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

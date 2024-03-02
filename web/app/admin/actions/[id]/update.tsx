@@ -5,9 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { nonNum, trimObjectStrings } from '@/app/common/client';
-import { IAction } from '@/app/interfaces/menus';
+import type { IAction } from '@/app/interfaces/menus';
 import UpdateActionAction, {
-  IUpdateActionActionVariables,
+  type IUpdateActionActionVariables,
 } from '@/app/actions/actions/update-action-action';
 import { ACTION_PAGES_DATA } from '@/app/constants';
 
@@ -34,7 +34,15 @@ export default function Update({ action }: { action: IAction }) {
   });
 
   const updateActionActionMutation = useMutation({
-    mutationFn: UpdateActionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateActionActionVariables;
+    }) => {
+      const response = await UpdateActionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

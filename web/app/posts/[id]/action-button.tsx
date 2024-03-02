@@ -1,4 +1,4 @@
-import { IPostDetails } from '@/app/interfaces/posts';
+import type { IPostDetails } from '@/app/interfaces/posts';
 import { useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { PostIdContext } from '@/app/contexts/postid';
@@ -20,10 +20,20 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
   const [favouriteProcessing, setFavouriteProcessing] = useState(false);
 
   const likePostActionMutation = useMutation({
-    mutationFn: LikePostAction,
+    mutationFn: async (variables: { id: number | string }) => {
+      const response = await LikePostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const favoritePostActionMutation = useMutation({
-    mutationFn: FavoritePostAction,
+    mutationFn: async (variables: { id: number | string }) => {
+      const response = await FavoritePostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onClickLike() {

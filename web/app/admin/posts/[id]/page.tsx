@@ -7,6 +7,7 @@ import UpdateStates from '@/app/admin/posts/[id]/update-states';
 import UpdateTags from '@/app/admin/posts/[id]/update-tags';
 import UpdateSection from '@/app/admin/posts/[id]/update-section';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Post',
@@ -26,25 +27,39 @@ export default async function Page({
   };
 }) {
   const id = params.id;
-  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
   if (!isNum(id)) {
     notFound();
   }
 
-  const post = await QueryPostAction({ id });
+  const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
+  const responses = await Promise.all([
+    QueryPostAction({ id }),
+    SelectAllSectionAction({ sectionKey }),
+  ]);
+  const postResponse = responses[0];
+  const sectionResponse = responses[1];
+
+  if (postResponse.isError) {
+    return <ErrorPage message={postResponse.message} />;
+  }
+
+  if (sectionResponse.isError) {
+    return <ErrorPage message={sectionResponse.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete post={post} />;
+      return <Delete post={postResponse.data} />;
     case 'states':
-      return <UpdateStates post={post} />;
+      return <UpdateStates post={postResponse.data} />;
     case 'tags':
-      return <UpdateTags post={post} />;
+      return <UpdateTags post={postResponse.data} />;
     case 'section':
       return (
         <UpdateSection
-          post={post}
-          sections={await SelectAllSectionAction({ sectionKey })}
+          post={postResponse.data}
+          sections={sectionResponse.data}
         />
       );
     default:

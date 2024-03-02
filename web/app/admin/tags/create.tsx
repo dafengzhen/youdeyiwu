@@ -15,7 +15,12 @@ export default function Create() {
   });
 
   const createTagActionMutation = useMutation({
-    mutationFn: CreateTagAction,
+    mutationFn: async (variables: { name: string }) => {
+      const response = await CreateTagAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

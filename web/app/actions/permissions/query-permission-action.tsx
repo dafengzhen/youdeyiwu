@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { IPermission } from '@/app/interfaces/permissions';
+import type { IError } from '@/app/interfaces';
+import type { IPermission } from '@/app/interfaces/permissions';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryPermissionAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/permissions/${variables.id}`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/permissions/${variables.id}`],
+  try {
+    const { url, str } = createRequestUrl(`/permissions/${variables.id}`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/permissions/${variables.id}`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as IPermission | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IPermission | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IPermission);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPermission;
 }

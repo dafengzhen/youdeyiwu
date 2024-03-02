@@ -4,6 +4,7 @@ import Delete from '@/app/admin/tags/[id]/delete';
 import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryTagAction from '@/app/actions/tags/query-tag-action';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Tag',
@@ -25,12 +26,16 @@ export default async function Page({
     notFound();
   }
 
-  const tag = await QueryTagAction({ id });
+  const response = await QueryTagAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete tag={tag} />;
+      return <Delete tag={response.data} />;
     default:
-      return <Update tag={tag} />;
+      return <Update tag={response.data} />;
   }
 }

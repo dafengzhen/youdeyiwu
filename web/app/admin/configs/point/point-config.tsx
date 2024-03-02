@@ -5,8 +5,10 @@ import Box from '@/app/admin/common/box';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import { IPointConfig } from '@/app/interfaces/configs';
-import UpdatePointConfigAction from '@/app/actions/configs/point/update-point-config-action';
+import type { IPointConfig } from '@/app/interfaces/configs';
+import UpdatePointConfigAction, {
+  type IUpdatePointActionVariables,
+} from '@/app/actions/configs/point/update-point-config-action';
 
 export default function PointConfig({ config }: { config: IPointConfig }) {
   const { toast } = useContext(GlobalContext);
@@ -19,7 +21,12 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
   });
 
   const updatePointConfigActionMutation = useMutation({
-    mutationFn: UpdatePointConfigAction,
+    mutationFn: async (variables: IUpdatePointActionVariables) => {
+      const response = await UpdatePointConfigAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

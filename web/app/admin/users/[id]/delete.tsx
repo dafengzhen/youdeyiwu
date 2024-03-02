@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { IUser } from '@/app/interfaces/users';
+import type { IUser } from '@/app/interfaces/users';
 import DeleteUserAction from '@/app/actions/users/delete-user-action';
 import { getUserAlias } from '@/app/common/client';
 
@@ -13,7 +13,12 @@ export default function Delete({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
 
   const deleteUserActionMutation = useMutation({
-    mutationFn: DeleteUserAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteUserAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

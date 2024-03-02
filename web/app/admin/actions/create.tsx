@@ -5,7 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import CreateActionAction from '@/app/actions/actions/create-action-action';
+import CreateActionAction, {
+  type ICreateActionActionVariables,
+} from '@/app/actions/actions/create-action-action';
 import { ACTION_PAGES_DATA } from '@/app/constants';
 
 const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
@@ -27,7 +29,12 @@ export default function Create() {
   });
 
   const createActionActionMutation = useMutation({
-    mutationFn: CreateActionAction,
+    mutationFn: async (variables: ICreateActionActionVariables) => {
+      const response = await CreateActionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

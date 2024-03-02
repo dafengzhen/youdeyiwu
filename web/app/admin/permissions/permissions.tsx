@@ -3,13 +3,13 @@
 import LoadMore from '@/app/home/load-more';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
-import { IPage } from '@/app/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import type { IPage } from '@/app/interfaces';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/common/nodata';
-import { IPermission } from '@/app/interfaces/permissions';
+import type { IPermission } from '@/app/interfaces/permissions';
 import QueryAllPermissionAction from '@/app/actions/permissions/query-all-permission-action';
 
 export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
@@ -20,7 +20,14 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
   const permissionsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/permissions', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllPermissionAction({ page: context.pageParam.page + '' });
+      const response = await QueryAllPermissionAction({
+        page: context.pageParam.page + '',
+      });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

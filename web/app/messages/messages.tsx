@@ -2,14 +2,14 @@
 
 import LoadMore from '@/app/home/load-more';
 import Nodata from '@/app/common/nodata';
-import { IPage } from '@/app/interfaces';
-import { IMessage } from '@/app/interfaces/messages';
+import type { IPage } from '@/app/interfaces';
+import type { IMessage } from '@/app/interfaces/messages';
 import { useContext, useEffect, useState } from 'react';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import QueryAllMessageAction from '@/app/actions/messages/query-all-message-action';
 import { GlobalContext } from '@/app/contexts';
 import { fromNow, isHttpOrHttps } from '@/app/common/client';
-import { IUser } from '@/app/interfaces/users';
+import type { IUser } from '@/app/interfaces/users';
 import DeleteMessageAction from '@/app/actions/messages/delete-message-action';
 import UpdateStateMessageAction from '@/app/actions/messages/update-state-message-action';
 import UpdateStateGlobalMessageAction from '@/app/actions/messages/update-state-global-message-action';
@@ -29,9 +29,14 @@ export default function Messages({
   const messagesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/messages', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllMessageAction({
+      const response = await QueryAllMessageAction({
         page: context.pageParam.page + '',
       });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {
@@ -59,13 +64,28 @@ export default function Messages({
   });
 
   const deleteMessageActionMutation = useMutation({
-    mutationFn: DeleteMessageAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteMessageAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const updateStateMessageActionMutation = useMutation({
-    mutationFn: UpdateStateMessageAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await UpdateStateMessageAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const updateStateGlobalMessageActionMutation = useMutation({
-    mutationFn: UpdateStateGlobalMessageAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await UpdateStateGlobalMessageAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   useEffect(() => {

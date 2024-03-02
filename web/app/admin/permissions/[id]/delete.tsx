@@ -5,14 +5,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { IPermission } from '@/app/interfaces/permissions';
+import type { IPermission } from '@/app/interfaces/permissions';
 import DeletePermissionAction from '@/app/actions/permissions/delete-permission-action';
 
 export default function Delete({ permission }: { permission: IPermission }) {
   const { toast } = useContext(GlobalContext);
 
   const deletePermissionActionMutation = useMutation({
-    mutationFn: DeletePermissionAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeletePermissionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

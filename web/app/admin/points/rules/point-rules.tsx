@@ -2,12 +2,14 @@
 
 import Box from '@/app/admin/common/box';
 import Nodata from '@/app/common/nodata';
-import { IPointRule, RuleNameEnum } from '@/app/interfaces/points';
+import { type IPointRule, RuleNameEnum } from '@/app/interfaces/points';
 import { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import SaveRulesPointsAction from '@/app/actions/points/rules/save-rules-points-action';
+import SaveRulesPointsAction, {
+  type ISaveRulesPointsActionVariables,
+} from '@/app/actions/points/rules/save-rules-points-action';
 
 const tips = {
   LIKE_POST: 'earning points for liking a post',
@@ -49,7 +51,12 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
   const [saving, setSaving] = useState(false);
 
   const saveRulesPointsActionMutation = useMutation({
-    mutationFn: SaveRulesPointsAction,
+    mutationFn: async (variables: ISaveRulesPointsActionVariables) => {
+      const response = await SaveRulesPointsAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   function onClickUpdate() {

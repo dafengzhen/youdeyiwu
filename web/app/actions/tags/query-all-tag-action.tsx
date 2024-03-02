@@ -1,34 +1,33 @@
 'use server';
 
-import { type IError, IPage, TQueryParams } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus } from '@/app/common/server';
-import { ITag } from '@/app/interfaces/tags';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { ITag } from '@/app/interfaces/tags';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryAllTagAction(queryParams?: TQueryParams) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + '/tags',
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl('/tags', queryParams);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/tags', str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/admin/tags', str],
-    },
-  });
+    const data = (await response.json()) as IPage<ITag[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<ITag[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<ITag[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<ITag[]>;
 }

@@ -1,9 +1,9 @@
-import { ISectionGroup } from '@/app/interfaces/section-groups';
+import type { ISectionGroup } from '@/app/interfaces/section-groups';
 import Nodata from '@/app/common/nodata';
 import Link from 'next/link';
-import { TQueryParams } from '@/app/interfaces';
+import type { TQueryParams } from '@/app/interfaces';
 import { useRouter } from 'next/navigation';
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import clsx from 'clsx';
 
 export default function SectionGroups({

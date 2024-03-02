@@ -5,7 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import Box from '@/app/admin/common/box';
 import { trimObjectStrings } from '@/app/common/client';
-import RefundPostReviewQueuesAction from '@/app/actions/posts/review-queues/refund-post-review-queues-action';
+import RefundPostReviewQueuesAction, {
+  type IRefundPostReviewQueuesActionVariables,
+} from '@/app/actions/posts/review-queues/refund-post-review-queues-action';
 
 export default function Return({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function Return({ id }: { id: number }) {
   });
 
   const refundPostReviewQueuesActionMutation = useMutation({
-    mutationFn: RefundPostReviewQueuesAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IRefundPostReviewQueuesActionVariables;
+    }) => {
+      const response = await RefundPostReviewQueuesAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onClickButton() {

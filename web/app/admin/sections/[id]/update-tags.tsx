@@ -4,10 +4,12 @@ import Box from '@/app/admin/common/box';
 import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { ISection } from '@/app/interfaces/sections';
+import type { ISection } from '@/app/interfaces/sections';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { nonNum } from '@/app/common/client';
-import UpdateTagsSectionAction from '@/app/actions/sections/update-tags-section-action';
+import UpdateTagsSectionAction, {
+  type IUpdateTagsSectionActionVariables,
+} from '@/app/actions/sections/update-tags-section-action';
 
 export default function UpdateTags({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function UpdateTags({ section }: { section: ISection }) {
   );
 
   const updateTagsSectionActionMutation = useMutation({
-    mutationFn: UpdateTagsSectionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateTagsSectionActionVariables;
+    }) => {
+      const response = await UpdateTagsSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

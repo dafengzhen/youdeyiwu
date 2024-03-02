@@ -3,12 +3,12 @@
 import LoadMore from '@/app/home/load-more';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
-import { IPage } from '@/app/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import type { IPage } from '@/app/interfaces';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { IPost } from '@/app/interfaces/posts';
+import type { IPost } from '@/app/interfaces/posts';
 import QueryAllPostAction from '@/app/actions/posts/query-all-post-action';
 import Nodata from '@/app/common/nodata';
 import { convertToCamelCase } from '@/app/common/client';
@@ -21,7 +21,14 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/posts', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllPostAction({ page: context.pageParam.page + '' });
+      const response = await QueryAllPostAction({
+        page: context.pageParam.page + '',
+      });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

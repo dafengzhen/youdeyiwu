@@ -5,14 +5,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { ITag } from '@/app/interfaces/tags';
+import type { ITag } from '@/app/interfaces/tags';
 import DeleteTagAction from '@/app/actions/tags/delete-tag-action';
 
 export default function Delete({ tag }: { tag: ITag }) {
   const { toast } = useContext(GlobalContext);
 
   const deleteTagActionMutation = useMutation({
-    mutationFn: DeleteTagAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteTagAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { IPage, TQueryParams } from '@/app/interfaces';
-import { IPost } from '@/app/interfaces/posts';
+import type { IPage, TQueryParams } from '@/app/interfaces';
+import type { IPost } from '@/app/interfaces/posts';
 import LoadMore from '@/app/home/load-more';
 import Nodata from '@/app/common/nodata';
 import { useContext, useEffect, useState } from 'react';
@@ -29,10 +29,16 @@ export default function Posts({
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/posts', queryParams, 'infinite'],
     queryFn: async (context) => {
-      return SelectAllPostAction({
+      const response = await SelectAllPostAction({
         ...(queryParams as Record<string, string>),
         page: context.pageParam.page + '',
       });
+
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

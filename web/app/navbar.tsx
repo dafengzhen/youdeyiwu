@@ -1,18 +1,18 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { IUser } from '@/app/interfaces/users';
+import type { IUser } from '@/app/interfaces/users';
 import { getUserAlias } from '@/app/common/server';
-import { IMenu } from '@/app/interfaces/menus';
-import { IPage } from '@/app/interfaces';
-import { IMessage } from '@/app/interfaces/messages';
+import type { IMenu } from '@/app/interfaces/menus';
+import type { IPage } from '@/app/interfaces';
+import type { IMessage } from '@/app/interfaces/messages';
 
 export default async function Navbar({
   user,
   menus,
   messages,
 }: {
-  user: IUser | null;
-  menus: IMenu[];
+  user: IUser | null | undefined;
+  menus: IMenu[] | null | undefined;
   messages?: IPage<IMessage[]>;
 }) {
   let id;
@@ -109,7 +109,7 @@ export default async function Navbar({
                   </Link>
                 </li>
 
-                {menus.length > 0 && (
+                {menus && menus.length > 0 && (
                   <>
                     <li>
                       <hr className="dropdown-divider" />

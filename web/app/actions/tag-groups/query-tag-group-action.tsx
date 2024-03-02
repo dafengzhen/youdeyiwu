@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { ITagGroup } from '@/app/interfaces/tag-groups';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
+import type { IError } from '@/app/interfaces';
+import type { ITagGroup } from '@/app/interfaces/tag-groups';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryTagGroupAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/tag-groups/${variables.id}`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/tag-groups/${variables.id}`],
+  try {
+    const { url, str } = createRequestUrl(`/tag-groups/${variables.id}`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/tag-groups/${variables.id}`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as ITagGroup | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as ITagGroup | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as ITagGroup);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as ITagGroup;
 }

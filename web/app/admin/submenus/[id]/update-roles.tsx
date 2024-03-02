@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { nonNum } from '@/app/common/client';
-import { ISubmenu } from '@/app/interfaces/menus';
-import UpdateRolesSubmenuAction from '@/app/actions/submenus/update-roles-submenu-action';
+import type { ISubmenu } from '@/app/interfaces/menus';
+import UpdateRolesSubmenuAction, {
+  type IUpdateRolesSubmenuActionVariables,
+} from '@/app/actions/submenus/update-roles-submenu-action';
 
 export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
   );
 
   const updateRolesSubmenuActionMutation = useMutation({
-    mutationFn: UpdateRolesSubmenuAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateRolesSubmenuActionVariables;
+    }) => {
+      const response = await UpdateRolesSubmenuAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

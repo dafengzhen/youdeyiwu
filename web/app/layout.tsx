@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import '@/styles/global.scss';
-import React, { type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Providers } from '@/app/providers';
 import Navbar from '@/app/navbar';
 import Footer from '@/app/footer';
@@ -9,8 +9,6 @@ import clsx from 'clsx';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import MenusUserAction from '@/app/actions/users/menus-user-action';
 import QueryAllMessageAction from '@/app/actions/messages/query-all-message-action';
-import { IMessage } from '@/app/interfaces/messages';
-import { IPage } from '@/app/interfaces';
 
 import('@popperjs/core');
 
@@ -57,13 +55,29 @@ export default async function RootLayout({
 }: {
   children: ReactNode;
 }) {
-  const user = await LoginInfoUserAction();
-  const menus = await MenusUserAction();
-  const isLogin = !!user;
+  let user;
+  let menus;
+  let messages;
 
-  let messages: IPage<IMessage[]> | undefined;
-  if (isLogin) {
-    messages = await QueryAllMessageAction();
+  const responses = await Promise.all([
+    LoginInfoUserAction(),
+    MenusUserAction(),
+  ]);
+  const userResponse = responses[0];
+  const menusResponse = responses[1];
+
+  if (userResponse.isSuccess) {
+    user = userResponse.data;
+  }
+  if (menusResponse.isSuccess) {
+    menus = menusResponse.data;
+  }
+
+  if (!!user) {
+    const messageResponse = await QueryAllMessageAction();
+    if (messageResponse.isSuccess) {
+      messages = messageResponse.data;
+    }
   }
 
   return (

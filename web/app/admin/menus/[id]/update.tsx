@@ -5,9 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { nonNum, trimObjectStrings } from '@/app/common/client';
-import { IMenu } from '@/app/interfaces/menus';
+import type { IMenu } from '@/app/interfaces/menus';
 import UpdateMenuAction, {
-  IUpdateMenuActionVariables,
+  type IUpdateMenuActionVariables,
 } from '@/app/actions/menus/update-menu-action';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
@@ -30,7 +30,15 @@ export default function Update({ menu }: { menu: IMenu }) {
   );
 
   const updateMenuActionMutation = useMutation({
-    mutationFn: UpdateMenuAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateMenuActionVariables;
+    }) => {
+      const response = await UpdateMenuAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

@@ -5,8 +5,10 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import { ITagGroup } from '@/app/interfaces/tag-groups';
-import UpdateTagGroupAction from '@/app/actions/tag-groups/update-tag-group-action';
+import type { ITagGroup } from '@/app/interfaces/tag-groups';
+import UpdateTagGroupAction, {
+  type IUpdateTagGroupActionVariables,
+} from '@/app/actions/tag-groups/update-tag-group-action';
 
 export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);
@@ -19,7 +21,15 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
   });
 
   const updateTagGroupActionMutation = useMutation({
-    mutationFn: UpdateTagGroupAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateTagGroupActionVariables;
+    }) => {
+      const response = await UpdateTagGroupAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

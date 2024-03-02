@@ -6,14 +6,19 @@ import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import Link from 'next/link';
 import RefreshAction from '@/app/actions/refresh-action';
-import { IPost } from '@/app/interfaces/posts';
+import type { IPost } from '@/app/interfaces/posts';
 import DeletePostAction from '@/app/actions/posts/delete-post-action';
 
 export default function Delete({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);
 
   const deletePostActionMutation = useMutation({
-    mutationFn: DeletePostAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeletePostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

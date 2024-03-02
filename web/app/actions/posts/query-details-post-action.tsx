@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { IPostDetails } from '@/app/interfaces/posts';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
+import type { IError } from '@/app/interfaces';
+import type { IPostDetails } from '@/app/interfaces/posts';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryDetailsPostAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/posts/${variables.id}/details`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/posts/${variables.id}/details`],
+  try {
+    const { url } = createRequestUrl(`/posts/${variables.id}/details`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/posts/${variables.id}/details`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as IPostDetails | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IPostDetails | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IPostDetails);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPostDetails;
 }

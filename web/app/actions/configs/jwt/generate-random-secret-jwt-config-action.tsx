@@ -1,23 +1,27 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function GenerateRandomSecretJwtConfigAction() {
-  const response = await fetch(
-    process.env.API_SERVER + '/configs/jwt/generate-random-secret',
-    {
-      headers: AUTHENTICATION_HEADER(),
-    },
-  );
+  try {
+    const { url } = createRequestUrl('/configs/jwt/generate-random-secret');
+    const response = await createRequest({
+      url,
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(await response.text());
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return await response.text();
 }

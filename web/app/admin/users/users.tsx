@@ -3,13 +3,13 @@
 import LoadMore from '@/app/home/load-more';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
-import { IPage } from '@/app/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import type { IPage } from '@/app/interfaces';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/common/nodata';
-import { IUser } from '@/app/interfaces/users';
+import type { IUser } from '@/app/interfaces/users';
 import QueryAllUserAction from '@/app/actions/users/query-all-user-action';
 
 export default function Users({ data }: { data: IPage<IUser[]> }) {
@@ -20,7 +20,14 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
   const usersInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/users', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllUserAction({ page: context.pageParam.page + '' });
+      const response = await QueryAllUserAction({
+        page: context.pageParam.page + '',
+      });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

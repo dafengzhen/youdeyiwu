@@ -2,6 +2,7 @@ import { type Metadata } from 'next';
 import Sections from '@/app/sections/sections';
 import SelectAllSectionGroupAction from '@/app/actions/section-groups/select-all-section-group-action';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Contents',
@@ -16,10 +17,25 @@ export default async function Page({
   };
 }) {
   const sectionKey = searchParams.sectionKey ?? searchParams.sKey;
+  const responses = await Promise.all([
+    SelectAllSectionGroupAction(),
+    SelectAllSectionAction({ sectionKey }),
+  ]);
+  const sectionGroupResponse = responses[0];
+  const sectionResponse = responses[1];
+
+  if (sectionGroupResponse.isError) {
+    return <ErrorPage message={sectionGroupResponse.message} />;
+  }
+
+  if (sectionResponse.isError) {
+    return <ErrorPage message={sectionResponse.message} />;
+  }
+
   return (
     <Sections
-      sectionGroups={await SelectAllSectionGroupAction()}
-      sections={(await SelectAllSectionAction({ sectionKey })).filter(
+      sectionGroups={sectionGroupResponse.data}
+      sections={sectionResponse.data.filter(
         (item) => item.sectionGroups.length === 0,
       )}
     />

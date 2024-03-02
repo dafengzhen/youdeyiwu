@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryActionAction from '@/app/actions/actions/query-action-action';
 import UpdateRoles from '@/app/admin/actions/[id]/update-roles';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Action',
@@ -26,14 +27,18 @@ export default async function Page({
     notFound();
   }
 
-  const action = await QueryActionAction({ id });
+  const response = await QueryActionAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete action={action} />;
+      return <Delete action={response.data} />;
     case 'role':
-      return <UpdateRoles action={action} />;
+      return <UpdateRoles action={response.data} />;
     default:
-      return <Update action={action} />;
+      return <Update action={response.data} />;
   }
 }

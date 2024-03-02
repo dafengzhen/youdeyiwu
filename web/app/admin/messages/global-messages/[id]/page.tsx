@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryGlobalMessageAction from '@/app/actions/messages/query-global-message-action';
 import Details from '@/app/admin/messages/global-messages/[id]/details';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Global Message',
@@ -29,6 +30,10 @@ export default async function Page({
     notFound();
   }
 
-  const message = await QueryGlobalMessageAction({ id });
-  return <Details message={message} />;
+  const response = await QueryGlobalMessageAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
+  return <Details message={response.data} />;
 }

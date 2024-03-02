@@ -1,10 +1,14 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
+import { PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IUpdateTagsTagGroupActionVariables {
   tags?: number[];
@@ -17,25 +21,27 @@ export default async function UpdateTagsTagGroupAction({
   id: number;
   variables: IUpdateTagsTagGroupActionVariables;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/tag-groups/${id}/tags`,
-    {
-      method: PUT,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+  try {
+    const { url, str } = createRequestUrl(`/tag-groups/${id}/tags`);
+    const response = await createRequest({
+      url,
+      options: {
+        method: PUT,
+        body: variables,
+        cache: 'no-store',
       },
-      body: JSON.stringify(variables),
-      cache: 'no-store',
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/tag-groups');
+    revalidateTag(`/admin/tag-groups/${id}`);
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/tag-groups');
-  revalidateTag(`/admin/tag-groups/${id}`);
 }

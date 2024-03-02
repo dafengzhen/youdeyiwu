@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
 import GenerateRandomSecretJwtConfigAction from '@/app/actions/configs/jwt/generate-random-secret-jwt-config-action';
-import UpdateJwtConfigAction from '@/app/actions/configs/jwt/update-jwt-config-action';
-import { IJwtConfig } from '@/app/interfaces/configs';
+import UpdateJwtConfigAction, {
+  type IUpdateJwtActionVariables,
+} from '@/app/actions/configs/jwt/update-jwt-config-action';
+import type { IJwtConfig } from '@/app/interfaces/configs';
 
 export default function JwtConfig({ config }: { config: IJwtConfig }) {
   const { toast } = useContext(GlobalContext);
@@ -18,10 +20,22 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
   });
 
   const generateRandomSecretJwtConfigActionMutation = useMutation({
-    mutationFn: GenerateRandomSecretJwtConfigAction,
+    mutationFn: async () => {
+      const response = await GenerateRandomSecretJwtConfigAction();
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
+    },
   });
   const updateJwtConfigActionMutation = useMutation({
-    mutationFn: UpdateJwtConfigAction,
+    mutationFn: async (variables: IUpdateJwtActionVariables) => {
+      const response = await UpdateJwtConfigAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

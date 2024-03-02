@@ -3,8 +3,8 @@
 import styles from '@/app/admin/admin.module.scss';
 import clsx from 'clsx';
 import MyAdmin from '@/app/admin/my-admin';
-import { IUser } from '@/app/interfaces/users';
-import { IMenu } from '@/app/interfaces/menus';
+import type { IUser } from '@/app/interfaces/users';
+import type { IMenu } from '@/app/interfaces/menus';
 import { useContext, useEffect } from 'react';
 import { AdminContext } from '@/app/contexts/admin';
 import Nodata from '@/app/common/nodata';
@@ -15,26 +15,27 @@ export default function Navbar({
   user,
   menus,
 }: {
-  user: IUser | null;
-  menus: IMenu[];
+  user: IUser | null | undefined;
+  menus: IMenu[] | null | undefined;
 }) {
   const { selectedMenu, setSelectedMenu, setSelectedSubmenu } =
     useContext(AdminContext);
   const segments = useSelectedLayoutSegments();
   const path = '/admin/' + segments.join('/');
+  const _menus = menus ?? [];
 
   useEffect(() => {
     if (path === '/admin/') {
-      const find = menus.find((item) => item.link === '/admin');
+      const find = _menus.find((item) => item.link === '/admin');
       if (find) {
         setSelectedMenu!(find);
       }
       return;
     }
 
-    let selected = menus.find((item) => item.link.startsWith(path));
+    let selected = _menus.find((item) => item.link.startsWith(path));
     if (!selected) {
-      selected = menus.find((item) =>
+      selected = _menus.find((item) =>
         item.submenus?.find((submenu) => submenu.link.startsWith(path)),
       );
     }
@@ -65,7 +66,7 @@ export default function Navbar({
       <div className="d-flex flex-column gap-4">
         <MyAdmin user={user} />
 
-        {menus.map((item, index) => {
+        {_menus.map((item, index) => {
           const matching =
             path === '/admin' ? false : path.startsWith(item.link);
 
@@ -103,7 +104,7 @@ export default function Navbar({
           );
         })}
 
-        {menus.length === 0 && <Nodata message="The menu is not available" />}
+        {_menus.length === 0 && <Nodata message="The menu is not available" />}
       </div>
     </div>
   );

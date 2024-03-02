@@ -5,7 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import Box from '@/app/admin/common/box';
 import { trimObjectStrings } from '@/app/common/client';
-import NotApprovedPostReviewQueuesAction from '@/app/actions/posts/review-queues/not-approved-post-review-queues-action';
+import NotApprovedPostReviewQueuesAction, {
+  type INotApprovedPostReviewQueuesActionVariables,
+} from '@/app/actions/posts/review-queues/not-approved-post-review-queues-action';
 
 export default function NotApproved({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function NotApproved({ id }: { id: number }) {
   });
 
   const notApprovedPostReviewQueuesActionMutation = useMutation({
-    mutationFn: NotApprovedPostReviewQueuesAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: INotApprovedPostReviewQueuesActionVariables;
+    }) => {
+      const response = await NotApprovedPostReviewQueuesAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onClickButton() {

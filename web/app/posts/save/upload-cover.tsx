@@ -7,7 +7,9 @@ import {
 } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
-import UploadCoverPostAction from '@/app/actions/posts/upload-cover-post-action';
+import UploadCoverPostAction, {
+  type IUploadCoverPostActionVariables,
+} from '@/app/actions/posts/upload-cover-post-action';
 import { GlobalContext } from '@/app/contexts';
 
 export default function UploadCover({
@@ -28,7 +30,15 @@ export default function UploadCover({
   const uploadCoverFile = useRef<File | null>(null);
 
   const uploadCoverPostActionMutation = useMutation({
-    mutationFn: UploadCoverPostAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUploadCoverPostActionVariables;
+    }) => {
+      const response = await UploadCoverPostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   useEffect(() => {

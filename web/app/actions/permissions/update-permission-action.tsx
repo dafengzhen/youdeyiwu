@@ -1,14 +1,18 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
+import type { IError } from '@/app/interfaces';
+import { PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
-import {
+import type {
   TPermissionMethod,
   TPermissionType,
 } from '@/app/interfaces/permissions';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IUpdatePermissionActionVariables {
   name: string;
@@ -28,22 +32,27 @@ export default async function UpdatePermissionAction({
   id: number;
   variables: IUpdatePermissionActionVariables;
 }) {
-  const response = await fetch(process.env.API_SERVER + `/permissions/${id}`, {
-    method: PUT,
-    headers: {
-      ...AUTHENTICATION_HEADER(),
-      ...JSON_HEADER,
-    },
-    body: JSON.stringify(variables),
-    cache: 'no-store',
-  });
+  try {
+    const { url, str } = createRequestUrl(`/permissions/${id}`);
+    const response = await createRequest({
+      url,
+      options: {
+        method: PUT,
+        body: variables,
+        cache: 'no-store',
+      },
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/permissions');
+    revalidateTag(`/admin/permissions/${id}`);
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/permissions');
-  revalidateTag(`/admin/permissions/${id}`);
 }

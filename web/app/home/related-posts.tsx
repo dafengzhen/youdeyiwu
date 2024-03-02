@@ -1,4 +1,4 @@
-import { IPost } from '@/app/interfaces/posts';
+import type { IPost } from '@/app/interfaces/posts';
 import Nodata from '@/app/common/nodata';
 import Link from 'next/link';
 

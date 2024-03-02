@@ -1,10 +1,10 @@
-import { TTabId } from '@/app/users/[id]/userid';
+import type { TTabId } from '@/app/users/[id]/userid';
 import clsx from 'clsx';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import LogoutUserAction from '@/app/actions/users/logout-user-action';
-import { IUserDetails } from '@/app/interfaces/users';
+import type { IUserDetails } from '@/app/interfaces/users';
 
 export default function Logout({
   selectedTabIndex,
@@ -16,7 +16,12 @@ export default function Logout({
   const { toast } = useContext(GlobalContext);
 
   const logoutUserActionMutation = useMutation({
-    mutationFn: LogoutUserAction,
+    mutationFn: async (variables: { id: number | string }) => {
+      const response = await LogoutUserAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onClickLogout() {

@@ -1,26 +1,24 @@
 import { NextRequest } from 'next/server';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
 import type { IError } from '@/app/interfaces';
-import { checkResponseStatus } from '@/app/common/server';
-import FetchDataException from '@/app/exception/fetch-data-exception';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+} from '@/app/common/response';
 
 export async function GET(
   request: NextRequest,
   context: { params: { id: string } },
 ) {
-  const id = context.params.id;
-  const response = await fetch(
-    process.env.API_SERVER + `/sections/${id}/cover`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-    },
-  );
+  const { url, str } = createRequestUrl(`/sections/${context.params.id}/cover`);
+  const response = await createRequest({
+    url,
+  });
 
   if (!response.ok) {
     const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    return createErrorResponse(data);
   }
 
-  return response;
+  return response as any;
 }

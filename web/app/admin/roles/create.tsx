@@ -5,7 +5,7 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateRoleAction, {
-  ICreateRoleActionVariables,
+  type ICreateRoleActionVariables,
 } from '@/app/actions/roles/create-role-action';
 import { trimObjectStrings } from '@/app/common/client';
 
@@ -24,7 +24,12 @@ export default function Create() {
   });
 
   const createRoleActionMutation = useMutation({
-    mutationFn: CreateRoleAction,
+    mutationFn: async (variables: ICreateRoleActionVariables) => {
+      const response = await CreateRoleAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

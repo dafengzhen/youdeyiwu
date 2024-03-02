@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { ISectionGroup } from '@/app/interfaces/section-groups';
+import type { ISectionGroup } from '@/app/interfaces/section-groups';
 import DeleteSectionGroupAction from '@/app/actions/section-groups/delete-section-group-action';
 
 export default function Delete({
@@ -16,7 +16,12 @@ export default function Delete({
   const { toast } = useContext(GlobalContext);
 
   const deleteSectionGroupActionMutation = useMutation({
-    mutationFn: DeleteSectionGroupAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteSectionGroupAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

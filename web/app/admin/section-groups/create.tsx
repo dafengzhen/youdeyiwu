@@ -15,7 +15,12 @@ export default function Create() {
   });
 
   const createSectionGroupActionMutation = useMutation({
-    mutationFn: CreateSectionGroupAction,
+    mutationFn: async (variables: { name: string }) => {
+      const response = await CreateSectionGroupAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

@@ -1,21 +1,28 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { IJwtConfig } from '@/app/interfaces/configs';
+import type { IError } from '@/app/interfaces';
+import type { IJwtConfig } from '@/app/interfaces/configs';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryJwtConfigAction() {
-  const response = await fetch(process.env.API_SERVER + '/configs/jwt', {
-    headers: AUTHENTICATION_HEADER(),
-  });
+  try {
+    const { url } = createRequestUrl('/configs/jwt');
+    const response = await createRequest({
+      url,
+    });
 
-  const data = (await response.json()) as IJwtConfig | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IJwtConfig | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IJwtConfig);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IJwtConfig;
 }

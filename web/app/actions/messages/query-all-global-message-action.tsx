@@ -1,36 +1,38 @@
 'use server';
 
-import { type IError, IPage, TQueryParams } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus } from '@/app/common/server';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { IGlobalMessage } from '@/app/interfaces/messages';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { IGlobalMessage } from '@/app/interfaces/messages';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryAllGlobalMessageAction(
   queryParams?: TQueryParams,
 ) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + '/messages/global-messages',
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl(
+      '/messages/global-messages',
+      queryParams,
+    );
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/messages/global-messages', str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/admin/messages/global-messages', str],
-    },
-  });
+    const data = (await response.json()) as IPage<IGlobalMessage[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<IGlobalMessage[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<IGlobalMessage[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<IGlobalMessage[]>;
 }

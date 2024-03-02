@@ -1,29 +1,35 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
+import { PUT } from '@/app/constants';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function FavoritePostAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/posts/${variables.id}/favorite`,
-    {
-      method: PUT,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+  try {
+    const { url, str } = createRequestUrl(`/posts/${variables.id}/favorite`);
+    const response = await createRequest({
+      url,
+      options: {
+        method: PUT,
+        body: variables,
+        cache: 'no-store',
       },
-      body: JSON.stringify(variables),
-      cache: 'no-store',
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
 }

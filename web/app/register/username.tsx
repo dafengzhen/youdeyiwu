@@ -4,7 +4,7 @@ import { GlobalContext } from '@/app/contexts';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import RegisterAction, {
-  IRegisterActionVariables,
+  type IRegisterActionVariables,
 } from '@/app/actions/users/register-action';
 
 export default function Username() {
@@ -17,7 +17,12 @@ export default function Username() {
   const router = useRouter();
 
   const registerActionMutation = useMutation({
-    mutationFn: RegisterAction,
+    mutationFn: async (variables: IRegisterActionVariables) => {
+      const response = await RegisterAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   function onChangeForm(e: ChangeEvent<HTMLInputElement>) {

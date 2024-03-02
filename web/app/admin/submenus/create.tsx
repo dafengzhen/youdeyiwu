@@ -5,7 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import CreateSubmenuAction from '@/app/actions/submenus/create-submenu-action';
+import CreateSubmenuAction, {
+  type ICreateSubmenuActionVariables,
+} from '@/app/actions/submenus/create-submenu-action';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -20,7 +22,12 @@ export default function Create() {
   });
 
   const createSubmenuActionMutation = useMutation({
-    mutationFn: CreateSubmenuAction,
+    mutationFn: async (variables: ICreateSubmenuActionVariables) => {
+      const response = await CreateSubmenuAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

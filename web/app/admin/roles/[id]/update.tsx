@@ -5,9 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import { IRole } from '@/app/interfaces/roles';
+import type { IRole } from '@/app/interfaces/roles';
 import UpdateRoleAction, {
-  IUpdateRoleActionVariables,
+  type IUpdateRoleActionVariables,
 } from '@/app/actions/roles/update-role-action';
 
 export default function Update({ role }: { role: IRole }) {
@@ -25,7 +25,15 @@ export default function Update({ role }: { role: IRole }) {
   });
 
   const updateRoleActionMutation = useMutation({
-    mutationFn: UpdateRoleAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateRoleActionVariables;
+    }) => {
+      const response = await UpdateRoleAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

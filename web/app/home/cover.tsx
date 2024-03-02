@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { type SyntheticEvent, useState } from 'react';
 import Image from 'next/image';
 import NoImage from '@/public/no-image.svg';
-import { IPost } from '@/app/interfaces/posts';
+import type { IPost } from '@/app/interfaces/posts';
 
 export default function Cover({ item }: { item: IPost }) {
   const cover = item.cover;

@@ -1,20 +1,13 @@
 import { type Metadata } from 'next';
 import SectionId from '@/app/sections/[id]/sectionid';
 import QueryDetailsSectionAction from '@/app/actions/sections/query-details-section-action';
-import {
-  errorContent,
-  errorTitle,
-  getUserAlias,
-  isNum,
-  parseNum,
-} from '@/app/common/server';
+import { errorTitle, getUserAlias, isNum } from '@/app/common/server';
 import { notFound } from 'next/navigation';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
 import QueryRandomPostAction from '@/app/actions/posts/query-random-post-action';
-import { TQueryParams } from '@/app/interfaces';
-import ClientErrorHandler from '@/app/common/client-error-handler';
-import { ISectionDetails } from '@/app/interfaces/sections';
+import ErrorPage from '@/app/common/error-page';
+import queryString from 'query-string';
 
 export interface ISearchParamsSectionIdPage {
   sgid?: string;
@@ -35,13 +28,12 @@ export async function generateMetadata({
     notFound();
   }
 
-  let details: ISectionDetails;
-  try {
-    details = await QueryDetailsSectionAction({ id });
-  } catch (e) {
-    return errorTitle(e);
+  const response = await QueryDetailsSectionAction({ id });
+  if (response.isError) {
+    return errorTitle(response);
   }
 
+  const details = response.data;
   const user = details.user;
   const userAlias = getUserAlias(user);
 
@@ -73,45 +65,62 @@ export default async function Page({
     notFound();
   }
 
-  const queryParams: TQueryParams = {};
-  const _searchParams = parseSearchParams(searchParams);
-  if (typeof _searchParams.sectionGroupId !== 'number') {
-    queryParams.sectionId = id;
-  }
-  if (typeof _searchParams.tagGroupId === 'number') {
-    queryParams.tagGroupId = _searchParams.tagGroupId + '';
-  }
-  if (typeof _searchParams.tagId === 'number') {
-    queryParams.tagId = _searchParams.tagId + '';
+  const _params = parseSearchParams(searchParams);
+  const responses = await Promise.all([
+    QueryDetailsSectionAction({ id }),
+    LoginInfoUserAction(),
+    SelectAllPostAction(_params),
+    QueryRandomPostAction(),
+  ]);
+  const sectionResponse = responses[0];
+  const userResponse = responses[1];
+  const postResponse = responses[2];
+  const randomPostResponse = responses[3];
+
+  if (sectionResponse.isError) {
+    return <ErrorPage message={sectionResponse.message} />;
   }
 
-  try {
-    return (
-      <SectionId
-        details={await QueryDetailsSectionAction({ id })}
-        currentUser={await LoginInfoUserAction()}
-        data={await SelectAllPostAction(queryParams)}
-        randomData={await QueryRandomPostAction()}
-        queryParams={queryParams}
-      />
-    );
-  } catch (e) {
-    return <ClientErrorHandler message={errorContent(e)} />;
+  if (userResponse.isError) {
+    return <ErrorPage message={userResponse.message} />;
   }
+
+  if (postResponse.isError) {
+    return <ErrorPage message={postResponse.message} />;
+  }
+
+  if (randomPostResponse.isError) {
+    return <ErrorPage message={randomPostResponse.message} />;
+  }
+
+  return (
+    <SectionId
+      details={sectionResponse.data}
+      currentUser={userResponse.data}
+      data={postResponse.data}
+      randomData={randomPostResponse.data}
+      queryParams={_params}
+    />
+  );
 }
 
-function parseSearchParams(searchParams: ISearchParamsSectionIdPage) {
-  const { sgid, sectionGroupId, tid, tagId, tgid, tagGroupId } = searchParams;
-
+const parseSearchParams = (searchParams: ISearchParamsSectionIdPage) => {
+  const {
+    sgid,
+    sectionGroupId = sgid,
+    tid,
+    tagId = tid,
+    tgid,
+    tagGroupId = tgid,
+  } = searchParams;
   const params = {
-    sectionGroupId: sectionGroupId ?? sgid,
-    tagId: tagId ?? tid,
-    tagGroupId: tagGroupId ?? tgid,
+    sectionGroupId,
+    tagId,
+    tagGroupId,
   };
 
-  return {
-    sectionGroupId: parseNum(params.sectionGroupId),
-    tagId: parseNum(params.tagId),
-    tagGroupId: parseNum(params.tagGroupId),
-  };
-}
+  const parse = queryString.parse(queryString.stringify(params), {
+    parseNumbers: true,
+  }) as Record<string, string | number>;
+  return { ...parse };
+};

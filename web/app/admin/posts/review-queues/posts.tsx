@@ -3,11 +3,11 @@
 import LoadMore from '@/app/home/load-more';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
-import { IPage } from '@/app/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import type { IPage } from '@/app/interfaces';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { IPost } from '@/app/interfaces/posts';
+import type { IPost } from '@/app/interfaces/posts';
 import Nodata from '@/app/common/nodata';
 import { convertToCamelCase } from '@/app/common/client';
 import QueryAllPostReviewQueuesAction from '@/app/actions/posts/review-queues/query-all-post-review-queues-action';
@@ -19,9 +19,14 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/posts', '/review-queues', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllPostReviewQueuesAction({
+      const response = await QueryAllPostReviewQueuesAction({
         page: context.pageParam.page + '',
       });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

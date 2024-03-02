@@ -1,16 +1,10 @@
 import { type Metadata } from 'next';
 import UserId from '@/app/users/[id]/userid';
-import {
-  errorContent,
-  errorTitle,
-  getUserAlias,
-  isNum,
-} from '@/app/common/server';
+import { errorTitle, getUserAlias, isNum } from '@/app/common/server';
 import { notFound } from 'next/navigation';
 import QueryDetailsUserAction from '@/app/actions/users/query-details-user-action';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
-import ClientErrorHandler from '@/app/common/client-error-handler';
-import { IUserDetails } from '@/app/interfaces/users';
+import ErrorPage from '@/app/common/error-page';
 
 export async function generateMetadata({
   params,
@@ -22,14 +16,12 @@ export async function generateMetadata({
     notFound();
   }
 
-  let details: IUserDetails;
-  try {
-    details = await QueryDetailsUserAction({ id });
-  } catch (e) {
-    return errorTitle(e);
+  const response = await QueryDetailsUserAction({ id });
+  if (response.isError) {
+    return errorTitle(response);
   }
 
-  const user = details;
+  const user = response.data;
   const userAlias = getUserAlias(user);
 
   return {
@@ -56,14 +48,25 @@ export default async function Page({
     notFound();
   }
 
-  try {
-    return (
-      <UserId
-        details={await QueryDetailsUserAction({ id })}
-        currentUser={await LoginInfoUserAction()}
-      />
-    );
-  } catch (e) {
-    return <ClientErrorHandler message={errorContent(e)} />;
+  const responses = await Promise.all([
+    QueryDetailsUserAction({ id }),
+    LoginInfoUserAction(),
+  ]);
+  const userResponse = responses[0];
+  const currentUserResponse = responses[1];
+
+  if (userResponse.isError) {
+    return <ErrorPage message={userResponse.message} />;
   }
+
+  if (currentUserResponse.isError) {
+    return <ErrorPage message={currentUserResponse.message} />;
+  }
+
+  return (
+    <UserId
+      details={userResponse.data}
+      currentUser={currentUserResponse.data}
+    />
+  );
 }

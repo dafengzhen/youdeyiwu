@@ -8,7 +8,9 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 import { GlobalContext } from '@/app/contexts';
-import UploadCoverSectionAction from '@/app/actions/sections/upload-cover-section-action';
+import UploadCoverSectionAction, {
+  type IUploadCoverSectionActionVariables,
+} from '@/app/actions/sections/upload-cover-section-action';
 
 export default function UploadCover({
   id,
@@ -28,7 +30,15 @@ export default function UploadCover({
   const uploadCoverFile = useRef<File | null>(null);
 
   const uploadCoverSectionActionMutation = useMutation({
-    mutationFn: UploadCoverSectionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUploadCoverSectionActionVariables;
+    }) => {
+      const response = await UploadCoverSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   useEffect(() => {

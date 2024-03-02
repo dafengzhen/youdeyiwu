@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { IPage, TQueryParams } from '@/app/interfaces';
-import { IPost } from '@/app/interfaces/posts';
+import type { IPage, TQueryParams } from '@/app/interfaces';
+import type { IPost } from '@/app/interfaces/posts';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import SelectAllPostAction from '@/app/actions/posts/select-all-post-action';
-import { ISectionDetails } from '@/app/interfaces/sections';
+import type { ISectionDetails } from '@/app/interfaces/sections';
 import {
   convertToCamelCase,
   fromNow,
@@ -31,10 +31,15 @@ export default function Posts({
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/sections', details.id, queryParams, 'infinite'],
     queryFn: async (context) => {
-      return SelectAllPostAction({
+      const response = await SelectAllPostAction({
         ...(queryParams as Record<string, string>),
         page: context.pageParam.page + '',
       });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

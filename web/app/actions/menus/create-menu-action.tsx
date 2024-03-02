@@ -1,10 +1,14 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
+import { POST } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface ICreateMenuActionVariables {
   name?: string;
@@ -15,20 +19,25 @@ export interface ICreateMenuActionVariables {
 export default async function CreateMenuAction(
   variables: ICreateMenuActionVariables,
 ) {
-  const response = await fetch(process.env.API_SERVER + '/menus', {
-    method: POST,
-    headers: {
-      ...AUTHENTICATION_HEADER(),
-      ...JSON_HEADER,
-    },
-    body: JSON.stringify(variables),
-  });
+  try {
+    const { url } = createRequestUrl('/menus');
+    const response = await createRequest({
+      url,
+      options: {
+        method: POST,
+        body: variables,
+      },
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/menus');
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/menus');
 }

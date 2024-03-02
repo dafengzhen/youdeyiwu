@@ -1,16 +1,14 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import {
-  AUTHENTICATION_HEADER,
-  JSON_HEADER,
-  LOCATION,
-  POST,
-  PUT,
-} from '@/app/constants';
+import { LOCATION, POST, PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IPublishPostActionVariables {
   name?: string;
@@ -30,34 +28,38 @@ export default async function PublishPostAction({
   id?: number;
   variables?: IPublishPostActionVariables;
 }) {
-  const config: any = {};
-  let url = process.env.API_SERVER + '/posts';
-  if (id) {
-    config.cache = 'no-store';
-    url = process.env.API_SERVER + `/posts/${id}`;
-  }
+  try {
+    const config: any = {};
+    let path = '/posts';
+    if (id) {
+      config.cache = 'no-store';
+      path = `/posts/${id}`;
+    }
 
-  const response = await fetch(url, {
-    method: id ? PUT : POST,
-    headers: {
-      ...AUTHENTICATION_HEADER(),
-      ...JSON_HEADER,
-    },
-    body: JSON.stringify(variables),
-    ...config,
-  });
+    const { url, str } = createRequestUrl(path);
+    const response = await createRequest({
+      url,
+      options: {
+        method: id ? PUT : POST,
+        body: variables,
+        ...config,
+      },
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
-  }
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
 
-  if (id) {
-    revalidateTag(`/admin/posts/${id}`);
-  } else {
-    revalidateTag('/admin/posts');
-    revalidateTag('/posts/select-all');
-    return response.headers.get(LOCATION) ?? '';
+    if (id) {
+      revalidateTag(`/admin/posts/${id}`);
+      return createSuccessResponse(null);
+    } else {
+      revalidateTag('/admin/posts');
+      revalidateTag('/posts/select-all');
+      return createSuccessResponse(response.headers.get(LOCATION) ?? '');
+    }
+  } catch (e) {
+    return createErrorResponse(e);
   }
 }

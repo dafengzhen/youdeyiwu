@@ -1,34 +1,40 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, PUT } from '@/app/constants';
+import { PUT } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function UpdateStateGlobalMessageAction({
   id,
 }: {
   id: number;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/messages/${id}/global-messages/state`,
-    {
-      method: PUT,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+  try {
+    const { url } = createRequestUrl(`/messages/${id}/global-messages/state`);
+    const response = await createRequest({
+      url,
+      options: {
+        method: PUT,
+        cache: 'no-store',
       },
-      cache: 'no-store',
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/messages/global-messages');
+    revalidateTag(`/admin/messages/global-messages/${id}`);
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/messages/global-messages');
-  revalidateTag(`/admin/messages/global-messages/${id}`);
 }

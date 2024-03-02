@@ -1,11 +1,13 @@
 'use server';
 
-import { type IError, IPage, TQueryParams } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { ICommentReply } from '@/app/interfaces/posts';
-import { checkResponseStatus } from '@/app/common/server';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { ICommentReply } from '@/app/interfaces/posts';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function CommentReplyPostAction({
   id,
@@ -14,27 +16,27 @@ export default async function CommentReplyPostAction({
   id: string | number;
   queryParams?: TQueryParams;
 }) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + `/posts/${id}/comment-reply`,
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl(
+      `/posts/${id}/comment-reply`,
+      queryParams,
+    );
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/posts/${id}/comment-reply`, str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: [`/posts/${id}/comment-reply`, str],
-    },
-  });
+    const data = (await response.json()) as IPage<ICommentReply[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<ICommentReply[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<ICommentReply[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<ICommentReply[]>;
 }

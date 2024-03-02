@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { GlobalContext } from '@/app/contexts';
 import { getUserAlias, trimObjectStrings } from '@/app/common/client';
 import UpdateRootConfigAction, {
-  IUpdateRootActionVariables,
+  type IUpdateRootActionVariables,
 } from '@/app/actions/configs/root/update-root-config-action';
 
 export default function InitRoot({
@@ -23,7 +23,12 @@ export default function InitRoot({
   const isLogin = !!currentUser;
 
   const updateRootConfigActionMutation = useMutation({
-    mutationFn: UpdateRootConfigAction,
+    mutationFn: async (variables: IUpdateRootActionVariables) => {
+      const response = await UpdateRootConfigAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

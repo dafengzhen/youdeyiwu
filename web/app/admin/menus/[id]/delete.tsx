@@ -5,14 +5,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { IMenu } from '@/app/interfaces/menus';
+import type { IMenu } from '@/app/interfaces/menus';
 import DeleteMenuAction from '@/app/actions/menus/delete-menu-action';
 
 export default function Delete({ menu }: { menu: IMenu }) {
   const { toast } = useContext(GlobalContext);
 
   const deleteMenuActionMutation = useMutation({
-    mutationFn: DeleteMenuAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteMenuAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,

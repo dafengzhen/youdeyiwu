@@ -8,6 +8,7 @@ import UpdateAdmins from '@/app/admin/sections/[id]/update-admins';
 import QuerySectionAction from '@/app/actions/sections/query-section-action';
 import UpdateTags from '@/app/admin/sections/[id]/update-tags';
 import UpdateTagGroups from '@/app/admin/sections/[id]/update-tag-groups';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Section',
@@ -29,20 +30,24 @@ export default async function Page({
     notFound();
   }
 
-  const section = await QuerySectionAction({ id });
+  const response = await QuerySectionAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete section={section} />;
+      return <Delete section={response.data} />;
     case 'states':
-      return <UpdateStates section={section} />;
+      return <UpdateStates section={response.data} />;
     case 'admins':
-      return <UpdateAdmins section={section} />;
+      return <UpdateAdmins section={response.data} />;
     case 'tags':
-      return <UpdateTags section={section} />;
+      return <UpdateTags section={response.data} />;
     case 'tagGroups':
-      return <UpdateTagGroups section={section} />;
+      return <UpdateTagGroups section={response.data} />;
     default:
-      return <Update section={section} />;
+      return <Update section={response.data} />;
   }
 }

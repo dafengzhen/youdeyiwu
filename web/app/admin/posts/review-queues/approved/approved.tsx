@@ -5,7 +5,9 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import Box from '@/app/admin/common/box';
 import { trimObjectStrings } from '@/app/common/client';
-import ApprovedPostReviewQueuesAction from '@/app/actions/posts/review-queues/approved-post-review-queues-action';
+import ApprovedPostReviewQueuesAction, {
+  type IApprovedPostReviewQueuesActionVariables,
+} from '@/app/actions/posts/review-queues/approved-post-review-queues-action';
 
 export default function Approved({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function Approved({ id }: { id: number }) {
   });
 
   const approvedPostReviewQueuesActionMutation = useMutation({
-    mutationFn: ApprovedPostReviewQueuesAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IApprovedPostReviewQueuesActionVariables;
+    }) => {
+      const response = await ApprovedPostReviewQueuesAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onClickButton() {

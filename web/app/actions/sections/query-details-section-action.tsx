@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { ISectionDetails } from '@/app/interfaces/sections';
+import type { IError } from '@/app/interfaces';
+import type { ISectionDetails } from '@/app/interfaces/sections';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryDetailsSectionAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/sections/${variables.id}/details`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/sections/${variables.id}/details`],
+  try {
+    const { url } = createRequestUrl(`/sections/${variables.id}/details`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/sections/${variables.id}/details`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as ISectionDetails | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as ISectionDetails | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as ISectionDetails);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as ISectionDetails;
 }

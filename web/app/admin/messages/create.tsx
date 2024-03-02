@@ -6,12 +6,12 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { isValidJSON, nonNum, trimObjectStrings } from '@/app/common/client';
 import CreateGlobalMessageAction, {
-  ICreateGlobalMessageActionVariables,
+  type ICreateGlobalMessageActionVariables,
 } from '@/app/actions/messages/create-global-message-action';
 import { TMessageRange } from '@/app/interfaces/messages';
 import Link from 'next/link';
 import CreateMessageAction, {
-  ICreateMessageActionVariables,
+  type ICreateMessageActionVariables,
 } from '@/app/actions/messages/create-message-action';
 
 export default function Create() {
@@ -37,10 +37,20 @@ export default function Create() {
   });
 
   const createGlobalMessageActionMutation = useMutation({
-    mutationFn: CreateGlobalMessageAction,
+    mutationFn: async (variables: ICreateGlobalMessageActionVariables) => {
+      const response = await CreateGlobalMessageAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const createMessageActionMutation = useMutation({
-    mutationFn: CreateMessageAction,
+    mutationFn: async (variables: ICreateMessageActionVariables) => {
+      const response = await CreateMessageAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

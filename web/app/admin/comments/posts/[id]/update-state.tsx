@@ -5,11 +5,15 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { convertToCamelCase } from '@/app/common/client';
-import { IPostReviewState } from '@/app/interfaces/posts';
-import { IComment, ICommentReviewState } from '@/app/interfaces/comments';
-import { IReply, IReplyReviewState } from '@/app/interfaces/replies';
-import UpdateStateCommentAction from '@/app/actions/comments/update-state-comment-action';
-import UpdateStateReplyAction from '@/app/actions/replies/update-state-reply-action';
+import type { IPostReviewState } from '@/app/interfaces/posts';
+import type { IComment, ICommentReviewState } from '@/app/interfaces/comments';
+import type { IReply, IReplyReviewState } from '@/app/interfaces/replies';
+import UpdateStateCommentAction, {
+  type IUpdateStateCommentActionVariables,
+} from '@/app/actions/comments/update-state-comment-action';
+import UpdateStateReplyAction, {
+  type IUpdateStateReplyActionVariables,
+} from '@/app/actions/replies/update-state-reply-action';
 
 export default function UpdateStates({
   details,
@@ -30,10 +34,26 @@ export default function UpdateStates({
   });
 
   const updateStateCommentActionMutation = useMutation({
-    mutationFn: UpdateStateCommentAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateStateCommentActionVariables;
+    }) => {
+      const response = await UpdateStateCommentAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const updateStateReplyActionMutation = useMutation({
-    mutationFn: UpdateStateReplyAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateStateReplyActionVariables;
+    }) => {
+      const response = await UpdateStateReplyAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

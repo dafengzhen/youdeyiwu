@@ -1,10 +1,14 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
+import { POST } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface ICreateActionActionVariables {
   name?: string;
@@ -15,20 +19,25 @@ export interface ICreateActionActionVariables {
 export default async function CreateActionAction(
   variables: ICreateActionActionVariables,
 ) {
-  const response = await fetch(process.env.API_SERVER + '/actions', {
-    method: POST,
-    headers: {
-      ...AUTHENTICATION_HEADER(),
-      ...JSON_HEADER,
-    },
-    body: JSON.stringify(variables),
-  });
+  try {
+    const { url, str } = createRequestUrl('/actions');
+    const response = await createRequest({
+      url,
+      options: {
+        method: POST,
+        body: variables,
+      },
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/actions');
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/actions');
 }

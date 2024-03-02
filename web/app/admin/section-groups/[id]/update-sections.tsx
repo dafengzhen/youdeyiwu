@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { nonNum } from '@/app/common/client';
-import { ISectionGroup } from '@/app/interfaces/section-groups';
-import UpdateSectionsSectionGroupAction from '@/app/actions/sections/update-sections-section-group-action';
+import type { ISectionGroup } from '@/app/interfaces/section-groups';
+import UpdateSectionsSectionGroupAction, {
+  type IUpdateSectionsSectionGroupActionVariables,
+} from '@/app/actions/sections/update-sections-section-group-action';
 
 export default function UpdateSections({
   sectionGroup,
@@ -20,7 +22,15 @@ export default function UpdateSections({
   );
 
   const updateSectionsSectionGroupActionMutation = useMutation({
-    mutationFn: UpdateSectionsSectionGroupAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateSectionsSectionGroupActionVariables;
+    }) => {
+      const response = await UpdateSectionsSectionGroupAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

@@ -11,8 +11,10 @@ import {
 } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import UpdateSectionAction from '@/app/actions/sections/update-section-action';
-import { ISection } from '@/app/interfaces/sections';
+import UpdateSectionAction, {
+  type IUpdateSectionActionVariables,
+} from '@/app/actions/sections/update-section-action';
+import type { ISection } from '@/app/interfaces/sections';
 import { isHttpOrHttps, trimObjectStrings } from '@/app/common/client';
 import {
   getContent,
@@ -42,7 +44,15 @@ export default function Update({ section }: { section: ISection }) {
   const [editorInitializing, setEditorInitializing] = useState(true);
 
   const updateSectionActionMutation = useMutation({
-    mutationFn: UpdateSectionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateSectionActionVariables;
+    }) => {
+      const response = await UpdateSectionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   useEffect(() => {

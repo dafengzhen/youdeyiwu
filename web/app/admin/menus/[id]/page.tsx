@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QueryMenuAction from '@/app/actions/menus/query-menu-action';
 import UpdateRoles from '@/app/admin/menus/[id]/update-roles';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Menu',
@@ -26,14 +27,18 @@ export default async function Page({
     notFound();
   }
 
-  const menu = await QueryMenuAction({ id });
+  const response = await QueryMenuAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete menu={menu} />;
+      return <Delete menu={response.data} />;
     case 'roles':
-      return <UpdateRoles menu={menu} />;
+      return <UpdateRoles menu={response.data} />;
     default:
-      return <Update menu={menu} />;
+      return <Update menu={response.data} />;
   }
 }

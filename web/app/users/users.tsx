@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { IPage } from '@/app/interfaces';
-import { IUser } from '@/app/interfaces/users';
+import type { IPage } from '@/app/interfaces';
+import type { IUser } from '@/app/interfaces/users';
 import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -19,7 +19,14 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
   const usersInfiniteQuery = useInfiniteQuery({
     queryKey: ['/users', 'infinite'],
     queryFn: async (context) => {
-      return SelectAllUserAction({ page: context.pageParam.page + '' });
+      const response = await SelectAllUserAction({
+        page: context.pageParam.page + '',
+      });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

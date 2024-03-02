@@ -2,7 +2,7 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import LoginAction, {
-  ILoginActionVariables,
+  type ILoginActionVariables,
 } from '@/app/actions/users/login-action';
 import { trimObjectStrings } from '@/app/common/client';
 import { useRouter } from 'next/navigation';
@@ -17,7 +17,12 @@ export default function Username() {
   const router = useRouter();
 
   const loginActionMutation = useMutation({
-    mutationFn: LoginAction,
+    mutationFn: async (variables: ILoginActionVariables) => {
+      const response = await LoginAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   function onChangeForm(e: ChangeEvent<HTMLInputElement>) {

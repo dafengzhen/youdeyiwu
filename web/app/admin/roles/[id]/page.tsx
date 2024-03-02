@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import UpdatePermissions from '@/app/admin/roles/[id]/update-permissions';
 import QueryRoleAction from '@/app/actions/roles/query-role-action';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Role',
@@ -26,14 +27,18 @@ export default async function Page({
     notFound();
   }
 
-  const role = await QueryRoleAction({ id });
+  const response = await QueryRoleAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete role={role} />;
+      return <Delete role={response.data} />;
     case 'permissions':
-      return <UpdatePermissions role={role} />;
+      return <UpdatePermissions role={response.data} />;
     default:
-      return <Update role={role} />;
+      return <Update role={response.data} />;
   }
 }

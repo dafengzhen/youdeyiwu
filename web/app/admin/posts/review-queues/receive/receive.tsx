@@ -1,7 +1,9 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import ReceivePostReviewQueuesAction from '@/app/actions/posts/review-queues/receive-post-review-queues-action';
+import ReceivePostReviewQueuesAction, {
+  type IReceivePostReviewQueuesActionVariables,
+} from '@/app/actions/posts/review-queues/receive-post-review-queues-action';
 import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import Box from '@/app/admin/common/box';
@@ -17,7 +19,12 @@ export default function Receive({ postId }: { postId: number }) {
   });
 
   const receivePostReviewQueuesActionMutation = useMutation({
-    mutationFn: ReceivePostReviewQueuesAction,
+    mutationFn: async (variables: IReceivePostReviewQueuesActionVariables) => {
+      const response = await ReceivePostReviewQueuesAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onClickButton() {

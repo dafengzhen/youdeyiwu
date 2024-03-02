@@ -3,11 +3,11 @@
 import LoadMore from '@/app/home/load-more';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
-import { IPage } from '@/app/interfaces';
-import { ISection } from '@/app/interfaces/sections';
+import type { IPage } from '@/app/interfaces';
+import type { ISection } from '@/app/interfaces/sections';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import QueryAllSectionAction from '@/app/actions/sections/query-all-section-action';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useRouter } from 'next/navigation';
 import Nodata from '@/app/common/nodata';
@@ -20,7 +20,14 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
   const sectionsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/sections', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllSectionAction({ page: context.pageParam.page + '' });
+      const response = await QueryAllSectionAction({
+        page: context.pageParam.page + '',
+      });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

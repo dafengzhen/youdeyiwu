@@ -1,12 +1,12 @@
 'use client';
 
-import React, { type ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import Navbar from '@/app/admin/navbar';
 import { AdminContext } from '@/app/contexts/admin';
 import clsx from 'clsx';
 import styles from '@/app/admin/admin.module.scss';
-import { IUser } from '@/app/interfaces/users';
-import { IMenu, ISubmenu } from '@/app/interfaces/menus';
+import type { IUser } from '@/app/interfaces/users';
+import type { IMenu, ISubmenu } from '@/app/interfaces/menus';
 import SubmenuNavbar from '@/app/admin/submenu-navbar';
 
 export function Providers({
@@ -15,8 +15,8 @@ export function Providers({
   menus,
 }: {
   children: ReactNode;
-  user: IUser | null;
-  menus: IMenu[];
+  user: IUser | null | undefined;
+  menus: IMenu[] | null | undefined;
 }) {
   const [selectedMenu, setSelectedMenu] = useState<IMenu>();
   const [selectedSubmenu, setSelectedSubmenu] = useState<ISubmenu>();

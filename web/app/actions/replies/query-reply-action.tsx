@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { IReply } from '@/app/interfaces/replies';
+import type { IError } from '@/app/interfaces';
+import type { IReply } from '@/app/interfaces/replies';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryReplyAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/replies/${variables.id}`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/replies/${variables.id}`],
+  try {
+    const { url, str } = createRequestUrl(`/replies/${variables.id}`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/replies/${variables.id}`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as IReply | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IReply | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IReply);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IReply;
 }

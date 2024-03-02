@@ -5,13 +5,13 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { nonNum, trimObjectStrings } from '@/app/common/client';
-import {
+import type {
   IPermission,
   TPermissionMethod,
   TPermissionType,
 } from '@/app/interfaces/permissions';
 import UpdatePermissionAction, {
-  IUpdatePermissionActionVariables,
+  type IUpdatePermissionActionVariables,
 } from '@/app/actions/permissions/update-permission-action';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
@@ -41,7 +41,15 @@ export default function Update({ permission }: { permission: IPermission }) {
   );
 
   const updatePermissionActionMutation = useMutation({
-    mutationFn: UpdatePermissionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdatePermissionActionVariables;
+    }) => {
+      const response = await UpdatePermissionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

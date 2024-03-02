@@ -1,8 +1,8 @@
 'use client';
 
-import { IGlobalMessage } from '@/app/interfaces/messages';
-import { IPage } from '@/app/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import type { IGlobalMessage } from '@/app/interfaces/messages';
+import type { IPage } from '@/app/interfaces';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import Box from '@/app/admin/common/box';
 import Link from 'next/link';
@@ -21,9 +21,14 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
   const globalMessagesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/messages', '/global-messages', 'infinite'],
     queryFn: async (context) => {
-      return QueryAllGlobalMessageAction({
+      const response = await QueryAllGlobalMessageAction({
         page: context.pageParam.page + '',
       });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

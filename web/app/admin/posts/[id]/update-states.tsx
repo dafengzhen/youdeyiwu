@@ -4,20 +4,22 @@ import Box from '@/app/admin/common/box';
 import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { ISectionState } from '@/app/interfaces/sections';
+import type { ISectionState } from '@/app/interfaces/sections';
 import {
   convertToCamelCase,
   nonNum,
   removeDuplicatesByProperty,
 } from '@/app/common/client';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
-import {
+import type {
   IPost,
   IPostReviewState,
   IPostSortState,
   IPostState,
 } from '@/app/interfaces/posts';
-import UpdateStatesPostAction from '@/app/actions/posts/update-states-post-action';
+import UpdateStatesPostAction, {
+  type IUpdateStatesPostActionVariables,
+} from '@/app/actions/posts/update-states-post-action';
 
 interface IState {
   id: number | string;
@@ -61,7 +63,15 @@ export default function UpdateStates({ post }: { post: IPost }) {
   );
 
   const updateStatesPostActionMutation = useMutation({
-    mutationFn: UpdateStatesPostAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateStatesPostActionVariables;
+    }) => {
+      const response = await UpdateStatesPostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

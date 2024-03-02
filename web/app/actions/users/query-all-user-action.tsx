@@ -1,34 +1,33 @@
 'use server';
 
-import { type IError, IPage, TQueryParams } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus } from '@/app/common/server';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { IUser } from '@/app/interfaces/users';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { IUser } from '@/app/interfaces/users';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryAllUserAction(queryParams?: TQueryParams) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + '/users',
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl('/users', queryParams);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/users', str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/admin/users', str],
-    },
-  });
+    const data = (await response.json()) as IPage<IUser[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<IUser[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<IUser[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<IUser[]>;
 }

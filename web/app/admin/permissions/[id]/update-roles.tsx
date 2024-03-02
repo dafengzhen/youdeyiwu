@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { nonNum } from '@/app/common/client';
-import { IPermission } from '@/app/interfaces/permissions';
-import UpdateRolesPermissionAction from '@/app/actions/permissions/update-roles-permission-action';
+import type { IPermission } from '@/app/interfaces/permissions';
+import UpdateRolesPermissionAction, {
+  type IUpdateRolesPermissionActionVariables,
+} from '@/app/actions/permissions/update-roles-permission-action';
 
 export default function UpdateRoles({
   permission,
@@ -20,7 +22,15 @@ export default function UpdateRoles({
   );
 
   const updateRolesPermissionActionMutation = useMutation({
-    mutationFn: UpdateRolesPermissionAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateRolesPermissionActionVariables;
+    }) => {
+      const response = await UpdateRolesPermissionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

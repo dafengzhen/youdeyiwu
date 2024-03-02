@@ -1,10 +1,10 @@
 import Nodata from '@/app/common/nodata';
 import Link from 'next/link';
-import { TQueryParams } from '@/app/interfaces';
+import type { TQueryParams } from '@/app/interfaces';
 import { useRouter } from 'next/navigation';
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import clsx from 'clsx';
-import { ITagGroup } from '@/app/interfaces/tag-groups';
+import type { ITagGroup } from '@/app/interfaces/tag-groups';
 
 export default function TagGroups({
   tagGroups = [],

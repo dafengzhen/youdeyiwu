@@ -1,11 +1,16 @@
 'use server';
 
-import { type IError, IToken } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
+import type { IError, IToken } from '@/app/interfaces';
+import { POST } from '@/app/constants';
 import { setCredentials } from '@/app/common/server';
 import HealthAction from '@/app/actions/health-action';
 import { revalidateTag } from 'next/cache';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface IRegisterActionVariables {
   username: string;
@@ -15,28 +20,27 @@ export interface IRegisterActionVariables {
 export default async function RegisterAction(
   variables: IRegisterActionVariables,
 ) {
-  let requestPreCheck: boolean;
   try {
-    await HealthAction();
-    requestPreCheck = true;
+    const requestPreCheck = (await HealthAction()).isSuccess;
+    const { url, str } = createRequestUrl('/users/register');
+    const response = await createRequest({
+      url,
+      options: {
+        method: POST,
+        body: variables,
+        skipAuth: !requestPreCheck,
+      },
+    });
+
+    const data = (await response.json()) as IToken | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    setCredentials(data as IToken);
+    revalidateTag('/admin/users');
+    return createSuccessResponse(null);
   } catch (e) {
-    requestPreCheck = false;
+    return createErrorResponse(e);
   }
-
-  const response = await fetch(process.env.API_SERVER + '/users/register', {
-    method: POST,
-    headers: {
-      ...(requestPreCheck ? AUTHENTICATION_HEADER() : {}),
-      ...JSON_HEADER,
-    },
-    body: JSON.stringify(variables),
-  });
-
-  const data = (await response.json()) as IToken | IError;
-  if (!response.ok) {
-    throw FetchDataException((data as IError).message);
-  }
-
-  setCredentials(data as IToken);
-  revalidateTag('/admin/users');
 }

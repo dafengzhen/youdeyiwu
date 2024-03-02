@@ -6,8 +6,10 @@ import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { getUserAlias, nonNum } from '@/app/common/client';
-import { IUser } from '@/app/interfaces/users';
-import UpdateRolesUserAction from '@/app/actions/users/update-roles-user-action';
+import type { IUser } from '@/app/interfaces/users';
+import UpdateRolesUserAction, {
+  type IUpdateRolesUserActionVariables,
+} from '@/app/actions/users/update-roles-user-action';
 
 export default function UpdateRoles({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
@@ -16,7 +18,15 @@ export default function UpdateRoles({ user }: { user: IUser }) {
   );
 
   const updateRolesUserGroupActionMutation = useMutation({
-    mutationFn: UpdateRolesUserAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateRolesUserActionVariables;
+    }) => {
+      const response = await UpdateRolesUserAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

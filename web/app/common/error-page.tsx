@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function ClientErrorHandler({ message }: { message?: string }) {
+export default function ErrorPage({ message }: { message?: string }) {
   const router = useRouter();
 
   function back() {
@@ -19,18 +19,12 @@ export default function ClientErrorHandler({ message }: { message?: string }) {
               <h5 className="card-title text-5xl font-bold">
                 Sorry, an error has occurred
               </h5>
-              <div className="card-subtitle my-4 d-flex flex-wrap flex-column gap-2 user-select-all cursor-copy">
-                {message ? (
-                  <div className="">
-                    <span>
-                      === <span className="fw-bold">Details</span> ===
-                    </span>
-                    &nbsp;
-                    <span>{message}</span>
-                  </div>
-                ) : (
-                  <div className="">Unknown Error</div>
-                )}
+              <div className="card-subtitle my-4 d-flex flex-wrap flex-column gap-2">
+                <div>
+                  <span className="fw-bold">[ Details ]</span>
+                  <span>&nbsp;:&nbsp;</span>
+                  <span>{message ?? 'Unknown Error'}</span>
+                </div>
               </div>
               <div className="d-flex flex-wrap gap-4 justify-content-center">
                 <Link href="/" className="btn btn-danger" role="button">

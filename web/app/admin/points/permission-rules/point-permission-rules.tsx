@@ -3,14 +3,16 @@
 import Box from '@/app/admin/common/box';
 import Nodata from '@/app/common/nodata';
 import {
-  IPointPermissionRule,
+  type IPointPermissionRule,
   PermissionRuleNameEnum,
 } from '@/app/interfaces/points';
 import { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import SavePermissionRulesPointsAction from '@/app/actions/points/permission-rules/save-permission-rules-points-action';
+import SavePermissionRulesPointsAction, {
+  type ISavePermissionRulesPointsActionVariables,
+} from '@/app/actions/points/permission-rules/save-permission-rules-points-action';
 
 const tips = {
   CREATE_POST: 'permission to create a new post',
@@ -51,7 +53,14 @@ export default function PointPermissionRules({
   const [saving, setSaving] = useState(false);
 
   const savePermissionRulesPointsActionMutation = useMutation({
-    mutationFn: SavePermissionRulesPointsAction,
+    mutationFn: async (
+      variables: ISavePermissionRulesPointsActionVariables,
+    ) => {
+      const response = await SavePermissionRulesPointsAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   function onClickUpdate() {

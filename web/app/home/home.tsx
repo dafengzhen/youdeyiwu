@@ -9,12 +9,12 @@ import RelatedPosts from '@/app/home/related-posts';
 import Posts from '@/app/home/posts';
 import EmptyBox from '@/app/home/empty-box';
 import RelatedActions from '@/app/home/related-actions';
-import { IPost } from '@/app/interfaces/posts';
-import { ISectionGroup } from '@/app/interfaces/section-groups';
-import { ISection } from '@/app/interfaces/sections';
-import { ITag } from '@/app/interfaces/tags';
-import { IPage, TQueryParams } from '@/app/interfaces';
-import { IUser } from '@/app/interfaces/users';
+import type { IPost } from '@/app/interfaces/posts';
+import type { ISectionGroup } from '@/app/interfaces/section-groups';
+import type { ISection } from '@/app/interfaces/sections';
+import type { ITag } from '@/app/interfaces/tags';
+import type { IPage, TQueryParams } from '@/app/interfaces';
+import type { IUser } from '@/app/interfaces/users';
 
 export default function Home({
   sectionGroups,

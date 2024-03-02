@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { isNum } from '@/app/common/server';
 import QuerySubmenuAction from '@/app/actions/submenus/query-submenu-action';
 import UpdateRoles from '@/app/admin/submenus/[id]/update-roles';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Submenu',
@@ -26,14 +27,18 @@ export default async function Page({
     notFound();
   }
 
-  const submenu = await QuerySubmenuAction({ id });
+  const response = await QuerySubmenuAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete submenu={submenu} />;
+      return <Delete submenu={response.data} />;
     case 'roles':
-      return <UpdateRoles submenu={submenu} />;
+      return <UpdateRoles submenu={response.data} />;
     default:
-      return <Update submenu={submenu} />;
+      return <Update submenu={response.data} />;
   }
 }

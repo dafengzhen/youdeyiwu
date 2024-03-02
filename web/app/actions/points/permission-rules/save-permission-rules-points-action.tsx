@@ -1,11 +1,15 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER, JSON_HEADER, POST } from '@/app/constants';
+import type { IError } from '@/app/interfaces';
+import { POST } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { checkResponseStatus } from '@/app/common/server';
-import { PermissionRuleNameEnum } from '@/app/interfaces/points';
+import type { PermissionRuleNameEnum } from '@/app/interfaces/points';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export interface ISavePermissionRulesPointsActionVariables {
   permissionRuleName: PermissionRuleNameEnum;
@@ -16,23 +20,25 @@ export interface ISavePermissionRulesPointsActionVariables {
 export default async function SavePermissionRulesPointsAction(
   variables: ISavePermissionRulesPointsActionVariables,
 ) {
-  const response = await fetch(
-    process.env.API_SERVER + '/points/permission-rules',
-    {
-      method: POST,
-      headers: {
-        ...AUTHENTICATION_HEADER(),
-        ...JSON_HEADER,
+  try {
+    const { url, str } = createRequestUrl('/points/permission-rules');
+    const response = await createRequest({
+      url,
+      options: {
+        method: POST,
+        body: variables,
       },
-      body: JSON.stringify(variables),
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const data = (await response.json()) as IError;
-    checkResponseStatus(response.status);
-    throw FetchDataException(data.message);
+    if (!response.ok) {
+      const data = (await response.json()) as IError;
+      return createErrorResponse(data);
+    }
+
+    revalidateTag('/admin/points/permission-rules');
+
+    return createSuccessResponse(null);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  revalidateTag('/admin/points/permission-rules');
 }

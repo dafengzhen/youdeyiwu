@@ -1,29 +1,35 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { checkResponseStatus } from '@/app/common/server';
-import { IUserDetails } from '@/app/interfaces/users';
+import type { IError } from '@/app/interfaces';
+import type { IUserDetails } from '@/app/interfaces/users';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryDetailsUserAction(variables: {
   id: number | string;
 }) {
-  const response = await fetch(
-    process.env.API_SERVER + `/users/${variables.id}/details`,
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: [`/admin/users/${variables.id}/details`],
+  try {
+    const { url } = createRequestUrl(`/users/${variables.id}/details`);
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: [`/admin/users/${variables.id}/details`],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as IUserDetails | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IUserDetails | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IUserDetails);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IUserDetails;
 }

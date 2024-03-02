@@ -4,9 +4,11 @@ import Box from '@/app/admin/common/box';
 import { type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import { IPost } from '@/app/interfaces/posts';
-import { ISection } from '@/app/interfaces/sections';
-import UpdateSectionPostAction from '@/app/actions/posts/update-section-post-action';
+import type { IPost } from '@/app/interfaces/posts';
+import type { ISection } from '@/app/interfaces/sections';
+import UpdateSectionPostAction, {
+  type IUpdateSectionPostActionVariables,
+} from '@/app/actions/posts/update-section-post-action';
 import { isNum } from '@/app/common/server';
 
 export default function UpdateSection({
@@ -22,7 +24,15 @@ export default function UpdateSection({
   );
 
   const updateSectionPostActionMutation = useMutation({
-    mutationFn: UpdateSectionPostAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateSectionPostActionVariables;
+    }) => {
+      const response = await UpdateSectionPostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

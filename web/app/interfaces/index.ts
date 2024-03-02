@@ -57,3 +57,34 @@ export interface IBase {
   updatedOnText?: string;
   deleted: boolean;
 }
+
+export interface IResponse<T = unknown, E = unknown> {
+  code?: number;
+  error?: E;
+  isError: boolean;
+  isSuccess: boolean;
+  status: number;
+  message: string;
+  data: T;
+}
+
+export interface ISuccessResponse<T = unknown> extends IResponse {
+  code?: number;
+  error?: null;
+  isError: false;
+  isSuccess: true;
+  status: number;
+  message: string;
+  data: T;
+}
+
+export interface IErrorResponse<T = unknown, E = unknown>
+  extends Omit<IResponse, 'data'> {
+  code?: number;
+  error?: E;
+  isError: true;
+  isSuccess: false;
+  status: number;
+  message: string;
+  data?: T;
+}

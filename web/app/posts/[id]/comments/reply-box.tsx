@@ -1,12 +1,12 @@
-import { IPostDetails } from '@/app/interfaces/posts';
-import { IUser } from '@/app/interfaces/users';
-import { IComment } from '@/app/interfaces/comments';
-import { IReply } from '@/app/interfaces/replies';
-import { ChangeEvent, useContext, useState } from 'react';
+import type { IPostDetails } from '@/app/interfaces/posts';
+import type { IUser } from '@/app/interfaces/users';
+import type { IComment } from '@/app/interfaces/comments';
+import type { IReply } from '@/app/interfaces/replies';
+import { type ChangeEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateReplyAction, {
-  ICreateReplyActionVariables,
+  type ICreateReplyActionVariables,
 } from '@/app/actions/replies/create-reply-action';
 import { getUserAlias, trimObjectStrings } from '@/app/common/client';
 import { sanitizeHtmlContent } from '@/app/common/editor';
@@ -30,7 +30,12 @@ export default function ReplyBox({
   });
 
   const createReplyActionMutation = useMutation({
-    mutationFn: CreateReplyAction,
+    mutationFn: async (variables: ICreateReplyActionVariables) => {
+      const response = await CreateReplyAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   function onClickCancelReplyBox() {

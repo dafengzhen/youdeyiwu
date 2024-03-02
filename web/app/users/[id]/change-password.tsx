@@ -1,13 +1,13 @@
-import { TTabId } from '@/app/users/[id]/userid';
+import type { TTabId } from '@/app/users/[id]/userid';
 import clsx from 'clsx';
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import UpdatePasswordUserAction, {
-  IUpdatePasswordUserActionVariables,
+  type IUpdatePasswordUserActionVariables,
 } from '@/app/actions/users/update-password-user-action';
 import { trimObjectStrings } from '@/app/common/client';
-import { IUserDetails } from '@/app/interfaces/users';
+import type { IUserDetails } from '@/app/interfaces/users';
 
 export default function ChangePassword({
   selectedTabIndex,
@@ -28,7 +28,15 @@ export default function ChangePassword({
   });
 
   const updatePasswordUserActionMutation = useMutation({
-    mutationFn: UpdatePasswordUserAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdatePasswordUserActionVariables;
+    }) => {
+      const response = await UpdatePasswordUserAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

@@ -5,12 +5,12 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { nonNum, trimObjectStrings } from '@/app/common/client';
-import {
+import type {
   TPermissionMethod,
   TPermissionType,
 } from '@/app/interfaces/permissions';
 import CreatePermissionAction, {
-  ICreatePermissionActionVariables,
+  type ICreatePermissionActionVariables,
 } from '@/app/actions/permissions/create-permission-action';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 
@@ -38,7 +38,12 @@ export default function Create() {
   const [matchers, setMatchers] = useState<string[]>([]);
 
   const createPermissionActionMutation = useMutation({
-    mutationFn: CreatePermissionAction,
+    mutationFn: async (variables: ICreatePermissionActionVariables) => {
+      const response = await CreatePermissionAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

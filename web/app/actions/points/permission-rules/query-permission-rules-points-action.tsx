@@ -1,27 +1,33 @@
 'use server';
 
-import { type IError } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus } from '@/app/common/server';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import { IPointPermissionRule } from '@/app/interfaces/points';
+import type { IError } from '@/app/interfaces';
+import type { IPointPermissionRule } from '@/app/interfaces/points';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryPermissionRulesPointsAction() {
-  const response = await fetch(
-    process.env.API_SERVER + '/points/permission-rules',
-    {
-      headers: AUTHENTICATION_HEADER(),
-      next: {
-        tags: ['/admin/points/permission-rules'],
+  try {
+    const { url, str } = createRequestUrl('/points/permission-rules');
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/points/permission-rules'],
+        },
       },
-    },
-  );
+    });
 
-  const data = (await response.json()) as IPointPermissionRule[] | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    const data = (await response.json()) as IPointPermissionRule[] | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
+
+    return createSuccessResponse(data as IPointPermissionRule[]);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPointPermissionRule[];
 }

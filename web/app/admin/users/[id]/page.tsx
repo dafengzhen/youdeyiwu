@@ -5,6 +5,7 @@ import { isNum } from '@/app/common/server';
 import UpdateStates from '@/app/admin/users/[id]/update-states';
 import UpdateRoles from '@/app/admin/users/[id]/update-roles';
 import QueryUserAction from '@/app/actions/users/query-user-action';
+import ErrorPage from '@/app/common/error-page';
 
 export const metadata: Metadata = {
   title: 'Update Tag',
@@ -26,15 +27,19 @@ export default async function Page({
     notFound();
   }
 
-  const user = await QueryUserAction({ id });
+  const response = await QueryUserAction({ id });
+  if (response.isError) {
+    return <ErrorPage message={response.message} />;
+  }
+
   const type = searchParams.type;
   switch (type) {
     case 'del':
-      return <Delete user={user} />;
+      return <Delete user={response.data} />;
     case 'states':
-      return <UpdateStates user={user} />;
+      return <UpdateStates user={response.data} />;
     case 'roles':
-      return <UpdateRoles user={user} />;
+      return <UpdateRoles user={response.data} />;
     default:
       notFound();
   }

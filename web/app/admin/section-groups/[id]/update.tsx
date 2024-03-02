@@ -5,8 +5,10 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
 import { trimObjectStrings } from '@/app/common/client';
-import { ISectionGroup } from '@/app/interfaces/section-groups';
-import UpdateSectionGroupAction from '@/app/actions/section-groups/update-section-group-action';
+import type { ISectionGroup } from '@/app/interfaces/section-groups';
+import UpdateSectionGroupAction, {
+  type IUpdateSectionGroupActionVariables,
+} from '@/app/actions/section-groups/update-section-group-action';
 
 export default function Update({
   sectionGroup,
@@ -23,7 +25,15 @@ export default function Update({
   });
 
   const updateSectionGroupActionMutation = useMutation({
-    mutationFn: UpdateSectionGroupAction,
+    mutationFn: async (variables: {
+      id: number;
+      variables: IUpdateSectionGroupActionVariables;
+    }) => {
+      const response = await UpdateSectionGroupAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

@@ -1,12 +1,20 @@
 'use client';
 
-import { IPost } from '@/app/interfaces/posts';
+import type { IPost } from '@/app/interfaces/posts';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
-import { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import {
+  type ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { GlobalContext } from '@/app/contexts';
 import { useMutation } from '@tanstack/react-query';
-import PublishPostAction from '@/app/actions/posts/publish-post-action';
+import PublishPostAction, {
+  type IPublishPostActionVariables,
+} from '@/app/actions/posts/publish-post-action';
 import clsx from 'clsx';
 import SimpleDynamicInput from '@/app/common/simple-dynamic-input';
 import { isHttpOrHttps, trimObjectStrings } from '@/app/common/client';
@@ -75,11 +83,21 @@ export default function Save({
   >(sections.map((item) => ({ id: item.id, name: item.name })));
   const [first, setFirst] = useState(false);
 
+  const publishPostActionMutation = useMutation({
+    mutationFn: async (variables: {
+      id?: number;
+      variables?: IPublishPostActionVariables;
+    }) => {
+      const response = await PublishPostAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
+    },
+  });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,
-  });
-  const publishPostActionMutation = useMutation({
-    mutationFn: PublishPostAction,
   });
 
   useEffect(() => {

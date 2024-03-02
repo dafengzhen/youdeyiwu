@@ -1,34 +1,33 @@
 'use server';
 
-import { type IError, IPage, TQueryParams } from '@/app/interfaces';
-import FetchDataException from '@/app/exception/fetch-data-exception';
-import { checkResponseStatus } from '@/app/common/server';
-import { IPost } from '@/app/interfaces/posts';
-import { AUTHENTICATION_HEADER } from '@/app/constants';
-import queryString from 'query-string';
+import type { IError, IPage, TQueryParams } from '@/app/interfaces';
+import type { IPost } from '@/app/interfaces/posts';
+import {
+  createErrorResponse,
+  createRequest,
+  createRequestUrl,
+  createSuccessResponse,
+} from '@/app/common/response';
 
 export default async function QueryAllPostAction(queryParams?: TQueryParams) {
-  const _queryParams = queryParams ?? {};
-  const { url, str } = {
-    url: queryString.stringifyUrl({
-      url: process.env.API_SERVER + '/posts',
-      query: _queryParams,
-    }),
-    str: queryString.stringify(_queryParams),
-  };
+  try {
+    const { url, str } = createRequestUrl('/posts');
+    const response = await createRequest({
+      url,
+      options: {
+        next: {
+          tags: ['/admin/posts', str],
+        },
+      },
+    });
 
-  const response = await fetch(url, {
-    headers: AUTHENTICATION_HEADER(),
-    next: {
-      tags: ['/admin/posts', str],
-    },
-  });
+    const data = (await response.json()) as IPage<IPost[]> | IError;
+    if (!response.ok) {
+      return createErrorResponse(data);
+    }
 
-  const data = (await response.json()) as IPage<IPost[]> | IError;
-  if (!response.ok) {
-    checkResponseStatus(response.status);
-    throw FetchDataException((data as IError).message);
+    return createSuccessResponse(data as IPage<IPost[]>);
+  } catch (e) {
+    return createErrorResponse(e);
   }
-
-  return data as IPage<IPost[]>;
 }

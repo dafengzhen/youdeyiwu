@@ -1,6 +1,6 @@
 'use client';
 
-import { ICommentReply, IPostDetails } from '@/app/interfaces/posts';
+import type { ICommentReply, IPostDetails } from '@/app/interfaces/posts';
 import { useContext, useEffect, useState } from 'react';
 import { fromNow } from '@/app/common/client';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -18,12 +18,17 @@ export default function Comments({ details }: { details: IPostDetails }) {
   const commentReplyInfiniteQuery = useInfiniteQuery({
     queryKey: [`/posts/${details.id}/comment-reply`, 'infinite'],
     queryFn: async (context) => {
-      return CommentReplyPostAction({
+      const response = await CommentReplyPostAction({
         id: details.id,
         queryParams: {
           page: context.pageParam.page + '',
         },
       });
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
     },
     getPreviousPageParam: (firstPage) => {
       if (!firstPage.pageable.previous) {

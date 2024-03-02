@@ -5,14 +5,19 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { GlobalContext } from '@/app/contexts';
 import RefreshAction from '@/app/actions/refresh-action';
-import { ISubmenu } from '@/app/interfaces/menus';
+import type { ISubmenu } from '@/app/interfaces/menus';
 import DeleteSubmenuAction from '@/app/actions/submenus/delete-submenu-action';
 
 export default function Delete({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
 
   const deleteSubmenuActionMutation = useMutation({
-    mutationFn: DeleteSubmenuAction,
+    mutationFn: async (variables: { id: number }) => {
+      const response = await DeleteSubmenuAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
   });
   const refreshActionMutation = useMutation({
     mutationFn: RefreshAction,
