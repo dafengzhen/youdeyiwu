@@ -57,8 +57,7 @@ public class ActionServiceImpl implements ActionService {
   public ActionEntity create(CreateActionDto dto) {
     ActionEntity actionEntity = new ActionEntity();
     actionMapper.dtoToEntity(dto, actionEntity);
-    actionRepository.save(actionEntity);
-    return actionEntity;
+    return actionRepository.save(actionEntity);
   }
 
   @Transactional

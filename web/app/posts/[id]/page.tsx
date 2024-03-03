@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import PostId from '@/app/posts/[id]/postid';
 import QueryDetailsPostAction from '@/app/actions/posts/query-details-post-action';
-import { errorTitle, getUserAlias, isNum } from '@/app/common/server';
+import { getUserAlias, incorrectMetadataTitle, isNum } from '@/app/common/tool';
 import { notFound } from 'next/navigation';
 import SelectAllSectionGroupAction from '@/app/actions/section-groups/select-all-section-group-action';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
@@ -21,7 +21,7 @@ export async function generateMetadata({
 
   const response = await QueryDetailsPostAction({ id });
   if (response.isError) {
-    return errorTitle(response);
+    return incorrectMetadataTitle(response);
   }
 
   const details = response.data;

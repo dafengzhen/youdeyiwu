@@ -44,8 +44,7 @@ public class TagGroupServiceImpl implements TagGroupService {
   public TagGroupEntity create(CreateTagGroupDto dto) {
     TagGroupEntity tagGroupEntity = new TagGroupEntity();
     tagGroupEntity.setName(dto.name().trim());
-    tagGroupRepository.save(tagGroupEntity);
-    return tagGroupEntity;
+    return tagGroupRepository.save(tagGroupEntity);
   }
 
   @Transactional

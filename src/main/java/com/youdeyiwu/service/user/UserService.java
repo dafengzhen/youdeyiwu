@@ -16,7 +16,6 @@ import com.youdeyiwu.model.vo.user.UserEntityVo;
 import com.youdeyiwu.model.vo.user.UserRolesPermissionsVo;
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import java.util.List;
-import java.util.Set;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -114,9 +113,9 @@ public interface UserService {
   /**
    * get menus.
    *
-   * @return Set
+   * @return List
    */
-  Set<MenuEntityVo> getMenus();
+  List<MenuEntityVo> getMenus();
 
   /**
    * get login info.

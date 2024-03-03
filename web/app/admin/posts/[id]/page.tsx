@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import Delete from '@/app/admin/posts/[id]/delete';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import QueryPostAction from '@/app/actions/posts/query-post-action';
 import UpdateStates from '@/app/admin/posts/[id]/update-states';
 import UpdateTags from '@/app/admin/posts/[id]/update-tags';

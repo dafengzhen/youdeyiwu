@@ -131,7 +131,7 @@ public class UserController {
   }
 
   @GetMapping("/menus")
-  public ResponseEntity<Set<MenuEntityVo>> getMenus() {
+  public ResponseEntity<List<MenuEntityVo>> getMenus() {
     return ResponseEntity.ok(userService.getMenus());
   }
 

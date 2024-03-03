@@ -61,8 +61,7 @@ public class MenuServiceImpl implements MenuService {
   public MenuEntity create(CreateMenuDto dto) {
     MenuEntity menuEntity = new MenuEntity();
     menuMapper.dtoToEntity(dto, menuEntity);
-    menuRepository.save(menuEntity);
-    return menuEntity;
+    return menuRepository.save(menuEntity);
   }
 
   @Transactional

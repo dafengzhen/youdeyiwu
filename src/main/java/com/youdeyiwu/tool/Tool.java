@@ -1,5 +1,6 @@
 package com.youdeyiwu.tool;
 
+import static com.youdeyiwu.constant.RoleConstant.ROLE_PREFIX;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG;
@@ -8,6 +9,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.model.entity.point.PointEntity;
+import com.youdeyiwu.model.entity.user.RoleEntity;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -272,5 +274,15 @@ public class Tool {
     } else {
       callback.accept(SignEnum.ZERO, absoluteDifference);
     }
+  }
+
+  /**
+   * get role attribute.
+   *
+   * @param roleEntity roleEntity
+   * @return String
+   */
+  public static String getRoleAttribute(RoleEntity roleEntity) {
+    return ROLE_PREFIX + roleEntity.getName() + "_" + roleEntity.getId();
   }
 }

@@ -46,8 +46,7 @@ public class RoleServiceImpl implements RoleService {
   public RoleEntity create(CreateRoleDto dto) {
     RoleEntity roleEntity = new RoleEntity();
     roleMapper.dtoToEntity(dto, roleEntity);
-    roleRepository.save(roleEntity);
-    return roleEntity;
+    return roleRepository.save(roleEntity);
   }
 
   @Transactional

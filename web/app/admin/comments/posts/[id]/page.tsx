@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import CommentReply from '@/app/admin/comments/posts/[id]/comment-reply';
 import QueryDetailsPostAction from '@/app/actions/posts/query-details-post-action';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';

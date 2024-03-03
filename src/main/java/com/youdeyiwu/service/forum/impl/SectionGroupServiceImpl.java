@@ -50,8 +50,7 @@ public class SectionGroupServiceImpl implements SectionGroupService {
   public SectionGroupEntity create(CreateSectionGroupDto dto) {
     SectionGroupEntity sectionGroupEntity = new SectionGroupEntity();
     sectionGroupEntity.setName(dto.name().trim());
-    sectionGroupRepository.save(sectionGroupEntity);
-    return sectionGroupEntity;
+    return sectionGroupRepository.save(sectionGroupEntity);
   }
 
   @Transactional

@@ -50,8 +50,7 @@ public class TagServiceImpl implements TagService {
 
     TagEntity tagEntity = new TagEntity();
     tagEntity.setName(name);
-    tagRepository.save(tagEntity);
-    return tagEntity;
+    return tagRepository.save(tagEntity);
   }
 
   @Transactional

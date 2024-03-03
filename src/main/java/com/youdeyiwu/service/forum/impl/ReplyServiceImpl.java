@@ -78,8 +78,7 @@ public class ReplyServiceImpl implements ReplyService {
       quoteReplyEntity.setUser(userEntity);
     }
 
-    replyRepository.save(quoteReplyEntity);
-    return quoteReplyEntity;
+    return replyRepository.save(quoteReplyEntity);
   }
 
   @Transactional

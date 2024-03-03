@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import Save from '@/app/posts/save/save';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import { notFound } from 'next/navigation';
 import SelectAllSectionAction from '@/app/actions/sections/select-all-section-action';
 import QueryPostAction from '@/app/actions/posts/query-post-action';

@@ -142,6 +142,14 @@ export default function InitRoot({
                     becomes invalid. The new password will be stored in the
                     database configuration
                   </div>
+                  <div className="form-text">
+                    <span className="fw-bold">Please note:</span> Once
+                    successfully set, a default role will also be assigned to
+                    the user, with the default role ID being &apos;1&apos;
+                    representing the role identity of an
+                    &apos;administrator&apos;. Please be sure to take note of
+                    this!
+                  </div>
                 </div>
 
                 <div className="my-4">

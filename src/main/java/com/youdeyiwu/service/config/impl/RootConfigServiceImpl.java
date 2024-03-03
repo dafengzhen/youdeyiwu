@@ -10,6 +10,7 @@ import com.youdeyiwu.model.dto.config.UpdateRootConfigDto;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
+import com.youdeyiwu.repository.user.RoleRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.config.RootConfigService;
@@ -38,6 +39,8 @@ public class RootConfigServiceImpl implements RootConfigService {
 
   private final I18nTool i18nTool;
 
+  private final RoleRepository roleRepository;
+
   @Transactional
   @Override
   public void update(UpdateRootConfigDto dto) {
@@ -55,6 +58,12 @@ public class RootConfigServiceImpl implements RootConfigService {
           .orElseThrow(UserNotFoundException::new);
       userEntity.setRoot(true);
       configEntity.setValue(randomUuId());
+
+      roleRepository.findById(1L)
+          .ifPresent(roleEntity -> {
+            roleEntity.getUsers().add(userEntity);
+            userEntity.getRoles().add(roleEntity);
+          });
     }
   }
 }

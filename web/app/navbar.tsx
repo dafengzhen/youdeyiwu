@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { IUser } from '@/app/interfaces/users';
-import { getUserAlias } from '@/app/common/server';
 import type { IMenu } from '@/app/interfaces/menus';
 import type { IPage } from '@/app/interfaces';
 import type { IMessage } from '@/app/interfaces/messages';
+import { getUserAlias } from '@/app/common/tool';
 
 export default async function Navbar({
   user,

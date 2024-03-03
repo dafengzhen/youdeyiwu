@@ -1,10 +1,18 @@
 import type {
   IErrorResponse,
   ISuccessResponse,
+  IToken,
   TQueryParams,
 } from '@/app/interfaces';
 import queryString from 'query-string';
-import { AUTHENTICATION_HEADER, JSON_HEADER } from '@/app/constants';
+import {
+  AUTHORIZATION,
+  BEARER,
+  JSON_HEADER,
+  SECURE_TK,
+  TK,
+} from '@/app/constants';
+import { cookies } from 'next/headers';
 
 export const createSuccessResponse = <T>(
   data: T,
@@ -104,4 +112,39 @@ export const createRequest = async ({
     headers,
     body,
   });
+};
+
+export const setCredentials = (data: IToken) => {
+  const isHttpsSite = process.env.IS_HTTPS_SITE === 'true';
+  cookies().set(isHttpsSite ? SECURE_TK : TK, data.token, {
+    path: '/',
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: isHttpsSite,
+    maxAge:
+      typeof data.expDays === 'number'
+        ? data.expDays * 24 * 60 * 60
+        : undefined,
+  });
+};
+
+const AUTHENTICATION_HEADER = (tk?: string): Record<string, string> => {
+  const isHttpsSite = process.env.IS_HTTPS_SITE === 'true';
+  const cookie = cookies().get(isHttpsSite ? SECURE_TK : TK);
+  const value = cookie?.value ?? '';
+  const _tk = tk ?? value;
+
+  if (_tk) {
+    return {
+      [AUTHORIZATION]: `${BEARER} ${_tk}`,
+    };
+  }
+
+  return {};
+};
+
+const TEST_AUTHENTICATION_HEADER = (tk = '') => {
+  return {
+    [AUTHORIZATION]: tk,
+  };
 };

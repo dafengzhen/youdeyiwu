@@ -1,16 +1,21 @@
 package com.youdeyiwu.security;
 
+import static com.youdeyiwu.tool.Tool.getRoleAttribute;
+
 import com.youdeyiwu.exception.UnauthorizedException;
 import com.youdeyiwu.exception.UserNotFoundException;
+import com.youdeyiwu.model.entity.user.RoleEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.other.UserContext;
 import com.youdeyiwu.repository.user.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -43,6 +48,17 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Override
   public void setAuthentication(UserEntity entity, HttpServletRequest request) {
+    entity.setAuthorities(
+        userRepository.findAllRoleById(entity.getId())
+            .getRoles()
+            .stream()
+            .sorted(
+                Comparator.comparing(RoleEntity::getSort)
+                    .thenComparing(RoleEntity::getId).reversed()
+            )
+            .map(roleEntity -> new SimpleGrantedAuthority(getRoleAttribute(roleEntity)))
+            .toList()
+    );
     UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
         entity,
         null,

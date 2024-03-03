@@ -2,7 +2,7 @@ import { type Metadata } from 'next';
 import Update from '@/app/admin/sections/[id]/update';
 import Delete from '@/app/admin/sections/[id]/delete';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import UpdateStates from '@/app/admin/sections/[id]/update-states';
 import UpdateAdmins from '@/app/admin/sections/[id]/update-admins';
 import QuerySectionAction from '@/app/actions/sections/query-section-action';

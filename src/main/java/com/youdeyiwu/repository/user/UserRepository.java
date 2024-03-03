@@ -26,5 +26,4 @@ public interface UserRepository
    * @return UserEntity
    */
   UserEntity findByUsername(String username);
-
 }

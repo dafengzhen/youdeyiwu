@@ -2,7 +2,7 @@ import { type Metadata } from 'next';
 import Update from '@/app/admin/permissions/[id]/update';
 import Delete from '@/app/admin/permissions/[id]/delete';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import UpdateRoles from '@/app/admin/permissions/[id]/update-roles';
 import QueryPermissionAction from '@/app/actions/permissions/query-permission-action';
 import ErrorPage from '@/app/common/error-page';

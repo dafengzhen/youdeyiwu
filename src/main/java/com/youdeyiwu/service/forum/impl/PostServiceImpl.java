@@ -124,8 +124,7 @@ public class PostServiceImpl implements PostService {
       );
     }
 
-    postRepository.save(postEntity);
-    return postEntity;
+    return postRepository.save(postEntity);
   }
 
   @Transactional

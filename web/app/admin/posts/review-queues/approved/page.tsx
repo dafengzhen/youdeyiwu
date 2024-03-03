@@ -1,5 +1,5 @@
 import { type Metadata } from 'next';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import { notFound } from 'next/navigation';
 import Approved from '@/app/admin/posts/review-queues/approved/approved';
 

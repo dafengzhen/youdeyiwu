@@ -9,7 +9,7 @@ import type { ISection } from '@/app/interfaces/sections';
 import UpdateSectionPostAction, {
   type IUpdateSectionPostActionVariables,
 } from '@/app/actions/posts/update-section-post-action';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 
 export default function UpdateSection({
   post,

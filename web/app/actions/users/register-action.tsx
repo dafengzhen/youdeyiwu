@@ -2,7 +2,6 @@
 
 import type { IError, IToken } from '@/app/interfaces';
 import { POST } from '@/app/constants';
-import { setCredentials } from '@/app/common/server';
 import HealthAction from '@/app/actions/health-action';
 import { revalidateTag } from 'next/cache';
 import {
@@ -10,6 +9,7 @@ import {
   createRequest,
   createRequestUrl,
   createSuccessResponse,
+  setCredentials,
 } from '@/app/common/response';
 
 export interface IRegisterActionVariables {

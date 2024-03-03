@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import UserId from '@/app/users/[id]/userid';
-import { errorTitle, getUserAlias, isNum } from '@/app/common/server';
+import { getUserAlias, incorrectMetadataTitle, isNum } from '@/app/common/tool';
 import { notFound } from 'next/navigation';
 import QueryDetailsUserAction from '@/app/actions/users/query-details-user-action';
 import LoginInfoUserAction from '@/app/actions/users/login-info-user-action';
@@ -18,7 +18,7 @@ export async function generateMetadata({
 
   const response = await QueryDetailsUserAction({ id });
   if (response.isError) {
-    return errorTitle(response);
+    return incorrectMetadataTitle(response);
   }
 
   const user = response.data;

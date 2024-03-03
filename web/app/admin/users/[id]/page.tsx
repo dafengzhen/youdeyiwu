@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import Delete from '@/app/admin/users/[id]/delete';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import UpdateStates from '@/app/admin/users/[id]/update-states';
 import UpdateRoles from '@/app/admin/users/[id]/update-roles';
 import QueryUserAction from '@/app/actions/users/query-user-action';

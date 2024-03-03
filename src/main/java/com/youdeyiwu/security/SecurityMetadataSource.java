@@ -1,6 +1,7 @@
 package com.youdeyiwu.security;
 
-import com.youdeyiwu.constant.RoleConstant;
+import static com.youdeyiwu.tool.Tool.getRoleAttribute;
+
 import com.youdeyiwu.model.entity.user.PermissionEntity;
 import com.youdeyiwu.model.entity.user.RoleEntity;
 import com.youdeyiwu.repository.user.PermissionRepository;
@@ -81,10 +82,7 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
         createRequestMatcher(permissionEntity),
         permissionEntity.getRoles()
             .parallelStream()
-            .map(roleEntity -> (ConfigAttribute) new SecurityConfig(
-                    RoleConstant.ROLE_PREFIX + roleEntity.getName() + "_" + roleEntity.getId()
-                )
-            )
+            .map(roleEntity -> (ConfigAttribute) new SecurityConfig(getRoleAttribute(roleEntity)))
             .toList()
     );
   }
@@ -99,12 +97,7 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
         createRequestMatcher(permissionEntity),
         (matcher, configAttributes) -> configAttributes
             .parallelStream()
-            .filter(configAttribute -> !configAttribute.equals(
-                    new SecurityConfig(
-                        RoleConstant.ROLE_PREFIX + roleEntity.getName() + "_" + roleEntity.getId()
-                    )
-                )
-            )
+            .filter(configAttribute -> !configAttribute.equals(new SecurityConfig(getRoleAttribute(roleEntity))))
             .toList()
     );
   }

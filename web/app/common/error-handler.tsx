@@ -7,8 +7,17 @@ export default function ErrorHandler({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  if (!error.message) {
-    console.error(error);
+  const digest = error.digest;
+  const message = error.message;
+  let title = 'Sorry, an error has occurred';
+  let content = message ?? 'Unknown Error';
+
+  if (message === 'Forbidden') {
+    title = 'Forbidden';
+    content = 'Sorry, accessing this resource requires identity authorization';
+  } else if (message === 'Unauthorized') {
+    title = 'Unauthorized';
+    content = 'Sorry, accessing this resource requires identity authentication';
   }
 
   return (
@@ -17,29 +26,19 @@ export default function ErrorHandler({
         <div className="d-flex justify-content-center align-items-center min-h-screen">
           <div className="card border-0 text-center">
             <div className="card-body text-danger">
-              <h5 className="card-title text-5xl font-bold">
-                Sorry, an error has occurred
-              </h5>
+              <h5 className="card-title text-5xl font-bold">{title}</h5>
               <div className="card-subtitle my-4 d-flex flex-wrap flex-column gap-2 user-select-all cursor-copy">
-                {error.message ? (
-                  <div className="">
-                    <span>
-                      === <span className="fw-bold">Details</span> ===
-                    </span>
-                    &nbsp;
-                    <span>{error.message}</span>
-                  </div>
-                ) : (
-                  <div className="">Unknown Error</div>
-                )}
+                <div>
+                  <span className="fw-bold">[ Details ]</span>
+                  <span>&nbsp;:&nbsp;</span>
+                  <span>{content}</span>
+                </div>
 
-                {error.digest && (
-                  <div className="">
-                    <span>
-                      === <span className="fw-bold">Digest</span> ===
-                    </span>
-                    &nbsp;
-                    <span>{error.digest}</span>
+                {digest && (
+                  <div>
+                    <span className="fw-bold">[ Digest ]</span>
+                    <span>&nbsp;:&nbsp;</span>
+                    <span>{digest}</span>
                   </div>
                 )}
               </div>

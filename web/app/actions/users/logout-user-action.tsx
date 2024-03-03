@@ -1,15 +1,15 @@
 'use server';
 
 import { type IError } from '@/app/interfaces';
-import { POST } from '@/app/constants';
+import { POST, SECURE_TK, TK } from '@/app/constants';
 import { revalidateTag } from 'next/cache';
-import { deleteTicket } from '@/app/common/server';
 import {
   createErrorResponse,
   createRequest,
   createRequestUrl,
   createSuccessResponse,
 } from '@/app/common/response';
+import { cookies } from 'next/headers';
 
 export default async function LogoutUserAction(variables: {
   id: number | string;
@@ -38,3 +38,8 @@ export default async function LogoutUserAction(variables: {
     return createErrorResponse(e);
   }
 }
+
+const deleteTicket = () => {
+  const isHttpsSite = process.env.IS_HTTPS_SITE === 'true';
+  cookies().delete(isHttpsSite ? SECURE_TK : TK);
+};

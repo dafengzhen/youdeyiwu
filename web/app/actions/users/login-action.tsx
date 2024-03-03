@@ -2,13 +2,13 @@
 
 import type { IError, IToken } from '@/app/interfaces';
 import { POST } from '@/app/constants';
-import { setCredentials } from '@/app/common/server';
 import HealthAction from '@/app/actions/health-action';
 import {
   createErrorResponse,
   createRequest,
   createRequestUrl,
   createSuccessResponse,
+  setCredentials,
 } from '@/app/common/response';
 
 export interface ILoginActionVariables {

@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import QueryGlobalMessageAction from '@/app/actions/messages/query-global-message-action';
 import Details from '@/app/admin/messages/global-messages/[id]/details';
 import ErrorPage from '@/app/common/error-page';

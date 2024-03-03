@@ -1,5 +1,6 @@
 package com.youdeyiwu.repository.user.impl;
 
+import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import com.youdeyiwu.repository.user.CustomizedUserRepository;
 import jakarta.persistence.EntityManager;
@@ -48,5 +49,17 @@ public class CustomizedUserRepositoryImpl implements CustomizedUserRepository {
           return vo;
         })
         .toList();
+  }
+
+  @Override
+  public UserEntity findAllRoleById(Long id) {
+    return entityManager.createQuery(
+            """
+                  select u from UserEntity u left join fetch u.roles where u.id = :id
+                """,
+            UserEntity.class
+        )
+        .setParameter("id", id)
+        .getSingleResult();
   }
 }

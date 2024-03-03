@@ -27,7 +27,7 @@ import {
 import { ISection } from '@/app/interfaces/sections';
 import RefreshAction from '@/app/actions/refresh-action';
 import UploadCover from '@/app/posts/save/upload-cover';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -217,7 +217,7 @@ export default function Save({
         message = 'Successfully updated';
         setForm({ ...form, content: variables.content });
       } else {
-        message = 'Successfully published, Refresh after 2 seconds';
+        message = 'Successfully published, Refresh after 1 seconds';
         setFirst(true);
       }
 
@@ -233,7 +233,7 @@ export default function Save({
               url: response,
               tags: ['/'],
             });
-          }, 2000);
+          }, 1500);
         } else {
           toast.current.show({
             type: 'danger',
@@ -516,18 +516,43 @@ export default function Save({
                     </div>
                   </div>
                   <div className={clsx(split ? 'col-6' : '')}>
-                    <label className="form-label">Content</label>
-                    <div className="form-text mb-2">
-                      You can publish an article with only a title or with
-                      content. If you need a related topic, please select the
-                      content
-                    </div>
-                    {editorInitializing && (
-                      <div className="form-text mb-2">
-                        Loading the editor...
+                    {!expand && (
+                      <div className="mb-4">
+                        <label className="form-label">
+                          <span className="fw-bold text-danger">*</span>
+                          Name
+                        </label>
+                        <textarea
+                          required
+                          rows={1}
+                          className="form-control"
+                          name="name"
+                          value={form.name}
+                          onChange={onChangeForm}
+                          placeholder="Please enter the post name"
+                          aria-describedby="name"
+                          minLength={1}
+                        />
+                        <div className="form-text">
+                          Recommendations for Post Names: Concise and Structured
+                        </div>
                       </div>
                     )}
-                    <div ref={editorElementRef}></div>
+
+                    <div>
+                      <label className="form-label">Content</label>
+                      <div className="form-text mb-2">
+                        You can publish an article with only a title or with
+                        content. If you need a related topic, please select the
+                        content
+                      </div>
+                      {editorInitializing && (
+                        <div className="form-text mb-2">
+                          Loading the editor...
+                        </div>
+                      )}
+                      <div ref={editorElementRef}></div>
+                    </div>
                   </div>
                 </form>
               </div>

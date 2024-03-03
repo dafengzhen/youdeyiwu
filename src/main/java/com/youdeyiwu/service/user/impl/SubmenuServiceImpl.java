@@ -59,8 +59,7 @@ public class SubmenuServiceImpl implements SubmenuService {
   public SubmenuEntity create(CreateSubmenuDto dto) {
     SubmenuEntity submenuEntity = new SubmenuEntity();
     submenuMapper.dtoToEntity(dto, submenuEntity);
-    submenuRepository.save(submenuEntity);
-    return submenuEntity;
+    return submenuRepository.save(submenuEntity);
   }
 
   @Transactional

@@ -84,8 +84,7 @@ public class SectionServiceImpl implements SectionService {
   public SectionEntity create(CreateSectionDto dto) {
     SectionEntity sectionEntity = new SectionEntity();
     sectionEntity.setName(dto.name().trim());
-    sectionRepository.save(sectionEntity);
-    return sectionEntity;
+    return sectionRepository.save(sectionEntity);
   }
 
   @Transactional

@@ -256,7 +256,7 @@ export default function Messages({
                                     {item.state === 'UNREAD' && (
                                       <i
                                         onClick={() => onClickSetRead(item)}
-                                        className="bi bi-bookmark-check fs-4 cursor-pointer text-primary"
+                                        className="bi bi-check-circle fs-4 cursor-pointer text-primary"
                                         title="Set Read"
                                       ></i>
                                     )}
@@ -271,7 +271,7 @@ export default function Messages({
                                         ) : (
                                           <i
                                             onClick={() => onClickDelete(item)}
-                                            className="bi bi-trash text-danger fs-4 cursor-pointer"
+                                            className="bi bi-x-circle text-danger fs-4 cursor-pointer"
                                             title="Delete"
                                           ></i>
                                         )}

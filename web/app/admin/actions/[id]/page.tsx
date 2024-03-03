@@ -2,10 +2,10 @@ import { type Metadata } from 'next';
 import Update from '@/app/admin/actions/[id]/update';
 import Delete from '@/app/admin/actions/[id]/delete';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
 import QueryActionAction from '@/app/actions/actions/query-action-action';
 import UpdateRoles from '@/app/admin/actions/[id]/update-roles';
 import ErrorPage from '@/app/common/error-page';
+import { isNum } from '@/app/common/tool';
 
 export const metadata: Metadata = {
   title: 'Update Action',

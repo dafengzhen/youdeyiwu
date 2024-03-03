@@ -2,7 +2,7 @@ import { type Metadata } from 'next';
 import Update from '@/app/admin/menus/[id]/update';
 import Delete from '@/app/admin/menus/[id]/delete';
 import { notFound } from 'next/navigation';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import QueryMenuAction from '@/app/actions/menus/query-menu-action';
 import UpdateRoles from '@/app/admin/menus/[id]/update-roles';
 import ErrorPage from '@/app/common/error-page';

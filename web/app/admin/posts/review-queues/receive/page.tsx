@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 import Receive from '@/app/admin/posts/review-queues/receive/receive';
-import { isNum } from '@/app/common/server';
+import { isNum } from '@/app/common/tool';
 import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {

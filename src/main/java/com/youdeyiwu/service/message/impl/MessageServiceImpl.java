@@ -69,8 +69,7 @@ public class MessageServiceImpl implements MessageService {
       );
     }
 
-    globalMessageRepository.save(globalMessageEntity);
-    return globalMessageEntity;
+    return globalMessageRepository.save(globalMessageEntity);
   }
 
   @Transactional
@@ -91,8 +90,7 @@ public class MessageServiceImpl implements MessageService {
             .orElseThrow(UserNotFoundException::new)
     );
 
-    messageRepository.save(messageEntity);
-    return messageEntity;
+    return messageRepository.save(messageEntity);
   }
 
   @Transactional

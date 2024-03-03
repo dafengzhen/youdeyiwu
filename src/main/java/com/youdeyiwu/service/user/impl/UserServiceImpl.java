@@ -306,7 +306,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Set<MenuEntityVo> getMenus() {
+  public List<MenuEntityVo> getMenus() {
     if (securityService.isAnonymous()) {
       return getAnonymousUserMenus();
     }
@@ -525,9 +525,9 @@ public class UserServiceImpl implements UserService {
   /**
    * get anonymous user menus.
    *
-   * @return Set
+   * @return List
    */
-  private Set<MenuEntityVo> getAnonymousUserMenus() {
+  private List<MenuEntityVo> getAnonymousUserMenus() {
     return menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id")).stream()
         .filter(menuEntity -> menuEntity.getRoles().isEmpty())
         .map(menuEntity -> {
@@ -575,15 +575,15 @@ public class UserServiceImpl implements UserService {
           }
           return vo;
         })
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .toList();
   }
 
   /**
    * get authenticated user menu.
    *
-   * @return Set
+   * @return List
    */
-  private Set<MenuEntityVo> getAuthenticatedUserMenus() {
+  private List<MenuEntityVo> getAuthenticatedUserMenus() {
     return userRepository.findById(securityService.getUserId())
         .orElseThrow(UserNotFoundException::new)
         .getRoles()
@@ -592,7 +592,7 @@ public class UserServiceImpl implements UserService {
         .flatMap(roleEntity -> roleEntity.getMenus()
             .stream()
             .map(menuEntity -> {
-              MenuEntityVo vo = new MenuEntityVo();
+              MenuEntityVo vo = menuMapper.entityToVo(menuEntity);
               if (menuEntity.getSubmenus().isEmpty()) {
                 vo.setActions(
                     menuEntity.getActions()
@@ -636,6 +636,6 @@ public class UserServiceImpl implements UserService {
               return vo;
             })
         )
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+        .toList();
   }
 }

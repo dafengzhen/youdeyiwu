@@ -2,13 +2,13 @@
 
 import { type IError } from '@/app/interfaces';
 import { POST } from '@/app/constants';
-import { getXRealIp } from '@/app/common/server';
 import {
   createErrorResponse,
   createRequest,
   createRequestUrl,
   createSuccessResponse,
 } from '@/app/common/response';
+import { headers } from 'next/headers';
 
 export default async function ViewPagePostAction(variables: {
   id: number | string;
@@ -42,3 +42,14 @@ export default async function ViewPagePostAction(variables: {
     return createErrorResponse(e);
   }
 }
+
+const getXRealIp = () => {
+  let xRealIp = headers().get('x-real-ip');
+  const xForwardedFor = headers().get('x-forwarded-for');
+
+  if (!xRealIp && xForwardedFor) {
+    xRealIp = xForwardedFor?.split(',').at(0) ?? 'Unknown';
+  }
+
+  return xRealIp;
+};

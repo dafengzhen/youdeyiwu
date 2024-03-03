@@ -45,8 +45,7 @@ public class PermissionServiceImpl implements PermissionService {
     PermissionEntity permissionEntity = new PermissionEntity();
     permissionMapper.dtoToEntity(dto, permissionEntity);
     updateMatchers(dto.matchers(), permissionEntity);
-    permissionRepository.save(permissionEntity);
-    return permissionEntity;
+    return permissionRepository.save(permissionEntity);
   }
 
   @Transactional

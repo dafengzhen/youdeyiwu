@@ -60,8 +60,7 @@ public class CommentServiceImpl implements CommentService {
       commentEntity.setUser(userEntity);
     }
 
-    commentRepository.save(commentEntity);
-    return commentEntity;
+    return commentRepository.save(commentEntity);
   }
 
   @Transactional
