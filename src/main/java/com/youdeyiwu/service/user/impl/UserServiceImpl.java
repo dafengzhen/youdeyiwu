@@ -528,7 +528,8 @@ public class UserServiceImpl implements UserService {
    * @return List
    */
   private List<MenuEntityVo> getAnonymousUserMenus() {
-    return menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id")).stream()
+    return menuRepository.findAll(Sort.by(Sort.Direction.DESC, "sort", "id"))
+        .stream()
         .filter(menuEntity -> menuEntity.getRoles().isEmpty())
         .map(menuEntity -> {
           MenuEntityVo vo = menuMapper.entityToVo(menuEntity);

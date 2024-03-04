@@ -118,7 +118,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                       select c, r from CommentEntity c left join fetch QuoteReplyEntity r
                       on c.id = r.comment.id
-                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      where c.post = :post and (c.reviewState = 0 or r.reviewState = 0)
                       order by c.id, r.id
                   """,
               Tuple.class
@@ -129,7 +129,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                       select count(c), count(r) from CommentEntity c left join QuoteReplyEntity r
                       on c.id = r.comment.id
-                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      where c.post = :post and (c.reviewState = 0 or r.reviewState = 0)
                   """,
               Tuple.class
           )
@@ -160,7 +160,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                       select c, r from CommentEntity c left join fetch QuoteReplyEntity r
                       on c.id = r.comment.id
-                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      where c.post = :post and (c.reviewState = 0 or r.reviewState = 0)
                       or (c.user = :user or r.user = :user)
                       order by c.id, r.id
                   """,
@@ -173,7 +173,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                       select count(c), count(r) from CommentEntity c left join QuoteReplyEntity r
                       on c.id = r.comment.id
-                      where c.post = :post and c.reviewState = 0 and r.reviewState = 0
+                      where c.post = :post and (c.reviewState = 0 or r.reviewState = 0)
                       or (c.user = :user or r.user = :user)
                   """,
               Tuple.class
