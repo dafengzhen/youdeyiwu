@@ -13,16 +13,14 @@ export default function Sections({
   sections?: ISection[];
   queryParams?: TQueryParams;
 }) {
-  const currentSectionId = (
-    queryParams as Record<string, string> | null | undefined
-  )?.sectionId;
+  const currentSectionId = queryParams?.sectionId;
   const router = useRouter();
 
   function onClickLink(item: ISection, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
     e.preventDefault();
 
-    if (item.id + '' === currentSectionId) {
+    if (item.id === currentSectionId) {
       router.back();
     } else {
       router.push(`/?sid=${item.id}`, { scroll: false });
@@ -49,7 +47,7 @@ export default function Sections({
                 onClick={(event) => onClickLink(item, event)}
                 className={clsx(
                   'text-decoration-none',
-                  item.id + '' === currentSectionId
+                  item.id === currentSectionId
                     ? 'link-primary'
                     : 'link-body-emphasis',
                 )}

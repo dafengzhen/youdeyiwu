@@ -13,16 +13,14 @@ export default function Tags({
   tags?: ITag[];
   queryParams?: TQueryParams;
 }) {
-  const currentTagId = (
-    queryParams as Record<string, string> | null | undefined
-  )?.tagId;
+  const currentTagId = queryParams?.tagId;
   const router = useRouter();
 
   function onClickLink(item: ITag, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
     e.preventDefault();
 
-    if (item.id + '' === currentTagId) {
+    if (item.id === currentTagId) {
       router.back();
     } else {
       router.push(`/?tid=${item.id}`, { scroll: false });
@@ -49,7 +47,7 @@ export default function Tags({
                 onClick={(event) => onClickLink(item, event)}
                 className={clsx(
                   'text-decoration-none',
-                  item.id + '' === currentTagId
+                  item.id === currentTagId
                     ? 'link-primary'
                     : 'link-body-emphasis',
                 )}

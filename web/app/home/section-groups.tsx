@@ -13,16 +13,14 @@ export default function SectionGroups({
   sectionGroups?: ISectionGroup[];
   queryParams?: TQueryParams;
 }) {
-  const currentSectionGroupId = (
-    queryParams as Record<string, string> | null | undefined
-  )?.sectionGroupId;
+  const currentSectionGroupId = queryParams?.sectionGroupId;
   const router = useRouter();
 
   function onClickLink(item: ISectionGroup, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
     e.preventDefault();
 
-    if (item.id + '' === currentSectionGroupId) {
+    if (item.id === currentSectionGroupId) {
       router.back();
     } else {
       router.push(`/?sgid=${item.id}`, { scroll: false });
@@ -49,7 +47,7 @@ export default function SectionGroups({
                 onClick={(event) => onClickLink(item, event)}
                 className={clsx(
                   'text-decoration-none',
-                  item.id + '' === currentSectionGroupId
+                  item.id === currentSectionGroupId
                     ? 'link-primary'
                     : 'link-body-emphasis',
                 )}

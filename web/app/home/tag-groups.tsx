@@ -13,16 +13,14 @@ export default function TagGroups({
   tagGroups?: ITagGroup[];
   queryParams?: TQueryParams;
 }) {
-  const currentTagGroupId = (
-    queryParams as Record<string, string> | null | undefined
-  )?.tagGroupId;
+  const currentTagGroupId = queryParams?.tagGroupId;
   const router = useRouter();
 
   function onClickLink(item: ITagGroup, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
     e.preventDefault();
 
-    if (item.id + '' === currentTagGroupId) {
+    if (item.id === currentTagGroupId) {
       router.back();
     } else {
       router.push(`/?tgid=${item.id}`, { scroll: false });
@@ -49,7 +47,7 @@ export default function TagGroups({
                 onClick={(event) => onClickLink(item, event)}
                 className={clsx(
                   'text-decoration-none',
-                  item.id + '' === currentTagGroupId
+                  item.id === currentTagGroupId
                     ? 'link-primary'
                     : 'link-body-emphasis',
                 )}
