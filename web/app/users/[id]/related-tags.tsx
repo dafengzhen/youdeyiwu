@@ -1,8 +1,7 @@
-import { TTabId } from '@/app/users/[id]/userid';
+import type { TTabId } from '@/app/users/[id]/userid';
 import clsx from 'clsx';
 import Link from 'next/link';
-import styles from '@/app/users/[id]/userid.module.scss';
-import { IUserDetails } from '@/app/interfaces/users';
+import type { IUserDetails } from '@/app/interfaces/users';
 import Nodata from '@/app/common/nodata';
 
 export default function RelatedTags({
@@ -32,7 +31,6 @@ export default function RelatedTags({
                         href={`/?tid=${item.id}`}
                         className={clsx(
                           'list-group-item list-group-item-action px-2',
-                          styles.tagBg,
                         )}
                         scroll={false}
                       >
