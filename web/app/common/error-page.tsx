@@ -15,6 +15,15 @@ export default function ErrorPage({ message }: { message?: string }) {
     title = 'Unauthorized';
     content = 'Sorry, accessing this resource requires identity authentication';
     fetch('/api/login-again');
+  } else {
+    if (typeof content === 'object') {
+      console.error(
+        'ErrorPage: The error message should not be an object',
+        content,
+      );
+    }
+
+    content = content + '';
   }
 
   function back() {

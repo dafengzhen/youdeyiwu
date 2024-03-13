@@ -18,6 +18,15 @@ export default function ErrorHandler({
   } else if (message === 'Unauthorized') {
     title = 'Unauthorized';
     content = 'Sorry, accessing this resource requires identity authentication';
+  } else {
+    if (typeof content === 'object') {
+      console.error(
+        'ErrorHandler: The error message should not be an object',
+        content,
+      );
+    }
+
+    content = content + '';
   }
 
   return (
