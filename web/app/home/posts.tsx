@@ -30,7 +30,7 @@ export default function Posts({
     queryKey: ['/posts', queryParams, 'infinite'],
     queryFn: async (context) => {
       const response = await SelectAllPostAction({
-        ...(queryParams as Record<string, string>),
+        ...queryParams,
         page: context.pageParam.page + '',
       });
 
