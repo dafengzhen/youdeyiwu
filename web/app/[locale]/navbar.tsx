@@ -5,18 +5,22 @@ import type { IMenu } from '@/app/[locale]/interfaces/menus';
 import type { IPage } from '@/app/[locale]/interfaces';
 import type { IMessage } from '@/app/[locale]/interfaces/messages';
 import { getUserAlias } from '@/app/[locale]/common/tool';
+import { getTranslations } from 'next-intl/server';
 
 export default async function Navbar({
+  locale,
   user,
   menus,
   messages,
 }: {
+  locale: string;
   user: IUser | null | undefined;
   menus: IMenu[] | null | undefined;
   messages?: IPage<IMessage[]>;
 }) {
   let id;
   let alias = getUserAlias(user);
+  const t = await getTranslations({ locale });
 
   if (user) {
     id = user.id;
@@ -44,17 +48,17 @@ export default async function Navbar({
                 href="/"
                 scroll={false}
               >
-                Home
+                {t('common.home')}
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" href="/sections" scroll={false}>
-                Contents
+                {t('common.contents')}
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" href="/posts" scroll={false}>
-                Articles
+                {t('common.articles')}
               </Link>
             </li>
 
@@ -62,7 +66,7 @@ export default async function Navbar({
               messages.content.some((item) => item.state === 'UNREAD') && (
                 <li className="nav-item position-relative">
                   <Link className="nav-link" href="/messages">
-                    Messages
+                    {t('common.messages')}
                   </Link>
                   <span
                     className="position-absolute translate-middle p-1 bg-danger border border-light rounded-circle"
@@ -81,7 +85,7 @@ export default async function Navbar({
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                More
+                {t('common.more')}
               </a>
               <ul className="dropdown-menu">
                 {!(
@@ -90,7 +94,7 @@ export default async function Navbar({
                 ) && (
                   <li>
                     <Link className="dropdown-item" href="/messages">
-                      Messages
+                      {t('common.messages')}
                     </Link>
                   </li>
                 )}
@@ -100,12 +104,12 @@ export default async function Navbar({
                     className="dropdown-item"
                     href={id ? `/users/${id}` : '/users'}
                   >
-                    My Profile
+                    {t('common.myProfile')}
                   </Link>
                 </li>
                 <li>
                   <Link className="dropdown-item" href="/posts/new">
-                    Create Article
+                    {t('common.createArticle')}
                   </Link>
                 </li>
 
@@ -116,7 +120,7 @@ export default async function Navbar({
                     </li>
                     <li>
                       <Link className="dropdown-item" href="/admin">
-                        Dashboard
+                        {t('common.dashboard')}
                       </Link>
                     </li>
                   </>

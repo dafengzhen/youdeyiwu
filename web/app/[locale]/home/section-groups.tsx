@@ -5,6 +5,7 @@ import type { TQueryParams } from '@/app/[locale]/interfaces';
 import { useRouter } from 'next/navigation';
 import type { MouseEvent } from 'react';
 import clsx from 'clsx';
+import { useTranslations } from 'next-intl';
 
 export default function SectionGroups({
   sectionGroups = [],
@@ -15,6 +16,7 @@ export default function SectionGroups({
 }) {
   const currentSectionGroupId = queryParams?.sectionGroupId;
   const router = useRouter();
+  const t = useTranslations();
 
   function onClickLink(item: ISectionGroup, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
@@ -34,7 +36,7 @@ export default function SectionGroups({
   return (
     <div className="card border-0 shadow-sm shadow-hover">
       <div className="card-header bg-transparent border-bottom-0 fw-bold">
-        Categories
+        {t('common.categories')}
       </div>
       <div className="card-body p-0">
         {sectionGroups.map((item) => {

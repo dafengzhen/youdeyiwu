@@ -1,5 +1,21 @@
 {
-  "Index": {
-    "title": "Hello world!"
+  "common": {
+    "home": "Home",
+    "contents": "Contents",
+    "articles": "Articles",
+    "messages": "Messages",
+    "more": "More",
+    "myProfile": "My Profile",
+    "createArticle": "Create Article",
+    "dashboard": "Dashboard",
+    "categories": "Categories",
+    "tags": "Tags",
+    "editArticle": "Edit Article",
+    "relatedActions": "Related Actions",
+    "relatedArticles": "Related Articles",
+    "loginNow": "Login Now",
+    "quickRegister": "Quick Register",
+    "loading": "Loading",
+    "loadMore" : "Load More"
   }
 }

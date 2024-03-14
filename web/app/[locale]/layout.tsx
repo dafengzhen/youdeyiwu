@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import LoginInfoUserAction from '@/app/[locale]/actions/users/login-info-user-action';
 import MenusUserAction from '@/app/[locale]/actions/users/menus-user-action';
 import QueryAllMessageAction from '@/app/[locale]/actions/messages/query-all-message-action';
+import { getMessages } from 'next-intl/server';
 
 import('@popperjs/core');
 
@@ -67,6 +68,7 @@ export default async function RootLayout({
   ]);
   const userResponse = responses[0];
   const menusResponse = responses[1];
+  const intlMessages = await getMessages({ locale: params.locale });
 
   if (userResponse.isSuccess) {
     user = userResponse.data;
@@ -92,8 +94,13 @@ export default async function RootLayout({
           jetBrainsMono.variable,
         )}
       >
-        <Providers>
-          <Navbar user={user} menus={menus} messages={messages} />
+        <Providers locale={params.locale} intlMessages={intlMessages}>
+          <Navbar
+            user={user}
+            menus={menus}
+            messages={messages}
+            locale={params.locale}
+          />
           {children}
           {process.env.SHOW_FOOTER === 'true' && <Footer />}
         </Providers>

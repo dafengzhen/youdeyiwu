@@ -1,18 +1,21 @@
 import type { IPost } from '@/app/[locale]/interfaces/posts';
 import Nodata from '@/app/[locale]/common/nodata';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function RelatedPosts({
   randomData = [],
 }: {
   randomData?: IPost[];
 }) {
+  const t = useTranslations();
+
   return (
     <>
       {randomData.length > 0 && (
         <div className="card border-0 shadow-sm shadow-hover">
           <div className="card-header bg-transparent border-bottom-0 fw-bold">
-            Related Articles
+            {t('common.relatedArticles')}
           </div>
           <div className="card-body p-0">
             {randomData.map((item) => {

@@ -6,8 +6,13 @@ import React, { type ReactNode, useEffect, useRef, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import Toasts, { IToastRef } from '@/app/[locale]/common/toasts';
 import Modals, { IModalRef } from '@/app/[locale]/common/modals';
+import { type AbstractIntlMessages, NextIntlClientProvider } from 'next-intl';
 
-export function Providers(props: { children: ReactNode }) {
+export function Providers(props: {
+  locale: string;
+  intlMessages: AbstractIntlMessages;
+  children: ReactNode;
+}) {
   const [queryClient] = useState(() => new QueryClient());
   const toastRef = useRef<IToastRef>({
     show: () => {},
@@ -33,11 +38,17 @@ export function Providers(props: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GlobalContext.Provider value={{ toast: toastRef, modal: modalRef }}>
-        {props.children}
-        <Toasts ref={toastRef} />
-        <Modals ref={modalRef} />
-      </GlobalContext.Provider>
+      <NextIntlClientProvider
+        locale={props.locale}
+        messages={props.intlMessages}
+        timeZone="UTC"
+      >
+        <GlobalContext.Provider value={{ toast: toastRef, modal: modalRef }}>
+          {props.children}
+          <Toasts ref={toastRef} />
+          <Modals ref={modalRef} />
+        </GlobalContext.Provider>
+      </NextIntlClientProvider>
       {<ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );

@@ -1,0 +1,21 @@
+{
+  "common": {
+    "home": "首页",
+    "contents": "内容",
+    "articles": "文章",
+    "messages": "消息",
+    "more": "更多",
+    "myProfile": "我的主页",
+    "createArticle": "创建文章",
+    "dashboard": "后台管理",
+    "categories": "分类",
+    "tags": "标签",
+    "editArticle": "编辑文章",
+    "relatedActions": "相关操作",
+    "relatedArticles": "相关文章",
+    "loginNow": "马上登录",
+    "quickRegister": "快速注册",
+    "loading": "加载中",
+    "loadMore" : "加载更多"
+  }
+}

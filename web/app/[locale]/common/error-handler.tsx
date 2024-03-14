@@ -36,7 +36,7 @@ export default function ErrorHandler({
           <div className="card border-0 text-center">
             <div className="card-body text-danger">
               <h5 className="card-title text-5xl font-bold">{title}</h5>
-              <div className="card-subtitle my-4 d-flex flex-wrap flex-column gap-2 user-select-all cursor-copy">
+              <div className="card-subtitle my-4 d-flex flex-wrap flex-column gap-2">
                 <div>
                   <span className="fw-bold">[ Details ]</span>
                   <span>&nbsp;:&nbsp;</span>

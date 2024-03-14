@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useTranslations } from 'next-intl';
 
 export default function LoadMore({
   className,
@@ -9,6 +10,8 @@ export default function LoadMore({
   onCLickLoadMore?: () => void;
   isLoading?: boolean;
 }) {
+  const t = useTranslations();
+
   return (
     <button
       onClick={onCLickLoadMore}
@@ -16,7 +19,7 @@ export default function LoadMore({
       className={clsx('btn btn-sm btn-hover rounded-pill', className)}
       title="Load more"
     >
-      {isLoading ? 'Loading' : 'Load More'}
+      {isLoading ? t('common.loading') : t('common.loadMore')}
     </button>
   );
 }

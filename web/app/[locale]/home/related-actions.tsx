@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function RelatedActions({
   isLogin,
@@ -7,10 +8,12 @@ export default function RelatedActions({
   isLogin?: boolean;
   editPostId?: number;
 }) {
+  const t = useTranslations();
+
   return (
     <div className="card border-0 shadow-sm">
       <div className="card-header bg-transparent border-bottom-0 fw-bold">
-        Related Actions
+        {t('common.relatedActions')}
       </div>
       <div className="card-body p-0">
         <div className="card border-0">
@@ -25,7 +28,7 @@ export default function RelatedActions({
                   style={{ width: 140 }}
                 >
                   <i className="bi bi-pen me-2"></i>
-                  Create Article
+                  {t('common.createArticle')}
                 </div>
               </Link>
 
@@ -39,7 +42,7 @@ export default function RelatedActions({
                     style={{ width: 140 }}
                   >
                     <i className="bi bi-pencil-square me-2"></i>
-                    Edit Article
+                    {t('common.editArticle')}
                   </div>
                 </Link>
               )}
@@ -55,7 +58,7 @@ export default function RelatedActions({
                       style={{ width: 140 }}
                     >
                       <i className="bi bi-person me-2"></i>
-                      Login Now
+                      {t('common.loginNow')}
                     </div>
                   </Link>
 
@@ -68,7 +71,7 @@ export default function RelatedActions({
                       style={{ width: 140 }}
                     >
                       <i className="bi bi-person-add me-2"></i>
-                      Quick Register
+                      {t('common.quickRegister')}
                     </div>
                   </Link>
                 </>
