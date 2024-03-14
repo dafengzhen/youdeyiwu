@@ -12,6 +12,7 @@ import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.user.PermissionEntityVo;
 import com.youdeyiwu.repository.user.PermissionRepository;
 import com.youdeyiwu.repository.user.RoleRepository;
+import com.youdeyiwu.security.SecurityMetadataSource;
 import com.youdeyiwu.service.user.PermissionService;
 import java.util.Objects;
 import java.util.Set;
@@ -38,6 +39,8 @@ public class PermissionServiceImpl implements PermissionService {
   private final PermissionMapper permissionMapper;
 
   private final RoleMapper roleMapper;
+
+  private final SecurityMetadataSource securityMetadataSource;
 
   @Transactional
   @Override
@@ -73,6 +76,7 @@ public class PermissionServiceImpl implements PermissionService {
         .orElseThrow(PermissionNotFoundException::new);
     permissionMapper.dtoToEntity(dto, permissionEntity);
     updateMatchers(dto.matchers(), permissionEntity);
+    securityMetadataSource.update(permissionEntity);
   }
 
   @Override
@@ -101,6 +105,8 @@ public class PermissionServiceImpl implements PermissionService {
   public void delete(Long id) {
     PermissionEntity permissionEntity = permissionRepository.findById(id)
         .orElseThrow(PermissionNotFoundException::new);
+    permissionEntity.getRoles()
+        .forEach(roleEntity -> securityMetadataSource.remove(permissionEntity, roleEntity));
     permissionRepository.delete(permissionEntity);
   }
 
