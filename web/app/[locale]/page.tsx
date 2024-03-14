@@ -23,10 +23,32 @@ export interface ISearchParamsHomePage {
   sectionKey?: string;
 }
 
-export const metadata: Metadata = {
-  title: `Home | ${process.env.NAME!}`,
-  description: process.env.DESCRIPTION!,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const url = process.env.URL!;
+  const name = process.env.NAME;
+  const title = `Home | ${name}`;
+  const description = process.env.DESCRIPTION;
+
+  return {
+    metadataBase: new URL(url),
+    title,
+    description,
+    openGraph: {
+      url,
+      title,
+      description,
+      type: 'website',
+      siteName: name,
+      images: {
+        url: '/og.jpg',
+        type: 'jpg',
+        width: 1280,
+        height: 480,
+        alt: 'og',
+      },
+    },
+  };
+}
 
 export default async function Page({
   searchParams,

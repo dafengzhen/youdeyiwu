@@ -61,8 +61,12 @@ export default function Code({ value }: { value: HTMLElement }) {
   }
 
   function handleLines(code: string) {
-    return code
-      .split('\n')
+    const strings = code.split('\n');
+    if (strings.length === 1) {
+      return strings.join('\n');
+    }
+
+    return strings
       .reduce((pValue, cValue, cIndex) => {
         const node =
           '<span class="line">' +

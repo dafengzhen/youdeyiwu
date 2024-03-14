@@ -10,8 +10,6 @@ export default function Content({
   className?: string;
   html: string | undefined | null;
 }) {
-  // useRef<Map<string, any>>(new Map());
-
   function handleContentCallback(element: HTMLDivElement | null) {
     let lightbox: PhotoSwipeLightbox | undefined;
     if (element) {

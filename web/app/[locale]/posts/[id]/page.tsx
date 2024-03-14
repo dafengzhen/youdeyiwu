@@ -32,20 +32,39 @@ export async function generateMetadata({
   const user = details.user;
   const userAlias = getUserAlias(user);
 
+  const url = process.env.URL + `/posts/${details.id}`;
+  const title = details.name;
+  const description = details.overview ?? '';
+  const publishedTime = details.createdOn;
+
   return {
-    title: details.name,
+    title,
+    description,
     authors: {
       url: user ? `/users/${user.id}` : '/users',
       name: userAlias,
     },
     creator: user ? `${userAlias}(ID. ${user.id})` : userAlias,
-    description: details.overview ?? '',
     keywords: [
       ...(details.section ? [details.section.name] : []),
       ...details.tags.map((tag) => tag.name),
     ],
     category: details.section ? details.section.name : '',
-    bookmarks: `/posts/${details.id}`,
+    bookmarks: url,
+    openGraph: {
+      url,
+      title,
+      description,
+      type: 'article',
+      images: details.cover
+        ? {
+            url: details.cover,
+            alt: 'cover',
+          }
+        : undefined,
+      publishedTime,
+      authors: userAlias,
+    },
   };
 }
 

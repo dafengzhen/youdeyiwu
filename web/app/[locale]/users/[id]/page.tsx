@@ -28,15 +28,32 @@ export async function generateMetadata({
   const user = response.data;
   const userAlias = getUserAlias(user);
 
+  const url = process.env.URL + `/users/${user.id}`;
+  const title = userAlias;
+  const description = user.oneSentence ?? '';
+
   return {
-    title: userAlias,
+    title,
+    description,
     authors: {
       url: `/users/${user.id}`,
       name: userAlias,
     },
     creator: `${user}(ID. ${user.id})`,
-    description: user.oneSentence ?? '',
-    bookmarks: `/users/${user.id}`,
+    bookmarks: url,
+    openGraph: {
+      url,
+      title,
+      description,
+      type: 'profile',
+      images: user.avatar
+        ? {
+            url: user.avatar,
+            alt: 'avatar',
+          }
+        : undefined,
+      username: userAlias,
+    },
   };
 }
 
