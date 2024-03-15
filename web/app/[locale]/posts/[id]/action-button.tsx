@@ -225,38 +225,6 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
             )}
           </button>
         </div>
-        <div className="d-flex justify-content-center gap-4">
-          <button
-            disabled={rewarding}
-            onClick={onClickReward}
-            type="button"
-            className={clsx(
-              'btn rounded-pill',
-              openRewardBox ? 'btn-outline-secondary' : 'btn-outline-primary',
-            )}
-          >
-            <span className="me-2">
-              {rewarding
-                ? 'Rewarding'
-                : openRewardBox
-                  ? 'Cancel Reward'
-                  : 'Reward'}
-            </span>
-            <i className="bi bi-currency-yen"></i>
-          </button>
-          <button
-            disabled={copying}
-            onClick={onClickShare}
-            type="button"
-            className={clsx(
-              'btn rounded-pill',
-              copying ? 'btn-outline-secondary' : 'btn-outline-primary',
-            )}
-          >
-            <span className="me-2">{copying ? 'Copying' : 'Share'}</span>
-            <i className="bi bi-share"></i>
-          </button>
-        </div>
       </div>
 
       {openRewardBox && (
