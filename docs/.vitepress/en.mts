@@ -24,7 +24,7 @@ function nav(): DefaultTheme.NavItem[] {
   return [
     {
       text: 'Guide',
-      link: '/guide/what-is-vitepress',
+      link: '/guide/what-is-youdeyiwu',
       activeMatch: '/guide/',
     },
     {

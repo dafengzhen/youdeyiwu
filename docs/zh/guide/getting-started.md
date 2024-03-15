@@ -1,7 +1,3 @@
----
-outline: deep
----
-
-# Getting Started
+# 开始使用
 
 ...
