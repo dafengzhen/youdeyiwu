@@ -24,10 +24,11 @@ import {
   onLoadEditor,
   setContent,
 } from '@/app/[locale]/common/editor';
-import { ISection } from '@/app/[locale]/interfaces/sections';
+import type { ISection } from '@/app/[locale]/interfaces/sections';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import UploadCover from '@/app/[locale]/posts/save/upload-cover';
 import { isNum } from '@/app/[locale]/common/tool';
+import { useTranslations } from 'next-intl';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -82,6 +83,7 @@ export default function Save({
     { id: number; name: string }[]
   >(sections.map((item) => ({ id: item.id, name: item.name })));
   const [first, setFirst] = useState(false);
+  const t = useTranslations();
 
   const publishPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -278,12 +280,12 @@ export default function Save({
                     >
                       {expand ? (
                         <>
-                          Collapse form
+                          {t('common.collapseForm')}
                           <i className="bi bi-arrows-collapse ms-1"></i>
                         </>
                       ) : (
                         <>
-                          Expand form
+                          {t('common.ExpandForm')}
                           <i className="bi bi-arrows-expand ms-1"></i>
                         </>
                       )}
@@ -298,12 +300,12 @@ export default function Save({
                     >
                       {split ? (
                         <>
-                          Split layout
+                          {t('common.splitLayout')}
                           <i className="bi bi-arrows-expand-vertical ms-1"></i>
                         </>
                       ) : (
                         <>
-                          Vertical layout
+                          {t('common.verticalLayout')}
                           <i className="bi bi-arrows-collapse-vertical ms-1"></i>
                         </>
                       )}
@@ -318,12 +320,12 @@ export default function Save({
                     >
                       {center ? (
                         <>
-                          Centered layout
+                          {t('common.centeredLayout')}
                           <i className="bi bi-arrows-vertical ms-1"></i>
                         </>
                       ) : (
                         <>
-                          Wide layout
+                          {t('common.wideLayout')}
                           <i className="bi bi-arrows ms-1"></i>
                         </>
                       )}
@@ -339,14 +341,14 @@ export default function Save({
                       {isEdit ? (
                         <>
                           {publishPostActionMutation.isPending
-                            ? 'Updating'
-                            : 'Update'}
+                            ? t('common.updating')
+                            : t('common.update')}
                         </>
                       ) : (
                         <>
                           {publishPostActionMutation.isPending
-                            ? 'Publishing'
-                            : 'Publish'}
+                            ? t('common.publishing')
+                            : t('common.publish')}
                         </>
                       )}
                     </button>
@@ -356,7 +358,7 @@ export default function Save({
                       type="button"
                       className="btn btn-secondary"
                     >
-                      Return
+                      {t('common.return')}
                     </button>
                   </div>
                 </div>
@@ -372,7 +374,7 @@ export default function Save({
                       <div>
                         <label className="form-label">
                           <span className="fw-bold text-danger">*</span>
-                          Name
+                          {t('common.name')}
                         </label>
                         <textarea
                           required
@@ -381,65 +383,34 @@ export default function Save({
                           name="name"
                           value={form.name}
                           onChange={onChangeForm}
-                          placeholder="Please enter the post name"
                           aria-describedby="name"
                           minLength={1}
                         />
                         <div className="form-text">
-                          Recommendations for Post Names: Concise and Structured
+                          {t('common.postNameFormText')}
                         </div>
                       </div>
 
                       <div>
-                        <label className="form-label">Select Content</label>
-                        <select
-                          className="form-select"
-                          aria-label="Select Content"
-                          value={form.sectionId}
-                          onChange={onChangeForm}
-                          name="sectionId"
-                        >
-                          <option value="none" defaultValue="none">
-                            None
-                          </option>
-                          {sectionOptions.map((item) => {
-                            return (
-                              <option key={item.id} value={item.id}>
-                                {item.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <div className="form-text">
-                          Choose a content topic, which refers to a broad
-                          category. However, you can also choose not to make a
-                          selection or use tags for more specific categorization
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="form-label">Content Link</label>
+                        <label className="form-label">
+                          {t('common.contentLink')}
+                        </label>
                         <input
                           type="text"
                           className="form-control"
                           name="contentLink"
                           value={form.contentLink}
                           onChange={onChangeForm}
-                          placeholder="Please enter the post content link"
                           aria-describedby="contentLink"
                         />
                         <div className="form-text">
-                          The links only support the HTTP or HTTPS protocols
-                        </div>
-                        <div className="form-text">
-                          When there is a content link, the content will not be
-                          displayed, and clicking will directly redirect
+                          {t('common.contentLinkFormText')}
                         </div>
                       </div>
 
                       <div>
                         <label className="form-label">
-                          Upload cover or enter cover link
+                          {t('common.coverLink')}
                         </label>
                         <input
                           type="text"
@@ -447,20 +418,10 @@ export default function Save({
                           name="cover"
                           value={form.cover}
                           onChange={onChangeForm}
-                          placeholder="Please enter the post cover"
                           aria-describedby="cover"
                         />
                         <div className="form-text">
-                          The aspect ratio of the section cover is 16 x 9, for
-                          example, 260 x 195
-                        </div>
-                        <div className="form-text">
-                          Only cover URLs using the HTTP or HTTPS protocol are
-                          supported
-                        </div>
-                        <div className="form-text">
-                          The cover will not be displayed in all scenarios, but
-                          only in specific scenarios
+                          {t('common.coverLinkFormText')}
                         </div>
                       </div>
 
@@ -477,7 +438,36 @@ export default function Save({
                       )}
 
                       <div>
-                        <label className="form-label">Tags</label>
+                        <label className="form-label">
+                          {t('common.selectContent')}
+                        </label>
+                        <select
+                          className="form-select"
+                          aria-label="Select Content"
+                          value={form.sectionId}
+                          onChange={onChangeForm}
+                          name="sectionId"
+                        >
+                          <option value="none" defaultValue="none">
+                            {t('common.none')}
+                          </option>
+                          {sectionOptions.map((item) => {
+                            return (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <div className="form-text">
+                          {t('common.postSelectContentFormText')}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="form-label">
+                          {t('common.addTags')}
+                        </label>
                         <div className="card rounded-2">
                           <div className="card-body">
                             <SimpleDynamicInput
@@ -487,14 +477,13 @@ export default function Save({
                           </div>
                         </div>
                         <div className="form-text">
-                          Appropriate tags can help organize and categorize
-                          posts
+                          {t('common.postAddTagsFormText')}
                         </div>
                       </div>
 
                       <div>
                         <label className="form-label">
-                          Overview
+                          {t('common.overview')}
                           {form.overview.length > 0 && (
                             <span>&nbsp;({form.overview.length})</span>
                           )}
@@ -505,12 +494,10 @@ export default function Save({
                           name="overview"
                           value={form.overview}
                           onChange={onChangeForm}
-                          placeholder="Please enter the post overview"
                           aria-describedby="overview"
                         />
                         <div className="form-text">
-                          The recommended length for an overview is around 160
-                          words
+                          {t('common.overviewFormText')}
                         </div>
                       </div>
                     </div>
@@ -520,7 +507,7 @@ export default function Save({
                       <div className="mb-4">
                         <label className="form-label">
                           <span className="fw-bold text-danger">*</span>
-                          Name
+                          {t('common.name')}
                         </label>
                         <textarea
                           required
@@ -529,26 +516,25 @@ export default function Save({
                           name="name"
                           value={form.name}
                           onChange={onChangeForm}
-                          placeholder="Please enter the post name"
                           aria-describedby="name"
                           minLength={1}
                         />
                         <div className="form-text">
-                          Recommendations for Post Names: Concise and Structured
+                          {t('common.postNameFormText')}
                         </div>
                       </div>
                     )}
 
                     <div>
-                      <label className="form-label">Content</label>
+                      <label className="form-label">
+                        {t('common.content')}
+                      </label>
                       <div className="form-text mb-2">
-                        You can publish an article with only a title or with
-                        content. If you need a related topic, please select the
-                        content
+                        {t('common.contentFormText')}
                       </div>
                       {editorInitializing && (
                         <div className="form-text mb-2">
-                          Loading the editor...
+                          {t('common.editorLoading')}
                         </div>
                       )}
                       <div ref={editorElementRef}></div>

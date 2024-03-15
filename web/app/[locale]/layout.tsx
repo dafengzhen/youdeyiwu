@@ -102,7 +102,9 @@ export default async function RootLayout({
             locale={params.locale}
           />
           {children}
-          {process.env.SHOW_FOOTER === 'true' && <Footer />}
+          {process.env.SHOW_FOOTER === 'true' && (
+            <Footer locale={params.locale} />
+          )}
         </Providers>
       </body>
     </html>

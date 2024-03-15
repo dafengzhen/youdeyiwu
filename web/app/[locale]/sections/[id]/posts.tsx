@@ -15,6 +15,7 @@ import {
 } from '@/app/[locale]/common/client';
 import Nodata from '@/app/[locale]/common/nodata';
 import LoadMore from '@/app/[locale]/home/load-more';
+import { useTranslations } from 'next-intl';
 
 export default function Posts({
   details,
@@ -27,6 +28,7 @@ export default function Posts({
 }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPost[]>(data.content);
+  const t = useTranslations();
 
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/sections', details.id, queryParams, 'infinite'],
@@ -195,7 +197,7 @@ export default function Posts({
                   type="button"
                   scroll={false}
                 >
-                  Read More
+                  {t('common.readMore')}
                 </Link>
 
                 <div className="flex-shrink-0 flex-grow-1 gap-2 align-items-center justify-content-end d-flex">

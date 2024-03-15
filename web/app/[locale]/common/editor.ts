@@ -47,11 +47,7 @@ export const onLoadEditor = (
   }
 
   const watchdog = new CKSource.EditorWatchdog();
-  watchdog
-    .create(currentElement, {
-      placeholder: 'Please enter the post content',
-    })
-    .catch(console.error);
+  watchdog.create(currentElement).catch(console.error);
   watchdog.on('error', console.error);
   watchdog.setDestructor((editor: any) => editor.destroy());
   watchdog.setCreator((element: any, config: any) =>

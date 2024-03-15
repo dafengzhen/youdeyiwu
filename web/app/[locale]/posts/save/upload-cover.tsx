@@ -11,6 +11,7 @@ import UploadCoverPostAction, {
   type IUploadCoverPostActionVariables,
 } from '@/app/[locale]/actions/posts/upload-cover-post-action';
 import { GlobalContext } from '@/app/[locale]/contexts';
+import { useTranslations } from 'next-intl';
 
 export default function UploadCover({
   id,
@@ -28,6 +29,7 @@ export default function UploadCover({
     uploadCoverObjectUrl: '',
   });
   const uploadCoverFile = useRef<File | null>(null);
+  const t = useTranslations();
 
   const uploadCoverPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -163,18 +165,13 @@ export default function UploadCover({
           type="button"
         >
           <i className="bi bi-upload me-2"></i>
-          {uploadCoverPostActionMutation.isPending ? 'Uploading' : 'Upload'}
+          {uploadCoverPostActionMutation.isPending
+            ? t('common.uploading')
+            : t('common.upload')}
         </button>
       </div>
 
-      <div className="form-text">
-        Only JPG Or PNG format cover image files are supported, with a size of
-        up to 1MB
-      </div>
-      <div className="form-text">
-        Alternatively, you can choose to upload a cover image from your local
-        device
-      </div>
+      <div className="form-text">{t('common.postCoverImageFormText')}</div>
 
       {form.uploadCoverObjectUrl && (
         <div
