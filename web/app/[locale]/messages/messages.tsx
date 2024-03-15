@@ -14,6 +14,7 @@ import DeleteMessageAction from '@/app/[locale]/actions/messages/delete-message-
 import UpdateStateMessageAction from '@/app/[locale]/actions/messages/update-state-message-action';
 import UpdateStateGlobalMessageAction from '@/app/[locale]/actions/messages/update-state-global-message-action';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function Messages({
   data,
@@ -25,6 +26,7 @@ export default function Messages({
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IMessage[]>(data.content);
   const isLogin = !!currentUser;
+  const t = useTranslations();
 
   const messagesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/messages', 'infinite'],
@@ -226,14 +228,13 @@ export default function Messages({
         <div className="container">
           <div className="card border-0">
             <div className="card-header bg-transparent border-bottom-0 fw-bold">
-              Messages
+              {t('common.messages')}
             </div>
             <div className="card-body p-0">
               <div className="d-flex flex-column gap-4">
                 {content.map((item) => {
                   // id may be repeated
                   const key = item.id + '_' + item.messageRange;
-                  const receiver = item.receiver;
 
                   return (
                     <div key={key} className="card border-0 card-hover">
@@ -315,7 +316,7 @@ export default function Messages({
                                         className="btn btn-primary"
                                         scroll={false}
                                       >
-                                        View Details
+                                        {t('common.viewDetails')}
                                       </Link>
                                     )}
 

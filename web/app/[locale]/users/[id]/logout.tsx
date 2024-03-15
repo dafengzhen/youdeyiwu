@@ -5,6 +5,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import LogoutUserAction from '@/app/[locale]/actions/users/logout-user-action';
 import type { IUserDetails } from '@/app/[locale]/interfaces/users';
+import { useTranslations } from 'next-intl';
 
 export default function Logout({
   selectedTabIndex,
@@ -14,6 +15,7 @@ export default function Logout({
   details: IUserDetails;
 }) {
   const { toast } = useContext(GlobalContext);
+  const t = useTranslations();
 
   const logoutUserActionMutation = useMutation({
     mutationFn: async (variables: { id: number | string }) => {
@@ -55,7 +57,7 @@ export default function Logout({
       })}
     >
       <div className="card-body">
-        <div className="form-text mb-4">Are you sure you want to logout?</div>
+        <div className="form-text mb-4">{t('common.logoutFormText')}</div>
 
         <div>
           <button
@@ -64,7 +66,9 @@ export default function Logout({
             type="submit"
             className="btn btn-danger col-auto"
           >
-            {logoutUserActionMutation.isPending ? 'Logging out' : 'Logout'}
+            {logoutUserActionMutation.isPending
+              ? t('common.loggingOut')
+              : t('common.logout')}
           </button>
         </div>
       </div>

@@ -11,10 +11,12 @@ import SelectAllUserAction from '@/app/[locale]/actions/users/select-all-user-ac
 import Nodata from '@/app/[locale]/common/nodata';
 import LoadMore from '@/app/[locale]/home/load-more';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
+import { useTranslations } from 'next-intl';
 
 export default function Users({ data }: { data: IPage<IUser[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IUser[]>(data.content);
+  const t = useTranslations();
 
   const usersInfiniteQuery = useInfiniteQuery({
     queryKey: ['/users', 'infinite'],
@@ -127,7 +129,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                       {item.oneSentence ? (
                         item.oneSentence
                       ) : (
-                        <span>He didn&apos;t leave behind a single word</span>
+                        <span>{t('common.heDidntLeaveBehindASingleWord')}</span>
                       )}
                     </div>
                     <hr className="my-0 text-secondary" />
@@ -136,7 +138,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                         className="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                         href={`/users/${item.id}`}
                       >
-                        Visit my homepage
+                        {t('common.viewHisHomepage')}
                         <i className="bi bi-box-arrow-up-right ms-2"></i>
                       </Link>
                     </div>

@@ -1,9 +1,10 @@
-import { TTabId } from '@/app/[locale]/users/[id]/userid';
+import type { TTabId } from '@/app/[locale]/users/[id]/userid';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
-import { IUserDetails } from '@/app/[locale]/interfaces/users';
+import type { IUserDetails } from '@/app/[locale]/interfaces/users';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
+import { useTranslations } from 'next-intl';
 
 export default function MyHomepage({
   selectedTabIndex,
@@ -14,6 +15,7 @@ export default function MyHomepage({
 }) {
   const [isClick, setIsClick] = useState(false);
   const avatar = details.avatar;
+  const t = useTranslations();
 
   function onClickCard() {
     setIsClick(!isClick);
@@ -51,7 +53,7 @@ export default function MyHomepage({
               {details.oneSentence ? (
                 details.oneSentence
               ) : (
-                <span>He didn&apos;t leave behind a single word</span>
+                <span>{t('common.heDidntLeaveBehindASingleWord')}</span>
               )}
             </div>
           </div>

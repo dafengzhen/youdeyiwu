@@ -8,6 +8,7 @@ import UpdatePasswordUserAction, {
 } from '@/app/[locale]/actions/users/update-password-user-action';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
 import type { IUserDetails } from '@/app/[locale]/interfaces/users';
+import { useTranslations } from 'next-intl';
 
 export default function ChangePassword({
   selectedTabIndex,
@@ -26,6 +27,7 @@ export default function ChangePassword({
     oldPassword: '',
     newPassword: '',
   });
+  const t = useTranslations();
 
   const updatePasswordUserActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -133,7 +135,7 @@ export default function ChangePassword({
           </div>
 
           <div>
-            <label className="form-label">Old Password</label>
+            <label className="form-label">{t('common.oldPassword')}</label>
             <input
               required
               name="oldPassword"
@@ -144,12 +146,12 @@ export default function ChangePassword({
               onChange={onChangeForm}
             />
             <div className="form-text">
-              Password length should be between 6 and 18 characters
+              {t('common.passwordLengthFormText')}
             </div>
           </div>
 
           <div>
-            <label className="form-label">New Password</label>
+            <label className="form-label">{t('common.newPassword')}</label>
             <input
               required
               name="newPassword"
@@ -160,7 +162,7 @@ export default function ChangePassword({
               onChange={onChangeForm}
             />
             <div className="form-text">
-              Password length should be between 6 and 18 characters
+              {t('common.passwordLengthFormText')}
             </div>
           </div>
 
@@ -171,8 +173,8 @@ export default function ChangePassword({
               className="btn btn-success col-auto"
             >
               {updatePasswordUserActionMutation.isPending
-                ? 'Updating'
-                : 'Change Password'}
+                ? t('common.updating')
+                : t('common.changePassword')}
             </button>
           </div>
         </form>

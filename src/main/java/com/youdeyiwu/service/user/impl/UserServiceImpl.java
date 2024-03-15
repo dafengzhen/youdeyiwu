@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
   public void updateProfile(Long id, UpdateUserProfileDto dto) {
     UserEntity userEntity = findUser(id);
 
-    if (StringUtils.hasText(dto.alias())) {
+    if (StringUtils.hasText(dto.alias()) && !StringUtils.hasText(userEntity.getAlias())) {
       userEntity.setAlias(dto.alias().trim());
     }
 

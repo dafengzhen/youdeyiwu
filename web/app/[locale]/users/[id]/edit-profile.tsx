@@ -8,6 +8,7 @@ import UpdateProfileUserAction, {
 } from '@/app/[locale]/actions/users/update-profile-user-action';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
+import { useTranslations } from 'next-intl';
 
 export default function EditProfile({
   selectedTabIndex,
@@ -26,6 +27,7 @@ export default function EditProfile({
     avatar: details.avatar ?? '',
     oneSentence: details.oneSentence ?? '',
   });
+  const t = useTranslations();
 
   const updateProfileUserActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -78,7 +80,7 @@ export default function EditProfile({
       <div className="card-body">
         <form className="vstack gap-4" onSubmit={onSubmit}>
           <div>
-            <label className="form-label">Alias</label>
+            <label className="form-label">{t('common.alias')}</label>
             <input
               type="text"
               className="form-control"
@@ -86,14 +88,13 @@ export default function EditProfile({
               value={form.alias}
               onChange={onChangeForm}
               aria-describedby="alias"
+              readOnly={!!details.alias}
             />
-            <div className="form-text">
-              Display aliases first, followed by usernames
-            </div>
+            <div className="form-text">{t('common.userAliasFormText')}</div>
           </div>
 
           <div>
-            <label className="form-label">Avatar</label>
+            <label className="form-label">{t('common.avatar')}</label>
             <input
               type="text"
               className="form-control"
@@ -102,17 +103,11 @@ export default function EditProfile({
               onChange={onChangeForm}
               aria-describedby="avatar"
             />
-            <div className="form-text">
-              The recommended size for the avatar image is 260 x 260 or 200 x
-              200
-            </div>
-            <div className="form-text">
-              Only cover URLs using the HTTP or HTTPS protocol are supported
-            </div>
+            <div className="form-text">{t('common.userAvatarFormText')}</div>
           </div>
 
           <div>
-            <label className="form-label">One Sentence</label>
+            <label className="form-label">{t('common.oneSentence')}</label>
             <input
               type="text"
               className="form-control"
@@ -122,7 +117,7 @@ export default function EditProfile({
               aria-describedby="oneSentence"
             />
             <div className="form-text">
-              A brief description of what I want to describe
+              {t('common.userOneSentenceFormText')}
             </div>
           </div>
 
@@ -133,8 +128,8 @@ export default function EditProfile({
               className="btn btn-success col-auto"
             >
               {updateProfileUserActionMutation.isPending
-                ? 'Updating'
-                : 'Edit Profile'}
+                ? t('common.updating')
+                : t('common.editProfile')}
             </button>
           </div>
         </form>

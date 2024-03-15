@@ -15,6 +15,7 @@ import Logout from '@/app/[locale]/users/[id]/logout';
 import Link from 'next/link';
 import type { IUser, IUserDetails } from '@/app/[locale]/interfaces/users';
 import { UserIdContext } from '@/app/[locale]/contexts/userid';
+import { useTranslations } from 'next-intl';
 
 export type TTabId =
   | 'MyHomepage'
@@ -42,50 +43,51 @@ export default function UserId({
   const self = details.id === currentUser?.id;
   const [selectedTabIndex, setSelectedTabIndex] = useState<TTabId>();
   const tabRefs = useRef<HTMLDivElement[]>([]);
+  const t = useTranslations();
 
   const tabs: (ITab | null)[] = [
     {
       id: 'MyHomepage',
-      name: 'My Homepage',
+      name: t('common.myHomepage'),
     },
     self
       ? {
           id: 'EditProfile',
-          name: 'Edit Profile',
+          name: t('common.editProfile'),
         }
       : null,
     self
       ? {
           id: 'ChangePassword',
-          name: 'Change Password',
+          name: t('common.changePassword'),
         }
       : null,
     {
       id: 'MyArticles',
-      name: 'My Articles',
+      name: t('common.myArticles'),
     },
     self
       ? {
           id: 'MyFavourites',
-          name: 'My Favourites',
+          name: t('common.myFavourites'),
         }
       : null,
     {
       id: 'RelatedContent',
-      name: 'Related Content',
+      name: t('common.relatedContent'),
     },
     {
       id: 'RelatedTags',
-      name: 'Related Tags',
+      name: t('common.relatedTags'),
     },
     {
       id: 'RelatedStatistics',
-      name: 'Related Statistics',
+      name: t('common.relatedStatistics'),
     },
     self
       ? {
           id: 'Logout',
-          name: 'Logout',
+          name: t('common.logout'),
         }
       : null,
   ];
