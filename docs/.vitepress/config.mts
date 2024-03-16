@@ -9,7 +9,7 @@ export default defineConfig({
     root: { label: 'English', ...en },
     zh: { label: '简体中文', ...zh },
   },
-  base: '/docs/',
+  base: '/youdeyiwu/',
   cleanUrls: true,
   title: 'Youdeyiwu',
   description: 'Youdeyiwu is an open-source lightweight forum',
