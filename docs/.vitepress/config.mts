@@ -2,6 +2,8 @@ import { defineConfig } from 'vitepress';
 import { en } from './en.mjs';
 import { zh } from './zh.mjs';
 
+const base = '/youdeyiwu/'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'en-US',
@@ -9,18 +11,18 @@ export default defineConfig({
     root: { label: 'English', ...en },
     zh: { label: '简体中文', ...zh },
   },
-  base: '/youdeyiwu/',
+  base,
   cleanUrls: true,
   title: 'Youdeyiwu',
   description: 'Youdeyiwu is an open-source lightweight forum',
   head: [
-    ['link', { rel: 'icon', href: '/docs/favicon/favicon.ico' }],
+    ['link', { rel: 'icon', href: `${base}favicon/favicon.ico` }],
     [
       'link',
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        href: '/docs/favicon/apple-touch-icon.png',
+        href: `${base}favicon/apple-touch-icon.png`,
       },
     ],
     [
@@ -29,7 +31,7 @@ export default defineConfig({
         rel: 'icon',
         type: 'image/png',
         sizes: '32x32',
-        href: '/docs/favicon/favicon-32x32.png',
+        href: `${base}favicon/favicon-32x32.png`,
       },
     ],
     [
@@ -38,10 +40,10 @@ export default defineConfig({
         rel: 'icon',
         type: 'image/png',
         sizes: '16x16',
-        href: '/docs/assets/favicon/favicon-16x16.png',
+        href: `${base}assets/favicon/favicon-16x16.png`,
       },
     ],
-    ['link', { rel: 'manifest', href: '/docs/favicon/site.webmanifest' }],
+    ['link', { rel: 'manifest', href: `${base}favicon/site.webmanifest` }],
     ['meta', { name: 'theme-color', content: '#fc5bb6' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:locale', content: 'en' }],
