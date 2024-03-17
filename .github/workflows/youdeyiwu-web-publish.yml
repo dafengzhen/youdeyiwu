@@ -1,4 +1,4 @@
-name: Publishing Youdeyiwu Backend Application to Docker
+name: Publishing Youdeyiwu Frontend Application to Docker
 
 on:
   push:
@@ -10,12 +10,15 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: server
+  group: frontend
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,11 +31,14 @@ jobs:
         with:
           context: .
           push: false
-          tags: dafengzhen/youdeyiwu:dev
+          tags: dafengzhen/youdeyiwu-web:dev
 
   publish:
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
     name: Publish
     steps:
       - name: Checkout code
@@ -47,4 +53,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: dafengzhen/youdeyiwu:dev
+          tags: dafengzhen/youdeyiwu-web:dev
