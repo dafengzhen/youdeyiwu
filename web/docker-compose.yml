@@ -7,6 +7,7 @@ services:
     container_name: youdeyiwu-web
     image: "youdeyiwu-web:${TAG}"
     environment:
+      - TAG
       - URL
       - NAME
       - DESCRIPTION
@@ -14,6 +15,10 @@ services:
       - IS_HTTPS_SITE
       - SERVER_ACTIONS_ALLOWED_ORIGINS
       - SHOW_FOOTER
+      - IMAGES_REMOTE_PATTERNS_0_PROTOCOL
+      - IMAGES_REMOTE_PATTERNS_0_HOSTNAME
+      - IMAGES_REMOTE_PATTERNS_0_PORT
+      - IMAGES_REMOTE_PATTERNS_0_PATHNAME
     build:
       context: .
     networks:

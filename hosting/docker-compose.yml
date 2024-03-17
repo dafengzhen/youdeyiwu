@@ -2,11 +2,21 @@ version: "3"
 services:
   youdeyiwu:
     labels:
-      - "description=Build Youdeyiwu backend application"
+      - maintainer=dafengzhen
+      - description=Run youdeyiwu backend application
     container_name: youdeyiwu
-    build:
-      context: ../
+    image: dafengzhen/youdeyiwu
+    environment:
+      - TAG
+      - PROFILES_ACTIVE
+      - DATABASE_ENDPOINT=youdeyiwu:3306
+      - DATABASE_USERNAME
+      - DATABASE_PASSWORD
+    depends_on:
+      - youdeyiwu-db
     restart: on-failure
+    volumes:
+      - logs:/youdeyiwu/logs
     ports:
       - "8080:8080"
     networks:
@@ -14,17 +24,53 @@ services:
 
   youdeyiwu-web:
     labels:
-      - "description=Build Youdeyiwu frontend application"
+      - maintainer=dafengzhen
+      - description=Build youdeyiwu frontend application
     container_name: youdeyiwu-web
-    build:
-      context: ../web
+    image: dafengzhen/youdeyiwu-web
+    environment:
+      - TAG
+      - URL
+      - NAME
+      - DESCRIPTION
+      - API_SERVER=http://youdeyiwu:8080
+      - IS_HTTPS_SITE
+      - SERVER_ACTIONS_ALLOWED_ORIGINS
+      - SHOW_FOOTER
+      - IMAGES_REMOTE_PATTERNS_0_PROTOCOL
+      - IMAGES_REMOTE_PATTERNS_0_HOSTNAME
+      - IMAGES_REMOTE_PATTERNS_0_PORT
+      - IMAGES_REMOTE_PATTERNS_0_PATHNAME
+    depends_on:
+      - youdeyiwu
     restart: on-failure
     ports:
       - "3000:3000"
     networks:
       - youdeyiwu
-      - youdeyiwu-web
+
+  youdeyiwu-db:
+    labels:
+      - maintainer=dafengzhen
+      - description=Build youdeyiwu database application
+    container_name: youdeyiwu-db
+    image: 'mysql:8.2'
+    restart: on-failure
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - '3306:3306'
+    networks:
+      - youdeyiwu
 
 networks:
   youdeyiwu:
-  youdeyiwu-web:
+    name: youdeyiwu
+
+volumes:
+  logs:
+    name: youdeyiwu_logs
+  db:
+    name: youdeyiwu_db
