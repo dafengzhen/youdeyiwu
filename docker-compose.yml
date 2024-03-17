@@ -1,0 +1,27 @@
+version: "3"
+services:
+  youdeyiwu:
+    labels:
+      - maintainer=dafengzhen
+      - description=Build youdeyiwu backend application
+    container_name: youdeyiwu
+    image: "youdeyiwu:${TAG}"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://${DATABASE_ENDPOINT}/youdeyiwu?createDatabaseIfNotExist=true&serverTimezone=UTC&allowMultiQueries=true
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+    build:
+      context: .
+    networks:
+      - server
+    volumes:
+      - logs:/youdeyiwu/logs
+    restart: on-failure
+    ports:
+      - "8080:8080"
+
+networks:
+  server:
+
+volumes:
+  logs:

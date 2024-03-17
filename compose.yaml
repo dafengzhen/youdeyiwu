@@ -1,7 +1,0 @@
-services:
-  mysql:
-    image: 'mysql:8.2'
-    environment:
-      - 'MYSQL_ROOT_PASSWORD=123456'
-    ports:
-      - '3306:3306'

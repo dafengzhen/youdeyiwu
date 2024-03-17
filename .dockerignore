@@ -6,9 +6,14 @@ README.md
 mvnw
 mvnw.cmd
 compose.yaml
+docker-compose.yml
 google_checks.xml
 HELP.md
 LICENSE
 web
 .idea
 target
+logs
+indexs
+docs
+hosting
