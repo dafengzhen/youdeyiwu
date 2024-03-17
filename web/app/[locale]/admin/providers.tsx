@@ -21,8 +21,6 @@ export function Providers({
   const [selectedMenu, setSelectedMenu] = useState<IMenu>();
   const [selectedSubmenu, setSelectedSubmenu] = useState<ISubmenu>();
 
-  console.log(menus);
-
   return (
     <AdminContext.Provider
       value={{
