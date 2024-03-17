@@ -1,0 +1,29 @@
+version: "3"
+services:
+  youdeyiwu-web:
+    labels:
+      - maintainer=dafengzhen
+      - description=Build youdeyiwu frontend application
+    container_name: youdeyiwu-web
+    image: "youdeyiwu-web:${TAG}"
+    environment:
+      - URL
+      - NAME
+      - DESCRIPTION
+      - API_SERVER
+      - IS_HTTPS_SITE
+      - SERVER_ACTIONS_ALLOWED_ORIGINS
+      - SHOW_FOOTER
+    build:
+      context: .
+    networks:
+      - frontend
+    restart: on-failure
+    ports:
+      - "3000:3000"
+
+networks:
+  default:
+    name: youdeyiwu_default
+  frontend:
+    name: youdeyiwu_frontend

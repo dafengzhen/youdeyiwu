@@ -7,6 +7,7 @@ services:
     container_name: youdeyiwu
     image: "youdeyiwu:${TAG}"
     environment:
+      - SPRING_PROFILES_ACTIVE=${PROFILES_ACTIVE}
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DATABASE_ENDPOINT}/youdeyiwu?createDatabaseIfNotExist=true&serverTimezone=UTC&allowMultiQueries=true
       - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
@@ -21,7 +22,10 @@ services:
       - "8080:8080"
 
 networks:
+  default:
+    name: youdeyiwu_default
   server:
+    name: youdeyiwu_server
 
 volumes:
   logs:
