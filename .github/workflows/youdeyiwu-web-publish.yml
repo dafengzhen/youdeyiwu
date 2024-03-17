@@ -29,7 +29,7 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./web
           push: false
           tags: dafengzhen/youdeyiwu-web:dev
 
@@ -51,6 +51,6 @@ jobs:
       - name: Push image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./web
           push: true
           tags: dafengzhen/youdeyiwu-web:dev
