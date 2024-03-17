@@ -10,6 +10,7 @@ import UpdateJwtConfigAction, {
   type IUpdateJwtActionVariables,
 } from '@/app/[locale]/actions/configs/jwt/update-jwt-config-action';
 import type { IJwtConfig } from '@/app/[locale]/interfaces/configs';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function JwtConfig({ config }: { config: IJwtConfig }) {
   const { toast } = useContext(GlobalContext);
@@ -18,6 +19,10 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
   }>({
     secret: config.secret ?? '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/configs',
+    'JwtConfigs#Update',
+  );
 
   const generateRandomSecretJwtConfigActionMutation = useMutation({
     mutationFn: async () => {
@@ -138,7 +143,9 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
 
         <div>
           <button
-            disabled={updateJwtConfigActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateJwtConfigActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -146,6 +153,7 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
               ? 'Updating'
               : 'Update Config'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

@@ -8,6 +8,7 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import NotApprovedPostReviewQueuesAction, {
   type INotApprovedPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/not-approved-post-review-queues-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function NotApproved({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -16,6 +17,10 @@ export default function NotApproved({ id }: { id: number }) {
   }>({
     reason: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts/review-queues',
+    'Post Review Queues#NotApproved',
+  );
 
   const notApprovedPostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -90,6 +95,7 @@ export default function NotApproved({ id }: { id: number }) {
           <button
             onClick={onClickButton}
             disabled={
+              isActionDisabled ||
               notApprovedPostReviewQueuesActionMutation.isPending ||
               notApprovedPostReviewQueuesActionMutation.isSuccess
             }
@@ -100,6 +106,7 @@ export default function NotApproved({ id }: { id: number }) {
               ? 'Processing'
               : 'Cancel Reception'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

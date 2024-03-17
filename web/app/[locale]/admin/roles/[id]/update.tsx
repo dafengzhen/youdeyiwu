@@ -9,6 +9,7 @@ import type { IRole } from '@/app/[locale]/interfaces/roles';
 import UpdateRoleAction, {
   type IUpdateRoleActionVariables,
 } from '@/app/[locale]/actions/roles/update-role-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
@@ -23,6 +24,10 @@ export default function Update({ role }: { role: IRole }) {
     sort: role.sort ?? 0,
     display: role.display ?? true,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/roles',
+    'Roles#Update',
+  );
 
   const updateRoleActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -159,12 +164,13 @@ export default function Update({ role }: { role: IRole }) {
 
         <div>
           <button
-            disabled={updateRoleActionMutation.isPending}
+            disabled={isActionDisabled || updateRoleActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
             {updateRoleActionMutation.isPending ? 'Updating' : 'Update Role'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

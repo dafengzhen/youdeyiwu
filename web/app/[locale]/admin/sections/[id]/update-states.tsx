@@ -17,6 +17,7 @@ import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
 import UpdateStatesSectionAction, {
   type IUpdateStatesSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-states-section-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 interface IState {
   id: number | string;
@@ -51,6 +52,10 @@ export default function UpdateStates({ section }: { section: ISection }) {
   );
   const [blocks, setBlocks] = useState<string[]>(
     section.blocks.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/sections',
+    'Sections#Update States',
   );
 
   const updateStatesSectionActionMutation = useMutation({
@@ -235,7 +240,9 @@ export default function UpdateStates({ section }: { section: ISection }) {
 
         <div>
           <button
-            disabled={updateStatesSectionActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateStatesSectionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -243,6 +250,7 @@ export default function UpdateStates({ section }: { section: ISection }) {
               ? 'Updating'
               : 'Update Section States'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

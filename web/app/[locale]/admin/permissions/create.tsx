@@ -13,6 +13,7 @@ import CreatePermissionAction, {
   type ICreatePermissionActionVariables,
 } from '@/app/[locale]/actions/permissions/create-permission-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -36,6 +37,10 @@ export default function Create() {
     matchers: [],
   });
   const [matchers, setMatchers] = useState<string[]>([]);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/permissions',
+    'Permissions#Create',
+  );
 
   const createPermissionActionMutation = useMutation({
     mutationFn: async (variables: ICreatePermissionActionVariables) => {
@@ -274,7 +279,7 @@ export default function Create() {
         <div>
           <button
             disabled={
-              !form.name.trim() || createPermissionActionMutation.isPending
+              isActionDisabled || createPermissionActionMutation.isPending
             }
             type="submit"
             className="btn btn-success"
@@ -283,6 +288,7 @@ export default function Create() {
               ? 'Creating'
               : 'Create Permission'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

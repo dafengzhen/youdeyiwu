@@ -5,6 +5,7 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateSectionAction from '@/app/[locale]/actions/sections/create-section-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -13,6 +14,10 @@ export default function Create() {
   }>({
     name: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/sections',
+    'Sections#Create',
+  );
 
   const createSectionActionMutation = useMutation({
     mutationFn: async (variables: { name: string }) => {
@@ -85,9 +90,7 @@ export default function Create() {
 
         <div>
           <button
-            disabled={
-              !form.name.trim() || createSectionActionMutation.isPending
-            }
+            disabled={isActionDisabled || createSectionActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
@@ -95,6 +98,7 @@ export default function Create() {
               ? 'Creating'
               : 'Create Section'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

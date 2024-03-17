@@ -14,6 +14,7 @@ import UpdatePermissionAction, {
   type IUpdatePermissionActionVariables,
 } from '@/app/[locale]/actions/permissions/update-permission-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({ permission }: { permission: IPermission }) {
   const { toast } = useContext(GlobalContext);
@@ -38,6 +39,10 @@ export default function Update({ permission }: { permission: IPermission }) {
   });
   const [matchers, setMatchers] = useState<string[]>(
     permission.matchers.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/permissions',
+    'Permissions#Update',
   );
 
   const updatePermissionActionMutation = useMutation({
@@ -273,7 +278,9 @@ export default function Update({ permission }: { permission: IPermission }) {
 
         <div>
           <button
-            disabled={updatePermissionActionMutation.isPending}
+            disabled={
+              isActionDisabled || updatePermissionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -281,6 +288,7 @@ export default function Update({ permission }: { permission: IPermission }) {
               ? 'Updating'
               : 'Update Permission'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

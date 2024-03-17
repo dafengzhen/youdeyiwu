@@ -10,11 +10,16 @@ import { nonNum } from '@/app/[locale]/common/client';
 import UpdateTagsSectionAction, {
   type IUpdateTagsSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-tags-section-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateTags({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
   const [tags, setTags] = useState<string[]>(
     section.tags.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/sections',
+    'Sections#Update Tags',
   );
 
   const updateTagsSectionActionMutation = useMutation({
@@ -81,7 +86,9 @@ export default function UpdateTags({ section }: { section: ISection }) {
 
         <div>
           <button
-            disabled={updateTagsSectionActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateTagsSectionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -89,6 +96,7 @@ export default function UpdateTags({ section }: { section: ISection }) {
               ? 'Updating'
               : 'Update Section Tags'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

@@ -10,11 +10,16 @@ import type { IPost } from '@/app/[locale]/interfaces/posts';
 import UpdateTagsPostAction, {
   type IUpdateTagsPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-tags-post-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateTags({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);
   const [tags, setTags] = useState<string[]>(
     post.tags.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts',
+    'Posts#Update Tags',
   );
 
   const updateTagsPostActionMutation = useMutation({
@@ -81,7 +86,9 @@ export default function UpdateTags({ post }: { post: IPost }) {
 
         <div>
           <button
-            disabled={updateTagsPostActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateTagsPostActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -89,6 +96,7 @@ export default function UpdateTags({ post }: { post: IPost }) {
               ? 'Updating'
               : 'Update Post Tags'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

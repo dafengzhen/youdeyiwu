@@ -8,10 +8,17 @@ import UpdateState from '@/app/[locale]/admin/comments/posts/[id]/update-state';
 import QueryCommentAction from '@/app/[locale]/actions/comments/query-comment-action';
 import QueryReplyAction from '@/app/[locale]/actions/replies/query-reply-action';
 import ErrorPage from '@/app/[locale]/common/error-page';
+import queryString from 'query-string';
 
 export const metadata: Metadata = {
   title: 'Update Comment',
 };
+
+export interface ISearchParamsAdminPostCommentPage {
+  type?: 'state';
+  cid?: string;
+  rid?: string;
+}
 
 export default async function Page({
   params,
@@ -20,53 +27,48 @@ export default async function Page({
   params: {
     id: string;
   };
-  searchParams: {
-    type?: 'state';
-    cid?: string;
-    rid?: string;
-  };
+  searchParams: ISearchParamsAdminPostCommentPage;
 }) {
   const id = params.id;
   if (!isNum(id)) {
     notFound();
   }
 
-  if (searchParams.type === 'state') {
-    const cid = searchParams.cid;
-    const rid = searchParams.rid;
+  const _searchParams = parseSearchParams(searchParams);
+  if (_searchParams.type === 'state') {
+    const cid = _searchParams.cid;
+    const rid = _searchParams.rid;
 
-    if (!cid && !rid) {
-      notFound();
-    }
-    if (cid && !isNum(cid)) {
-      notFound();
-    }
-    if (rid && !isNum(rid)) {
+    if (typeof cid !== 'number' && typeof rid !== 'number') {
       notFound();
     }
 
-    const responses = await Promise.all([
-      QueryCommentAction({ id: cid as string }),
-      QueryReplyAction({
-        id: rid!,
-      }),
-    ]);
-    const commentResponse = responses[0];
-    const replyResponse = responses[1];
+    let commentResponse;
+    let replyResponse;
 
-    if (commentResponse.isError) {
-      return <ErrorPage message={commentResponse.message} />;
+    if (typeof cid === 'number') {
+      commentResponse = await QueryCommentAction({ id: cid });
+      if (commentResponse.isError) {
+        return <ErrorPage message={commentResponse.message} />;
+      }
     }
 
-    if (replyResponse.isError) {
-      return <ErrorPage message={replyResponse.message} />;
+    if (typeof rid === 'number') {
+      replyResponse = await QueryReplyAction({ id: rid });
+      if (replyResponse.isError) {
+        return <ErrorPage message={replyResponse.message} />;
+      }
     }
 
     return (
       <UpdateState
-        details={cid ? commentResponse.data : replyResponse.data}
-        cid={cid ? parseInt(cid) : undefined}
-        rid={rid ? parseInt(rid) : undefined}
+        details={
+          typeof cid === 'number'
+            ? commentResponse?.data!
+            : replyResponse?.data!
+        }
+        cid={typeof cid === 'number' ? cid : undefined}
+        rid={typeof rid === 'number' ? rid : undefined}
       />
     );
   }
@@ -93,3 +95,17 @@ export default async function Page({
     />
   );
 }
+
+const parseSearchParams = (searchParams: ISearchParamsAdminPostCommentPage) => {
+  const { type, cid, rid } = searchParams;
+  const params = {
+    type,
+    cid,
+    rid,
+  };
+
+  const parse = queryString.parse(queryString.stringify(params), {
+    parseNumbers: true,
+  }) as Record<string, string | number>;
+  return { ...parse };
+};

@@ -10,6 +10,7 @@ import type { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 import UpdateSectionsSectionGroupAction, {
   type IUpdateSectionsSectionGroupActionVariables,
 } from '@/app/[locale]/actions/sections/update-sections-section-group-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateSections({
   sectionGroup,
@@ -19,6 +20,10 @@ export default function UpdateSections({
   const { toast } = useContext(GlobalContext);
   const [sections, setSections] = useState<string[]>(
     sectionGroup.sections.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/section-groups',
+    'Section Groups#Update Sections',
   );
 
   const updateSectionsSectionGroupActionMutation = useMutation({
@@ -85,7 +90,10 @@ export default function UpdateSections({
 
         <div>
           <button
-            disabled={updateSectionsSectionGroupActionMutation.isPending}
+            disabled={
+              isActionDisabled ||
+              updateSectionsSectionGroupActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -93,6 +101,7 @@ export default function UpdateSections({
               ? 'Updating'
               : 'Update Sections'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

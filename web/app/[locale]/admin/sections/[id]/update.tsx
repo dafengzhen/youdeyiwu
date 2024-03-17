@@ -23,6 +23,7 @@ import {
   setContent,
 } from '@/app/[locale]/common/editor';
 import UploadCover from '@/app/[locale]/admin/sections/[id]/upload-cover';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -42,6 +43,10 @@ export default function Update({ section }: { section: ISection }) {
   const editorElementRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
   const [editorInitializing, setEditorInitializing] = useState(true);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/sections',
+    'Sections#Update',
+  );
 
   const updateSectionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -216,7 +221,7 @@ export default function Update({ section }: { section: ISection }) {
 
         <div>
           <button
-            disabled={updateSectionActionMutation.isPending}
+            disabled={isActionDisabled || updateSectionActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
@@ -224,6 +229,7 @@ export default function Update({ section }: { section: ISection }) {
               ? 'Updating'
               : 'Update Section'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

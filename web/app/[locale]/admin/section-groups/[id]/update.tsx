@@ -9,6 +9,7 @@ import type { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 import UpdateSectionGroupAction, {
   type IUpdateSectionGroupActionVariables,
 } from '@/app/[locale]/actions/section-groups/update-section-group-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({
   sectionGroup,
@@ -23,6 +24,10 @@ export default function Update({
     name: sectionGroup.name ?? '',
     sort: sectionGroup.sort ?? 0,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/section-groups',
+    'Section Groups#Update',
+  );
 
   const updateSectionGroupActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -122,7 +127,9 @@ export default function Update({
 
         <div>
           <button
-            disabled={updateSectionGroupActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateSectionGroupActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -130,6 +137,7 @@ export default function Update({
               ? 'Updating'
               : 'Update Section Group'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

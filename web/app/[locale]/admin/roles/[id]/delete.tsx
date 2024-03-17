@@ -7,9 +7,14 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IRole } from '@/app/[locale]/interfaces/roles';
 import DeleteRoleAction from '@/app/[locale]/actions/roles/delete-role-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/roles',
+    'Roles#Delete',
+  );
 
   const deleteRoleActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -74,12 +79,13 @@ export default function Delete({ role }: { role: IRole }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deleteRoleActionMutation.isPending}
+            disabled={isActionDisabled || deleteRoleActionMutation.isPending}
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deleteRoleActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

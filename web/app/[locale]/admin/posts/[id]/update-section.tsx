@@ -10,6 +10,7 @@ import UpdateSectionPostAction, {
   type IUpdateSectionPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-section-post-action';
 import { isNum } from '@/app/[locale]/common/tool';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateSection({
   post,
@@ -21,6 +22,10 @@ export default function UpdateSection({
   const { toast } = useContext(GlobalContext);
   const [sectionId, setSectionId] = useState<string | 'none'>(
     (post.section?.id ?? 'none') + '',
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts',
+    'Posts#Update Section',
   );
 
   const updateSectionPostActionMutation = useMutation({
@@ -91,7 +96,9 @@ export default function UpdateSection({
 
         <div>
           <button
-            disabled={updateSectionPostActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateSectionPostActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -99,6 +106,7 @@ export default function UpdateSection({
               ? 'Updating'
               : 'Update Post Section'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

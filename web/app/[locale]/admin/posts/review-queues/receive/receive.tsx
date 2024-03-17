@@ -12,6 +12,7 @@ import {
   trimObjectStrings,
 } from '@/app/[locale]/common/client';
 import { isBefore } from 'date-fns';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Receive({ postId }: { postId: number }) {
   const { toast } = useContext(GlobalContext);
@@ -20,6 +21,10 @@ export default function Receive({ postId }: { postId: number }) {
   }>({
     latestReviewResultTime: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts/review-queues',
+    'Post Review Queues#Receive',
+  );
 
   const receivePostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: IReceivePostReviewQueuesActionVariables) => {
@@ -112,6 +117,7 @@ export default function Receive({ postId }: { postId: number }) {
           <button
             onClick={onClickButton}
             disabled={
+              isActionDisabled ||
               receivePostReviewQueuesActionMutation.isPending ||
               receivePostReviewQueuesActionMutation.isSuccess
             }
@@ -122,6 +128,7 @@ export default function Receive({ postId }: { postId: number }) {
               ? 'Processing'
               : 'Receive'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

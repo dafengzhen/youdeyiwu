@@ -5,6 +5,7 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateTagGroupAction from '@/app/[locale]/actions/tag-groups/create-tag-group-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -13,6 +14,10 @@ export default function Create() {
   }>({
     name: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/tag-groups',
+    'Tag Groups#Create',
+  );
 
   const createTagGroupActionMutation = useMutation({
     mutationFn: async (variables: { name: string }) => {
@@ -90,7 +95,7 @@ export default function Create() {
         <div>
           <button
             disabled={
-              !form.name.trim() || createTagGroupActionMutation.isPending
+              isActionDisabled || createTagGroupActionMutation.isPending
             }
             type="submit"
             className="btn btn-success"
@@ -99,6 +104,7 @@ export default function Create() {
               ? 'Creating'
               : 'Create Tag Group'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

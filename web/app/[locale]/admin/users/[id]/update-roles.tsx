@@ -10,11 +10,16 @@ import type { IUser } from '@/app/[locale]/interfaces/users';
 import UpdateRolesUserAction, {
   type IUpdateRolesUserActionVariables,
 } from '@/app/[locale]/actions/users/update-roles-user-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateRoles({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
   const [roles, setRoles] = useState<string[]>(
     user.roles.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/users',
+    'Users#Update Roles',
   );
 
   const updateRolesUserGroupActionMutation = useMutation({
@@ -81,7 +86,9 @@ export default function UpdateRoles({ user }: { user: IUser }) {
 
         <div>
           <button
-            disabled={updateRolesUserGroupActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateRolesUserGroupActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -89,6 +96,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
               ? 'Updating'
               : 'Update User Roles'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

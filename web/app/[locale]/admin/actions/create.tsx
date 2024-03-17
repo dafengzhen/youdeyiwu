@@ -9,6 +9,7 @@ import CreateActionAction, {
   type ICreateActionActionVariables,
 } from '@/app/[locale]/actions/actions/create-action-action';
 import { ACTION_PAGES_DATA } from '@/app/[locale]/constants';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 
@@ -27,6 +28,10 @@ export default function Create() {
     alias: '',
     sort: 0,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/actions',
+    'Actions#Create',
+  );
 
   const createActionActionMutation = useMutation({
     mutationFn: async (variables: ICreateActionActionVariables) => {
@@ -182,6 +187,7 @@ export default function Create() {
         <div>
           <button
             disabled={
+              isActionDisabled ||
               (ACTION_PAGES_DATA as any)[form.page].length === 0 ||
               createActionActionMutation.isPending
             }
@@ -192,6 +198,7 @@ export default function Create() {
               ? 'Creating'
               : 'Create Action'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

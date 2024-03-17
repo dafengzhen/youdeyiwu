@@ -10,6 +10,7 @@ import UpdateSubmenuAction, {
   type IUpdateSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/update-submenu-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
@@ -26,6 +27,10 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
   });
   const [actions, setActions] = useState<string[]>(
     submenu.actions.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/submenus',
+    'Submenus#Update',
   );
 
   const updateSubmenuActionMutation = useMutation({
@@ -200,7 +205,7 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
 
         <div>
           <button
-            disabled={updateSubmenuActionMutation.isPending}
+            disabled={isActionDisabled || updateSubmenuActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
@@ -208,6 +213,7 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
               ? 'Updating'
               : 'Update Submenu'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

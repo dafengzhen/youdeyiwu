@@ -10,11 +10,16 @@ import UpdateRolesActionAction, {
 } from '@/app/[locale]/actions/actions/update-roles-action-action';
 import { nonNum } from '@/app/[locale]/common/client';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateRoles({ action }: { action: IAction }) {
   const { toast } = useContext(GlobalContext);
   const [roles, setRoles] = useState<string[]>(
     action.roles.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/actions',
+    'Actions#Update Roles',
   );
 
   const updateRolesActionActionMutation = useMutation({
@@ -81,7 +86,9 @@ export default function UpdateRoles({ action }: { action: IAction }) {
 
         <div>
           <button
-            disabled={updateRolesActionActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateRolesActionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -89,6 +96,7 @@ export default function UpdateRoles({ action }: { action: IAction }) {
               ? 'Updating'
               : 'Update Action Role'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

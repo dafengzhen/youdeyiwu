@@ -8,9 +8,14 @@ import Link from 'next/link';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IPost } from '@/app/[locale]/interfaces/posts';
 import DeletePostAction from '@/app/[locale]/actions/posts/delete-post-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts',
+    'Posts#Delete',
+  );
 
   const deletePostActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -79,12 +84,13 @@ export default function Delete({ post }: { post: IPost }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deletePostActionMutation.isPending}
+            disabled={isActionDisabled || deletePostActionMutation.isPending}
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deletePostActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

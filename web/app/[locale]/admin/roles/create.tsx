@@ -8,6 +8,7 @@ import CreateRoleAction, {
   type ICreateRoleActionVariables,
 } from '@/app/[locale]/actions/roles/create-role-action';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -22,6 +23,10 @@ export default function Create() {
     sort: 0,
     display: true,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/roles',
+    'Roles#Create',
+  );
 
   const createRoleActionMutation = useMutation({
     mutationFn: async (variables: ICreateRoleActionVariables) => {
@@ -155,12 +160,13 @@ export default function Create() {
 
         <div>
           <button
-            disabled={!form.name.trim() || createRoleActionMutation.isPending}
+            disabled={isActionDisabled || createRoleActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
             {createRoleActionMutation.isPending ? 'Creating' : 'Create Role'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

@@ -10,6 +10,7 @@ import UpdateMenuAction, {
   type IUpdateMenuActionVariables,
 } from '@/app/[locale]/actions/menus/update-menu-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({ menu }: { menu: IMenu }) {
   const { toast } = useContext(GlobalContext);
@@ -27,6 +28,10 @@ export default function Update({ menu }: { menu: IMenu }) {
   );
   const [actions, setActions] = useState<string[]>(
     menu.actions.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/menus',
+    'Menus#Update',
   );
 
   const updateMenuActionMutation = useMutation({
@@ -203,12 +208,13 @@ export default function Update({ menu }: { menu: IMenu }) {
 
         <div>
           <button
-            disabled={updateMenuActionMutation.isPending}
+            disabled={isActionDisabled || updateMenuActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
             {updateMenuActionMutation.isPending ? 'Updating' : 'Update Menu'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

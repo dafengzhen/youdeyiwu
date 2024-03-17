@@ -51,4 +51,9 @@ VALUES (1, null, now(), false, null, now(), 0, 'Section Create', 'Sections#Creat
        (50, null, now(), false, null, now(), 0, 'Actions Update Roles', 'Actions#Update Roles', 0, 17, null),
        (51, null, now(), false, null, now(), 0, 'Actions Delete', 'Actions#Delete', 0, 17, null),
        (52, null, now(), false, null, now(), 0, 'JwtConfigs Update', 'JwtConfigs#Update', 0, 18, null),
-       (53, null, now(), false, null, now(), 0, 'PointConfigs Update', 'PointConfigs#Update', 0, 18, null);
+       (53, null, now(), false, null, now(), 0, 'PointConfigs Update', 'PointConfigs#Update', 0, 18, null),
+       (54, null, now(), false, null, now(), 0, 'Post Delete', 'Posts#Delete', 0, 6, null),
+       (55, null, now(), false, null, now(), 0, 'Section Update', 'Sections#Delete', 0, 2, null),
+       (56, null, now(), false, null, now(), 0, 'Section Groups Delete', 'Section Groups#Delete', 0, 3, null),
+       (57, null, now(), false, null, now(), 0, 'Comments Update State', 'Comments#Update State', 0, 8, null);
+

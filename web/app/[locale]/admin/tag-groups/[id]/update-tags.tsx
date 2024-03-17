@@ -10,11 +10,16 @@ import type { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
 import UpdateTagsTagGroupAction, {
   type IUpdateTagsTagGroupActionVariables,
 } from '@/app/[locale]/actions/tag-groups/update-tags-tag-group-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);
   const [tags, setTags] = useState<string[]>(
     tagGroup.tags.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/tag-groups',
+    'Tag Groups#Update Tags',
   );
 
   const updateTagsTagGroupActionMutation = useMutation({
@@ -81,7 +86,9 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
 
         <div>
           <button
-            disabled={updateTagsTagGroupActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateTagsTagGroupActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -89,6 +96,7 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
               ? 'Updating'
               : 'Update Tags'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

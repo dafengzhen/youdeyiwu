@@ -10,11 +10,16 @@ import UpdateAdminsSectionAction, {
   type IUpdateAdminsSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-admins-section-action';
 import { nonNum } from '@/app/[locale]/common/client';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateAdmins({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
   const [admins, setAdmins] = useState<string[]>(
     section.admins.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/sections',
+    'Sections#Update Admins',
   );
 
   const updateAdminsSectionActionMutation = useMutation({
@@ -76,7 +81,9 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
 
         <div>
           <button
-            disabled={updateAdminsSectionActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateAdminsSectionActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -84,6 +91,7 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
               ? 'Updating'
               : 'Update Section Admins'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

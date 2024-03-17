@@ -10,11 +10,16 @@ import type { ISubmenu } from '@/app/[locale]/interfaces/menus';
 import UpdateRolesSubmenuAction, {
   type IUpdateRolesSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/update-roles-submenu-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
   const [roles, setRoles] = useState<string[]>(
     submenu.roles.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/submenus',
+    'Submenus#Update Roles',
   );
 
   const updateRolesSubmenuActionMutation = useMutation({
@@ -81,7 +86,9 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
 
         <div>
           <button
-            disabled={updateRolesSubmenuActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateRolesSubmenuActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -89,6 +96,7 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
               ? 'Updating'
               : 'Update Submenu Roles'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

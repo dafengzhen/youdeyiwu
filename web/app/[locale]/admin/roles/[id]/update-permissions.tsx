@@ -10,11 +10,16 @@ import type { IRole } from '@/app/[locale]/interfaces/roles';
 import UpdatePermissionsRoleAction, {
   type IUpdatePermissionsRoleActionVariables,
 } from '@/app/[locale]/actions/roles/update-permissions-role-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdatePermissions({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
   const [permissions, setPermissions] = useState<string[]>(
     role.permissions.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/roles',
+    'Roles#Update Permissions',
   );
 
   const updatePermissionsRoleActionMutation = useMutation({
@@ -80,7 +85,9 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
 
         <div>
           <button
-            disabled={updatePermissionsRoleActionMutation.isPending}
+            disabled={
+              isActionDisabled || updatePermissionsRoleActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -88,6 +95,7 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
               ? 'Updating'
               : 'Update Role Permissions'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

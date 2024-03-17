@@ -8,9 +8,14 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import Link from 'next/link';
 import DeleteSectionAction from '@/app/[locale]/actions/sections/delete-section-action';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/sections',
+    'Sections#Delete',
+  );
 
   const deleteSectionActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -80,12 +85,13 @@ export default function Delete({ section }: { section: ISection }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deleteSectionActionMutation.isPending}
+            disabled={isActionDisabled || deleteSectionActionMutation.isPending}
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deleteSectionActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

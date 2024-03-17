@@ -9,6 +9,7 @@ import type { IUser } from '@/app/[locale]/interfaces/users';
 import UpdateStatesUserAction, {
   type IUpdateStatesUserActionVariables,
 } from '@/app/[locale]/actions/users/update-states-user-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateStates({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
@@ -23,6 +24,10 @@ export default function UpdateStates({ user }: { user: IUser }) {
     accountNonLocked: user.accountNonLocked ?? true,
     enabled: user.enabled ?? true,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/users',
+    'Users#Update States',
+  );
 
   const updateStatesUserActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -149,7 +154,9 @@ export default function UpdateStates({ user }: { user: IUser }) {
 
         <div>
           <button
-            disabled={updateStatesUserActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateStatesUserActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -157,6 +164,7 @@ export default function UpdateStates({ user }: { user: IUser }) {
               ? 'Updating'
               : 'Update User States'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

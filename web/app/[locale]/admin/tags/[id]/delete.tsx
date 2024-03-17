@@ -7,9 +7,14 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ITag } from '@/app/[locale]/interfaces/tags';
 import DeleteTagAction from '@/app/[locale]/actions/tags/delete-tag-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ tag }: { tag: ITag }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/tags',
+    'Tags#Delete',
+  );
 
   const deleteTagActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -74,12 +79,13 @@ export default function Delete({ tag }: { tag: ITag }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deleteTagActionMutation.isPending}
+            disabled={isActionDisabled || deleteTagActionMutation.isPending}
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deleteTagActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

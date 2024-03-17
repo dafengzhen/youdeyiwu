@@ -1,9 +1,10 @@
 'use client';
 
-import { TUsersCountByDate } from '@/app/[locale]/interfaces/users';
+import type { TUsersCountByDate } from '@/app/[locale]/interfaces/users';
 import { useEffect, useRef } from 'react';
 import Chart from '@/app/[locale]/common/chart';
 import type { ChartData, ChartOptions } from 'chart.js';
+import { useTranslations } from 'next-intl';
 
 export default function Admin({
   usersCountByDate,
@@ -12,6 +13,7 @@ export default function Admin({
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart<'line', any, any>>();
+  const t = useTranslations();
 
   useEffect(() => {
     const current = canvas.current;
@@ -76,7 +78,7 @@ export default function Admin({
             <div className="card rounded-2">
               <div className="card-header bg-transparent border-bottom-0">
                 <div className="fw-bold">
-                  Statistics of User Registrations in the Past 15 Days
+                  {t('common.userRegistrationStatisticsForTheLast15Days')}
                 </div>
               </div>
               <div className="card-body">

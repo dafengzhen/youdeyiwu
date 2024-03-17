@@ -8,6 +8,7 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import CreateSubmenuAction, {
   type ICreateSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/create-submenu-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -20,6 +21,10 @@ export default function Create() {
     link: '',
     sort: 0,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/submenus',
+    'Submenus#Create',
+  );
 
   const createSubmenuActionMutation = useMutation({
     mutationFn: async (variables: ICreateSubmenuActionVariables) => {
@@ -141,7 +146,7 @@ export default function Create() {
 
         <div>
           <button
-            disabled={createSubmenuActionMutation.isPending}
+            disabled={isActionDisabled || createSubmenuActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
@@ -149,6 +154,7 @@ export default function Create() {
               ? 'Creating'
               : 'Create Submenu'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

@@ -8,6 +8,7 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import RefundPostReviewQueuesAction, {
   type IRefundPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/refund-post-review-queues-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Return({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -16,6 +17,10 @@ export default function Return({ id }: { id: number }) {
   }>({
     reason: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts/review-queues',
+    'Post Review Queues#Return',
+  );
 
   const refundPostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -93,6 +98,7 @@ export default function Return({ id }: { id: number }) {
           <button
             onClick={onClickButton}
             disabled={
+              isActionDisabled ||
               refundPostReviewQueuesActionMutation.isPending ||
               refundPostReviewQueuesActionMutation.isSuccess
             }
@@ -103,6 +109,7 @@ export default function Return({ id }: { id: number }) {
               ? 'Processing'
               : 'Cancel Reception'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

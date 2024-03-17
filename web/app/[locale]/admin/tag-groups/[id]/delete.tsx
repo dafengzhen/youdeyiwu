@@ -7,9 +7,14 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
 import DeleteTagGroupAction from '@/app/[locale]/actions/tag-groups/delete-tag-group-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/tag-groups',
+    'Tag Groups#Delete',
+  );
 
   const deleteTagGroupActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -75,12 +80,15 @@ export default function Delete({ tagGroup }: { tagGroup: ITagGroup }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deleteTagGroupActionMutation.isPending}
+            disabled={
+              isActionDisabled || deleteTagGroupActionMutation.isPending
+            }
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deleteTagGroupActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

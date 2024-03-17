@@ -13,6 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import SaveRulesPointsAction, {
   type ISaveRulesPointsActionVariables,
 } from '@/app/[locale]/actions/points/rules/save-rules-points-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 const tips = {
   LIKE_POST: 'earning points for liking a post',
@@ -52,6 +53,10 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
   );
   const [isUpdate, setIsUpdate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/points/rules',
+    'Point Rules#Update',
+  );
 
   const saveRulesPointsActionMutation = useMutation({
     mutationFn: async (variables: ISaveRulesPointsActionVariables) => {
@@ -105,27 +110,32 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
         <div className="d-flex align-items-center justify-content-between gap-4">
           <div></div>
           <div className="d-flex gap-2">
-            <button
-              disabled={saving}
-              onClick={onClickUpdate}
-              type="button"
-              className={clsx(
-                'btn btn-sm',
-                isUpdate ? 'btn-secondary' : 'btn-primary',
-              )}
-            >
-              {isUpdate ? 'Cancel Update' : 'Update'}
-            </button>
-
-            {isUpdate && (
+            <div>
               <button
                 disabled={saving}
-                onClick={onClickSave}
+                onClick={onClickUpdate}
                 type="button"
-                className="btn btn-sm btn-success"
+                className={clsx(
+                  'btn btn-sm',
+                  isUpdate ? 'btn-secondary' : 'btn-primary',
+                )}
               >
-                {saving ? 'Saving' : 'Save'}
+                {isUpdate ? 'Cancel Update' : 'Update'}
               </button>
+            </div>
+
+            {isUpdate && (
+              <div className="d-flex flex-column">
+                <button
+                  disabled={isActionDisabled || saving}
+                  onClick={onClickSave}
+                  type="button"
+                  className="btn btn-sm btn-success"
+                >
+                  {saving ? 'Saving' : 'Save'}
+                </button>
+                <AccessDeniedAlert />
+              </div>
             )}
           </div>
         </div>

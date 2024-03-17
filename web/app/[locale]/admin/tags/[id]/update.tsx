@@ -9,6 +9,7 @@ import type { ITag } from '@/app/[locale]/interfaces/tags';
 import UpdateTagAction, {
   type IUpdateTagActionVariables,
 } from '@/app/[locale]/actions/tags/update-tag-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Update({ tag }: { tag: ITag }) {
   const { toast } = useContext(GlobalContext);
@@ -19,6 +20,10 @@ export default function Update({ tag }: { tag: ITag }) {
     name: tag.name ?? '',
     sort: tag.sort ?? 0,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/tags',
+    'Tags#Update',
+  );
 
   const updateTagActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -117,12 +122,13 @@ export default function Update({ tag }: { tag: ITag }) {
 
         <div>
           <button
-            disabled={updateTagActionMutation.isPending}
+            disabled={isActionDisabled || updateTagActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
             {updateTagActionMutation.isPending ? 'Updating' : 'Update Tag'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

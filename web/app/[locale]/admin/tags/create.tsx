@@ -5,6 +5,7 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateTagAction from '@/app/[locale]/actions/tags/create-tag-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -13,6 +14,10 @@ export default function Create() {
   }>({
     name: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/tags',
+    'Tags#Create',
+  );
 
   const createTagActionMutation = useMutation({
     mutationFn: async (variables: { name: string }) => {
@@ -88,12 +93,13 @@ export default function Create() {
 
         <div>
           <button
-            disabled={!form.name.trim() || createTagActionMutation.isPending}
+            disabled={isActionDisabled || createTagActionMutation.isPending}
             type="submit"
             className="btn btn-success"
           >
             {createTagActionMutation.isPending ? 'Creating' : 'Create Tag'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

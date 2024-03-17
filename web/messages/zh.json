@@ -74,6 +74,8 @@
     "upload": "上传",
     "postCoverImageFormText": "仅支持 JPG 或 PNG 格式的封面文件，大小不能超过 1MB",
     "readMore": "阅读更多",
-    "footerFormText": "由 <name>Youdeyiwu</name> 构建。源代码可在 <link>Github</link> 上获取"
+    "footerFormText": "由 <name>Youdeyiwu</name> 构建。源代码可在 <link>Github</link> 上获取",
+    "userRegistrationStatisticsForTheLast15Days": "过去 15 天用户注册统计",
+    "sorryYouDontHaveAccessToThisButtonYet": "抱歉，您暂无权限执行该按钮操作"
   }
 }

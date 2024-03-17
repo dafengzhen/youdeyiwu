@@ -20,6 +20,7 @@ import UpdateStateCommentAction, {
 import UpdateStateReplyAction, {
   type IUpdateStateReplyActionVariables,
 } from '@/app/[locale]/actions/replies/update-state-reply-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function UpdateStates({
   details,
@@ -38,6 +39,10 @@ export default function UpdateStates({
     reason: '',
     reviewState: details.reviewState ?? 'APPROVED',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/comments',
+    'Comments#Update State',
+  );
 
   const updateStateCommentActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -198,6 +203,7 @@ export default function UpdateStates({
         <div>
           <button
             disabled={
+              isActionDisabled ||
               updateStateCommentActionMutation.isPending ||
               updateStateReplyActionMutation.isPending
             }
@@ -209,6 +215,7 @@ export default function UpdateStates({
               ? 'Updating'
               : 'Update State'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

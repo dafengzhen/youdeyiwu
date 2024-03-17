@@ -12,11 +12,12 @@ import {
 import CreateGlobalMessageAction, {
   type ICreateGlobalMessageActionVariables,
 } from '@/app/[locale]/actions/messages/create-global-message-action';
-import { TMessageRange } from '@/app/[locale]/interfaces/messages';
+import type { TMessageRange } from '@/app/[locale]/interfaces/messages';
 import Link from 'next/link';
 import CreateMessageAction, {
   type ICreateMessageActionVariables,
 } from '@/app/[locale]/actions/messages/create-message-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -39,6 +40,10 @@ export default function Create() {
     messageRange: 'ALL_USER',
     receiver: '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/messages',
+    'Messages#Create',
+  );
 
   const createGlobalMessageActionMutation = useMutation({
     mutationFn: async (variables: ICreateGlobalMessageActionVariables) => {
@@ -364,6 +369,7 @@ export default function Create() {
         <div>
           <button
             disabled={
+              isActionDisabled ||
               createGlobalMessageActionMutation.isPending ||
               createMessageActionMutation.isPending
             }
@@ -375,7 +381,7 @@ export default function Create() {
               ? 'Creating'
               : 'Create Message'}
           </button>
-          <div className="form-text"></div>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

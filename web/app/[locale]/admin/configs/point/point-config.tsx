@@ -9,6 +9,7 @@ import type { IPointConfig } from '@/app/[locale]/interfaces/configs';
 import UpdatePointConfigAction, {
   type IUpdatePointActionVariables,
 } from '@/app/[locale]/actions/configs/point/update-point-config-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function PointConfig({ config }: { config: IPointConfig }) {
   const { toast } = useContext(GlobalContext);
@@ -19,6 +20,10 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
     enable: config.enable ?? false,
     initPoints: config.initPoints ?? 100,
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/configs',
+    'PointConfigs#Update',
+  );
 
   const updatePointConfigActionMutation = useMutation({
     mutationFn: async (variables: IUpdatePointActionVariables) => {
@@ -109,7 +114,9 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
 
         <div>
           <button
-            disabled={updatePointConfigActionMutation.isPending}
+            disabled={
+              isActionDisabled || updatePointConfigActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -117,6 +124,7 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
               ? 'Updating'
               : 'Update Config'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

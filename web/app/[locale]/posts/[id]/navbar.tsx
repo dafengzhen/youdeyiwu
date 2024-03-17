@@ -46,7 +46,14 @@ export default function Navbar({ details }: { details: IPostDetails }) {
             </Link>
             <div className="flex-grow-1 d-flex flex-column justify-content-around">
               <div className="d-flex align-items-center gap-4 justify-content-between">
-                <div>{details.name}</div>
+                <div>
+                  <Link
+                    className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                    href={`/posts/${details.id}`}
+                  >
+                    {details.name}
+                  </Link>
+                </div>
 
                 {details.reviewState !== 'APPROVED' && (
                   <div className="badge rounded-pill text-bg-dark text-capitalize">

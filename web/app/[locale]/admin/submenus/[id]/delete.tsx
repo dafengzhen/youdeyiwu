@@ -7,9 +7,14 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ISubmenu } from '@/app/[locale]/interfaces/menus';
 import DeleteSubmenuAction from '@/app/[locale]/actions/submenus/delete-submenu-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/submenus',
+    'Submenus#Delete',
+  );
 
   const deleteSubmenuActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -76,12 +81,13 @@ export default function Delete({ submenu }: { submenu: ISubmenu }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deleteSubmenuActionMutation.isPending}
+            disabled={isActionDisabled || deleteSubmenuActionMutation.isPending}
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deleteSubmenuActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

@@ -20,6 +20,7 @@ import type {
 import UpdateStatesPostAction, {
   type IUpdateStatesPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-states-post-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 interface IState {
   id: number | string;
@@ -60,6 +61,10 @@ export default function UpdateStates({ post }: { post: IPost }) {
   );
   const [blocks, setBlocks] = useState<string[]>(
     post.blocks.map((item) => item.id + ''),
+  );
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/posts',
+    'Posts#Update States',
   );
 
   const updateStatesPostActionMutation = useMutation({
@@ -381,7 +386,9 @@ export default function UpdateStates({ post }: { post: IPost }) {
 
         <div>
           <button
-            disabled={updateStatesPostActionMutation.isPending}
+            disabled={
+              isActionDisabled || updateStatesPostActionMutation.isPending
+            }
             type="submit"
             className="btn btn-success"
           >
@@ -389,6 +396,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
               ? 'Updating'
               : 'Update Post States'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

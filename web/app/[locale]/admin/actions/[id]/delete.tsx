@@ -7,9 +7,14 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IAction } from '@/app/[locale]/interfaces/menus';
 import DeleteActionAction from '@/app/[locale]/actions/actions/delete-action-action';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 export default function Delete({ action }: { action: IAction }) {
   const { toast } = useContext(GlobalContext);
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/actions',
+    'Actions#Delete',
+  );
 
   const deleteActionActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -79,12 +84,13 @@ export default function Delete({ action }: { action: IAction }) {
         <div className="mt-4">
           <button
             onClick={onClickDelete}
-            disabled={deleteActionActionMutation.isPending}
+            disabled={isActionDisabled || deleteActionActionMutation.isPending}
             type="button"
             className="btn btn-sm btn-danger"
           >
             {deleteActionActionMutation.isPending ? 'Deleting' : 'Delete'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </div>
     </Box>

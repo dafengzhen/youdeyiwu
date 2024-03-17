@@ -10,6 +10,7 @@ import UpdateActionAction, {
   type IUpdateActionActionVariables,
 } from '@/app/[locale]/actions/actions/update-action-action';
 import { ACTION_PAGES_DATA } from '@/app/[locale]/constants';
+import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
 
 const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 
@@ -32,6 +33,10 @@ export default function Update({ action }: { action: IAction }) {
     menu: (action.menu?.id ?? '') + '' ?? '',
     submenu: (action.submenu?.id ?? '') + '' ?? '',
   });
+  const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
+    '/admin/actions',
+    'Actions#Update',
+  );
 
   const updateActionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -230,6 +235,7 @@ export default function Update({ action }: { action: IAction }) {
         <div>
           <button
             disabled={
+              isActionDisabled ||
               (ACTION_PAGES_DATA as any)[form.page].length === 0 ||
               updateActionActionMutation.isPending
             }
@@ -240,6 +246,7 @@ export default function Update({ action }: { action: IAction }) {
               ? 'Updating'
               : 'Update Action'}
           </button>
+          <AccessDeniedAlert />
         </div>
       </form>
     </Box>

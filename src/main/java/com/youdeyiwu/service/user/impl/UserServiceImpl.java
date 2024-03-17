@@ -29,6 +29,7 @@ import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.user.ActionEntity;
+import com.youdeyiwu.model.entity.user.MenuEntity;
 import com.youdeyiwu.model.entity.user.SubmenuEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.PageVo;
@@ -592,48 +593,50 @@ public class UserServiceImpl implements UserService {
         .filter(roleEntity -> !roleEntity.getMenus().isEmpty())
         .flatMap(roleEntity -> roleEntity.getMenus()
             .stream()
+            .sorted(
+                Comparator.comparing(MenuEntity::getSort)
+                    .thenComparing(MenuEntity::getId).reversed()
+            )
             .map(menuEntity -> {
               MenuEntityVo vo = menuMapper.entityToVo(menuEntity);
-              if (menuEntity.getSubmenus().isEmpty()) {
-                vo.setActions(
-                    menuEntity.getActions()
-                        .stream()
-                        .filter(actionEntity -> actionEntity.getRoles().contains(roleEntity))
-                        .sorted(
-                            Comparator.comparing(ActionEntity::getSort)
-                                .thenComparing(ActionEntity::getId).reversed()
-                        )
-                        .map(actionMapper::entityToVo)
-                        .collect(Collectors.toCollection(LinkedHashSet::new))
-                );
-                vo.setSubmenus(new HashSet<>());
-              } else {
-                Set<SubmenuEntityVo> submenuEntityVos = menuEntity.getSubmenus()
-                    .stream()
-                    .filter(submenuEntity -> submenuEntity.getRoles().contains(roleEntity))
-                    .sorted(
-                        Comparator.comparing(SubmenuEntity::getSort)
-                            .thenComparing(SubmenuEntity::getId).reversed()
-                    )
-                    .map(submenuEntity -> {
-                      SubmenuEntityVo submenuEntityVo = submenuMapper.entityToVo(submenuEntity);
-                      submenuEntityVo.setActions(
-                          submenuEntity.getActions()
-                              .stream()
-                              .filter(actionEntity -> actionEntity.getRoles().contains(roleEntity))
-                              .sorted(
-                                  Comparator.comparing(ActionEntity::getSort)
-                                      .thenComparing(ActionEntity::getId).reversed()
-                              )
-                              .map(actionMapper::entityToVo)
-                              .collect(Collectors.toCollection(LinkedHashSet::new))
-                      );
-                      return submenuEntityVo;
-                    })
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-                vo.setActions(new HashSet<>());
-                vo.setSubmenus(submenuEntityVos);
-              }
+              vo.setActions(
+                  menuEntity.getActions()
+                      .stream()
+                      .filter(actionEntity -> actionEntity.getRoles().contains(roleEntity))
+                      .sorted(
+                          Comparator.comparing(ActionEntity::getSort)
+                              .thenComparing(ActionEntity::getId).reversed()
+                      )
+                      .map(actionMapper::entityToVo)
+                      .collect(Collectors.toCollection(LinkedHashSet::new))
+              );
+
+              vo.setSubmenus(
+                  menuEntity.getSubmenus()
+                      .stream()
+                      .filter(submenuEntity -> submenuEntity.getRoles().contains(roleEntity))
+                      .sorted(
+                          Comparator.comparing(SubmenuEntity::getSort)
+                              .thenComparing(SubmenuEntity::getId).reversed()
+                      )
+                      .map(submenuEntity -> {
+                        SubmenuEntityVo submenuEntityVo = submenuMapper.entityToVo(submenuEntity);
+                        submenuEntityVo.setActions(
+                            submenuEntity.getActions()
+                                .stream()
+                                .filter(actionEntity -> actionEntity.getRoles().contains(roleEntity))
+                                .sorted(
+                                    Comparator.comparing(ActionEntity::getSort)
+                                        .thenComparing(ActionEntity::getId).reversed()
+                                )
+                                .map(actionMapper::entityToVo)
+                                .collect(Collectors.toCollection(LinkedHashSet::new))
+                        );
+                        return submenuEntityVo;
+                      })
+                      .collect(Collectors.toCollection(LinkedHashSet::new))
+              );
+
               return vo;
             })
         )
