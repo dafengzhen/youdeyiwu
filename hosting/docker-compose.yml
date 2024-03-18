@@ -5,7 +5,7 @@ services:
       - maintainer=dafengzhen
       - description=Run youdeyiwu backend application
     container_name: youdeyiwu
-    image: dafengzhen/youdeyiwu
+    image: "dafengzhen/youdeyiwu:${TAG}"
     environment:
       - TAG
       - PROFILES_ACTIVE
@@ -28,7 +28,7 @@ services:
       - maintainer=dafengzhen
       - description=Build youdeyiwu frontend application
     container_name: youdeyiwu-web
-    image: dafengzhen/youdeyiwu-web
+    image: "dafengzhen/youdeyiwu-web:${TAG}"
     environment:
       - TAG
       - URL
