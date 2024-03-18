@@ -9,6 +9,7 @@ services:
     environment:
       - TAG
       - PROFILES_ACTIVE
+      - DATABASE_NAME
       - DATABASE_ENDPOINT=youdeyiwu:3306
       - DATABASE_USERNAME
       - DATABASE_PASSWORD
@@ -35,7 +36,7 @@ services:
       - DESCRIPTION
       - API_SERVER=http://youdeyiwu:8080
       - IS_HTTPS_SITE
-      - SERVER_ACTIONS_ALLOWED_ORIGINS
+      - SERVER_ACTIONS_ALLOWED_ORIGINS=youdeyiwu:8080
       - SHOW_FOOTER
       - IMAGES_REMOTE_PATTERNS_0_PROTOCOL
       - IMAGES_REMOTE_PATTERNS_0_HOSTNAME
@@ -59,7 +60,9 @@ services:
     volumes:
       - db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
     ports:
       - '3306:3306'
     networks:
@@ -70,7 +73,7 @@ networks:
     name: youdeyiwu
 
 volumes:
-  logs:
-    name: youdeyiwu_logs
   db:
     name: youdeyiwu_db
+  logs:
+    name: youdeyiwu_logs

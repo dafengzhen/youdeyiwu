@@ -8,7 +8,7 @@ services:
     image: "youdeyiwu:${TAG}"
     environment:
       - SPRING_PROFILES_ACTIVE=${PROFILES_ACTIVE}
-      - SPRING_DATASOURCE_URL=jdbc:mysql://${DATABASE_ENDPOINT}/youdeyiwu?createDatabaseIfNotExist=true&serverTimezone=UTC&allowMultiQueries=true
+      - SPRING_DATASOURCE_URL=jdbc:mysql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?createDatabaseIfNotExist=true&serverTimezone=UTC&allowMultiQueries=true
       - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
     build:
