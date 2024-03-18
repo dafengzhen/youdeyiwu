@@ -19,7 +19,7 @@
     "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.2",
     "clsx": "^2.1.0",
-    "date-fns": "^3.5.0",
+    "date-fns": "^3.6.0",
     "highlight.js": "^11.9.0",
     "nanoid": "^5.0.6",
     "next": "14.1.3",
