@@ -7,12 +7,10 @@ services:
     container_name: youdeyiwu
     image: "dafengzhen/youdeyiwu:${TAG}"
     environment:
-      - TAG
-      - PROFILES_ACTIVE
-      - DATABASE_NAME
-      - DATABASE_ENDPOINT=youdeyiwu:3306
-      - DATABASE_USERNAME
-      - DATABASE_PASSWORD
+      - SPRING_PROFILES_ACTIVE=${PROFILES_ACTIVE}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://${DATABASE_ENDPOINT}/${DATABASE_NAME}?createDatabaseIfNotExist=true&serverTimezone=UTC&allowMultiQueries=true
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
     depends_on:
       - youdeyiwu-db
     restart: on-failure
@@ -30,7 +28,6 @@ services:
     container_name: youdeyiwu-web
     image: "dafengzhen/youdeyiwu-web:${TAG}"
     environment:
-      - TAG
       - URL
       - NAME
       - DESCRIPTION
