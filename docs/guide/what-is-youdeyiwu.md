@@ -16,4 +16,4 @@ It can be used as a platform for communication or knowledge sharing, among other
 
 Youdeyiwu consists of both frontend and backend components.
 
-The backend is developed using Java, and the frontend is developed using Next.js.
+The backend is developed using [Spring Boot](https://spring.io/projects/spring-boot), and the frontend is developed using [Next.js](https://nextjs.org).

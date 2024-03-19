@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /guide/getting-started
+      link: /zh/guide/getting-started
     - theme: alt
       text: GitHub
       link: https://github.com/dafengzhen/youdeyiwu

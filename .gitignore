@@ -148,7 +148,10 @@ fabric.properties
 # vuepress build output
 .vuepress/dist
 .vuepress/cache
+!/docs/.vitepress/cache/
+!/docs/.vitepress/dist/
 
 # custom
 logs
 indexs
+

@@ -16,5 +16,4 @@ Youdeyiwu 是一个开源的轻量级论坛
 
 Youdeyiwu 包括前端和后端两部分
 
-后端使用 Java 开发，前端使用 Next.js 开发
-
+后端使用 [Spring Boot](https://spring.io/projects/spring-boot) 开发，前端使用 [Next.js](https://nextjs.org) 开发

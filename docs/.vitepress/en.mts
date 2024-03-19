@@ -56,6 +56,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'What is Youdeyiwu?', link: 'what-is-youdeyiwu' },
         { text: 'Getting Started', link: 'getting-started' },
+        { text: 'FQA', link: 'fqa' },
       ],
     },
     {
