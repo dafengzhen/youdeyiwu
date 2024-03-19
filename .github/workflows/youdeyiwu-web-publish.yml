@@ -2,11 +2,13 @@ name: Publishing Youdeyiwu Frontend Application to Docker
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'web/**'
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+    paths:
+      - 'web/**'
   workflow_dispatch:
 
 concurrency:
