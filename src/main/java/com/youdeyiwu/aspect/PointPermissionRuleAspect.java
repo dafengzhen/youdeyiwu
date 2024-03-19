@@ -4,7 +4,6 @@ import com.youdeyiwu.enums.point.PermissionRuleNameEnum;
 import com.youdeyiwu.event.PointPermissionRuleApplicationEvent;
 import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.SectionNotFoundException;
-import com.youdeyiwu.exception.TagNotFoundException;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.point.PointPermissionRuleEventDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
@@ -141,8 +140,7 @@ public class PointPermissionRuleAspect {
     if (!CollectionUtils.isEmpty(dto.tags())) {
       List<TagEntity> tags = dto.tags()
           .stream()
-          .map(tid -> tagRepository.findById(Long.valueOf(tid))
-              .orElseThrow(TagNotFoundException::new))
+          .map(tagRepository::findByName)
           .toList();
 
       if (postEntity.getTags().containsAll(tags)) {
