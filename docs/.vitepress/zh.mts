@@ -11,8 +11,8 @@ export const zh = defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: nav(),
     sidebar: {
-      '/guide/': { base: '/guide/', items: sidebarGuide() },
-      '/reference/': { base: '/reference/', items: sidebarReference() },
+      '/zh/guide/': { base: '/zh/guide/', items: sidebarGuide() },
+      '/zh/reference/': { base: '/zh/reference/', items: sidebarReference() },
     },
     editLink: {
       pattern: 'https://github.com/dafengzhen/youdeyiwu/edit/main/docs/:path',
@@ -74,7 +74,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     },
     {
       text: 'API 参考',
-      base: '/reference/',
+      base: '/zh/reference/',
       link: 'config-site',
     },
   ];
@@ -87,7 +87,7 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
       items: [
         {
           text: '配置',
-          base: '/reference/config-',
+          base: '/zh/reference/config-',
           items: [{ text: '站点配置', link: 'site' }],
         },
       ],

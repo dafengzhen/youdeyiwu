@@ -30,7 +30,7 @@ npm run preview
 
 ## Feedback
 
-If you have suggestions or feedback, or would like to submit a PR, please feel free to communicate with me
+If you have suggestions or feedback.
 
 [issues](https://github.com/dafengzhen/youdeyiwu/issues) ↗
 
