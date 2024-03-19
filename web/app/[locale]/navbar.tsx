@@ -113,6 +113,21 @@ export default async function Navbar({
                   </Link>
                 </li>
 
+                {!user && (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" href="/login">
+                        {t('common.loginNow')}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" href="/register">
+                        {t('common.quickRegister')}
+                      </Link>
+                    </li>
+                  </>
+                )}
+
                 {menus && menus.length > 0 && (
                   <>
                     <li>

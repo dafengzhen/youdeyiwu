@@ -34,7 +34,7 @@ public class MessageNotifier implements ApplicationListener<MessageApplicationEv
     MessageEntity entity = (MessageEntity) event.getSource();
     UserEntity sender = entity.getSender();
 
-    if (Objects.isNull(sender) && (!securityService.isAnonymous())) {
+    if (Objects.isNull(sender) && securityService.isAuthenticated()) {
       sender = userRepository.findById(securityService.getUserId())
           .orElseThrow(UserNotFoundException::new);
     }

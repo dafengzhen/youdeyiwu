@@ -62,6 +62,7 @@ public class UserAspect {
         "user.register.message.name",
         "user.register.message.overview"
     );
+    messageEntity.setSender(userEntity);
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
   }
 
@@ -76,6 +77,7 @@ public class UserAspect {
         "user.login.message.name",
         "user.login.message.overview"
     );
+    messageEntity.setSender(userEntity);
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
   }
 

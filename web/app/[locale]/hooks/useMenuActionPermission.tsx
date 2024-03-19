@@ -7,7 +7,7 @@ function useMenuActionPermission(link: string, name: string) {
   const [isActionDisabled, setIsActionDisabled] = useState(false);
 
   const menuQuery = useQuery({
-    queryKey: ['/users', '/menus'],
+    queryKey: ['/users/menus'],
     queryFn: async () => {
       const response = await MenusUserAction();
       if (response.isError) {
