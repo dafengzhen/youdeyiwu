@@ -1,4 +1,4 @@
-# <img alt="logo" src="https://youdeyiwu.com/favicon/favicon-32x32.png" /> Youdeyiwu
+# Youdeyiwu
 
 [![Docs Deploy Status](https://github.com/dafengzhen/youdeyiwu/actions/workflows/docs-deploy.yml/badge.svg)](https://github.com/dafengzhen/youdeyiwu/actions/workflows/docs-deploy.yml)
 [![LICENSE](https://img.shields.io/github/license/dafengzhen/youdeyiwu)](https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE)
