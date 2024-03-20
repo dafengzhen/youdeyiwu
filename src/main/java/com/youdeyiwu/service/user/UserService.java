@@ -146,7 +146,7 @@ public interface UserService {
    * @param id id
    * @return UserEntityVo
    */
-  UserEntityVo queryDetails(Long id);
+  UserEntityVo queryDetails(String id);
 
   /**
    * query.

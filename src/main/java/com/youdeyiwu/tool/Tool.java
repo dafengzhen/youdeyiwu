@@ -285,4 +285,14 @@ public class Tool {
   public static String getRoleAttribute(RoleEntity roleEntity) {
     return ROLE_PREFIX + roleEntity.getName() + "_" + roleEntity.getId();
   }
+
+  /**
+   * is long type.
+   *
+   * @param id id
+   * @return boolean
+   */
+  public static boolean isLong(String id) {
+    return id.matches("^-?\\d{1,19}$");
+  }
 }

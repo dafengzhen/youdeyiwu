@@ -3,9 +3,7 @@ import UserId from '@/app/[locale]/users/[id]/userid';
 import {
   getUserAlias,
   incorrectMetadataTitle,
-  isNum,
 } from '@/app/[locale]/common/tool';
-import { notFound } from 'next/navigation';
 import QueryDetailsUserAction from '@/app/[locale]/actions/users/query-details-user-action';
 import LoginInfoUserAction from '@/app/[locale]/actions/users/login-info-user-action';
 import ErrorPage from '@/app/[locale]/common/error-page';
@@ -16,10 +14,6 @@ export async function generateMetadata({
   params: { id: string };
 }): Promise<Metadata> {
   const id = params.id;
-  if (!isNum(id)) {
-    notFound();
-  }
-
   const response = await QueryDetailsUserAction({ id });
   if (response.isError) {
     return incorrectMetadataTitle(response);
@@ -29,20 +23,24 @@ export async function generateMetadata({
   const userAlias = getUserAlias(user);
 
   const url = process.env.URL + `/users/${user.id}`;
+  const newUrl = process.env.URL + `/${id}`;
   const title = userAlias;
   const description = user.oneSentence ?? '';
 
   return {
     title,
     description,
+    alternates: {
+      canonical: url,
+    },
     authors: {
       url: `/users/${user.id}`,
       name: userAlias,
     },
     creator: `${userAlias}(ID. ${user.id})`,
-    bookmarks: url,
+    bookmarks: newUrl,
     openGraph: {
-      url,
+      url: newUrl,
       title,
       description,
       type: 'profile',
@@ -65,10 +63,6 @@ export default async function Page({
   };
 }) {
   const id = params.id;
-  if (!isNum(id)) {
-    notFound();
-  }
-
   const responses = await Promise.all([
     QueryDetailsUserAction({ id }),
     LoginInfoUserAction(),

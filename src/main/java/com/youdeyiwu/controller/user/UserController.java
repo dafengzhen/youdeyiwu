@@ -157,7 +157,7 @@ public class UserController {
   }
 
   @GetMapping(value = "/{id}/details")
-  public ResponseEntity<UserEntityVo> queryDetails(@PathVariable Long id) {
+  public ResponseEntity<UserEntityVo> queryDetails(@PathVariable String id) {
     return ResponseEntity.ok(userService.queryDetails(id));
   }
 

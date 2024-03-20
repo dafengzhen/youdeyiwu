@@ -3,6 +3,7 @@ package com.youdeyiwu.service.user.impl;
 import static com.youdeyiwu.tool.JwtTool.createJwt;
 import static com.youdeyiwu.tool.JwtTool.decodeSecret;
 import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
+import static com.youdeyiwu.tool.Tool.isLong;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
@@ -343,8 +344,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserEntityVo queryDetails(Long id) {
-    UserEntity userEntity = findUser(id);
+  public UserEntityVo queryDetails(String id) {
+    UserEntity userEntity = findUserByIdOrUsername(id);
     UserEntityVo vo = userMapper.entityToVo(userEntity);
     setRoles(vo, userEntity);
 
@@ -407,6 +408,19 @@ public class UserServiceImpl implements UserService {
   private UserEntity findUser(Long id) {
     return userRepository.findById(id)
         .orElseThrow(UserNotFoundException::new);
+  }
+
+  /**
+   * find user by id or username.
+   *
+   * @param id id
+   * @return UserEntity
+   */
+  private UserEntity findUserByIdOrUsername(String id) {
+    return isLong(id)
+        ? userRepository.findById(Long.parseLong(id))
+        .orElseThrow(UserNotFoundException::new)
+        : userRepository.findByUsername(id);
   }
 
   /**
