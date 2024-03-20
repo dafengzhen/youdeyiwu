@@ -20,7 +20,7 @@
 
 Note：你可以将 "localhost" 修改为你当前服务器 Ip
 
-```shell
+```sh
 mkdir -p youdeyiwu-hosting && cd youdeyiwu-hosting && curl -o deploy.sh -fsSL https://raw.githubusercontent.com/dafengzhen/youdeyiwu/main/hosting/deploy.sh && chmod +x deploy.sh && ./deploy.sh
 ```
 

@@ -70,6 +70,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: '什么是尤得一物？', link: 'what-is-youdeyiwu' },
         { text: '快速开始', link: 'getting-started' },
+        { text: '配置文件', link: 'config-file' },
         { text: '常见问题', link: 'fqa' },
       ],
     },

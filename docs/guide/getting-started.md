@@ -20,7 +20,7 @@ Afterward, you can access the UI through ```http://localhost:3000```. The defaul
 
 Note: You can modify "localhost" to your current server IP.
 
-```shell
+```sh
 mkdir -p youdeyiwu-hosting && cd youdeyiwu-hosting && curl -o deploy.sh -fsSL https://raw.githubusercontent.com/dafengzhen/youdeyiwu/main/hosting/deploy.sh && chmod +x deploy.sh && ./deploy.sh
 ```
 
