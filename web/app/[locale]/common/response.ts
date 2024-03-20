@@ -43,6 +43,10 @@ export const createErrorResponse = <T, E>(
   ) {
     _message = message.message;
   } else {
+    console.error(
+      'Error: This error message may not be output correctly',
+      message,
+    );
     _message = message ? message + '' : 'ERROR';
   }
 

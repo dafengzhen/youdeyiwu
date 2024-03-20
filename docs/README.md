@@ -30,7 +30,7 @@ npm run preview
 
 ## Feedback
 
-If you have suggestions or feedback.
+If you have any suggestions or feedback.
 
 [issues](https://github.com/dafengzhen/youdeyiwu/issues) ↗
 

@@ -11,9 +11,15 @@ For more installation information, please refer to the [documentation](https://d
 
 ## Feedback
 
-If you have suggestions or feedback.
+If you have any suggestions or feedback.
 
 [issues](https://github.com/dafengzhen/youdeyiwu/issues) ↗
+
+## Thanks
+
+Thanks to [jetbrains](https://jb.gg/OpenSourceSupport) for support of this project.
+
+<img src="https://www.jetbrains.com/company/brand/img/logo1.svg" alt="jetbrains" width="64" />
 
 ## License
 
