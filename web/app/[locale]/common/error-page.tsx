@@ -14,7 +14,7 @@ export default function ErrorPage({ message }: { message?: string }) {
   } else if (message === 'Unauthorized') {
     title = 'Unauthorized';
     content = 'Sorry, accessing this resource requires identity authentication';
-    fetch('/api/login-again');
+    fetch(location.origin + '/api/login-again');
   } else {
     if (typeof content === 'object') {
       console.error(

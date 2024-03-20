@@ -20,3 +20,7 @@ export const getUserAlias = (user?: IUser | null) => {
 
   return user.alias ?? user.username;
 };
+
+export const formatTitleForURL = (title: string) => {
+  return title.trim().replace(/\s+/g, '-').toLowerCase();
+};
