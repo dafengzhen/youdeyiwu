@@ -18,6 +18,10 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
   const [openRewardBox, setOpenRewardBox] = useState(false);
   const [likeProcessing, setLikeProcessing] = useState(false);
   const [favouriteProcessing, setFavouriteProcessing] = useState(false);
+  const [liked, setLiked] = useState(details.liked ?? false);
+  const [likesCount, setLikesCount] = useState(details.likesCount);
+  const [favorited, setFavorited] = useState(details.favorited ?? false);
+  const [favoritesCount, setFavoritesCount] = useState(details.favoritesCount);
 
   const likePostActionMutation = useMutation({
     mutationFn: async (variables: { id: number | string }) => {
@@ -57,11 +61,15 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
       await likePostActionMutation.mutateAsync({ id });
 
       let message;
-      if (details.liked) {
+      if (!liked) {
         message = 'Like successful, awesome!';
+        setLiked(true);
+        setLikesCount(likesCount + 1);
       } else {
         message =
           'The removal of the like was successful. Waiting for your support again!';
+        setLiked(false);
+        setLikesCount(likesCount - 1);
       }
 
       toast.current.show({
@@ -100,11 +108,15 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
       await favoritePostActionMutation.mutateAsync({ id });
 
       let message;
-      if (details.bookmarked) {
+      if (!favorited) {
         message = 'Added to favorites successfully, well done';
+        setFavorited(true);
+        setFavoritesCount(favoritesCount + 1);
       } else {
         message =
           'The removal from favorites was successful. Looking forward to adding it again!';
+        setFavorited(false);
+        setFavoritesCount(favoritesCount - 1);
       }
 
       toast.current.show({
@@ -176,11 +188,16 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
                 ? 'Processing'
                 : 'Like'}
             </span>
-            <i className="bi bi-hand-thumbs-up"></i>
+            <i
+              className={clsx(
+                'bi',
+                liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
+              )}
+            ></i>
 
-            {details.likesCount > 0 && (
+            {likesCount > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                <span>{formatCount(details.likesCount)}</span>
+                <span>{formatCount(likesCount)}</span>
                 <span className="visually-hidden">likes</span>
               </span>
             )}
@@ -191,18 +208,20 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
             }
             onClick={onClickFavourite}
             type="button"
-            className="btn rounded-pill btn-outline-primary"
+            className="btn rounded-pill btn-outline-primary position-relative"
           >
             <span className="me-2">
               {favouriteProcessing || favoritePostActionMutation.isPending
                 ? 'Processing'
                 : 'Favourite'}
             </span>
-            <i className="bi bi-star"></i>
+            <i
+              className={clsx('bi', favorited ? 'bi-star-fill' : 'bi-star')}
+            ></i>
 
-            {details.favoritesCount > 0 && (
+            {favoritesCount > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                <span>{formatCount(details.favoritesCount)}</span>
+                <span>{formatCount(favoritesCount)}</span>
                 <span className="visually-hidden">favorites</span>
               </span>
             )}

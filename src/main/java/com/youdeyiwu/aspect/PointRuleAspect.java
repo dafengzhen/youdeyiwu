@@ -185,8 +185,8 @@ public class PointRuleAspect {
         new PointRuleEventDto(
             RuleNameEnum.LIKE_POST,
             Boolean.TRUE.equals(liked)
-                ? SignEnum.POSITIVE
-                : SignEnum.NEGATIVE,
+                ? SignEnum.NEGATIVE
+                : SignEnum.POSITIVE,
             false,
             null,
             null,
@@ -221,8 +221,8 @@ public class PointRuleAspect {
         new PointRuleEventDto(
             RuleNameEnum.FAVORITE_POST,
             Boolean.TRUE.equals(favorited)
-                ? SignEnum.POSITIVE
-                : SignEnum.NEGATIVE,
+                ? SignEnum.NEGATIVE
+                : SignEnum.POSITIVE,
             false,
             null,
             null,

@@ -204,7 +204,13 @@ public class PointRuleNotifier
                     .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
                       case POSITIVE -> SignEnum.NEGATIVE;
                       case NEGATIVE -> SignEnum.POSITIVE;
-                      case ZERO -> SignEnum.ZERO;
+                      case ZERO -> {
+                        if (Objects.isNull(dto.sign()) || dto.sign() == SignEnum.POSITIVE) {
+                          yield SignEnum.ZERO;
+                        } else {
+                          yield SignEnum.NEGATIVE;
+                        }
+                      }
                     })
                     .orElseGet(dto::sign)
             ),

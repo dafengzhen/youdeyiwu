@@ -27,6 +27,7 @@ export default function Messages({
   const [content, setContent] = useState<IMessage[]>(data.content);
   const isLogin = !!currentUser;
   const t = useTranslations();
+  const [currentDeletedItem, setCurrentDeletedItem] = useState<IMessage>();
 
   const messagesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/messages', 'infinite'],
@@ -130,7 +131,7 @@ export default function Messages({
     }
   }
 
-  async function onClickDelete(item: IMessage) {
+  async function onClickDelete(item: IMessage, index: number) {
     try {
       if (item.messageRange === 'ALL_USER') {
         toast.current.show({
@@ -148,9 +149,12 @@ export default function Messages({
         return;
       }
 
+      setCurrentDeletedItem(item);
       const id = item.id;
       await deleteMessageActionMutation.mutateAsync({ id });
-      messagesInfiniteQuery.refetch({ throwOnError: true });
+
+      content.splice(index, 1);
+      setContent(content);
 
       toast.current.show({
         type: 'success',
@@ -162,10 +166,12 @@ export default function Messages({
         type: 'danger',
         message: e.message,
       });
+    } finally {
+      setCurrentDeletedItem(undefined);
     }
   }
 
-  async function onClickSetRead(item: IMessage) {
+  async function onClickSetRead(item: IMessage, index: number) {
     try {
       if (!isLogin) {
         toast.current.show({
@@ -202,7 +208,9 @@ export default function Messages({
         await updateStateMessageActionMutation.mutateAsync({ id });
       }
 
-      messagesInfiniteQuery.refetch({ throwOnError: true });
+      item.state = 'READ';
+      content.splice(index, 1, item);
+      setContent(content);
 
       toast.current.show({
         type: 'success',
@@ -232,7 +240,7 @@ export default function Messages({
             </div>
             <div className="card-body p-0">
               <div className="d-flex flex-column gap-4">
-                {content.map((item) => {
+                {content.map((item, index) => {
                   // id may be repeated
                   const key = item.id + '_' + item.messageRange;
 
@@ -251,12 +259,14 @@ export default function Messages({
                                   {item.createdOnText}
                                 </time>
                               </div>
-                              <div className="d-flex gap-2">
+                              <div className="d-flex align-items-center gap-2">
                                 {isLogin ? (
                                   <>
                                     {item.state === 'UNREAD' && (
                                       <i
-                                        onClick={() => onClickSetRead(item)}
+                                        onClick={() =>
+                                          onClickSetRead(item, index)
+                                        }
                                         className="bi bi-check-circle fs-4 cursor-pointer text-primary"
                                         title="Set Read"
                                       ></i>
@@ -264,14 +274,17 @@ export default function Messages({
 
                                     {item.messageRange === 'USER' && (
                                       <>
-                                        {deleteMessageActionMutation.isPending ? (
+                                        {currentDeletedItem?.id === item.id &&
+                                        deleteMessageActionMutation.isPending ? (
                                           <span
                                             className="text-danger spinner-border spinner-border-sm"
                                             aria-hidden="true"
                                           ></span>
                                         ) : (
                                           <i
-                                            onClick={() => onClickDelete(item)}
+                                            onClick={() =>
+                                              onClickDelete(item, index)
+                                            }
                                             className="bi bi-x-circle text-danger fs-4 cursor-pointer"
                                             title="Delete"
                                           ></i>
@@ -283,14 +296,17 @@ export default function Messages({
                                   <>
                                     {item.messageRange === 'USER' && (
                                       <>
-                                        {deleteMessageActionMutation.isPending ? (
+                                        {currentDeletedItem?.id === item.id &&
+                                        deleteMessageActionMutation.isPending ? (
                                           <span
                                             className="text-danger spinner-border spinner-border-sm"
                                             aria-hidden="true"
                                           ></span>
                                         ) : (
                                           <i
-                                            onClick={() => onClickDelete(item)}
+                                            onClick={() =>
+                                              onClickDelete(item, index)
+                                            }
                                             className="bi bi-trash text-danger fs-4 cursor-pointer"
                                             title="Delete"
                                           ></i>

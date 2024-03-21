@@ -223,7 +223,8 @@ public class PostServiceImpl implements PostService {
     }
 
     postEntity.setFavoritesCount(
-        Boolean.TRUE.equals(postUserEntity.getFavorited()) ? postEntity.getFavoritesCount() + 1
+        Boolean.TRUE.equals(postUserEntity.getFavorited())
+            ? postEntity.getFavoritesCount() + 1
             : Math.max(0, postEntity.getFavoritesCount() - 1)
     );
   }
@@ -593,12 +594,11 @@ public class PostServiceImpl implements PostService {
    * @param postEntity postEntity
    */
   private void setSocialInteraction(PostEntityVo vo, PostEntity postEntity) {
-    Long createdBy = postEntity.getCreatedBy();
-    if (Objects.isNull(createdBy) || securityService.isAnonymous()) {
+    if (securityService.isAnonymous()) {
       return;
     }
 
-    UserEntity userEntity = userRepository.findById(createdBy)
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
         .orElseThrow(UserNotFoundException::new);
     Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
         .stream()
@@ -755,9 +755,8 @@ public class PostServiceImpl implements PostService {
         || (anonymous && post.getReviewState() == PostReviewStateEnum.APPROVED)
         || switch (post.getReviewState()) {
       case APPROVED -> true;
-      case REJECTED, PENDING_REVIEW ->
-          (Objects.nonNull(section) && section.getAdmins().contains(user))
-              || (Objects.nonNull(user) && user.equals(post.getUser()));
+      case REJECTED, PENDING_REVIEW -> (Objects.nonNull(section) && section.getAdmins().contains(user))
+          || (Objects.nonNull(user) && user.equals(post.getUser()));
     };
 
     if (!successful) {

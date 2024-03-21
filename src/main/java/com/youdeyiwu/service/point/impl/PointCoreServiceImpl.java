@@ -16,7 +16,6 @@ import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
-import com.youdeyiwu.repository.point.PointHistoryRepository;
 import com.youdeyiwu.repository.point.PointRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.service.point.PointCoreService;
@@ -55,8 +54,8 @@ public class PointCoreServiceImpl implements PointCoreService {
     PointEntity entity = new PointEntity();
     entity.setPoints(Integer.valueOf(initPoints.getValue()));
     entity.setUser(userEntity);
-    userEntity.setPoint(entity);
-    return pointRepository.save(entity);
+    userEntity.setPoint(pointRepository.save(entity));
+    return userEntity.getPoint();
   }
 
   @Transactional

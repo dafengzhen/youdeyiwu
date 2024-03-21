@@ -72,7 +72,7 @@ export interface IPostDetails extends IBase {
   user?: IUser;
   liked?: boolean;
   followed?: boolean;
-  bookmarked?: boolean;
+  favorited?: boolean;
   comments: IPage<ICommentReply[]>;
 }
 
