@@ -5,7 +5,7 @@
 
 Youdeyiwu 是一个开源的轻量级论坛
 
-[English](./README)
+[English](./README.md)
 
 ## 快速开始
 

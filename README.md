@@ -5,7 +5,7 @@
 
 Youdeyiwu is an open-source lightweight forum.
 
-[简体中文](./README.zh)
+[简体中文](./README.zh.md)
 
 ## Quick Start
 
