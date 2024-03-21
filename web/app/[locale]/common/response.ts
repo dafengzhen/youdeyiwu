@@ -35,19 +35,27 @@ export const createErrorResponse = <T, E>(
   code?: number,
 ): IErrorResponse<T, E> => {
   let _message;
-  if (typeof message === 'string') {
-    _message = message;
-  } else if (
-    typeof message === 'object' &&
-    typeof message.message === 'string'
+  if (
+    typeof message === 'string' ||
+    typeof message === 'number' ||
+    typeof message === 'boolean'
   ) {
-    _message = message.message;
+    _message = message + '';
+  } else if (typeof message === 'object') {
+    if (message.message === 'string') {
+      _message = message.message;
+    } else if (message.error === 'string') {
+      _message = message.error;
+      if (typeof message.status === 'number') {
+        status = message.status;
+      }
+    }
   } else {
     console.error(
       'Error: This error message may not be output correctly',
       message,
     );
-    _message = message ? message + '' : 'ERROR';
+    _message = 'Sorry. Unknown error';
   }
 
   return {
