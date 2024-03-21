@@ -3,23 +3,23 @@
 [![Docs Deploy Status](https://github.com/dafengzhen/youdeyiwu/actions/workflows/docs-deploy.yml/badge.svg)](https://github.com/dafengzhen/youdeyiwu/actions/workflows/docs-deploy.yml)
 [![LICENSE](https://img.shields.io/github/license/dafengzhen/youdeyiwu)](https://github.com/dafengzhen/youdeyiwu/blob/main/LICENSE)
 
-Youdeyiwu is an open-source lightweight forum.
+Youdeyiwu 是一个开源的轻量级论坛
 
-[简体中文](./README.zh)
+[English](./README)
 
-## Quick Start
+## 快速开始
 
-For more installation information, please refer to the [documentation](https://dafengzhen.github.io/youdeyiwu) ↗.
+更多安装信息，请参阅 [文档](https://dafengzhen.github.io/youdeyiwu) ↗.
 
-## Feedback
+## 反馈
 
-If you have any suggestions or feedback.
+如果你有任何建议或反馈
 
 [issues](https://github.com/dafengzhen/youdeyiwu/issues) ↗
 
-## Thanks
+## 感谢
 
-Thanks to [Jetbrains](https://jb.gg/OpenSourceSupport) for support of this project.
+感谢 [Jetbrains](https://jb.gg/OpenSourceSupport) 对本项目的支持
 
 <img src="https://www.jetbrains.com/company/brand/img/logo1.svg" alt="jetbrains" width="64" />
 
