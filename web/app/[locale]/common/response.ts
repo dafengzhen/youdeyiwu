@@ -42,13 +42,14 @@ export const createErrorResponse = <T, E>(
   ) {
     _message = message + '';
   } else if (typeof message === 'object') {
-    if (message.message === 'string') {
+    if (typeof message.message === 'string') {
       _message = message.message;
-    } else if (message.error === 'string') {
+    } else if (typeof message.error === 'string') {
       _message = message.error;
-      if (typeof message.status === 'number') {
-        status = message.status;
-      }
+    }
+
+    if (typeof message.status === 'number') {
+      status = message.status;
     }
   } else {
     console.error(
