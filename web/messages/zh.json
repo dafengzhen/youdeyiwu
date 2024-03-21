@@ -76,6 +76,23 @@
     "readMore": "阅读更多",
     "footerFormText": "由 <name>Youdeyiwu</name> 构建。源代码可在 <link>Github</link> 上获取",
     "userRegistrationStatisticsForTheLast15Days": "过去 15 天用户注册统计",
-    "sorryYouDontHaveAccessToThisButtonYet": "抱歉，您暂无权限执行该按钮操作"
+    "sorryYouDontHaveAccessToThisButtonYet": "抱歉，您暂无权限执行该按钮操作",
+    "dontHaveAnAccountYet": "还没有账号吗？",
+    "startRegistration": "开始注册",
+    "loginToYourAccount": "登录你的账号",
+    "or": "或",
+    "username": "用户名",
+    "password": "密码",
+    "usernamePlaceholder": "请输入你的账号",
+    "passwordPlaceholder": "请输入你的密码",
+    "loggingIn": "登录中",
+    "signInNow": "开始登录",
+    "existingAccount": "已存在账号？",
+    "startLoggingIn": "开始登录",
+    "welcome": "欢迎光临",
+    "enterYourDetailsToGetStarted": "输入你的详细信息即可开始",
+    "usernameFromText": "用户名长度应在 3 至 16 个字符之间",
+    "passwordFromText": "密码长度应在 6 至 18 个字符之间",
+    "registering": "注册中"
   }
 }

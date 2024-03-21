@@ -6,6 +6,7 @@ import LoginAction, {
 } from '@/app/[locale]/actions/users/login-action';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function Username() {
   const { toast } = useContext(GlobalContext);
@@ -15,6 +16,7 @@ export default function Username() {
   });
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
+  const t = useTranslations();
 
   const loginActionMutation = useMutation({
     mutationFn: async (variables: ILoginActionVariables) => {
@@ -92,7 +94,7 @@ export default function Username() {
   return (
     <form className="d-flex flex-column gap-4" onSubmit={onSubmit}>
       <div>
-        <label className="form-label">Username</label>
+        <label className="form-label"> {t('common.username')}</label>
         <input
           required
           disabled={isLogin || loginActionMutation.isPending}
@@ -101,13 +103,13 @@ export default function Username() {
           name="username"
           type="text"
           className="form-control"
-          placeholder="Please enter your username"
+          placeholder={t('common.usernamePlaceholder')}
           aria-describedby="username"
         />
       </div>
 
       <div>
-        <label className="form-label">Password</label>
+        <label className="form-label">{t('common.password')}</label>
         <input
           required
           disabled={isLogin || loginActionMutation.isPending}
@@ -115,7 +117,7 @@ export default function Username() {
           onChange={onChangeForm}
           name="password"
           type="password"
-          placeholder="Please enter your password"
+          placeholder={t('common.passwordPlaceholder')}
           className="form-control"
           autoComplete="password"
         />
@@ -126,7 +128,9 @@ export default function Username() {
         type="submit"
         className="btn rounded-2 btn-outline-primary my-4"
       >
-        {loginActionMutation.isPending ? 'Logging in' : 'Login now'}
+        {loginActionMutation.isPending
+          ? t('common.loggingIn')
+          : t('common.signInNow')}
       </button>
     </form>
   );

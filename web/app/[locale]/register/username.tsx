@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import RegisterAction, {
   type IRegisterActionVariables,
 } from '@/app/[locale]/actions/users/register-action';
+import { useTranslations } from 'next-intl';
 
 export default function Username() {
   const [form, setForm] = useState({
@@ -15,6 +16,7 @@ export default function Username() {
   const { toast } = useContext(GlobalContext);
   const [isRegister, setIsRegister] = useState(false);
   const router = useRouter();
+  const t = useTranslations();
 
   const registerActionMutation = useMutation({
     mutationFn: async (variables: IRegisterActionVariables) => {
@@ -96,7 +98,7 @@ export default function Username() {
       <div>
         <label className="form-label">
           <span className="text-danger fw-bold">*</span>
-          Username
+          {t('common.username')}
         </label>
         <input
           required
@@ -106,18 +108,16 @@ export default function Username() {
           name="username"
           type="text"
           className="form-control"
-          placeholder="Please enter your username"
+          placeholder={t('common.usernamePlaceholder')}
           aria-describedby="username"
         />
-        <div className="form-text">
-          Username length should be between 3 and 16 characters
-        </div>
+        <div className="form-text"> {t('common.usernameFromText')}</div>
       </div>
 
       <div>
         <label className="form-label">
           <span className="text-danger fw-bold">*</span>
-          Password
+          {t('common.password')}
         </label>
         <input
           required
@@ -126,13 +126,11 @@ export default function Username() {
           onChange={onChangeForm}
           name="password"
           type="password"
-          placeholder="Please enter your password"
+          placeholder={t('common.passwordPlaceholder')}
           className="form-control"
           autoComplete="password"
         />
-        <div className="form-text">
-          Password length should be between 6 and 18 characters
-        </div>
+        <div className="form-text">{t('common.passwordFromText')}</div>
       </div>
 
       <button
@@ -140,7 +138,9 @@ export default function Username() {
         type="submit"
         className="btn btn-outline-primary my-4"
       >
-        {registerActionMutation.isPending ? 'Registering' : 'Quick Register'}
+        {registerActionMutation.isPending
+          ? t('common.registering')
+          : t('common.quickRegister')}
       </button>
     </form>
   );

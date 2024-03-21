@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import Username from '@/app/[locale]/login/username';
+import { useTranslations } from 'next-intl';
 
 export default function Login() {
+  const t = useTranslations();
+
   return (
     <div className="row mx-0">
       <div className="col">
@@ -14,17 +17,17 @@ export default function Login() {
                 <div className="card-body ps-4 py-5 my-5 animate__animated animate__fadeInLeft">
                   <div className="mb-5 hstack gap-2 justify-content-end">
                     <div className="cursor-default">
-                      Don&apos;t have an account yet?
+                      {t('common.dontHaveAnAccountYet')}
                     </div>
                     <div>
                       <Link className="btn btn-light" href="/register">
-                        Start registering now
+                        {t('common.startRegistration')}
                       </Link>
                     </div>
                   </div>
 
                   <div className="fs-4 text-center fw-bold">
-                    Log in to your account
+                    {t('common.loginToYourAccount')}
                   </div>
                 </div>
               </div>
@@ -36,7 +39,7 @@ export default function Login() {
                     <div className="vr text-secondary text-opacity-75"></div>
                   </div>
                   <div className="bg-body z-1 border border-secondary border-opacity-25 rounded-3 text-secondary px-2 py-3">
-                    OR
+                    {t('common.or')}
                   </div>
                 </div>
               </div>

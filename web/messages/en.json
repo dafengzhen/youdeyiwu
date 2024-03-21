@@ -76,6 +76,23 @@
     "readMore": "Read More",
     "footerFormText": "Built by <name>Youdeyiwu</name>. The source code is available on <link>Github</link>.",
     "userRegistrationStatisticsForTheLast15Days": "User registration statistics for the last 15 days",
-    "sorryYouDontHaveAccessToThisButtonYet": "Sorry, you don't have access to this button yet"
+    "sorryYouDontHaveAccessToThisButtonYet": "Sorry, you don't have access to this button yet",
+    "dontHaveAnAccountYet": "Don't have an account yet?",
+    "startRegistration": "Start Registration",
+    "loginToYourAccount": "Log in to your account.",
+    "or": "OR",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Please enter your username.",
+    "passwordPlaceholder": "Please enter your password.",
+    "loggingIn": "logging in",
+    "signInNow": "Sign in now",
+    "existingAccount": "Existing account?",
+    "startLoggingIn": "Start logging in",
+    "welcome": "Welcome",
+    "enterYourDetailsToGetStarted": "Enter your details to get started.",
+    "usernameFromText": "Username length should be between 3 and 16 characters.",
+    "passwordFromText": "Password length should be between 6 and 18 characters.",
+    "registering": "Registering"
   }
 }
