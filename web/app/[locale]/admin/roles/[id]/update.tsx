@@ -9,7 +9,7 @@ import type { IRole } from '@/app/[locale]/interfaces/roles';
 import UpdateRoleAction, {
   type IUpdateRoleActionVariables,
 } from '@/app/[locale]/actions/roles/update-role-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);

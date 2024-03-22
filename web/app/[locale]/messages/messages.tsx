@@ -30,7 +30,7 @@ export default function Messages({
   const [currentDeletedItem, setCurrentDeletedItem] = useState<IMessage>();
 
   const messagesInfiniteQuery = useInfiniteQuery({
-    queryKey: ['/admin', '/messages', 'infinite'],
+    queryKey: ['/messages', 'infinite'],
     queryFn: async (context) => {
       const response = await QueryAllMessageAction({
         page: context.pageParam.page + '',

@@ -8,7 +8,7 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import CreateSubmenuAction, {
   type ICreateSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/create-submenu-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);

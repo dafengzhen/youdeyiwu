@@ -10,7 +10,7 @@ import UpdateSubmenuAction, {
   type IUpdateSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/update-submenu-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);

@@ -10,7 +10,7 @@ import type { ISubmenu } from '@/app/[locale]/interfaces/menus';
 import UpdateRolesSubmenuAction, {
   type IUpdateRolesSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/update-roles-submenu-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);

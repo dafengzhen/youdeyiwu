@@ -10,7 +10,7 @@ import UpdateMenuAction, {
   type IUpdateMenuActionVariables,
 } from '@/app/[locale]/actions/menus/update-menu-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ menu }: { menu: IMenu }) {
   const { toast } = useContext(GlobalContext);

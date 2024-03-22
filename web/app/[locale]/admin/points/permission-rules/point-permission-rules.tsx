@@ -13,7 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import SavePermissionRulesPointsAction, {
   type ISavePermissionRulesPointsActionVariables,
 } from '@/app/[locale]/actions/points/permission-rules/save-permission-rules-points-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 const tips = {
   CREATE_POST: 'permission to create a new post',

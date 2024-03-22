@@ -7,7 +7,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IMenu } from '@/app/[locale]/interfaces/menus';
 import DeleteMenuAction from '@/app/[locale]/actions/menus/delete-menu-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ menu }: { menu: IMenu }) {
   const { toast } = useContext(GlobalContext);

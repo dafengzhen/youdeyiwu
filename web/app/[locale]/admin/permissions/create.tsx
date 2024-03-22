@@ -13,7 +13,7 @@ import CreatePermissionAction, {
   type ICreatePermissionActionVariables,
 } from '@/app/[locale]/actions/permissions/create-permission-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);

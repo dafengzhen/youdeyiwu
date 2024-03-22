@@ -17,7 +17,7 @@ import Link from 'next/link';
 import CreateMessageAction, {
   type ICreateMessageActionVariables,
 } from '@/app/[locale]/actions/messages/create-message-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);

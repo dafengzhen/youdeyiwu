@@ -8,7 +8,7 @@ import CreateRoleAction, {
   type ICreateRoleActionVariables,
 } from '@/app/[locale]/actions/roles/create-role-action';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);

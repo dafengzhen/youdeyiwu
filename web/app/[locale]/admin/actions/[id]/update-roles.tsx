@@ -10,7 +10,7 @@ import UpdateRolesActionAction, {
 } from '@/app/[locale]/actions/actions/update-roles-action-action';
 import { nonNum } from '@/app/[locale]/common/client';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateRoles({ action }: { action: IAction }) {
   const { toast } = useContext(GlobalContext);

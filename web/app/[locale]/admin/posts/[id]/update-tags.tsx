@@ -10,7 +10,7 @@ import type { IPost } from '@/app/[locale]/interfaces/posts';
 import UpdateTagsPostAction, {
   type IUpdateTagsPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-tags-post-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateTags({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);

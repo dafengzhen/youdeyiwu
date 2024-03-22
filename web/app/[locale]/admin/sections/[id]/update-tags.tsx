@@ -10,7 +10,7 @@ import { nonNum } from '@/app/[locale]/common/client';
 import UpdateTagsSectionAction, {
   type IUpdateTagsSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-tags-section-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateTags({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);

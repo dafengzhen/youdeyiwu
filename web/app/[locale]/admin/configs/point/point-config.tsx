@@ -9,7 +9,7 @@ import type { IPointConfig } from '@/app/[locale]/interfaces/configs';
 import UpdatePointConfigAction, {
   type IUpdatePointActionVariables,
 } from '@/app/[locale]/actions/configs/point/update-point-config-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function PointConfig({ config }: { config: IPointConfig }) {
   const { toast } = useContext(GlobalContext);

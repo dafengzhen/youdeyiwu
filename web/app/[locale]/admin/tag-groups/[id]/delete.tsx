@@ -7,7 +7,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
 import DeleteTagGroupAction from '@/app/[locale]/actions/tag-groups/delete-tag-group-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);

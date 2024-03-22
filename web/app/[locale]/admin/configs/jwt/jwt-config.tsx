@@ -10,7 +10,7 @@ import UpdateJwtConfigAction, {
   type IUpdateJwtActionVariables,
 } from '@/app/[locale]/actions/configs/jwt/update-jwt-config-action';
 import type { IJwtConfig } from '@/app/[locale]/interfaces/configs';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function JwtConfig({ config }: { config: IJwtConfig }) {
   const { toast } = useContext(GlobalContext);

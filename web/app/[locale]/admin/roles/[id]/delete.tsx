@@ -7,7 +7,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IRole } from '@/app/[locale]/interfaces/roles';
 import DeleteRoleAction from '@/app/[locale]/actions/roles/delete-role-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);

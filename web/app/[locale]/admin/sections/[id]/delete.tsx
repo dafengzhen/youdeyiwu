@@ -8,7 +8,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import Link from 'next/link';
 import DeleteSectionAction from '@/app/[locale]/actions/sections/delete-section-action';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);

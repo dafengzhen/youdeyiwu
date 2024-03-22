@@ -9,7 +9,7 @@ import type { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
 import UpdateTagGroupAction, {
   type IUpdateTagGroupActionVariables,
 } from '@/app/[locale]/actions/tag-groups/update-tag-group-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);

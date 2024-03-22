@@ -8,7 +8,7 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import RefundPostReviewQueuesAction, {
   type IRefundPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/refund-post-review-queues-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Return({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);

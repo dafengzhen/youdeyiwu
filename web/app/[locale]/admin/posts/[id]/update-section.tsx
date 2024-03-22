@@ -10,7 +10,7 @@ import UpdateSectionPostAction, {
   type IUpdateSectionPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-section-post-action';
 import { isNum } from '@/app/[locale]/common/tool';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateSection({
   post,

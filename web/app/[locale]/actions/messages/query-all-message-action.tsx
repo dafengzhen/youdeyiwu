@@ -18,7 +18,7 @@ export default async function QueryAllMessageAction(
       url,
       options: {
         next: {
-          tags: ['/admin/messages', str],
+          tags: ['/messages', str],
         },
       },
     });

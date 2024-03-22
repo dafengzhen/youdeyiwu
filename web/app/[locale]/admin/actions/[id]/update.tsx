@@ -10,7 +10,7 @@ import UpdateActionAction, {
   type IUpdateActionActionVariables,
 } from '@/app/[locale]/actions/actions/update-action-action';
 import { ACTION_PAGES_DATA } from '@/app/[locale]/constants';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 

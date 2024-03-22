@@ -8,6 +8,7 @@ import LikePostAction from '@/app/[locale]/actions/posts/like-post-action';
 import FavoritePostAction from '@/app/[locale]/actions/posts/favorite-post-action';
 import { formatCount, wait } from '@/app/[locale]/common/client';
 import RewardBox from '@/app/[locale]/posts/[id]/reward-box';
+import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 
 export default function ActionButton({ details }: { details: IPostDetails }) {
   const { toast, modal } = useContext(GlobalContext);
@@ -22,6 +23,7 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
   const [likesCount, setLikesCount] = useState(details.likesCount);
   const [favorited, setFavorited] = useState(details.favorited ?? false);
   const [favoritesCount, setFavoritesCount] = useState(details.favoritesCount);
+  const pointsAlert = usePointsAlert();
 
   const likePostActionMutation = useMutation({
     mutationFn: async (variables: { id: number | string }) => {

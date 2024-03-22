@@ -8,7 +8,7 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import NotApprovedPostReviewQueuesAction, {
   type INotApprovedPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/not-approved-post-review-queues-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function NotApproved({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);

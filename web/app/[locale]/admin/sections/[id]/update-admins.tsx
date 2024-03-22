@@ -10,7 +10,7 @@ import UpdateAdminsSectionAction, {
   type IUpdateAdminsSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-admins-section-action';
 import { nonNum } from '@/app/[locale]/common/client';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateAdmins({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);

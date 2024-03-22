@@ -9,7 +9,7 @@ import type { IUser } from '@/app/[locale]/interfaces/users';
 import UpdateStatesUserAction, {
   type IUpdateStatesUserActionVariables,
 } from '@/app/[locale]/actions/users/update-states-user-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateStates({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);

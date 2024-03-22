@@ -7,7 +7,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IPermission } from '@/app/[locale]/interfaces/permissions';
 import DeletePermissionAction from '@/app/[locale]/actions/permissions/delete-permission-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ permission }: { permission: IPermission }) {
   const { toast } = useContext(GlobalContext);

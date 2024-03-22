@@ -8,7 +8,7 @@ import Link from 'next/link';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IPost } from '@/app/[locale]/interfaces/posts';
 import DeletePostAction from '@/app/[locale]/actions/posts/delete-post-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);

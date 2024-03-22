@@ -20,7 +20,7 @@ import UpdateStateCommentAction, {
 import UpdateStateReplyAction, {
   type IUpdateStateReplyActionVariables,
 } from '@/app/[locale]/actions/replies/update-state-reply-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateStates({
   details,

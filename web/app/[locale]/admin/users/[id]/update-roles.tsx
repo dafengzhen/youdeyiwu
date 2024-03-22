@@ -10,7 +10,7 @@ import type { IUser } from '@/app/[locale]/interfaces/users';
 import UpdateRolesUserAction, {
   type IUpdateRolesUserActionVariables,
 } from '@/app/[locale]/actions/users/update-roles-user-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateRoles({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);

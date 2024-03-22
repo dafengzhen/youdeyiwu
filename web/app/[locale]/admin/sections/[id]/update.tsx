@@ -23,7 +23,7 @@ import {
   setContent,
 } from '@/app/[locale]/common/editor';
 import UploadCover from '@/app/[locale]/admin/sections/[id]/upload-cover';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);

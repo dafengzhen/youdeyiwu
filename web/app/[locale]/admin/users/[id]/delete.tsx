@@ -8,7 +8,7 @@ import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IUser } from '@/app/[locale]/interfaces/users';
 import DeleteUserAction from '@/app/[locale]/actions/users/delete-user-action';
 import { getUserAlias } from '@/app/[locale]/common/client';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);

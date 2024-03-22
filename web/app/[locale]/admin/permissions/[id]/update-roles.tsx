@@ -10,7 +10,7 @@ import type { IPermission } from '@/app/[locale]/interfaces/permissions';
 import UpdateRolesPermissionAction, {
   type IUpdateRolesPermissionActionVariables,
 } from '@/app/[locale]/actions/permissions/update-roles-permission-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdateRoles({
   permission,

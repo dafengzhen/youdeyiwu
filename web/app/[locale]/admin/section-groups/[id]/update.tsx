@@ -9,7 +9,7 @@ import type { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 import UpdateSectionGroupAction, {
   type IUpdateSectionGroupActionVariables,
 } from '@/app/[locale]/actions/section-groups/update-section-group-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({
   sectionGroup,

@@ -7,7 +7,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 import DeleteSectionGroupAction from '@/app/[locale]/actions/section-groups/delete-section-group-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({
   sectionGroup,

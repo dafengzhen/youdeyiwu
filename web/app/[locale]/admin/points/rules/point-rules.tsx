@@ -13,7 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import SaveRulesPointsAction, {
   type ISaveRulesPointsActionVariables,
 } from '@/app/[locale]/actions/points/rules/save-rules-points-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 const tips = {
   LIKE_POST: 'earning points for liking a post',

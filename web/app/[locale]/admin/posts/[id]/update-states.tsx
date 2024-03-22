@@ -20,7 +20,7 @@ import type {
 import UpdateStatesPostAction, {
   type IUpdateStatesPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-states-post-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 interface IState {
   id: number | string;

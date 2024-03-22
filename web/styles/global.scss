@@ -128,3 +128,59 @@
 .min-h-screen {
   min-height: 100vh;
 }
+
+// point-clippath
+
+.point-clippath {
+}
+
+.point-clippath:after,
+.point-clippath:before {
+  border: 2px solid var(--bs-success-border-subtle);
+  border-radius: var(--bs-toast-border-radius);
+  content: '';
+  opacity: 0;
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  top: -2px;
+  animation: clippath 3s linear infinite;
+  transition: all 0.5s;
+}
+
+.point-clippath:after {
+  animation: clippath 3s linear -1.5s infinite;
+}
+
+.point-clippath-hover {
+}
+
+.point-clippath-hover:after,
+.point-clippath-hover:before {
+  opacity: 1;
+}
+
+.point-clippath:hover:after,
+.point-clippath:hover:before {
+  opacity: 1;
+}
+
+@keyframes clippath {
+  0%,
+  to {
+    clip-path: inset(0 0 98% 0);
+  }
+
+  25% {
+    clip-path: inset(0 98% 0 0);
+  }
+
+  50% {
+    clip-path: inset(98% 0 0 0);
+  }
+
+  75% {
+    clip-path: inset(0 0 0 98%);
+  }
+}

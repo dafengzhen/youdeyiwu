@@ -14,7 +14,7 @@ import UpdatePermissionAction, {
   type IUpdatePermissionActionVariables,
 } from '@/app/[locale]/actions/permissions/update-permission-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ permission }: { permission: IPermission }) {
   const { toast } = useContext(GlobalContext);

@@ -10,7 +10,7 @@ import type { IRole } from '@/app/[locale]/interfaces/roles';
 import UpdatePermissionsRoleAction, {
   type IUpdatePermissionsRoleActionVariables,
 } from '@/app/[locale]/actions/roles/update-permissions-role-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function UpdatePermissions({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);

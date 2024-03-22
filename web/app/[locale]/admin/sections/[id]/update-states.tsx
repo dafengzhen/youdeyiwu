@@ -17,7 +17,7 @@ import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
 import UpdateStatesSectionAction, {
   type IUpdateStatesSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-states-section-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 interface IState {
   id: number | string;

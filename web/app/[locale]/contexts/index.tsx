@@ -1,10 +1,12 @@
 import { createContext, MutableRefObject } from 'react';
-import { IToastRef } from '@/app/[locale]/common/toasts';
-import { IModalRef } from '@/app/[locale]/common/modals';
+import type { IToastRef } from '@/app/[locale]/common/toasts';
+import type { IModalRef } from '@/app/[locale]/common/modals';
+import type { IPointsAlertRef } from '@/app/[locale]/components/points-alert/points-alert';
 
 export const GlobalContext = createContext<{
   toast: MutableRefObject<IToastRef>;
   modal: MutableRefObject<IModalRef>;
+  pointsAlert: MutableRefObject<IPointsAlertRef>;
 }>({
   toast: {
     current: {
@@ -14,6 +16,11 @@ export const GlobalContext = createContext<{
   modal: {
     current: {
       show: () => {},
+    },
+  },
+  pointsAlert: {
+    current: {
+      add: () => {},
     },
   },
 });

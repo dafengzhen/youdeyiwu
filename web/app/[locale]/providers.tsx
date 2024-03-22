@@ -4,9 +4,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { type ReactNode, useEffect, useRef, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
-import Toasts, { IToastRef } from '@/app/[locale]/common/toasts';
-import Modals, { IModalRef } from '@/app/[locale]/common/modals';
+import Toasts, { type IToastRef } from '@/app/[locale]/common/toasts';
+import Modals, { type IModalRef } from '@/app/[locale]/common/modals';
 import { type AbstractIntlMessages, NextIntlClientProvider } from 'next-intl';
+import PointsAlert, {
+  type IPointsAlertRef,
+} from '@/app/[locale]/components/points-alert/points-alert';
 
 export function Providers(props: {
   locale: string;
@@ -19,6 +22,9 @@ export function Providers(props: {
   });
   const modalRef = useRef<IModalRef>({
     show: () => {},
+  });
+  const pointsAlertRef = useRef<IPointsAlertRef>({
+    add: () => {},
   });
 
   useEffect(() => {
@@ -43,10 +49,17 @@ export function Providers(props: {
         messages={props.intlMessages}
         timeZone="UTC"
       >
-        <GlobalContext.Provider value={{ toast: toastRef, modal: modalRef }}>
+        <GlobalContext.Provider
+          value={{
+            toast: toastRef,
+            modal: modalRef,
+            pointsAlert: pointsAlertRef,
+          }}
+        >
           {props.children}
           <Toasts ref={toastRef} />
           <Modals ref={modalRef} />
+          <PointsAlert ref={pointsAlertRef} />
         </GlobalContext.Provider>
       </NextIntlClientProvider>
       {<ReactQueryDevtools initialIsOpen={false} />}

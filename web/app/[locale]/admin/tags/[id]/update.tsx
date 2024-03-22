@@ -9,7 +9,7 @@ import type { ITag } from '@/app/[locale]/interfaces/tags';
 import UpdateTagAction, {
   type IUpdateTagActionVariables,
 } from '@/app/[locale]/actions/tags/update-tag-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Update({ tag }: { tag: ITag }) {
   const { toast } = useContext(GlobalContext);

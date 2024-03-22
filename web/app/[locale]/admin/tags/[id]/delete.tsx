@@ -7,7 +7,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ITag } from '@/app/[locale]/interfaces/tags';
 import DeleteTagAction from '@/app/[locale]/actions/tags/delete-tag-action';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Delete({ tag }: { tag: ITag }) {
   const { toast } = useContext(GlobalContext);

@@ -12,7 +12,7 @@ import {
   trimObjectStrings,
 } from '@/app/[locale]/common/client';
 import { isBefore } from 'date-fns';
-import useMenuActionPermission from '@/app/[locale]/hooks/useMenuActionPermission';
+import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 
 export default function Receive({ postId }: { postId: number }) {
   const { toast } = useContext(GlobalContext);
