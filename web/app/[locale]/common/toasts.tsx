@@ -53,7 +53,7 @@ export default forwardRef(function Toasts(props, ref) {
 
   return (
     <div aria-live="polite" aria-atomic="true" className="position-relative">
-      <div className="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-5">
+      <div className="toast-container top-0 start-50 translate-middle-x p-3 overflow-x-hidden overflow-y-auto position-fixed vh-100">
         {toasts.map((item) => {
           return <Toast key={item.id} item={item} />;
         })}

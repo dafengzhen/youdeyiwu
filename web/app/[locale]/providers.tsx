@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import React, { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import Toasts, { type IToastRef } from '@/app/[locale]/common/toasts';
 import Modals, { type IModalRef } from '@/app/[locale]/common/modals';
@@ -25,6 +25,7 @@ export function Providers(props: {
   });
   const pointsAlertRef = useRef<IPointsAlertRef>({
     add: () => {},
+    refresh: () => {},
   });
 
   useEffect(() => {

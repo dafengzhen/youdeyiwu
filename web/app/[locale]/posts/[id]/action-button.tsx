@@ -74,6 +74,8 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
         setLikesCount(likesCount - 1);
       }
 
+      pointsAlert.refresh();
+
       toast.current.show({
         type: 'success',
         message,
@@ -120,6 +122,8 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
         setFavorited(false);
         setFavoritesCount(favoritesCount - 1);
       }
+
+      pointsAlert.refresh();
 
       toast.current.show({
         type: 'success',

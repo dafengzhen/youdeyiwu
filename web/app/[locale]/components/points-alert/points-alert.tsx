@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { gsap } from 'gsap';
 import { nanoid } from 'nanoid';
 import { useQuery } from '@tanstack/react-query';
 import QueryAllMessageAction from '@/app/[locale]/actions/messages/query-all-message-action';
 import { nonNum } from '@/app/[locale]/common/client';
+import type { IMessage } from '@/app/[locale]/interfaces/messages';
 
 export interface IPointsAlert {
   id: string;
@@ -20,6 +19,7 @@ export interface IPointsAlert {
 
 export interface IPointsAlertRef {
   add: (item: Pick<IPointsAlert, 'value' | 'actualValue' | 'flag'>) => void;
+  refresh: () => void;
 }
 
 const pointMessagesDisplayedKey = '_youdeyiwu_point_messages_displayed';
@@ -27,13 +27,17 @@ const pointMessagesDisplayedKey = '_youdeyiwu_point_messages_displayed';
 export default forwardRef(function PointsAlert(props, ref) {
   const [items, setItems] = useState<IPointsAlert[]>([]);
   const [updateTrigger, setUpdateTrigger] = useState(items.length);
+  const [pointMessagesDisplayed, setPointMessagesDisplayed] = useState<
+    { id: number }[]
+  >([]);
 
   useImperativeHandle(ref, () => ({
     add,
+    refresh,
   }));
 
   const messageQuery = useQuery({
-    queryKey: ['/messages'],
+    queryKey: ['/messages', 'pointsAlert'],
     queryFn: async () => {
       const response = await QueryAllMessageAction();
       if (response.isError) {
@@ -42,6 +46,21 @@ export default forwardRef(function PointsAlert(props, ref) {
       return response.data;
     },
   });
+
+  useEffect(() => {
+    const pointMessagesDisplayedItem = localStorage.getItem(
+      pointMessagesDisplayedKey,
+    );
+
+    if (pointMessagesDisplayedItem) {
+      try {
+        const parse = JSON.parse(pointMessagesDisplayedItem);
+        if (Array.isArray(parse)) {
+          setPointMessagesDisplayed(parse);
+        }
+      } catch (e) {}
+    }
+  }, []);
 
   useEffect(() => {
     function extractValuesFromBrackets(message: string) {
@@ -63,36 +82,47 @@ export default forwardRef(function PointsAlert(props, ref) {
       const filter = data.content.filter(
         (item) => item.name === 'Changes in your points',
       );
+      let _pointMessagesDisplayed;
+      let _filter: IMessage[] = [];
+
       const pointMessagesDisplayedItem = localStorage.getItem(
         pointMessagesDisplayedKey,
       );
-      let pointMessagesDisplayed: any[] = [];
 
       if (pointMessagesDisplayedItem) {
         try {
-          const parse = JSON.parse(pointMessagesDisplayedItem);
-          if (Array.isArray(parse)) {
-            pointMessagesDisplayed = parse;
-          }
-        } catch (e) {}
-      } else {
-        localStorage.setItem(
-          pointMessagesDisplayedKey,
-          JSON.stringify(
-            filter.map((item) => {
-              return {
+          const parse: any[] = JSON.parse(pointMessagesDisplayedItem);
+          const arr: any[] = [];
+          filter.forEach((item) => {
+            if (!parse.find((item2) => item2.id === item.id)) {
+              arr.push({
                 id: item.id,
-              };
-            }),
-          ),
-        );
+              });
+              _filter.push(item);
+            }
+          });
+
+          _pointMessagesDisplayed = [...arr, ...parse];
+        } catch (e) {
+          _pointMessagesDisplayed = pointMessagesDisplayed;
+        }
+      } else {
+        _filter = filter;
+        _pointMessagesDisplayed = filter.map((item) => {
+          return {
+            id: item.id,
+          };
+        });
       }
 
-      filter
-        .filter(
-          (item) =>
-            !pointMessagesDisplayed.find((_item) => _item.id === item.id),
-        )
+      localStorage.setItem(
+        pointMessagesDisplayedKey,
+        JSON.stringify(_pointMessagesDisplayed.sort((a, b) => b.id - a.id)),
+      );
+
+      _filter
+        .sort((a, b) => a.id - b.id)
+        .splice(0, 6)
         .forEach((item) => {
           const output = extractValuesFromBrackets(item.overview);
           if (
@@ -136,7 +166,7 @@ export default forwardRef(function PointsAlert(props, ref) {
         const element = item.ref;
         const signElement = item.sign;
         const t1 = gsap.timeline();
-        const obj = { value: 0 };
+        const targetValue = { value: 0 };
 
         t1.fromTo(
           element,
@@ -146,7 +176,7 @@ export default forwardRef(function PointsAlert(props, ref) {
             height: '5rem',
             autoAlpha: 1,
             duration: 1,
-            ease: 'power1.in',
+            ease: 'back.out',
             onComplete: () => {
               setItems((prevItems) => {
                 const updatedItems = [...prevItems];
@@ -159,7 +189,7 @@ export default forwardRef(function PointsAlert(props, ref) {
             },
           },
         )
-          .to(obj, {
+          .to(targetValue, {
             value: item.value,
             duration: 2,
             ease: 'circ.out',
@@ -168,7 +198,7 @@ export default forwardRef(function PointsAlert(props, ref) {
                 const updatedItems = [...prevItems];
                 const find = updatedItems.find((_item) => _item.id === item.id);
                 if (find) {
-                  find.value = Math.round(obj.value);
+                  find.value = Math.round(targetValue.value);
                 }
                 return updatedItems;
               });
@@ -220,8 +250,12 @@ export default forwardRef(function PointsAlert(props, ref) {
     setUpdateTrigger((prevState) => prevState + 1);
   }
 
+  function refresh() {
+    messageQuery.refetch();
+  }
+
   return (
-    <div className="toast-container top-0 end-0 p-3 overflow-hidden position-fixed">
+    <div className="toast-container top-0 end-0 p-3 overflow-x-hidden overflow-y-auto position-fixed vh-100">
       {items.map((item, index) => {
         return (
           <div
@@ -229,7 +263,7 @@ export default forwardRef(function PointsAlert(props, ref) {
             ref={(instance) => {
               item.ref = instance;
             }}
-            className="toast show align-items-center border-0 point-clippath text-success"
+            className="toast show align-items-center border-0 point-clippath text-bg-success"
             role="points"
           >
             <div className="toast-body">
@@ -250,7 +284,7 @@ export default forwardRef(function PointsAlert(props, ref) {
                         ref={(instance) => {
                           item.sign = instance;
                         }}
-                        className="bi bi-dash text-warning-emphasis"
+                        className="bi bi-dash"
                       ></i>
                     )}
                     {/*<i className="fs-6 mb-1">{item.actualValue}</i>*/}

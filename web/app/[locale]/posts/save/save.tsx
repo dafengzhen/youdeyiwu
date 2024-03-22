@@ -29,6 +29,7 @@ import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import UploadCover from '@/app/[locale]/posts/save/upload-cover';
 import { isNum } from '@/app/[locale]/common/tool';
 import { useTranslations } from 'next-intl';
+import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -84,6 +85,7 @@ export default function Save({
   >(sections.map((item) => ({ id: item.id, name: item.name })));
   const [first, setFirst] = useState(false);
   const t = useTranslations();
+  const pointsAlert = usePointsAlert();
 
   const publishPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -222,6 +224,8 @@ export default function Save({
         message = 'Successfully published, Refresh after 1 seconds';
         setFirst(true);
       }
+
+      pointsAlert.refresh();
 
       toast.current.show({
         type: 'success',
