@@ -93,6 +93,45 @@
     "enterYourDetailsToGetStarted": "Enter your details to get started.",
     "usernameFromText": "Username length should be between 3 and 16 characters.",
     "passwordFromText": "Password length should be between 6 and 18 characters.",
-    "registering": "Registering"
+    "registering": "Registering",
+    "likeBtn": {
+      "anonymousUsers": "Sorry, anonymous users are not allowed to participate in Likes, please login to do so!",
+      "gets": "Author's article gets a Like!",
+      "text": "Like"
+    },
+    "favouriteBtn": {
+      "anonymousUsers": "Sorry, anonymous users are not allowed to add favourites, please login to add favourites",
+      "gets": "This is a good article!",
+      "text": "Favourite"
+    },
+    "processing": "Processing",
+    "replyBtn": {
+      "text": "Reply",
+      "cancelReply": "Cancel Reply"
+    },
+    "collapse": "Collapse",
+    "expandTheArticle": "Expand the article",
+    "cancel": "Cancel",
+    "replying": "Replying",
+    "sendReply": "Send Reply",
+    "rulesForReplying": "Please be sure to follow the site's current social rules when replying, thank you!",
+    "now": "Now",
+    "theReplyCannotBeEmpty": "The reply cannot be empty",
+    "replySuccessfully": "Reply successfully",
+    "quoteFromThisUser": "Quote from this user",
+    "reply": "Reply",
+    "usernameCannotBeEmpty": "Username cannot be empty",
+    "passwordCannotBeEmpty": "Password cannot be empty",
+    "loginSuccessful": "Login successful, refresh after 1 second",
+    "registrationSuccessful": "Registration successful, update in 1 second",
+    "logoutSuccessful": "Logout successful, refresh after 1 second",
+    "successfulUpdate": "Successful update",
+    "anonymousArticlesCannotBeEdited": "Anonymous articles cannot be edited",
+    "articleNameCannotBeEmpty": "Article name cannot be empty",
+    "coverLinkProtocols": "The cover link only supports HTTP or HTTPS protocols",
+    "contentLinkProtocols": "The content link only supports HTTP or HTTPS protocols",
+    "publishedSuccessfully": "Published successfully, update in 1 second",
+    "refreshFailed": "Refresh failed, please click back manually",
+    "takePartInTheComments": "Take part in the comments"
   }
 }

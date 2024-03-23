@@ -1,11 +1,12 @@
-import { IComment } from '@/app/[locale]/interfaces/comments';
-import { IPostDetails } from '@/app/[locale]/interfaces/posts';
+import type { IComment } from '@/app/[locale]/interfaces/comments';
+import type { IPostDetails } from '@/app/[locale]/interfaces/posts';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
 import ReplyBox from '@/app/[locale]/posts/[id]/comments/reply-box';
+import { useTranslations } from 'next-intl';
 
 export default function Reply({
   item,
@@ -16,6 +17,7 @@ export default function Reply({
 }) {
   const user = item.user;
   const [openReplyBox, setOpenReplyBox] = useState(false);
+  const t = useTranslations();
 
   function onClickReply() {
     setOpenReplyBox(!openReplyBox);
@@ -66,7 +68,7 @@ export default function Reply({
               type="button"
             >
               <i className="bi bi-send me-2"></i>
-              <span className="">Reply</span>
+              <span className="">{t('common.reply')}</span>
             </button>
           </div>
         )}

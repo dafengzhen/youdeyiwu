@@ -15,6 +15,7 @@ import {
   isHttpOrHttps,
 } from '@/app/[locale]/common/client';
 import Cover from '@/app/[locale]/home/cover';
+import { useTranslations } from 'next-intl';
 
 export default function Posts({
   data,
@@ -25,6 +26,7 @@ export default function Posts({
 }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPost[]>(data.content);
+  const t = useTranslations();
 
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/posts', queryParams, 'infinite'],
@@ -177,7 +179,10 @@ export default function Posts({
                       href={`/posts/${item.id}`}
                       scroll={false}
                     >
-                      <i className="bi bi-chat-text fs-4"></i>
+                      <i
+                        className="bi bi-chat-text fs-4"
+                        title={t('common.takePartInTheComments')}
+                      ></i>
                     </Link>
                   )}
                 </div>

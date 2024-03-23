@@ -93,6 +93,45 @@
     "enterYourDetailsToGetStarted": "输入你的详细信息即可开始",
     "usernameFromText": "用户名长度应在 3 至 16 个字符之间",
     "passwordFromText": "密码长度应在 6 至 18 个字符之间",
-    "registering": "注册中"
+    "registering": "注册中",
+    "likeBtn": {
+      "anonymousUsers": "抱歉，匿名用户不能参与点赞，请登录后操作",
+      "gets": "作者的文章获得了一个赞！",
+      "text": "点赞"
+    },
+    "favouriteBtn": {
+      "anonymousUsers": "抱歉，匿名用户不能进行收藏，请登录后操作",
+      "gets": "这篇文章不错！",
+      "text": "收藏"
+    },
+    "processing": "处理中",
+    "replyBtn": {
+      "text": "回复",
+      "cancelReply": "取消回复"
+    },
+    "collapse": "收起",
+    "expandTheArticle": "展开文章",
+    "cancel": "取消",
+    "replying": "回复中",
+    "sendReply": "发送回复",
+    "rulesForReplying": "回复时请务必遵守当前网站的社交规则，感谢！",
+    "now": "现在",
+    "theReplyCannotBeEmpty": "回复的内容不能为空",
+    "replySuccessfully": "回复成功",
+    "quoteFromThisUser": "引用该用户的回复",
+    "reply": "回复",
+    "usernameCannotBeEmpty": "用户名不能为空",
+    "passwordCannotBeEmpty": "密码不能为空",
+    "loginSuccessful": "登录成功，1 秒后刷新",
+    "registrationSuccessful": "注册成功，1 秒后刷新",
+    "logoutSuccessful": "退出登录成功，1 秒后刷新",
+    "successfulUpdate": "更新成功",
+    "anonymousArticlesCannotBeEdited": "匿名文章不可编辑",
+    "articleNameCannotBeEmpty": "文章名称不能为空",
+    "coverLinkProtocols": "封面链接仅支持 HTTP 或 HTTPS 协议",
+    "contentLinkProtocols": "内容链接仅支持 HTTP 或 HTTPS 协议",
+    "publishedSuccessfully": "发布成功，1 秒后刷新",
+    "refreshFailed": "刷新失败，请手动点击返回按钮",
+    "takePartInTheComments": "参与评论"
   }
 }

@@ -54,7 +54,7 @@ export default function EditProfile({
 
       toast.current.show({
         type: 'success',
-        message: 'Profile updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateProfileUserActionMutation.reset();

@@ -14,6 +14,7 @@ import CreateCommentAction, {
 import { sanitizeHtmlContent } from '@/app/[locale]/common/editor';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export default function CommentBox({ details }: { details: IPostDetails }) {
   const { toast } = useContext(GlobalContext);
@@ -25,6 +26,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
   let uid;
   let avatar;
   let alias = getUserAlias(currentUser);
+  const t = useTranslations();
 
   if (currentUser) {
     uid = currentUser.id;
@@ -56,7 +58,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
       if (!content) {
         toast.current.show({
           type: 'danger',
-          message: 'The reply content cannot be empty',
+          message: t('common.theReplyCannotBeEmpty'),
         });
         return;
       }
@@ -72,7 +74,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Awesome, a reply has been posted',
+        message: t('common.replySuccessfully'),
       });
     } catch (e: any) {
       createCommentActionMutation.reset();
@@ -107,7 +109,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                     {alias}
                   </Link>
                 </div>
-                <time className="fw-normal small">Now</time>
+                <time className="fw-normal small">{t('common.now')}</time>
               </div>
             </div>
           </div>
@@ -121,12 +123,8 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                 value={form.content}
                 className="form-control mt-2"
                 rows={4}
-                placeholder="Please enter your reply content"
               ></textarea>
-              <div className="form-text">
-                Please make sure to adhere to the rules of the current website
-                when replying. Have a great time!
-              </div>
+              <div className="form-text">{t('common.rulesForReplying')}</div>
             </div>
             <div className="d-flex justify-content-end gap-2">
               <div className="d-flex gap-2">
@@ -136,7 +134,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                   className="btn btn-link link-secondary text-decoration-none"
                   type="button"
                 >
-                  <span className="">Cancel</span>
+                  <span className="">{t('common.cancel')}</span>
                 </button>
 
                 <button
@@ -148,8 +146,8 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                   <i className="bi bi-send-check me-2"></i>
                   <span className="">
                     {createCommentActionMutation.isPending
-                      ? 'Replying'
-                      : 'Send Reply'}
+                      ? t('common.replying')
+                      : t('common.sendReply')}
                   </span>
                 </button>
               </div>

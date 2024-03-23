@@ -35,12 +35,12 @@ export default function Logout({
 
       toast.current.show({
         type: 'success',
-        message: 'Logout successfully, Refresh after 2 seconds',
+        message: t('common.logoutSuccessful'),
       });
 
       setTimeout(() => {
         location.reload();
-      }, 2000);
+      }, 1000);
     } catch (e: any) {
       logoutUserActionMutation.reset();
       toast.current.show({

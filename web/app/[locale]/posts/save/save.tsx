@@ -169,7 +169,7 @@ export default function Save({
       if (isEdit && !post.createdBy) {
         toast.current.show({
           type: 'danger',
-          message: 'The anonymous article cannot be edited',
+          message: t('common.anonymousArticlesCannotBeEdited'),
         });
         return;
       }
@@ -184,7 +184,7 @@ export default function Save({
       if (!name) {
         toast.current.show({
           type: 'danger',
-          message: 'The post name cannot be empty',
+          message: t('common.articleNameCannotBeEmpty'),
         });
         return;
       }
@@ -192,7 +192,7 @@ export default function Save({
       if (variables.cover && !isHttpOrHttps(variables.cover)) {
         toast.current.show({
           type: 'danger',
-          message: 'The cover link only supports the HTTP or HTTPS protocol',
+          message: t('common.coverLinkProtocols'),
         });
         return;
       }
@@ -200,7 +200,7 @@ export default function Save({
       if (variables.contentLink && !isHttpOrHttps(variables.contentLink)) {
         toast.current.show({
           type: 'danger',
-          message: 'The content link only supports the HTTP or HTTPS protocol',
+          message: t('common.contentLinkProtocols'),
         });
         return;
       }
@@ -218,10 +218,10 @@ export default function Save({
 
       let message = 'Successfully published';
       if (isEdit) {
-        message = 'Successfully updated';
+        message = t('common.successfulUpdate');
         setForm({ ...form, content: variables.content });
       } else {
-        message = 'Successfully published, Refresh after 1 seconds';
+        message = t('common.publishedSuccessfully');
         setFirst(true);
       }
 
@@ -239,11 +239,11 @@ export default function Save({
               url: response,
               tags: ['/'],
             });
-          }, 1500);
+          }, 1000);
         } else {
           toast.current.show({
             type: 'danger',
-            message: 'Refresh failed, please manually click the back button',
+            message: t('common.refreshFailed'),
           });
         }
       }

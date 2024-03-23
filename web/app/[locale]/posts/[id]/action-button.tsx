@@ -9,6 +9,7 @@ import FavoritePostAction from '@/app/[locale]/actions/posts/favorite-post-actio
 import { formatCount, wait } from '@/app/[locale]/common/client';
 import RewardBox from '@/app/[locale]/posts/[id]/reward-box';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
+import { useTranslations } from 'next-intl';
 
 export default function ActionButton({ details }: { details: IPostDetails }) {
   const { toast, modal } = useContext(GlobalContext);
@@ -24,6 +25,7 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
   const [favorited, setFavorited] = useState(details.favorited ?? false);
   const [favoritesCount, setFavoritesCount] = useState(details.favoritesCount);
   const pointsAlert = usePointsAlert();
+  const t = useTranslations();
 
   const likePostActionMutation = useMutation({
     mutationFn: async (variables: { id: number | string }) => {
@@ -53,8 +55,7 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
         await wait();
         toast.current.show({
           type: 'danger',
-          message:
-            'Sorry, anonymous users cannot participate in like counts. Thank you for your support!',
+          message: t('common.likeBtn.anonymousUsers'),
         });
         return;
       }
@@ -64,12 +65,10 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
 
       let message;
       if (!liked) {
-        message = 'Like successful, awesome!';
+        message = t('common.likeBtn.gets');
         setLiked(true);
         setLikesCount(likesCount + 1);
       } else {
-        message =
-          'The removal of the like was successful. Waiting for your support again!';
         setLiked(false);
         setLikesCount(likesCount - 1);
       }
@@ -102,8 +101,7 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
         await wait();
         toast.current.show({
           type: 'danger',
-          message:
-            'Sorry, anonymous users cannot add to favorites. You may need to log in. Thank you for your bookmark!',
+          message: t('common.favouriteBtn.anonymousUsers'),
         });
         return;
       }
@@ -113,12 +111,10 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
 
       let message;
       if (!favorited) {
-        message = 'Added to favorites successfully, well done';
+        message = t('common.favouriteBtn.gets');
         setFavorited(true);
         setFavoritesCount(favoritesCount + 1);
       } else {
-        message =
-          'The removal from favorites was successful. Looking forward to adding it again!';
         setFavorited(false);
         setFavoritesCount(favoritesCount - 1);
       }
@@ -191,8 +187,8 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
           >
             <span className="me-2">
               {likeProcessing || likePostActionMutation.isPending
-                ? 'Processing'
-                : 'Like'}
+                ? t('common.processing')
+                : t('common.likeBtn.text')}
             </span>
             <i
               className={clsx(
@@ -218,8 +214,8 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
           >
             <span className="me-2">
               {favouriteProcessing || favoritePostActionMutation.isPending
-                ? 'Processing'
-                : 'Favourite'}
+                ? t('common.processing')
+                : t('common.favouriteBtn.text')}
             </span>
             <i
               className={clsx('bi', favorited ? 'bi-star-fill' : 'bi-star')}
@@ -241,10 +237,10 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
             )}
           >
             {openReplyBox ? (
-              'Cancel Reply'
+              t('common.replyBtn.cancelReply')
             ) : (
               <>
-                <span className="me-2">Reply</span>
+                <span className="me-2">{t('common.replyBtn.text')}</span>
                 <i className="bi bi-send"></i>
               </>
             )}

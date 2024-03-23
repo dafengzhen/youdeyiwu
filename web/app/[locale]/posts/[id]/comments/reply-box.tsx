@@ -10,6 +10,7 @@ import CreateReplyAction, {
 } from '@/app/[locale]/actions/replies/create-reply-action';
 import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
 import { sanitizeHtmlContent } from '@/app/[locale]/common/editor';
+import { useTranslations } from 'next-intl';
 
 export default function ReplyBox({
   details,
@@ -28,6 +29,7 @@ export default function ReplyBox({
   const [form, setForm] = useState({
     content: '',
   });
+  const t = useTranslations();
 
   const createReplyActionMutation = useMutation({
     mutationFn: async (variables: ICreateReplyActionVariables) => {
@@ -54,7 +56,7 @@ export default function ReplyBox({
       if (!content) {
         toast.current.show({
           type: 'danger',
-          message: 'The reply content cannot be empty',
+          message: t('common.theReplyCannotBeEmpty'),
         });
         return;
       }
@@ -77,7 +79,7 @@ export default function ReplyBox({
 
       toast.current.show({
         type: 'success',
-        message: 'Awesome, a reply has been posted',
+        message: t('common.replySuccessfully'),
       });
 
       onClickReply();
@@ -96,7 +98,7 @@ export default function ReplyBox({
         <div>
           {replyingUser && (
             <label className="form-label text-secondary">
-              <span>Quoting the reply from user</span>
+              <span>{t('common.quoteFromThisUser')}</span>
               <span>&nbsp;</span>
               <span className="fw-medium">@{getUserAlias(replyingUser)}</span>
             </label>
@@ -110,12 +112,8 @@ export default function ReplyBox({
             value={form.content}
             className="form-control mt-2"
             rows={4}
-            placeholder="Please enter your reply content"
           ></textarea>
-          <div className="form-text">
-            Please make sure to adhere to the rules of the current website when
-            replying. Have a great time!
-          </div>
+          <div className="form-text">{t('common.rulesForReplying')}</div>
         </div>
         <div className="d-flex justify-content-end gap-2">
           <div className="d-flex gap-2">
@@ -125,7 +123,7 @@ export default function ReplyBox({
               className="btn btn-link link-secondary text-decoration-none"
               type="button"
             >
-              <span className="">Cancel</span>
+              <span className="">{t('common.cancel')}</span>
             </button>
 
             <button
@@ -135,10 +133,10 @@ export default function ReplyBox({
               type="button"
             >
               <i className="bi bi-send-check me-2"></i>
-              <span className="">
+              <span>
                 {createReplyActionMutation.isPending
-                  ? 'Replying'
-                  : 'Send Reply'}
+                  ? t('common.replying')
+                  : t('common.sendReply')}
               </span>
             </button>
           </div>

@@ -11,6 +11,7 @@ import {
 } from '@/app/[locale]/common/client';
 import Nodata from '@/app/[locale]/common/nodata';
 import Content from '@/app/[locale]/components/content/content';
+import { useTranslations } from 'next-intl';
 
 export default function Navbar({ details }: { details: IPostDetails }) {
   const user = details.user;
@@ -20,6 +21,7 @@ export default function Navbar({ details }: { details: IPostDetails }) {
   let alias = getUserAlias(user);
 
   const [continueReading, setContinueReading] = useState(false);
+  const t = useTranslations();
 
   if (user) {
     uid = user.id;
@@ -107,7 +109,9 @@ export default function Navbar({ details }: { details: IPostDetails }) {
                   type="button"
                   className="btn rounded-pill btn-outline-secondary position-absolute bottom-0"
                 >
-                  {continueReading ? 'Collapse' : 'Expand the article'}
+                  {continueReading
+                    ? t('common.collapse')
+                    : t('common.expandTheArticle')}
                 </button>
               </>
             )}

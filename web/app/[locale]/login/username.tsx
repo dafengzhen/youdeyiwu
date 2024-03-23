@@ -42,7 +42,7 @@ export default function Username() {
       if (!variables.username) {
         toast.current.show({
           type: 'danger',
-          message: 'Username can not be empty',
+          message: t('common.usernameCannotBeEmpty'),
         });
         return;
       }
@@ -50,7 +50,7 @@ export default function Username() {
       if (variables.username.length < 3 || variables.username.length > 16) {
         toast.current.show({
           type: 'danger',
-          message: 'Username length should be between 3 and 16 characters',
+          message: t('common.usernameFromText'),
         });
         return;
       }
@@ -58,7 +58,7 @@ export default function Username() {
       if (!variables.password) {
         toast.current.show({
           type: 'danger',
-          message: 'Password can not be empty',
+          message: t('common.passwordCannotBeEmpty'),
         });
         return;
       }
@@ -66,7 +66,7 @@ export default function Username() {
       if (variables.password.length < 6 || variables.password.length > 18) {
         toast.current.show({
           type: 'danger',
-          message: 'Password length should be between 6 and 18 characters',
+          message: t('common.passwordFromText'),
         });
         return;
       }
@@ -76,12 +76,12 @@ export default function Username() {
 
       toast.current.show({
         type: 'success',
-        message: 'Login successful, refreshing in 2 seconds',
+        message: t('common.loginSuccessful'),
       });
 
       setTimeout(() => {
         router.push('/');
-      }, 2000);
+      }, 1000);
     } catch (e: any) {
       loginActionMutation.reset();
       toast.current.show({

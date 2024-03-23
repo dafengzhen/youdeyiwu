@@ -1,5 +1,5 @@
-import { IReply } from '@/app/[locale]/interfaces/replies';
-import { IPostDetails } from '@/app/[locale]/interfaces/posts';
+import type { IReply } from '@/app/[locale]/interfaces/replies';
+import type { IPostDetails } from '@/app/[locale]/interfaces/posts';
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -75,7 +75,7 @@ export default function QuotedReply({
                     {getUserAlias(quotedItem.user)}
                   </Link>
                   <span className="mx-1">·</span>
-                  <time dateTime={quotedItem.createdOn} className="">
+                  <time dateTime={quotedItem.createdOn}>
                     {quotedItem.createdOnText}
                   </time>
                 </cite>

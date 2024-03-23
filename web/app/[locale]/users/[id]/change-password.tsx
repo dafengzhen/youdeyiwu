@@ -54,7 +54,7 @@ export default function ChangePassword({
       if (!variables.oldPassword) {
         toast.current.show({
           type: 'danger',
-          message: 'Old Password can not be empty',
+          message: t('common.passwordCannotBeEmpty'),
         });
         return;
       }
@@ -65,7 +65,7 @@ export default function ChangePassword({
       ) {
         toast.current.show({
           type: 'danger',
-          message: 'Old Password length should be between 6 and 18 characters',
+          message: t('common.passwordFromText'),
         });
         return;
       }
@@ -73,7 +73,7 @@ export default function ChangePassword({
       if (!variables.newPassword) {
         toast.current.show({
           type: 'danger',
-          message: 'New Password can not be empty',
+          message: t('common.passwordCannotBeEmpty'),
         });
         return;
       }
@@ -84,7 +84,7 @@ export default function ChangePassword({
       ) {
         toast.current.show({
           type: 'danger',
-          message: 'New Password length should be between 6 and 18 characters',
+          message: t('common.passwordFromText'),
         });
         return;
       }
@@ -97,7 +97,7 @@ export default function ChangePassword({
 
       toast.current.show({
         type: 'success',
-        message: 'Password updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updatePasswordUserActionMutation.reset();
