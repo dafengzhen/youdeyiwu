@@ -6,6 +6,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateSectionAction from '@/app/[locale]/actions/sections/create-section-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -18,6 +19,7 @@ export default function Create() {
     '/admin/sections',
     'Sections#Create',
   );
+  const t = useTranslations();
 
   const createSectionActionMutation = useMutation({
     mutationFn: async (variables: { name: string }) => {
@@ -37,7 +39,7 @@ export default function Create() {
       if (name.length < 1) {
         toast.current.show({
           type: 'danger',
-          message: 'Section name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
@@ -47,7 +49,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createSectionActionMutation.reset();
@@ -70,7 +72,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -79,13 +81,10 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the section name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">
-            Section names are recommended to be concise and succinct
-          </div>
+          <div className="form-text">{t('common.sectionNameFormText')}</div>
         </div>
 
         <div>
@@ -95,8 +94,8 @@ export default function Create() {
             className="btn btn-success"
           >
             {createSectionActionMutation.isPending
-              ? 'Creating'
-              : 'Create Section'}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

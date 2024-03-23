@@ -3,6 +3,7 @@
 import { type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
+import { useTranslations } from 'next-intl';
 
 export default function Box({
   children,
@@ -24,6 +25,7 @@ export default function Box({
   hideHeader?: boolean;
 }) {
   const router = useRouter();
+  const t = useTranslations();
 
   function onClickReturn() {
     router.back();
@@ -46,7 +48,7 @@ export default function Box({
                       type="button"
                       className="btn btn-sm btn-secondary"
                     >
-                      Return
+                      {t('common.return')}
                     </button>
                   )}
                 </div>

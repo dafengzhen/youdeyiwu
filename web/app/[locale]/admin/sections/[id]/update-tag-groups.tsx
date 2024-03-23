@@ -11,6 +11,7 @@ import UpdateTagGroupsSectionAction, {
 } from '@/app/[locale]/actions/sections/update-tag-groups-section-action';
 import { nonNum } from '@/app/[locale]/common/client';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateTagGroups({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateTagGroups({ section }: { section: ISection }) {
     '/admin/sections',
     'Sections#Update Tag Groups',
   );
+  const t = useTranslations();
 
   const updateTagGroupsSectionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -68,16 +70,13 @@ export default function UpdateTagGroups({ section }: { section: ISection }) {
     <Box title={`${section.name} (ID. ${section.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Tag Groups</label>
+          <label className="form-label">{t('common.tagGroups')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput items={tagGroups} setItems={setTagGroups} />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the tag group ID. If you haven&apos;t created a tag
-            group yet, please create one first
-          </div>
+          <div className="form-text">{t('common.tagGroupsFormText')}</div>
         </div>
 
         <div>
@@ -89,8 +88,8 @@ export default function UpdateTagGroups({ section }: { section: ISection }) {
             className="btn btn-success"
           >
             {updateTagGroupsSectionActionMutation.isPending
-              ? 'Updating'
-              : 'Update Section Tag Groups'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

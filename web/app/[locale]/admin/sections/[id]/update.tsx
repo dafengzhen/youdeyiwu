@@ -24,6 +24,7 @@ import {
 } from '@/app/[locale]/common/editor';
 import UploadCover from '@/app/[locale]/admin/sections/[id]/upload-cover';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Update({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -47,6 +48,7 @@ export default function Update({ section }: { section: ISection }) {
     '/admin/sections',
     'Sections#Update',
   );
+  const t = useTranslations();
 
   const updateSectionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -77,7 +79,7 @@ export default function Update({ section }: { section: ISection }) {
       if (variables.cover && !isHttpOrHttps(variables.cover)) {
         toast.current.show({
           type: 'danger',
-          message: 'The cover link only supports the HTTP or HTTPS protocol',
+          message: t('common.linkProtocols'),
         });
         return;
       }
@@ -89,7 +91,7 @@ export default function Update({ section }: { section: ISection }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateSectionActionMutation.reset();
@@ -119,61 +121,46 @@ export default function Update({ section }: { section: ISection }) {
     >
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Name</label>
+          <label className="form-label">{t('common.name')}</label>
           <input
             type="text"
             className="form-control"
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the section name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">
-            Section names are recommended to be concise and succinct
-          </div>
+          <div className="form-text">{t('common.sectionNameFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Sort</label>
+          <label className="form-label">{t('common.sort')}</label>
           <input
             type="number"
             className="form-control"
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the section sort"
             aria-describedby="sort"
             min={0}
           />
-          <div className="form-text">
-            The minimum value of the sorted list is 0
-          </div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
-          <label className="form-label">Cover</label>
+          <label className="form-label">{t('common.cover')}</label>
           <input
             type="text"
             className="form-control"
             name="cover"
             value={form.cover}
             onChange={onChangeForm}
-            placeholder="Please enter the section cover"
             aria-describedby="cover"
           />
-          <div className="form-text">
-            The aspect ratio of the section cover is 16 x 9, for example, 260 x
-            195
-          </div>
-          <div className="form-text">
-            Only cover URLs using the HTTP or HTTPS protocol are supported
-          </div>
-          <div className="form-text">
-            The cover will not be displayed in all scenarios, but only in
-            specific scenarios
-          </div>
+          <div className="form-text">{t('common.coverFormText1')}</div>
+          <div className="form-text">{t('common.coverFormText2')}</div>
+          <div className="form-text">{t('common.coverFormText3')}</div>
         </div>
 
         <UploadCover
@@ -188,9 +175,9 @@ export default function Update({ section }: { section: ISection }) {
 
         <div>
           <label className="form-label">
-            Overview
+            {t('common.overview')}
             {form.overview.length > 0 && (
-              <span>&nbsp;({form.overview.length}-character length)</span>
+              <span>&nbsp;({form.overview.length})</span>
             )}
           </label>
           <textarea
@@ -199,22 +186,18 @@ export default function Update({ section }: { section: ISection }) {
             name="overview"
             value={form.overview}
             onChange={onChangeForm}
-            placeholder="Please enter the section overview"
             aria-describedby="overview"
           />
-          <div className="form-text">
-            The recommended length for an overview is around 160 words
-          </div>
+          <div className="form-text">{t('common.overviewLength')}</div>
         </div>
 
         <div>
-          <label className="form-label">Content</label>
+          <label className="form-label">{t('common.content')}</label>
           <div className="form-text mb-2">
-            Define the content theme of the section to provide guidance and
-            assistance to users creating posts within the current section
+            {t('common.contentTopicFormText')}
           </div>
           {editorInitializing && (
-            <div className="form-text mb-2">Loading the editor...</div>
+            <div className="form-text mb-2">{t('common.editorLoading')}</div>
           )}
           <div ref={editorElementRef}></div>
         </div>
@@ -226,8 +209,8 @@ export default function Update({ section }: { section: ISection }) {
             className="btn btn-success"
           >
             {updateSectionActionMutation.isPending
-              ? 'Updating'
-              : 'Update Section'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

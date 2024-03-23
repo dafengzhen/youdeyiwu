@@ -9,6 +9,7 @@ import Link from 'next/link';
 import DeleteSectionAction from '@/app/[locale]/actions/sections/delete-section-action';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Delete({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -16,6 +17,7 @@ export default function Delete({ section }: { section: ISection }) {
     '/admin/sections',
     'Sections#Delete',
   );
+  const t = useTranslations();
 
   const deleteSectionActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -36,7 +38,7 @@ export default function Delete({ section }: { section: ISection }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Deleted Successfully, Refresh after 2 seconds',
+        message: t('common.successfullyDeleted'),
       });
 
       setTimeout(() => {
@@ -58,7 +60,6 @@ export default function Delete({ section }: { section: ISection }) {
     <Box>
       <div className="alert alert-danger" role="alert">
         <h4 className="alert-heading">
-          <span className="me-2 text-danger">Delete</span>
           <Link
             target="_blank"
             href={`/sections/${section.id}`}
@@ -67,21 +68,8 @@ export default function Delete({ section }: { section: ISection }) {
             {section.name}&nbsp;(ID. {section.id})
           </Link>
         </h4>
-        <ul className="list-unstyled fw-medium">
-          <li>
-            Irreversible deletion! All data related to the section will be
-            deleted.
-          </li>
-          <li>
-            Please proceed with caution when performing deletion, as what you
-            may actually want to do is an update operation.
-          </li>
-        </ul>
         <hr />
-        <p className="mb-0">
-          After pressing the delete button, the processing will begin. Please
-          wait patiently for the deletion to be completed.
-        </p>
+        <p className="mb-0">{t('common.deleteFormText')}</p>
         <div className="mt-4">
           <button
             onClick={onClickDelete}
@@ -89,7 +77,9 @@ export default function Delete({ section }: { section: ISection }) {
             type="button"
             className="btn btn-sm btn-danger"
           >
-            {deleteSectionActionMutation.isPending ? 'Deleting' : 'Delete'}
+            {deleteSectionActionMutation.isPending
+              ? t('common.deleting')
+              : t('common.delete')}
           </button>
           <AccessDeniedAlert />
         </div>

@@ -11,11 +11,13 @@ import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useRouter } from 'next/navigation';
 import Nodata from '@/app/[locale]/common/nodata';
+import { useTranslations } from 'next-intl';
 
 export default function Sections({ data }: { data: IPage<ISection[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<ISection[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const sectionsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/sections', 'infinite'],
@@ -106,7 +108,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Section
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -123,19 +125,18 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
         <table className="table align-middle table-striped">
           <thead>
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Sort</th>
-              <th scope="col">States</th>
-              <th scope="col">Admins</th>
-              <th scope="col">Operate</th>
+              <th scope="col"> {t('common.sort')}</th>
+              <th scope="col"> {t('common.name')}</th>
+              <th scope="col"> {t('common.states')}</th>
+              <th scope="col"> {t('common.admins')}</th>
+              <th scope="col"> {t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
             {content.map((item) => {
               return (
                 <tr key={item.id}>
-                  <th scope="row">{item.id}</th>
+                  <td>{item.sort}</td>
                   <td>
                     <Link
                       className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
@@ -144,10 +145,11 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                       {item.name}
                     </Link>
                   </td>
-                  <td>{item.sort}</td>
                   <td>
                     {item.states.length === 0 ? (
-                      <span className="text-secondary">Default</span>
+                      <span className="text-secondary">
+                        {t('common.default')}
+                      </span>
                     ) : (
                       <div className="d-flex gap-2">
                         {item.states.map((state) => {
@@ -164,33 +166,27 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                     )}
                   </td>
                   <td>
-                    {item.admins.length === 0 ? (
-                      <div className="text-secondary">No administrator</div>
-                    ) : (
-                      <>
-                        {item.admins.map((admin, index) => {
-                          return (
-                            <Link
-                              key={admin.id}
-                              href={`/users/${admin.id}`}
-                              className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
-                            >
-                              {admin.alias}&nbsp;(ID. {admin.id})
-                              {index !== item.admins.length - 1 && (
-                                <span>,&nbsp;</span>
-                              )}
-                            </Link>
-                          );
-                        })}
-                      </>
-                    )}
+                    {item.admins.map((admin, index) => {
+                      return (
+                        <Link
+                          key={admin.id}
+                          href={`/users/${admin.id}`}
+                          className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                        >
+                          {admin.alias}&nbsp;(ID. {admin.id})
+                          {index !== item.admins.length - 1 && (
+                            <span>,&nbsp;</span>
+                          )}
+                        </Link>
+                      );
+                    })}
                   </td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -200,7 +196,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                             className="dropdown-item"
                             href={`/admin/sections/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -214,7 +210,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                             className="dropdown-item"
                             href={`/admin/sections/${item.id}?type=states`}
                           >
-                            Update States
+                            {t('common.updateStates')}
                           </Link>
                         </li>
                         <li>
@@ -228,7 +224,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                             className="dropdown-item"
                             href={`/admin/sections/${item.id}?type=admins`}
                           >
-                            Update Admins
+                            {t('common.updateAdmins')}
                           </Link>
                         </li>
                         <li>
@@ -242,7 +238,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                             className="dropdown-item"
                             href={`/admin/sections/${item.id}?type=tags`}
                           >
-                            Update Tags
+                            {t('common.updateTags')}
                           </Link>
                         </li>
                         <li>
@@ -256,7 +252,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                             className="dropdown-item"
                             href={`/admin/sections/${item.id}?type=tagGroups`}
                           >
-                            Update Tag Groups
+                            {t('common.updateTagGroups')}
                           </Link>
                         </li>
                         <li>
@@ -273,7 +269,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/sections/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

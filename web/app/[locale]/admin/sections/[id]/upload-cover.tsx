@@ -11,6 +11,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import UploadCoverSectionAction, {
   type IUploadCoverSectionActionVariables,
 } from '@/app/[locale]/actions/sections/upload-cover-section-action';
+import { useTranslations } from 'next-intl';
 
 export default function UploadCover({
   id,
@@ -28,6 +29,7 @@ export default function UploadCover({
     uploadCoverObjectUrl: '',
   });
   const uploadCoverFile = useRef<File | null>(null);
+  const t = useTranslations();
 
   const uploadCoverSectionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -55,7 +57,7 @@ export default function UploadCover({
       if (!file) {
         toast.current.show({
           type: 'danger',
-          message: 'Please upload files locally first',
+          message: t('common.theFileCannotBeEmpty'),
         });
         return;
       }
@@ -71,16 +73,8 @@ export default function UploadCover({
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully uploaded',
+        message: t('common.uploadedSuccessfully'),
       });
-
-      setTimeout(() => {
-        toast.current.show({
-          type: 'success',
-          message:
-            'Upload successful. Changes will take effect after clicking the "Update" button',
-        });
-      }, 1500);
     } catch (e: any) {
       uploadCoverSectionActionMutation.reset();
       toast.current.show({
@@ -155,18 +149,13 @@ export default function UploadCover({
           type="button"
         >
           <i className="bi bi-upload me-2"></i>
-          {uploadCoverSectionActionMutation.isPending ? 'Uploading' : 'Upload'}
+          {uploadCoverSectionActionMutation.isPending
+            ? t('common.uploading')
+            : t('common.upload')}
         </button>
       </div>
 
-      <div className="form-text">
-        Only JPG Or PNG format cover image files are supported, with a size of
-        up to 1MB
-      </div>
-      <div className="form-text">
-        Alternatively, you can choose to upload a cover image from your local
-        device
-      </div>
+      <div className="form-text">{t('common.coverFormText4')}</div>
 
       {form.uploadCoverObjectUrl && (
         <div

@@ -11,6 +11,7 @@ import UpdateAdminsSectionAction, {
 } from '@/app/[locale]/actions/sections/update-admins-section-action';
 import { nonNum } from '@/app/[locale]/common/client';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateAdmins({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
     '/admin/sections',
     'Sections#Update Admins',
   );
+  const t = useTranslations();
 
   const updateAdminsSectionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Admins updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateAdminsSectionActionMutation.reset();
@@ -68,15 +70,13 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
     <Box title={`${section.name} (ID. ${section.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Admins</label>
+          <label className="form-label">{t('common.admins')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput items={admins} setItems={setAdmins} />
             </div>
           </div>
-          <div className="form-text">
-            To set a user as a section administrator, please enter the user ID
-          </div>
+          <div className="form-text">{t('common.adminsFormText')}</div>
         </div>
 
         <div>
@@ -88,8 +88,8 @@ export default function UpdateAdmins({ section }: { section: ISection }) {
             className="btn btn-success"
           >
             {updateAdminsSectionActionMutation.isPending
-              ? 'Updating'
-              : 'Update Section Admins'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

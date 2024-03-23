@@ -11,6 +11,7 @@ import UpdateTagsSectionAction, {
   type IUpdateTagsSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-tags-section-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateTags({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateTags({ section }: { section: ISection }) {
     '/admin/sections',
     'Sections#Update Tags',
   );
+  const t = useTranslations();
 
   const updateTagsSectionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdateTags({ section }: { section: ISection }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Tags updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateTagsSectionActionMutation.reset();
@@ -68,7 +70,7 @@ export default function UpdateTags({ section }: { section: ISection }) {
     <Box title={`${section.name} (ID. ${section.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Tags</label>
+          <label className="form-label">{t('common.tags')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -78,10 +80,7 @@ export default function UpdateTags({ section }: { section: ISection }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the tag ID. If you haven&apos;t created a tag yet,
-            please create a tag first
-          </div>
+          <div className="form-text">{t('common.tagsFormText')}</div>
         </div>
 
         <div>
@@ -93,8 +92,8 @@ export default function UpdateTags({ section }: { section: ISection }) {
             className="btn btn-success"
           >
             {updateTagsSectionActionMutation.isPending
-              ? 'Updating'
-              : 'Update Section Tags'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
