@@ -14,17 +14,7 @@ import SavePermissionRulesPointsAction, {
   type ISavePermissionRulesPointsActionVariables,
 } from '@/app/[locale]/actions/points/permission-rules/save-permission-rules-points-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
-
-const tips = {
-  CREATE_POST: 'permission to create a new post',
-  CREATE_COMMENT: 'permission to create a comment',
-  CREATE_REPLY: 'permission to create a reply',
-  UPDATE_POST: 'permission to update a post',
-  ADD_POST_TAG: 'permission to add tags to a post',
-  ADD_POST_CONTENT_LINK: 'permission to add content links to a post',
-  ADD_POST_COVER_LINK: 'permission to add cover links to a post',
-  ADD_POST_SECTION: 'permission to add sections to a post',
-};
+import { useTranslations } from 'next-intl';
 
 const rules = Object.keys(PermissionRuleNameEnum).map((item) => {
   return {
@@ -39,6 +29,17 @@ export default function PointPermissionRules({
 }: {
   data: IPointPermissionRule[];
 }) {
+  const t = useTranslations();
+  const tips = {
+    CREATE_POST: t('common.createAPost'),
+    CREATE_COMMENT: t('common.createPostComment'),
+    CREATE_REPLY: t('common.createPostReply'),
+    UPDATE_POST: t('common.updatePost'),
+    ADD_POST_TAG: t('common.updatePostTags'),
+    ADD_POST_CONTENT_LINK: t('common.updatePostContentLink'),
+    ADD_POST_COVER_LINK: t('common.updatePostCoverLink'),
+    ADD_POST_SECTION: t('common.updatePostSection'),
+  };
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPointPermissionRule[]>(
     rules.map((item, index) => {
@@ -92,7 +93,7 @@ export default function PointPermissionRules({
       setIsUpdate(false);
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       savePermissionRulesPointsActionMutation.reset();
@@ -121,7 +122,7 @@ export default function PointPermissionRules({
                   isUpdate ? 'btn-secondary' : 'btn-primary',
                 )}
               >
-                {isUpdate ? 'Cancel Update' : 'Update'}
+                {isUpdate ? t('common.cancelUpdate') : t('common.update')}
               </button>
             </div>
 
@@ -133,7 +134,7 @@ export default function PointPermissionRules({
                   type="button"
                   className="btn btn-sm btn-success"
                 >
-                  {saving ? 'Saving' : 'Save'}
+                  {saving ? t('common.saving') : t('common.save')}
                 </button>
                 <AccessDeniedAlert />
               </div>
@@ -144,22 +145,19 @@ export default function PointPermissionRules({
     >
       <div className="table-responsive">
         <table className="table align-middle table-striped">
-          <caption>
-            The permission points required to execute this integration rule,
-            with a default value of 0. The value should be a positive number
-          </caption>
+          <caption>{t('common.permissionRuleText')}</caption>
           <thead>
             <tr>
-              <th scope="col">Rule</th>
-              <th scope="col">RequiredPoints</th>
-              <th scope="col">OperationCost</th>
+              <th scope="col">{t('common.rule')}</th>
+              <th scope="col">{t('common.pointsRequired')}</th>
+              <th scope="col">{t('common.costOfUse')}</th>
             </tr>
           </thead>
           <tbody>
             {content.map((item) => {
               return (
                 <tr key={item.id}>
-                  <th scope="row">{item._tip}</th>
+                  <td>{item._tip}</td>
                   <td>
                     {isUpdate ? (
                       <input
@@ -185,7 +183,6 @@ export default function PointPermissionRules({
                           find.requiredPoints = value;
                           setContent([...content]);
                         }}
-                        placeholder="The default value is 0, and the value should be a positive number"
                         aria-describedby="requiredPoints"
                       />
                     ) : (
@@ -217,7 +214,6 @@ export default function PointPermissionRules({
                           find.operationCost = value;
                           setContent([...content]);
                         }}
-                        placeholder="The default value is 0, and the value should be a positive number"
                         aria-describedby="operationCost"
                       />
                     ) : (

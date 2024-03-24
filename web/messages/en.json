@@ -239,6 +239,16 @@
     "postsNotApproved": "Posts not approved",
     "postsInModeration": "Posts in moderation",
     "browsePosts": "Browse posts",
-    "createAPost": "Create a post"
+    "createAPost": "Create a post",
+    "permissionRuleText": "The number of credit privileges required to enforce the rule, the default is 0, which should be a positive value.",
+    "pointsRequired": "Points required",
+    "costOfUse": "Cost of use",
+    "createPostComment": "Create post comment",
+    "createPostReply": "Create post reply",
+    "updatePost": "Update post",
+    "updatePostTags": "Update post tags",
+    "updatePostContentLink": "Update post content link",
+    "updatePostCoverLink": "Update post cover link",
+    "updatePostSection": "Update post section"
   }
 }

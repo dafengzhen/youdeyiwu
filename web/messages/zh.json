@@ -237,6 +237,16 @@
     "postsNotApproved": "帖子审核不通过",
     "postsInModeration": "帖子审核中",
     "browsePosts": "浏览帖子",
-    "createAPost": "创建帖子"
+    "createAPost": "创建帖子",
+    "permissionRuleText": "执行该规则所需要的积分权限点，默认值为 0，该值应该为正数",
+    "pointsRequired": "所需积分",
+    "costOfUse": "使用成本",
+    "createPostComment": "创建帖子评论",
+    "createPostReply": "创建帖子回复",
+    "updatePost": "更新帖子",
+    "updatePostTags": "更新帖子标签",
+    "updatePostContentLink": "更新帖子内容链接",
+    "updatePostCoverLink": "更新帖子封面链接",
+    "updatePostSection": "更新帖子所属版块"
   }
 }
