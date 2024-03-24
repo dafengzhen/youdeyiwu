@@ -125,6 +125,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
         <table className="table align-middle table-striped">
           <thead>
             <tr>
+              <th scope="col"> ID</th>
               <th scope="col"> {t('common.sort')}</th>
               <th scope="col"> {t('common.name')}</th>
               <th scope="col"> {t('common.states')}</th>
@@ -136,6 +137,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
             {content.map((item) => {
               return (
                 <tr key={item.id}>
+                  <td>{item.id}</td>
                   <td>{item.sort}</td>
                   <td>
                     <Link

@@ -11,6 +11,7 @@ import UpdateSectionsSectionGroupAction, {
   type IUpdateSectionsSectionGroupActionVariables,
 } from '@/app/[locale]/actions/sections/update-sections-section-group-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateSections({
   sectionGroup,
@@ -25,6 +26,7 @@ export default function UpdateSections({
     '/admin/section-groups',
     'Section Groups#Update Sections',
   );
+  const t = useTranslations();
 
   const updateSectionsSectionGroupActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -57,7 +59,7 @@ export default function UpdateSections({
 
       toast.current.show({
         type: 'success',
-        message: 'Sections updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateSectionsSectionGroupActionMutation.reset();
@@ -72,7 +74,7 @@ export default function UpdateSections({
     <Box title={`${sectionGroup.name} (ID. ${sectionGroup.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Sections</label>
+          <label className="form-label">{t('common.sections')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -82,10 +84,7 @@ export default function UpdateSections({
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the section ID. If you haven&apos;t created a section
-            yet, please create a section first
-          </div>
+          <div className="form-text">{t('common.sectionsFormText')}</div>
         </div>
 
         <div>
@@ -98,8 +97,8 @@ export default function UpdateSections({
             className="btn btn-success"
           >
             {updateSectionsSectionGroupActionMutation.isPending
-              ? 'Updating'
-              : 'Update Sections'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

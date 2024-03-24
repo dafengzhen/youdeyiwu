@@ -11,6 +11,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/[locale]/common/nodata';
 import type { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 import QueryAllSectionGroupAction from '@/app/[locale]/actions/section-groups/query-all-section-group-action';
+import { useTranslations } from 'next-intl';
 
 export default function SectionGroups({
   data,
@@ -20,6 +21,7 @@ export default function SectionGroups({
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<ISectionGroup[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const sectionGroupsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/section-groups', 'infinite'],
@@ -110,7 +112,7 @@ export default function SectionGroups({
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Section Group
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -128,9 +130,9 @@ export default function SectionGroups({
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -138,14 +140,14 @@ export default function SectionGroups({
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
-                  <td>{item.name}</td>
                   <td>{item.sort}</td>
+                  <td>{item.name}</td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -158,7 +160,7 @@ export default function SectionGroups({
                             className="dropdown-item"
                             href={`/admin/section-groups/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -172,7 +174,7 @@ export default function SectionGroups({
                             className="dropdown-item"
                             href={`/admin/section-groups/${item.id}?type=sections`}
                           >
-                            Update Sections
+                            {t('common.updateSections')}
                           </Link>
                         </li>
                         <li>
@@ -189,7 +191,7 @@ export default function SectionGroups({
                             className="dropdown-item text-danger"
                             href={`/admin/section-groups/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

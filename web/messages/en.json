@@ -176,6 +176,10 @@
     "adminsFormText": "Enter the user ID to be set as the administrator.",
     "tagsFormText": "Enter the ID of the tag you want to associate.",
     "tagGroups": "Tag Groups",
-    "tagGroupsFormText": "Enter the Tag Group ID and create a Tag Group if you don't have one."
+    "tagGroupsFormText": "Enter the Tag Group ID and create a Tag Group if you don't have one.",
+    "updateSections": "Update Sections",
+    "nameUniqueFormText": "The name is unique",
+    "sections": "Sections",
+    "sectionsFormText": "Please enter a section id, if you don't have a section, please create one first."
   }
 }

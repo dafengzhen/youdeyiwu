@@ -176,6 +176,10 @@
     "adminsFormText": "请输入要设置为管理员的用户 ID",
     "tagsFormText": "请输入要关联的标签 ID",
     "tagGroups": "标签组",
-    "tagGroupsFormText": "请输入标签组 ID，如果还没有标签组，请先创建一个标签组"
+    "tagGroupsFormText": "请输入标签组 ID，如果还没有标签组，请先创建一个标签组",
+    "updateSections": "更新版块",
+    "nameUniqueFormText": "名称是唯一的",
+    "sections": "版块",
+    "sectionsFormText": "请输入版块 Id，如果还没有版块，请先创建一个版块"
   }
 }

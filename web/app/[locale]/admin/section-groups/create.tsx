@@ -6,6 +6,7 @@ import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import CreateSectionGroupAction from '@/app/[locale]/actions/section-groups/create-section-group-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -18,6 +19,7 @@ export default function Create() {
     '/admin/section-groups',
     'Section Groups#Create',
   );
+  const t = useTranslations();
 
   const createSectionGroupActionMutation = useMutation({
     mutationFn: async (variables: { name: string }) => {
@@ -37,7 +39,7 @@ export default function Create() {
       if (name.length < 1) {
         toast.current.show({
           type: 'danger',
-          message: 'section group name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
@@ -47,7 +49,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       createSectionGroupActionMutation.reset();
@@ -70,7 +72,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -79,17 +81,10 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the section group name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">
-            Please enter the section group name, it is not recommended to be too
-            long
-          </div>
-          <div className="form-text">
-            The section group name must not be duplicated and needs to be unique
-          </div>
+          <div className="form-text">{t('common.nameUniqueFormText')}</div>
         </div>
 
         <div>
@@ -101,8 +96,8 @@ export default function Create() {
             className="btn btn-success"
           >
             {createSectionGroupActionMutation.isPending
-              ? 'Creating'
-              : 'Create Section Group'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
