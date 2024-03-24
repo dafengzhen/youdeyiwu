@@ -180,6 +180,7 @@
     "updateSections": "更新版块",
     "nameUniqueFormText": "名称是唯一的",
     "sections": "版块",
-    "sectionsFormText": "请输入版块 Id，如果还没有版块，请先创建一个版块"
+    "sectionsFormText": "请输入版块 Id，如果还没有版块，请先创建一个版块",
+    "updateTagsFormText": "请输入标签 Id，如果还没有标签，请先创建一个标签"
   }
 }

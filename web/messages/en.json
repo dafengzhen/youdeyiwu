@@ -180,6 +180,7 @@
     "updateSections": "Update Sections",
     "nameUniqueFormText": "The name is unique",
     "sections": "Sections",
-    "sectionsFormText": "Please enter a section id, if you don't have a section, please create one first."
+    "sectionsFormText": "Please enter a section id, if you don't have a section, please create one first.",
+    "updateTagsFormText": "Please enter the tag id and create a tag if you don't have one."
   }
 }

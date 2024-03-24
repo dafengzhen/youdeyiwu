@@ -10,6 +10,7 @@ import UpdateTagGroupAction, {
   type IUpdateTagGroupActionVariables,
 } from '@/app/[locale]/actions/tag-groups/update-tag-group-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);
@@ -24,6 +25,7 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
     '/admin/tag-groups',
     'Tag Groups#Update',
   );
+  const t = useTranslations();
 
   const updateTagGroupActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -46,7 +48,7 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'Tag group name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
@@ -56,7 +58,7 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateTagGroupActionMutation.reset();
@@ -79,31 +81,21 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="fw-bold text-danger">*</span>
-            Name
-          </label>
+          <label className="form-label">{t('common.name')}</label>
           <input
             type="text"
             className="form-control"
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the tag group name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">
-            Please enter the tag group name, it is not recommended to be too
-            long
-          </div>
-          <div className="form-text">
-            The tag group name must not be duplicated and needs to be unique
-          </div>
+          <div className="form-text">{t('common.nameUniqueFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Sort</label>
+          <label className="form-label">{t('common.sort')}</label>
           <input
             required
             min={0}
@@ -112,13 +104,9 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the tag group sort"
             aria-describedby="sort"
           />
-          <div className="form-text">
-            Please enter the sorting value for the tag group, with a minimum
-            value of 0
-          </div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
@@ -130,8 +118,8 @@ export default function Update({ tagGroup }: { tagGroup: ITagGroup }) {
             className="btn btn-success"
           >
             {updateTagGroupActionMutation.isPending
-              ? 'Updating'
-              : 'Update Tag Group'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

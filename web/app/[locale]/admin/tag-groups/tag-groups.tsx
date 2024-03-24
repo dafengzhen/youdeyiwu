@@ -11,11 +11,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/[locale]/common/nodata';
 import type { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
 import QueryAllTagGroupAction from '@/app/[locale]/actions/tag-groups/query-all-tag-group-action';
+import { useTranslations } from 'next-intl';
 
 export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<ITagGroup[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const tagGroupsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/tag-groups', 'infinite'],
@@ -106,7 +108,7 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Tag Group
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -124,10 +126,10 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Tags</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.tags')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -135,32 +137,28 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
-                  <td>{item.name}</td>
                   <td>{item.sort}</td>
+                  <td>{item.name}</td>
                   <td>
-                    {item.tags.length === 0 ? (
-                      <span className="text-secondary">None</span>
-                    ) : (
-                      <div className="d-flex gap-2">
-                        {item.tags.map((tag) => {
-                          return (
-                            <span
-                              key={tag.id}
-                              className="badge rounded-pill text-bg-dark"
-                            >
-                              {tag.name}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <div className="d-flex gap-2">
+                      {item.tags.map((tag) => {
+                        return (
+                          <span
+                            key={tag.id}
+                            className="badge rounded-pill text-bg-dark"
+                          >
+                            {tag.name}
+                          </span>
+                        );
+                      })}
+                    </div>
                   </td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -170,7 +168,7 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
                             className="dropdown-item"
                             href={`/admin/tag-groups/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -184,7 +182,7 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
                             className="dropdown-item"
                             href={`/admin/tag-groups/${item.id}?type=tags`}
                           >
-                            Update Tags
+                            {t('common.updateTags')}
                           </Link>
                         </li>
                         <li>
@@ -201,7 +199,7 @@ export default function TagGroups({ data }: { data: IPage<ITagGroup[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/tag-groups/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

@@ -11,6 +11,7 @@ import UpdateTagsTagGroupAction, {
   type IUpdateTagsTagGroupActionVariables,
 } from '@/app/[locale]/actions/tag-groups/update-tags-tag-group-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
     '/admin/tag-groups',
     'Tag Groups#Update Tags',
   );
+  const t = useTranslations();
 
   const updateTagsTagGroupActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Tags updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateTagsTagGroupActionMutation.reset();
@@ -68,7 +70,7 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
     <Box title={`${tagGroup.name} (ID. ${tagGroup.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Tags</label>
+          <label className="form-label">{t('common.tags')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -78,10 +80,7 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the tag ID. If you haven&apos;t created a tag yet,
-            please create a tag first
-          </div>
+          <div className="form-text">{t('common.updateTagsFormText')}</div>
         </div>
 
         <div>
@@ -93,8 +92,8 @@ export default function UpdateTags({ tagGroup }: { tagGroup: ITagGroup }) {
             className="btn btn-success"
           >
             {updateTagsTagGroupActionMutation.isPending
-              ? 'Updating'
-              : 'Update Tags'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
