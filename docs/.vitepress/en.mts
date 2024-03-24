@@ -11,13 +11,13 @@ export const en = defineConfig({
     nav: nav(),
     sidebar: {
       '/guide/': { base: '/guide/', items: sidebarGuide() },
-      '/reference/': { base: '/reference/', items: sidebarReference() },
+      '/reference/': { base: '/reference/', items: sidebarReference() }
     },
     editLink: {
       pattern: 'https://github.com/dafengzhen/youdeyiwu/edit/main/docs/:path',
-      text: 'Edit this page on GitHub',
-    },
-  },
+      text: 'Edit this page on GitHub'
+    }
+  }
 });
 
 function nav(): DefaultTheme.NavItem[] {
@@ -25,26 +25,26 @@ function nav(): DefaultTheme.NavItem[] {
     {
       text: 'Guide',
       link: '/guide/what-is-youdeyiwu',
-      activeMatch: '/guide/',
+      activeMatch: '/guide/'
     },
     {
       text: 'Reference',
       link: '/reference/site-config',
-      activeMatch: '/reference/',
+      activeMatch: '/reference/'
     },
     {
       text: pkg.version,
       items: [
         {
           text: 'Changelog',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md',
+          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md'
         },
         {
           text: 'Contributing',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md',
-        },
-      ],
-    },
+          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md'
+        }
+      ]
+    }
   ];
 }
 
@@ -57,14 +57,14 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'What is Youdeyiwu?', link: 'what-is-youdeyiwu' },
         { text: 'Getting Started', link: 'getting-started' },
         { text: 'Config File', link: 'config-file' },
-        { text: 'FQA', link: 'fqa' },
-      ],
+        { text: 'FQA', link: 'fqa' }
+      ]
     },
     {
       text: 'API Reference',
       base: '/reference/',
-      link: 'config-site',
-    },
+      link: 'config-site'
+    }
   ];
 }
 
@@ -76,9 +76,9 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
         {
           text: 'Config',
           base: '/reference/config-',
-          items: [{ text: 'Site Config', link: 'site' }],
-        },
-      ],
-    },
+          items: [{ text: 'Site Config', link: 'site' }]
+        }
+      ]
+    }
   ];
 }
