@@ -8,6 +8,7 @@ import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { ISubmenu } from '@/app/[locale]/interfaces/menus';
 import DeleteSubmenuAction from '@/app/[locale]/actions/submenus/delete-submenu-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Delete({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
@@ -15,6 +16,7 @@ export default function Delete({ submenu }: { submenu: ISubmenu }) {
     '/admin/submenus',
     'Submenus#Delete',
   );
+  const t = useTranslations();
 
   const deleteSubmenuActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -35,7 +37,7 @@ export default function Delete({ submenu }: { submenu: ISubmenu }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Deleted Successfully, Refresh after 2 seconds',
+        message: t('common.successfullyDeleted'),
       });
 
       setTimeout(() => {
@@ -57,27 +59,13 @@ export default function Delete({ submenu }: { submenu: ISubmenu }) {
     <Box>
       <div className="alert alert-danger" role="alert">
         <h4 className="alert-heading">
-          <span className="me-2 text-danger">Delete</span>
           <span className="text-danger">
             {submenu.name}&nbsp;(ID. {submenu.id})
           </span>
         </h4>
-        <p className="fw-medium">{`{ @Link ${submenu.link} }`}</p>
-        <ul className="list-unstyled fw-medium">
-          <li>
-            Irreversible deletion! All data related to the submenu will be
-            deleted.
-          </li>
-          <li>
-            Please proceed with caution when performing deletion, as what you
-            may actually want to do is an update operation.
-          </li>
-        </ul>
+        <p className="fw-medium">{`{ ${submenu.link} }`}</p>
         <hr />
-        <p className="mb-0">
-          After pressing the delete button, the processing will begin. Please
-          wait patiently for the deletion to be completed.
-        </p>
+        <p className="mb-0">{t('common.deleteFormText')}</p>
         <div className="mt-4">
           <button
             onClick={onClickDelete}
@@ -85,7 +73,9 @@ export default function Delete({ submenu }: { submenu: ISubmenu }) {
             type="button"
             className="btn btn-sm btn-danger"
           >
-            {deleteSubmenuActionMutation.isPending ? 'Deleting' : 'Delete'}
+            {deleteSubmenuActionMutation.isPending
+              ? t('common.deleting')
+              : t('common.delete')}
           </button>
           <AccessDeniedAlert />
         </div>

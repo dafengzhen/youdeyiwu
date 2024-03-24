@@ -11,6 +11,7 @@ import UpdateSubmenuAction, {
 } from '@/app/[locale]/actions/submenus/update-submenu-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Update({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
@@ -32,6 +33,7 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
     '/admin/submenus',
     'Submenus#Update',
   );
+  const t = useTranslations();
 
   const updateSubmenuActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -56,14 +58,14 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'The submenu name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
       if (!variables.link) {
         toast.current.show({
           type: 'danger',
-          message: 'The submenu link cannot be empty',
+          message: t('common.menuLinkCannotBeEmpty'),
         });
         return;
       }
@@ -82,7 +84,7 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateSubmenuActionMutation.reset();
@@ -103,10 +105,7 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Name
-          </label>
+          <label className="form-label">{t('common.name')}</label>
           <input
             required
             type="text"
@@ -114,18 +113,14 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the menu name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">The menu name cannot be empty</div>
+          <div className="form-text">{t('common.nameCannotBeEmpty')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Link
-          </label>
+          <label className="form-label">{t('common.link')}</label>
           <input
             required
             type="text"
@@ -133,21 +128,14 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
             name="link"
             value={form.link}
             onChange={onChangeForm}
-            placeholder="Please enter the menu link"
             aria-describedby="link"
             minLength={1}
           />
-          <div className="form-text">The menu link cannot be empty</div>
-          <div className="form-text">
-            The link can be either a page path or a regular access link
-          </div>
+          <div className="form-text">{t('common.menuLinkFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Sort
-          </label>
+          <label className="form-label">{t('common.sort')}</label>
           <input
             min={0}
             type="number"
@@ -155,31 +143,26 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the menu sort"
             aria-describedby="sort"
           />
-          <div className="form-text">The minimum value for sorting is 0</div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
-          <label className="form-label">Menu</label>
+          <label className="form-label">{t('common.menu')}</label>
           <input
             type="text"
             className="form-control"
             name="menu"
             value={form.menu}
             onChange={onChangeForm}
-            placeholder="Please enter the menu ID"
             aria-describedby="menu"
           />
-          <div className="form-text">
-            Please enter the menu ID. If you don&apos;t have a menu yet, please
-            create one first
-          </div>
+          <div className="form-text">{t('common.menuFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Actions</label>
+          <label className="form-label">{t('common.actions')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -189,18 +172,7 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the action ID. If you haven&apos;t created a tag group
-            yet, please create one first
-          </div>
-          <div className="form-text">
-            The note to remove the action means that the action will also be
-            deleted
-          </div>
-          <div className="form-text">
-            The action corresponds to a menu or submenu, and if the action is
-            already used by another menu, you should create a new action
-          </div>
+          <div className="form-text">{t('common.actionsFormText')}</div>
         </div>
 
         <div>
@@ -210,8 +182,8 @@ export default function Update({ submenu }: { submenu: ISubmenu }) {
             className="btn btn-success"
           >
             {updateSubmenuActionMutation.isPending
-              ? 'Updating'
-              : 'Update Submenu'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

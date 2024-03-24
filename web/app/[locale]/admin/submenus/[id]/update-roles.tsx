@@ -11,6 +11,7 @@ import UpdateRolesSubmenuAction, {
   type IUpdateRolesSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/update-roles-submenu-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
     '/admin/submenus',
     'Submenus#Update Roles',
   );
+  const t = useTranslations();
 
   const updateRolesSubmenuActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Roles updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateRolesSubmenuActionMutation.reset();
@@ -68,7 +70,7 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
     <Box title={`${submenu.name} (ID. ${submenu.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Roles</label>
+          <label className="form-label">{t('common.roles')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -78,10 +80,7 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the role ID. If you haven&apos;t created a role yet,
-            please create a role first
-          </div>
+          <div className="form-text">{t('common.rolesFormText')}</div>
         </div>
 
         <div>
@@ -93,8 +92,8 @@ export default function UpdateRoles({ submenu }: { submenu: ISubmenu }) {
             className="btn btn-success"
           >
             {updateRolesSubmenuActionMutation.isPending
-              ? 'Updating'
-              : 'Update Submenu Roles'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

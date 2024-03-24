@@ -282,6 +282,8 @@
     "submenus": "Submenus",
     "submenusFormText": "Please enter the submenu id, if there is no submenu, please create a submenu first.",
     "actions": "Actions",
-    "actionsFormText": "Please enter the action id, if an action does not exist, please create one first."
+    "actionsFormText": "Please enter the action id, if an action does not exist, please create one first.",
+    "menu": "Menu",
+    "menuFormText": "Please enter the Menu ID."
   }
 }

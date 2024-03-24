@@ -9,6 +9,7 @@ import CreateSubmenuAction, {
   type ICreateSubmenuActionVariables,
 } from '@/app/[locale]/actions/submenus/create-submenu-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -25,6 +26,7 @@ export default function Create() {
     '/admin/submenus',
     'Submenus#Create',
   );
+  const t = useTranslations();
 
   const createSubmenuActionMutation = useMutation({
     mutationFn: async (variables: ICreateSubmenuActionVariables) => {
@@ -44,14 +46,14 @@ export default function Create() {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'The submenu name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
       if (!variables.link) {
         toast.current.show({
           type: 'danger',
-          message: 'The submenu link cannot be empty',
+          message: t('common.menuLinkCannotBeEmpty'),
         });
         return;
       }
@@ -61,7 +63,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createSubmenuActionMutation.reset();
@@ -84,7 +86,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -93,17 +95,16 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the submenu name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">The submenu name cannot be empty</div>
+          <div className="form-text">{t('common.nameCannotBeEmpty')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Link
+            {t('common.link')}
           </label>
           <input
             required
@@ -112,20 +113,16 @@ export default function Create() {
             name="link"
             value={form.link}
             onChange={onChangeForm}
-            placeholder="Please enter the submenu link"
             aria-describedby="link"
             minLength={1}
           />
-          <div className="form-text">The submenu link cannot be empty</div>
-          <div className="form-text">
-            The link can be either a page path or a regular access link
-          </div>
+          <div className="form-text">{t('common.menuLinkFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Sort
+            {t('common.sort')}
           </label>
           <input
             required
@@ -135,13 +132,9 @@ export default function Create() {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the submenu sort"
             aria-describedby="sort"
           />
-          <div className="form-text">
-            Please enter the sorting value for the submenu, with a minimum value
-            of 0
-          </div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
@@ -151,8 +144,8 @@ export default function Create() {
             className="btn btn-success"
           >
             {createSubmenuActionMutation.isPending
-              ? 'Creating'
-              : 'Create Submenu'}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

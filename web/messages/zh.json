@@ -280,6 +280,8 @@
     "submenus": "子菜单",
     "submenusFormText": "请输入子菜单 Id，如果还没有子菜单，请先创建一个子菜单",
     "actions": "动作",
-    "actionsFormText": "请输入动作 Id，如果还没有动作，请先创建一个动作"
+    "actionsFormText": "请输入动作 Id，如果还没有动作，请先创建一个动作",
+    "menu": "菜单",
+    "menuFormText": "请输入菜单 Id"
   }
 }

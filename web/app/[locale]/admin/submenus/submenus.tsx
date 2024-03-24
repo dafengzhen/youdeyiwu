@@ -2,16 +2,18 @@
 
 import Box from '@/app/[locale]/admin/common/box';
 import Link from 'next/link';
-import { MouseEvent, useContext, useState } from 'react';
+import { type MouseEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useRouter } from 'next/navigation';
 import Nodata from '@/app/[locale]/common/nodata';
-import { ISubmenu } from '@/app/[locale]/interfaces/menus';
+import type { ISubmenu } from '@/app/[locale]/interfaces/menus';
+import { useTranslations } from 'next-intl';
 
 export default function Submenus({ data }: { data: ISubmenu[] }) {
   const { toast } = useContext(GlobalContext);
   const router = useRouter();
   const [content, setContent] = useState<ISubmenu[]>(data);
+  const t = useTranslations();
 
   function onClickLink(url: string, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
@@ -30,7 +32,7 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Submenu
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -41,10 +43,10 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Link</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.link')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -52,15 +54,15 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
+                  <td>{item.sort}</td>
                   <td>{item.name}</td>
                   <td>{item.link}</td>
-                  <td>{item.sort}</td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -70,7 +72,7 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
                             className="dropdown-item"
                             href={`/admin/submenus/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -84,7 +86,7 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
                             className="dropdown-item"
                             href={`/admin/submenus/${item.id}?type=roles`}
                           >
-                            Update Roles
+                            {t('common.updateRoles')}
                           </Link>
                         </li>
                         <li>
@@ -101,7 +103,7 @@ export default function Submenus({ data }: { data: ISubmenu[] }) {
                             className="dropdown-item text-danger"
                             href={`/admin/submenus/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>
