@@ -291,6 +291,18 @@
     "thereAreNoOptionsAvailable": "没有可用的选项",
     "actionAliasFormText": "为这个动作设置一个名称",
     "submenu": "子菜单",
-    "submenuFormText": "请输入子菜单 Id"
+    "submenuFormText": "请输入子菜单 Id",
+    "config": "配置",
+    "secret": "密钥",
+    "generateRandomSecretFormText": "新密钥已生成，点击更新按钮后生效",
+    "secretFormText": "如果需要生成新密钥，请点击按钮生成，不支持手动输入",
+    "secretFormText2": "请注意，更改当前的密钥意味着，之前的令牌就会失效，用户则需要重新登录",
+    "secretFormText3": "密钥要妥善保管，请勿泄露，以避免安全问题",
+    "generating": "生成中",
+    "generateRandomKey": "生成随机密钥",
+    "pointEnableFormText": "请选择是否启用积分系统",
+    "startingPoints": "初始积分",
+    "startingPointsFormText": "默认初始积分数为 100，或者你可以自定义",
+    "enable": "启用"
   }
 }

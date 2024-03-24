@@ -11,6 +11,7 @@ import UpdateJwtConfigAction, {
 } from '@/app/[locale]/actions/configs/jwt/update-jwt-config-action';
 import type { IJwtConfig } from '@/app/[locale]/interfaces/configs';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function JwtConfig({ config }: { config: IJwtConfig }) {
   const { toast } = useContext(GlobalContext);
@@ -23,6 +24,7 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
     '/admin/configs',
     'JwtConfigs#Update',
   );
+  const t = useTranslations();
 
   const generateRandomSecretJwtConfigActionMutation = useMutation({
     mutationFn: async () => {
@@ -57,7 +59,7 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateJwtConfigActionMutation.reset();
@@ -84,8 +86,7 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
 
       toast.current.show({
         type: 'success',
-        message:
-          'The new key has been generated. Save and apply for it to take effect',
+        message: t('common.generateRandomSecretFormText'),
       });
     } catch (e: any) {
       generateRandomSecretJwtConfigActionMutation.reset();
@@ -100,10 +101,7 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="text-danger">*</span>
-            Secret
-          </label>
+          <label className="form-label">{t('common.secret')}</label>
           <div className="input-group">
             <input
               required
@@ -113,7 +111,6 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
               name="secret"
               value={form.secret}
               onChange={onChangeForm}
-              placeholder="The JWT secret cannot be empty"
               aria-describedby="secret"
             />
             <button
@@ -123,22 +120,13 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
               type="button"
             >
               {generateRandomSecretJwtConfigActionMutation.isPending
-                ? 'Generating'
-                : 'Generate random secret'}
+                ? t('common.generating')
+                : t('common.generateRandomKey')}
             </button>
           </div>
-          <div className="form-text">
-            If you want to generate a new secret, please click the button to
-            generate. Manual input is not supported at the moment
-          </div>
-          <div className="form-text">
-            Attention, changing the current JWT secret means that previously
-            issued tokens will become invalid, and users will need to log in
-            again
-          </div>
-          <div className="form-text">
-            Do not disclose it to avoid security issues
-          </div>
+          <div className="form-text">{t('common.secretFormText')}</div>
+          <div className="form-text">{t('common.secretFormText2')}</div>
+          <div className="form-text">{t('common.secretFormText3')}</div>
         </div>
 
         <div>
@@ -150,8 +138,8 @@ export default function JwtConfig({ config }: { config: IJwtConfig }) {
             className="btn btn-success"
           >
             {updateJwtConfigActionMutation.isPending
-              ? 'Updating'
-              : 'Update Config'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

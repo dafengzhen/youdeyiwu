@@ -10,6 +10,7 @@ import UpdatePointConfigAction, {
   type IUpdatePointActionVariables,
 } from '@/app/[locale]/actions/configs/point/update-point-config-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function PointConfig({ config }: { config: IPointConfig }) {
   const { toast } = useContext(GlobalContext);
@@ -24,6 +25,7 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
     '/admin/configs',
     'PointConfigs#Update',
   );
+  const t = useTranslations();
 
   const updatePointConfigActionMutation = useMutation({
     mutationFn: async (variables: IUpdatePointActionVariables) => {
@@ -44,7 +46,7 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updatePointConfigActionMutation.reset();
@@ -72,10 +74,7 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="text-danger">*</span>
-            Enable
-          </label>
+          <label className="form-label">{t('common.enable')}</label>
           <select
             required
             name="enable"
@@ -87,16 +86,11 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
             <option value="true">true</option>
             <option value="false">false</option>
           </select>
-          <div className="form-text">
-            Please select whether to enable a points system
-          </div>
+          <div className="form-text">{t('common.pointEnableFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger">*</span>
-            InitPoints
-          </label>
+          <label className="form-label">{t('common.startingPoints')}</label>
           <input
             required
             type="number"
@@ -104,12 +98,9 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
             name="initPoints"
             value={form.initPoints}
             onChange={onChangeForm}
-            placeholder="Please enter the initial points for the user"
             aria-describedby="initPoints"
           />
-          <div className="form-text">
-            The default initial points are set to 100, but you can customize it
-          </div>
+          <div className="form-text">{t('common.startingPointsFormText')}</div>
         </div>
 
         <div>
@@ -121,8 +112,8 @@ export default function PointConfig({ config }: { config: IPointConfig }) {
             className="btn btn-success"
           >
             {updatePointConfigActionMutation.isPending
-              ? 'Updating'
-              : 'Update Config'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
