@@ -247,6 +247,14 @@
     "updatePostTags": "更新帖子标签",
     "updatePostContentLink": "更新帖子内容链接",
     "updatePostCoverLink": "更新帖子封面链接",
-    "updatePostSection": "更新帖子所属版块"
+    "updatePostSection": "更新帖子所属版块",
+    "updateRoles": "更新角色",
+    "accountNonExpired": "账号未过期",
+    "credentialsNonExpired": "凭证未过期",
+    "accountNonLocked": "账号未锁定",
+    "enabled": "启用",
+    "noMoreData": "没有更多数据了",
+    "roles": "角色",
+    "rolesFormText": "请输入角色 Id，如果还没有角色，请先创建一个角色"
   }
 }

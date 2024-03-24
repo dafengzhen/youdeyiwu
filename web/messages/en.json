@@ -249,6 +249,14 @@
     "updatePostTags": "Update post tags",
     "updatePostContentLink": "Update post content link",
     "updatePostCoverLink": "Update post cover link",
-    "updatePostSection": "Update post section"
+    "updatePostSection": "Update post section",
+    "updateRoles": "Update Roles",
+    "accountNonExpired": "Account Non Expired",
+    "credentialsNonExpired": "Credentials Non Expired",
+    "accountNonLocked": "Account Non Locked",
+    "enabled": "Enabled",
+    "noMoreData": "No more data",
+    "roles": "Roles",
+    "rolesFormText": "Please enter your role id, if you don't have a role, please create one first."
   }
 }

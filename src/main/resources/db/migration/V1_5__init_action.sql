@@ -26,7 +26,6 @@ VALUES (1, null, now(), false, null, now(), 0, 'Section Create', 'Sections#Creat
        (25, null, now(), false, null, now(), 0, 'Message Create', 'Messages#Create', 0, 9, null),
        (26, null, now(), false, null, now(), 0, 'Point Rule Update', 'Point Rules#Update', 0, 10, null),
        (27, null, now(), false, null, now(), 0, 'Point Permission Update', 'Point Permissions#Update', 0, 11, null),
-       (28, null, now(), false, null, now(), 0, 'Users Create', 'Users#Create', 0, 12, null),
        (29, null, now(), false, null, now(), 0, 'Users Update States', 'Users#Update States', 0, 12, null),
        (30, null, now(), false, null, now(), 0, 'Users Update Roles', 'Users#Update Roles', 0, 12, null),
        (31, null, now(), false, null, now(), 0, 'Users Delete', 'Users#Delete', 0, 12, null),

@@ -10,6 +10,7 @@ import UpdateStatesUserAction, {
   type IUpdateStatesUserActionVariables,
 } from '@/app/[locale]/actions/users/update-states-user-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateStates({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
@@ -28,6 +29,7 @@ export default function UpdateStates({ user }: { user: IUser }) {
     '/admin/users',
     'Users#Update States',
   );
+  const t = useTranslations();
 
   const updateStatesUserActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -51,7 +53,7 @@ export default function UpdateStates({ user }: { user: IUser }) {
 
       toast.current.show({
         type: 'success',
-        message: 'States updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateStatesUserActionMutation.reset();
@@ -82,7 +84,7 @@ export default function UpdateStates({ user }: { user: IUser }) {
     <Box title={`${getUserAlias(user)} (ID. ${user.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">States</label>
+          <label className="form-label">{t('common.states')}</label>
           <div className="form-control vstack gap-4 user-select-none">
             <div className="form-check form-switch">
               <input
@@ -97,7 +99,7 @@ export default function UpdateStates({ user }: { user: IUser }) {
                 className="form-check-label cursor-pointer"
                 onClick={() => onClickLabel('accountNonExpired')}
               >
-                Account Non Expired
+                {t('common.accountNonExpired')}
               </label>
             </div>
             <div className="form-check form-switch">
@@ -113,7 +115,7 @@ export default function UpdateStates({ user }: { user: IUser }) {
                 className="form-check-label cursor-pointer"
                 onClick={() => onClickLabel('accountNonLocked')}
               >
-                Account Non Locked
+                {t('common.accountNonLocked')}
               </label>
             </div>
             <div className="form-check form-switch">
@@ -129,7 +131,8 @@ export default function UpdateStates({ user }: { user: IUser }) {
                 className="form-check-label cursor-pointer"
                 onClick={() => onClickLabel('credentialsNonExpired')}
               >
-                Credentials Non Expired
+                {' '}
+                {t('common.credentialsNonExpired')}
               </label>
             </div>
             <div className="form-check form-switch">
@@ -145,11 +148,10 @@ export default function UpdateStates({ user }: { user: IUser }) {
                 className="form-check-label cursor-pointer"
                 onClick={() => onClickLabel('enabled')}
               >
-                Enabled
+                {t('common.enabled')}
               </label>
             </div>
           </div>
-          <div className="form-text">Set user account states</div>
         </div>
 
         <div>
@@ -161,8 +163,8 @@ export default function UpdateStates({ user }: { user: IUser }) {
             className="btn btn-success"
           >
             {updateStatesUserActionMutation.isPending
-              ? 'Updating'
-              : 'Update User States'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

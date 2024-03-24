@@ -305,6 +305,8 @@ public class UserServiceImpl implements UserService {
     if (Objects.nonNull(dto.enabled())) {
       userEntity.setEnabled(Boolean.TRUE.equals(dto.enabled()));
     }
+
+    userCache.removeUserFromCache(String.valueOf(userEntity.getId()));
   }
 
   @Override

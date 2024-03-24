@@ -10,7 +10,7 @@ VALUES (1, null, now(), false, null, now(), 0, '/admin/sections', 'Dashboard', 2
        (9, null, now(), false, null, now(), 0, '/admin/messages', 'Dashboard', 2, 9),
        (10, null, now(), false, null, now(), 0, '/admin/messages?type=add', 'Create Message', 1, 9),
        (11, null, now(), false, null, now(), 0, '/admin/users', 'Dashboard', 2, 12),
-       (12, null, now(), false, null, now(), 0, '/admin/users?type=add', 'Create User', 1, 12),
+       (12, null, now(), false, null, now(), 0, '/register', 'Create User', 1, 12),
        (13, null, now(), false, null, now(), 0, '/admin/role', 'Dashboard', 2, 13),
        (14, null, now(), false, null, now(), 0, '/admin/roles?type=add', 'Create Role', 1, 13),
        (15, null, now(), false, null, now(), 0, '/admin/permissions', 'Dashboard', 2, 14),

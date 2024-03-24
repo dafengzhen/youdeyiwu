@@ -11,11 +11,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/[locale]/common/nodata';
 import type { IUser } from '@/app/[locale]/interfaces/users';
 import QueryAllUserAction from '@/app/[locale]/actions/users/query-all-user-action';
+import { useTranslations } from 'next-intl';
 
 export default function Users({ data }: { data: IPage<IUser[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IUser[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const usersInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/users', 'infinite'],
@@ -95,20 +97,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
 
   return (
     <Box
-      header={
-        <div className="d-flex align-items-center justify-content-between gap-4">
-          <div></div>
-          <div>
-            <Link
-              href="/register"
-              type="button"
-              className="btn btn-sm btn-primary"
-            >
-              Create User
-            </Link>
-          </div>
-        </div>
-      }
+      hideHeader={true}
       footer={
         <LoadMore
           className="w-100"
@@ -122,13 +111,13 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Alias</th>
-              <th scope="col">Username</th>
-              <th scope="col">Account Non Expired</th>
-              <th scope="col">Credentials Non Expired</th>
-              <th scope="col">Account Non Locked</th>
-              <th scope="col">Enabled</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.alias')}</th>
+              <th scope="col">{t('common.username')}</th>
+              <th scope="col">{t('common.accountNonExpired')}</th>
+              <th scope="col">{t('common.credentialsNonExpired')}</th>
+              <th scope="col">{t('common.accountNonLocked')}</th>
+              <th scope="col">{t('common.enabled')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -147,7 +136,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -160,7 +149,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                             className="dropdown-item"
                             href={`/admin/users/${item.id}?type=states`}
                           >
-                            Update States
+                            {t('common.updateStates')}
                           </Link>
                         </li>
                         <li>
@@ -174,7 +163,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                             className="dropdown-item"
                             href={`/admin/users/${item.id}?type=roles`}
                           >
-                            Update Roles
+                            {t('common.updateRoles')}
                           </Link>
                         </li>
                         <li>
@@ -191,7 +180,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/users/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

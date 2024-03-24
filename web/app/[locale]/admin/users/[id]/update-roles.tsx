@@ -11,6 +11,7 @@ import UpdateRolesUserAction, {
   type IUpdateRolesUserActionVariables,
 } from '@/app/[locale]/actions/users/update-roles-user-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateRoles({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
     '/admin/users',
     'Users#Update Roles',
   );
+  const t = useTranslations();
 
   const updateRolesUserGroupActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Roles updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateRolesUserGroupActionMutation.reset();
@@ -68,7 +70,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
     <Box title={`${getUserAlias(user)} (ID. ${user.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Roles</label>
+          <label className="form-label">{t('common.roles')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -78,10 +80,7 @@ export default function UpdateRoles({ user }: { user: IUser }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the role ID. If you haven&apos;t created a role yet,
-            please create a role first
-          </div>
+          <div className="form-text">{t('common.rolesFormText')}</div>
         </div>
 
         <div>
@@ -93,8 +92,8 @@ export default function UpdateRoles({ user }: { user: IUser }) {
             className="btn btn-success"
           >
             {updateRolesUserGroupActionMutation.isPending
-              ? 'Updating'
-              : 'Update User Roles'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
