@@ -8,6 +8,7 @@ import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IPermission } from '@/app/[locale]/interfaces/permissions';
 import DeletePermissionAction from '@/app/[locale]/actions/permissions/delete-permission-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Delete({ permission }: { permission: IPermission }) {
   const { toast } = useContext(GlobalContext);
@@ -15,6 +16,7 @@ export default function Delete({ permission }: { permission: IPermission }) {
     '/admin/permissions',
     'Permissions#Delete',
   );
+  const t = useTranslations();
 
   const deletePermissionActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -35,7 +37,7 @@ export default function Delete({ permission }: { permission: IPermission }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Deleted Successfully, Refresh after 2 seconds',
+        message: t('common.successfullyDeleted'),
       });
 
       setTimeout(() => {
@@ -57,26 +59,12 @@ export default function Delete({ permission }: { permission: IPermission }) {
     <Box>
       <div className="alert alert-danger" role="alert">
         <h4 className="alert-heading">
-          <span className="me-2 text-danger">Delete</span>
           <span className="text-danger">
             {permission.name}&nbsp;(ID. {permission.id})
           </span>
         </h4>
-        <ul className="list-unstyled fw-medium">
-          <li>
-            Irreversible deletion! All data related to the permission will be
-            deleted.
-          </li>
-          <li>
-            Please proceed with caution when performing deletion, as what you
-            may actually want to do is an update operation.
-          </li>
-        </ul>
         <hr />
-        <p className="mb-0">
-          After pressing the delete button, the processing will begin. Please
-          wait patiently for the deletion to be completed.
-        </p>
+        <p className="mb-0">{t('common.deleteFormText')}</p>
         <div className="mt-4">
           <button
             onClick={onClickDelete}
@@ -86,7 +74,9 @@ export default function Delete({ permission }: { permission: IPermission }) {
             type="button"
             className="btn btn-sm btn-danger"
           >
-            {deletePermissionActionMutation.isPending ? 'Deleting' : 'Delete'}
+            {deletePermissionActionMutation.isPending
+              ? t('common.deleting')
+              : t('common.delete')}
           </button>
           <AccessDeniedAlert />
         </div>

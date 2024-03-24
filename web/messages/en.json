@@ -276,6 +276,12 @@
     "matchers": "Matchers",
     "matchersFormText": "The Permission ID to be added must already exist.",
     "del": "Del",
-    "add": "Add"
+    "add": "Add",
+    "menuLinkCannotBeEmpty": "Menu link cannot be empty",
+    "menuLinkFormText": "Menu links can be page paths or regular access links.",
+    "submenus": "Submenus",
+    "submenusFormText": "Please enter the submenu id, if there is no submenu, please create a submenu first.",
+    "actions": "Actions",
+    "actionsFormText": "Please enter the action id, if an action does not exist, please create one first."
   }
 }

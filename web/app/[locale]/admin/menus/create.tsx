@@ -9,6 +9,7 @@ import CreateMenuAction, {
   type ICreateMenuActionVariables,
 } from '@/app/[locale]/actions/menus/create-menu-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -25,6 +26,7 @@ export default function Create() {
     '/admin/menus',
     'Menus#Create',
   );
+  const t = useTranslations();
 
   const createMenuActionMutation = useMutation({
     mutationFn: async (variables: ICreateMenuActionVariables) => {
@@ -44,14 +46,14 @@ export default function Create() {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'The menu name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
       if (!variables.link) {
         toast.current.show({
           type: 'danger',
-          message: 'The menu link cannot be empty',
+          message: t('common.menuLinkCannotBeEmpty'),
         });
         return;
       }
@@ -61,7 +63,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createMenuActionMutation.reset();
@@ -84,7 +86,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -93,17 +95,16 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the menu name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">The menu name cannot be empty</div>
+          <div className="form-text">{t('common.nameCannotBeEmpty')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Link
+            {t('common.link')}
           </label>
           <input
             required
@@ -112,20 +113,16 @@ export default function Create() {
             name="link"
             value={form.link}
             onChange={onChangeForm}
-            placeholder="Please enter the menu link"
             aria-describedby="link"
             minLength={1}
           />
-          <div className="form-text">The menu link cannot be empty</div>
-          <div className="form-text">
-            The link can be either a page path or a regular access link
-          </div>
+          <div className="form-text">{t('common.menuLinkFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Sort
+            {t('common.sort')}
           </label>
           <input
             required
@@ -135,13 +132,9 @@ export default function Create() {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the menu sort"
             aria-describedby="sort"
           />
-          <div className="form-text">
-            Please enter the sorting value for the menu, with a minimum value of
-            0
-          </div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
@@ -150,7 +143,9 @@ export default function Create() {
             type="submit"
             className="btn btn-success"
           >
-            {createMenuActionMutation.isPending ? 'Creating' : 'Create Menu'}
+            {createMenuActionMutation.isPending
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

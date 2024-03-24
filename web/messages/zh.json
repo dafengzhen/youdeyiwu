@@ -274,6 +274,12 @@
     "matchers": "匹配",
     "matchersFormText": "要添加的权限 ID，必须是已经存在的权限",
     "del": "删除",
-    "add": "添加"
+    "add": "添加",
+    "menuLinkCannotBeEmpty": "菜单链接不能为空",
+    "menuLinkFormText": "菜单链接可以是页面路径或常规访问链接",
+    "submenus": "子菜单",
+    "submenusFormText": "请输入子菜单 Id，如果还没有子菜单，请先创建一个子菜单",
+    "actions": "动作",
+    "actionsFormText": "请输入动作 Id，如果还没有动作，请先创建一个动作"
   }
 }
