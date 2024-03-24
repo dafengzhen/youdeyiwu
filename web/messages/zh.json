@@ -200,6 +200,21 @@
     "estimatedCompletionTimeFormText": "审核的预计完成日期不应该比当前日期早，请合理评估预计完成日期！",
     "estimatedCompletionTime": "预计完成审核时间",
     "updateState": "更新状态",
-    "failedUpdate": "更新失败"
+    "failedUpdate": "更新失败",
+    "messagesNote": "后台消息列表只会展示全局消息，不会展示私有消息和用户消息",
+    "sender": "发送者",
+    "details": "详情",
+    "messageOverviewFormText": "概述不能为空",
+    "link": "链接",
+    "links": "多个链接",
+    "linkFormText": "链接可以是绝对路径或者相对路径",
+    "linksFormText": "格式为 JSON，键为名称，值为链接.",
+    "example": "示例",
+    "range": "范围",
+    "rangeFormText": "请选择消息范围",
+    "receiver": "接收者",
+    "receiverFormText": "请输入接收者用户的 Id",
+    "messageContentFormText": "自定义的消息属性，格式为 JSON",
+    "invalidJsonFormat": "无效的 JSON 格式"
   }
 }

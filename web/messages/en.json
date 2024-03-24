@@ -202,6 +202,21 @@
     "estimatedCompletionTimeFormText": "The expected completion date of the audit should not be earlier than the current date, so please make a reasonable estimate of the expected completion date!",
     "estimatedCompletionTime": "Estimated completion time",
     "updateState": "Update State",
-    "failedUpdate": "Failed update"
+    "failedUpdate": "Failed update",
+    "messagesNote": "The backend message list will only show global messages, not private messages or user messages.",
+    "sender": "Sender",
+    "details": "Details",
+    "messageOverviewFormText": "Overview cannot be empty",
+    "link": "Link",
+    "links": "Links",
+    "linkFormText": "Links can be absolute or relative paths.",
+    "linksFormText": "Formatted as JSON, keys are names, values are links.",
+    "example": "Example",
+    "range": "Range",
+    "rangeFormText": "Please select the message range.",
+    "receiver": "Receiver",
+    "receiverFormText": "Please enter the recipient's user ID",
+    "messageContentFormText": "User-defined message properties in JSON format.",
+    "invalidJsonFormat": "Invalid JSON format"
   }
 }

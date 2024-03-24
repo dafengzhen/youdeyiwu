@@ -2,12 +2,14 @@
 
 import Box from '@/app/[locale]/admin/common/box';
 import { useState } from 'react';
-import { IGlobalMessage } from '@/app/[locale]/interfaces/messages';
+import type { IGlobalMessage } from '@/app/[locale]/interfaces/messages';
+import { useTranslations } from 'next-intl';
 
 export default function Details({ message }: { message: IGlobalMessage }) {
   const [form, setForm] = useState<{
     name: string;
     overview: string;
+    link: string;
     links: string;
     content: string;
     sort: number;
@@ -15,20 +17,19 @@ export default function Details({ message }: { message: IGlobalMessage }) {
   }>({
     name: message.name ?? '',
     overview: message.overview ?? '',
+    link: message.link ? message.link : '',
     links: message.links ? JSON.stringify(message.links) : '',
     content: message.content ? JSON.stringify(message.content) : '',
     sort: message.sort ?? 0,
     sender: message.sender ? message.sender.id + '' : '',
   });
+  const t = useTranslations();
 
   return (
     <Box>
       <form className="vstack gap-4">
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Name
-          </label>
+          <label className="form-label">{t('common.name')}</label>
           <input
             readOnly
             type="text"
@@ -40,10 +41,7 @@ export default function Details({ message }: { message: IGlobalMessage }) {
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Overview
-          </label>
+          <label className="form-label">{t('common.overview')}</label>
           <textarea
             readOnly
             rows={2}
@@ -55,10 +53,7 @@ export default function Details({ message }: { message: IGlobalMessage }) {
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Range
-          </label>
+          <label className="form-label">{t('common.range')}</label>
           <select
             name="messageRange"
             className="form-select border-0 border-start"
@@ -70,10 +65,7 @@ export default function Details({ message }: { message: IGlobalMessage }) {
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Sort
-          </label>
+          <label className="form-label">{t('common.sort')}</label>
           <input
             readOnly
             type="number"
@@ -85,10 +77,7 @@ export default function Details({ message }: { message: IGlobalMessage }) {
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Sender
-          </label>
+          <label className="form-label">{t('common.sender')}</label>
           <input
             readOnly
             type="text"
@@ -100,7 +89,19 @@ export default function Details({ message }: { message: IGlobalMessage }) {
         </div>
 
         <div>
-          <label className="form-label">Links</label>
+          <label className="form-label">{t('common.link')}</label>
+          <textarea
+            readOnly
+            rows={1}
+            className="form-control border-0 border-start"
+            name="link"
+            defaultValue={form.link}
+            aria-describedby="link"
+          />
+        </div>
+
+        <div>
+          <label className="form-label">{t('common.links')}</label>
           <textarea
             readOnly
             rows={3}
@@ -112,7 +113,7 @@ export default function Details({ message }: { message: IGlobalMessage }) {
         </div>
 
         <div>
-          <label className="form-label">Content</label>
+          <label className="form-label">{t('common.content')}</label>
           <textarea
             readOnly
             rows={3}

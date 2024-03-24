@@ -13,11 +13,11 @@ import CreateGlobalMessageAction, {
   type ICreateGlobalMessageActionVariables,
 } from '@/app/[locale]/actions/messages/create-global-message-action';
 import type { TMessageRange } from '@/app/[locale]/interfaces/messages';
-import Link from 'next/link';
 import CreateMessageAction, {
   type ICreateMessageActionVariables,
 } from '@/app/[locale]/actions/messages/create-message-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -44,6 +44,7 @@ export default function Create() {
     '/admin/messages',
     'Messages#Create',
   );
+  const t = useTranslations();
 
   const createGlobalMessageActionMutation = useMutation({
     mutationFn: async (variables: ICreateGlobalMessageActionVariables) => {
@@ -73,14 +74,14 @@ export default function Create() {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'The message name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
       if (!variables.overview) {
         toast.current.show({
           type: 'danger',
-          message: 'The message overview cannot be empty',
+          message: t('common.messageOverviewFormText'),
         });
         return;
       }
@@ -91,8 +92,7 @@ export default function Create() {
         } else {
           toast.current.show({
             type: 'danger',
-            message:
-              'Please enter the attributes of the message in JSON format',
+            message: t('common.invalidJsonFormat'),
           });
           return;
         }
@@ -104,8 +104,7 @@ export default function Create() {
         } else {
           toast.current.show({
             type: 'danger',
-            message:
-              'Please enter the attributes of the message in JSON format',
+            message: t('common.invalidJsonFormat'),
           });
           return;
         }
@@ -127,7 +126,7 @@ export default function Create() {
         if (!variables.receiver || nonNum(variables.receiver)) {
           toast.current.show({
             type: 'danger',
-            message: 'Please enter the message receiver ID',
+            message: t('common.receiverFormText'),
           });
           return;
         }
@@ -159,7 +158,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       const messageRange = form.messageRange;
@@ -190,7 +189,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -199,17 +198,16 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the message name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">The message name cannot be empty</div>
+          <div className="form-text">{t('common.nameCannotBeEmpty')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Overview
+            {t('common.overview')}
           </label>
           <textarea
             required
@@ -218,53 +216,38 @@ export default function Create() {
             name="overview"
             value={form.overview}
             onChange={onChangeForm}
-            placeholder="Please enter the message overview"
             aria-describedby="overview"
             minLength={1}
           />
-          <div className="form-text">The message overview cannot be empty</div>
+          <div className="form-text">{t('common.messageOverviewFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Link</label>
+          <label className="form-label">{t('common.link')}</label>
           <input
             type="text"
             className="form-control"
             name="link"
             value={form.link}
             onChange={onChangeForm}
-            placeholder="Please enter the message link"
             aria-describedby="link"
           />
-          <div className="form-text">Can be an absolute or relative path</div>
+          <div className="form-text">{t('common.linkFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Links</label>
+          <label className="form-label">{t('common.links')}</label>
           <textarea
             rows={3}
             className="form-control"
             name="links"
             value={form.links}
             onChange={onChangeForm}
-            placeholder="Please enter the message links"
             aria-describedby="links"
           />
+          <div className="form-text">{t('common.linksFormText')}</div>
           <div className="form-text">
-            Please enter the attributes of the message in
-            <Link
-              target="_blank"
-              rel="noreferrer"
-              className="link-dark"
-              href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON"
-            >
-              &nbsp;JSON&nbsp;
-            </Link>
-            format. The object key is the link name, and the value is the
-            specific link
-          </div>
-          <div className="form-text">
-            Example:&nbsp;
+            {t('common.example')}:&nbsp;
             {
               '{"detail1": "https://www.xxx.com/detail/1", "detail2": "/posts/detail/2"}'
             }
@@ -274,7 +257,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Range
+            {t('common.range')}
           </label>
           <select
             required
@@ -287,14 +270,14 @@ export default function Create() {
             <option value="ALL_USER">ALL_USER</option>
             <option value="USER">USER</option>
           </select>
-          <div className="form-text">Please select a specific range</div>
+          <div className="form-text"> {t('common.rangeFormText')}</div>
         </div>
 
         {form.messageRange === 'ALL_USER' && (
           <div>
             <label className="form-label">
               <span className="text-danger fw-bold">*</span>
-              Sort
+              {t('common.sort')}
             </label>
             <input
               required
@@ -304,13 +287,9 @@ export default function Create() {
               name="sort"
               value={form.sort}
               onChange={onChangeForm}
-              placeholder="Please enter the message sort"
               aria-describedby="sort"
             />
-            <div className="form-text">
-              Please enter the sorting value for the message, with a minimum
-              value of 0
-            </div>
+            <div className="form-text">{t('common.minimumValueIs0')}</div>
           </div>
         )}
 
@@ -318,7 +297,7 @@ export default function Create() {
           <div>
             <label className="form-label">
               <span className="text-danger fw-bold">*</span>
-              Receiver
+              {t('common.receiver')}
             </label>
             <input
               required
@@ -327,42 +306,27 @@ export default function Create() {
               name="receiver"
               value={form.receiver}
               onChange={onChangeForm}
-              placeholder="Please enter the message receiver ID"
               aria-describedby="receiver"
               minLength={1}
             />
-            <div className="form-text">
-              Please enter the recipient&apos;s ID, the user ID cannot be empty
-            </div>
+            <div className="form-text">{t('common.receiverFormText')}</div>
           </div>
         )}
 
         <div>
-          <label className="form-label">Content</label>
+          <label className="form-label">{t('common.content')}</label>
           <textarea
             rows={3}
             className="form-control"
             name="content"
             value={form.content}
             onChange={onChangeForm}
-            placeholder="Please enter the message content"
             aria-describedby="content"
           />
+          <div className="form-text">{t('common.messageContentFormText')}</div>
           <div className="form-text">
-            Please enter the attributes of the message in
-            <Link
-              rel="noreferrer"
-              target="_blank"
-              className="link-dark"
-              href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON"
-            >
-              &nbsp;JSON&nbsp;
-            </Link>
-            format. You can store some custom property values, which may be
-            useful for further development
-          </div>
-          <div className="form-text">
-            Example: {'{"businessId": "xxx", "reason": "test send message"}'}
+            {t('common.example')}:&nbsp;
+            {'{"businessId": "xxx", "reason": "test send message"}'}
           </div>
         </div>
 
@@ -378,8 +342,8 @@ export default function Create() {
           >
             {createGlobalMessageActionMutation.isPending ||
             createMessageActionMutation.isPending
-              ? 'Creating'
-              : 'Create Message'}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

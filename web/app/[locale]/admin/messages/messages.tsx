@@ -12,11 +12,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import QueryAllGlobalMessageAction from '@/app/[locale]/actions/messages/query-all-global-message-action';
 import { getUserAlias } from '@/app/[locale]/common/client';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
   const { toast } = useContext(GlobalContext);
   const router = useRouter();
   const [content, setContent] = useState<IGlobalMessage[]>(data.content);
+  const t = useTranslations();
 
   const globalMessagesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/messages', '/global-messages', 'infinite'],
@@ -107,7 +109,7 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Message
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -122,18 +124,15 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
     >
       <div className="table-responsive">
         <table className="table align-middle table-striped">
-          <caption className="small">
-            The backstage message list will only display global messages and
-            will not show private messages, including individual user messages
-          </caption>
+          <caption className="small">{t('common.messagesNote')}</caption>
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Overview</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Sender</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.overview')}</th>
+              <th scope="col">{t('common.sender')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -141,9 +140,9 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
+                  <td>{item.sort}</td>
                   <td>{item.name}</td>
                   <td>{item.overview}</td>
-                  <td>{item.sort}</td>
                   <td>{getUserAlias(item.sender)}</td>
                   <td>
                     <div
@@ -163,7 +162,7 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
                             className="dropdown-item"
                             href={`/admin/messages/global-messages/${item.id}?type=details`}
                           >
-                            Details
+                            {t('common.details')}
                           </Link>
                         </li>
                       </ul>
