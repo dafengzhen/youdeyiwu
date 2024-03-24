@@ -11,11 +11,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/[locale]/common/nodata';
 import type { ITag } from '@/app/[locale]/interfaces/tags';
 import QueryAllTagAction from '@/app/[locale]/actions/tags/query-all-tag-action';
+import { useTranslations } from 'next-intl';
 
 export default function Tags({ data }: { data: IPage<ITag[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<ITag[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const tagsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/tags', 'infinite'],
@@ -104,7 +106,7 @@ export default function Tags({ data }: { data: IPage<ITag[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Tag
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -122,9 +124,9 @@ export default function Tags({ data }: { data: IPage<ITag[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -132,14 +134,15 @@ export default function Tags({ data }: { data: IPage<ITag[]> }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
-                  <td>{item.name}</td>
                   <td>{item.sort}</td>
+                  <td>{item.name}</td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
+
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -149,7 +152,7 @@ export default function Tags({ data }: { data: IPage<ITag[]> }) {
                             className="dropdown-item"
                             href={`/admin/tags/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -166,7 +169,7 @@ export default function Tags({ data }: { data: IPage<ITag[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/tags/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

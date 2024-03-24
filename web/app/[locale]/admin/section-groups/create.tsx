@@ -49,7 +49,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: t('common.successfulUpdate'),
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createSectionGroupActionMutation.reset();
