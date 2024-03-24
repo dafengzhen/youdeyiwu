@@ -14,24 +14,7 @@ import SaveRulesPointsAction, {
   type ISaveRulesPointsActionVariables,
 } from '@/app/[locale]/actions/points/rules/save-rules-points-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
-
-const tips = {
-  LIKE_POST: 'earning points for liking a post',
-  LIKE_COMMENT: 'earning points for liking a comment',
-  LIKE_REPLY: 'earning points for liking a reply',
-  COMMENT_POST: 'earning points for commenting on a post',
-  REPLY_POST: 'earning points for replying to a post',
-  FOLLOW_POST: 'earning points for following a post',
-  FAVORITE_POST: 'earning points for marking a post as a favorite',
-  DISLIKE_POST: 'earning points for disliking a post',
-  DISLIKE_COMMENT: 'earning points for disliking a comment',
-  DISLIKE_REPLY: 'earning points for disliking a reply',
-  POST_APPROVED: 'earning points for having a post approved',
-  POST_NOT_APPROVED: 'earning points for having a post not approved',
-  POST_PENDING_REVIEW: 'earning points for a post pending review',
-  VISIT_POST: 'earning points for visiting a post',
-  CREATE_POST: 'earning points for creating a new post',
-};
+import { useTranslations } from 'next-intl';
 
 const rules = Object.keys(RuleNameEnum).map((item) => {
   return {
@@ -42,6 +25,24 @@ const rules = Object.keys(RuleNameEnum).map((item) => {
 }) as IPointRule[];
 
 export default function PointRules({ data }: { data: IPointRule[] }) {
+  const t = useTranslations();
+  const tips = {
+    LIKE_POST: t('common.likingPosts'),
+    LIKE_COMMENT: t('common.likePostComments'),
+    LIKE_REPLY: t('common.likingRepliesToPosts'),
+    COMMENT_POST: t('common.commentOnAPost'),
+    REPLY_POST: t('common.replyToAPost'),
+    // FOLLOW_POST: t('common.followAPost'),
+    FAVORITE_POST: t('common.favouritePosts'),
+    // DISLIKE_POST: t('common.dontLikeThisPost'),
+    // DISLIKE_COMMENT: t('common.dontLikeThisPostComment'),
+    // DISLIKE_REPLY: t('common.dontLikeThisPostReply'),
+    POST_APPROVED: t('common.postsApprovedForModeration'),
+    POST_NOT_APPROVED: t('common.postsNotApproved'),
+    POST_PENDING_REVIEW: t('common.postsInModeration'),
+    VISIT_POST: t('common.browsePosts'),
+    CREATE_POST: t('common.createAPost'),
+  };
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPointRule[]>(
     rules.map((item, index) => {
@@ -91,7 +92,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
       setIsUpdate(false);
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       saveRulesPointsActionMutation.reset();
@@ -120,7 +121,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                   isUpdate ? 'btn-secondary' : 'btn-primary',
                 )}
               >
-                {isUpdate ? 'Cancel Update' : 'Update'}
+                {isUpdate ? t('common.cancelUpdate') : t('common.update')}
               </button>
             </div>
 
@@ -132,7 +133,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                   type="button"
                   className="btn btn-sm btn-success"
                 >
-                  {saving ? 'Saving' : 'Save'}
+                  {saving ? t('common.saving') : t('common.save')}
                 </button>
                 <AccessDeniedAlert />
               </div>
@@ -143,22 +144,19 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
     >
       <div className="table-responsive">
         <table className="table align-middle table-striped">
-          <caption>
-            The senders or receivers can be rewarded with points, with a default
-            value of 0. In most cases, the value should be a positive number
-          </caption>
+          <caption>{t('common.ruleText')}</caption>
           <thead>
             <tr>
-              <th scope="col">Rule</th>
-              <th scope="col">InitiatorRewardPoints</th>
-              <th scope="col">ReceiverRewardPoints</th>
+              <th scope="col">{t('common.rule')}</th>
+              <th scope="col">{t('common.senderBonusPoints')}</th>
+              <th scope="col">{t('common.recipientBonusPoints')}</th>
             </tr>
           </thead>
           <tbody>
             {content.map((item) => {
               return (
                 <tr key={item.id}>
-                  <th scope="row">{item._tip}</th>
+                  <td>{item._tip}</td>
                   <td>
                     {isUpdate ? (
                       <input
@@ -184,8 +182,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                           find.initiatorRewardPoints = value;
                           setContent([...content]);
                         }}
-                        placeholder="The default value is 0, and the value should be a positive number"
-                        aria-describedby="initiatorRewardPoints"
+                        aria-describedby="senderBonusPoints"
                       />
                     ) : (
                       <>{item.initiatorRewardPoints}</>
@@ -216,8 +213,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                           find.receiverRewardPoints = value;
                           setContent([...content]);
                         }}
-                        placeholder="The default value is 0, and the value should be a positive number"
-                        aria-describedby="receiverRewardPoints"
+                        aria-describedby="recipientBonusPoints"
                       />
                     ) : (
                       <>{item.receiverRewardPoints}</>

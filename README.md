@@ -19,7 +19,7 @@ If you have any suggestions or feedback.
 
 ## Thanks
 
-Thanks to [Jetbrains](https://jb.gg/OpenSourceSupport) for support of this project.
+Thanks to [Jetbrains](https://jb.gg/OpenSourceSupport) for supporting this project with development tool licences.
 
 <img src="https://www.jetbrains.com/company/brand/img/logo1.svg" alt="jetbrains" width="64" />
 
