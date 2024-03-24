@@ -2,16 +2,18 @@
 
 import Box from '@/app/[locale]/admin/common/box';
 import Link from 'next/link';
-import { MouseEvent, useContext, useState } from 'react';
+import { type MouseEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useRouter } from 'next/navigation';
 import Nodata from '@/app/[locale]/common/nodata';
-import { IAction } from '@/app/[locale]/interfaces/menus';
+import type { IAction } from '@/app/[locale]/interfaces/menus';
+import { useTranslations } from 'next-intl';
 
 export default function Actions({ data }: { data: IAction[] }) {
   const { toast } = useContext(GlobalContext);
   const router = useRouter();
   const [content, setContent] = useState<IAction[]>(data);
+  const t = useTranslations();
 
   function onClickLink(url: string, e: MouseEvent<HTMLAnchorElement>) {
     e.stopPropagation();
@@ -30,7 +32,7 @@ export default function Actions({ data }: { data: IAction[] }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Action
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -41,11 +43,11 @@ export default function Actions({ data }: { data: IAction[] }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Page</th>
-              <th scope="col">Action</th>
-              <th scope="col">Alias</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.page')}</th>
+              <th scope="col">{t('common.action')}</th>
+              <th scope="col">{t('common.alias')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -54,16 +56,16 @@ export default function Actions({ data }: { data: IAction[] }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
+                  <td>{item.sort}</td>
                   <td>{actionNames[0]}</td>
                   <td>{actionNames[1]}</td>
                   <td>{item.alias}</td>
-                  <td>{item.sort}</td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -73,7 +75,7 @@ export default function Actions({ data }: { data: IAction[] }) {
                             className="dropdown-item"
                             href={`/admin/actions/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -87,7 +89,7 @@ export default function Actions({ data }: { data: IAction[] }) {
                             className="dropdown-item"
                             href={`/admin/actions/${item.id}?type=role`}
                           >
-                            Update Role
+                            {t('common.updateRole')}
                           </Link>
                         </li>
                         <li>
@@ -104,7 +106,7 @@ export default function Actions({ data }: { data: IAction[] }) {
                             className="dropdown-item text-danger"
                             href={`/admin/actions/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

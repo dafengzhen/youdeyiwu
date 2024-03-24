@@ -284,6 +284,15 @@
     "actions": "Actions",
     "actionsFormText": "Please enter the action id, if an action does not exist, please create one first.",
     "menu": "Menu",
-    "menuFormText": "Please enter the Menu ID."
+    "menuFormText": "Please enter the Menu ID.",
+    "page": "Page",
+    "updateRole": "Update Role",
+    "action": "Action",
+    "pageFormText": "Please select a page.",
+    "actionFormText": "Then choose an action on this page.",
+    "thereAreNoOptionsAvailable": "There are no options available.",
+    "actionAliasFormText": "Give this action a name.",
+    "submenu": "Submenu",
+    "submenuFormText": "Please enter the submenu ID."
   }
 }

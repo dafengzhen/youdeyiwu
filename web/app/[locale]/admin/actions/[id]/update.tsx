@@ -11,6 +11,7 @@ import UpdateActionAction, {
 } from '@/app/[locale]/actions/actions/update-action-action';
 import { ACTION_PAGES_DATA } from '@/app/[locale]/constants';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 
@@ -37,6 +38,7 @@ export default function Update({ action }: { action: IAction }) {
     '/admin/actions',
     'Actions#Update',
   );
+  const t = useTranslations();
 
   const updateActionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -65,13 +67,13 @@ export default function Update({ action }: { action: IAction }) {
       if (!variables.page) {
         toast.current.show({
           type: 'danger',
-          message: 'Please select a specific page',
+          message: t('common.pageFormText'),
         });
         return;
       } else if (!variables.button) {
         toast.current.show({
           type: 'danger',
-          message: 'Then choose an action within that page',
+          message: t('common.actionFormText'),
         });
         return;
       }
@@ -96,7 +98,7 @@ export default function Update({ action }: { action: IAction }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateActionActionMutation.reset();
@@ -117,10 +119,7 @@ export default function Update({ action }: { action: IAction }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Page
-          </label>
+          <label className="form-label">{t('common.page')}</label>
           <select
             required
             name="page"
@@ -137,14 +136,11 @@ export default function Update({ action }: { action: IAction }) {
               );
             })}
           </select>
-          <div className="form-text">Please select a specific page</div>
+          <div className="form-text">{t('common.pageFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Action
-          </label>
+          <label className="form-label">{t('common.action')}</label>
           <select
             required
             name="button"
@@ -161,30 +157,24 @@ export default function Update({ action }: { action: IAction }) {
               );
             })}
           </select>
-          <div className="form-text">
-            Then choose an action within that page
-          </div>
+          <div className="form-text">{t('common.actionFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Alias</label>
+          <label className="form-label">{t('common.alias')}</label>
           <input
             type="text"
             className="form-control"
             name="alias"
             value={form.alias}
             onChange={onChangeForm}
-            placeholder="Please enter the action alias"
             aria-describedby="link"
           />
-          <div className="form-text">Give this action a different name</div>
+          <div className="form-text">{t('common.actionAliasFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Sort
-          </label>
+          <label className="form-label">{t('common.sort')}</label>
           <input
             min={0}
             type="number"
@@ -192,44 +182,35 @@ export default function Update({ action }: { action: IAction }) {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the action sort"
             aria-describedby="sort"
           />
-          <div className="form-text">The minimum value for sorting is 0</div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
-          <label className="form-label">Menu</label>
+          <label className="form-label">{t('common.menu')}</label>
           <input
             type="text"
             className="form-control"
             name="menu"
             value={form.menu}
             onChange={onChangeForm}
-            placeholder="Please enter the menu ID"
             aria-describedby="menu"
           />
-          <div className="form-text">
-            Please enter the menu ID. If you don&apos;t have a menu yet, please
-            create one first
-          </div>
+          <div className="form-text">{t('common.menuFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Submenu</label>
+          <label className="form-label">{t('common.submenu')}</label>
           <input
             type="text"
             className="form-control"
             name="submenu"
             value={form.submenu}
             onChange={onChangeForm}
-            placeholder="Please enter the submenu ID"
             aria-describedby="submenu"
           />
-          <div className="form-text">
-            Please enter the submenu ID. If you don&apos;t have a submenu yet,
-            please create one first
-          </div>
+          <div className="form-text">{t('common.submenuFormText')}</div>
         </div>
 
         <div>
@@ -243,8 +224,8 @@ export default function Update({ action }: { action: IAction }) {
             className="btn btn-success"
           >
             {updateActionActionMutation.isPending
-              ? 'Updating'
-              : 'Update Action'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

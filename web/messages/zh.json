@@ -282,6 +282,15 @@
     "actions": "动作",
     "actionsFormText": "请输入动作 Id，如果还没有动作，请先创建一个动作",
     "menu": "菜单",
-    "menuFormText": "请输入菜单 Id"
+    "menuFormText": "请输入菜单 Id",
+    "page": "页面",
+    "updateRole": "更新角色",
+    "action": "动作",
+    "pageFormText": "请选择一个指定的页面",
+    "actionFormText": "然后在该页面中选择一个动作",
+    "thereAreNoOptionsAvailable": "没有可用的选项",
+    "actionAliasFormText": "为这个动作设置一个名称",
+    "submenu": "子菜单",
+    "submenuFormText": "请输入子菜单 Id"
   }
 }

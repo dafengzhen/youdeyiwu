@@ -10,6 +10,7 @@ import CreateActionAction, {
 } from '@/app/[locale]/actions/actions/create-action-action';
 import { ACTION_PAGES_DATA } from '@/app/[locale]/constants';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 const ACTION_PAGES = Object.keys(ACTION_PAGES_DATA);
 
@@ -32,6 +33,7 @@ export default function Create() {
     '/admin/actions',
     'Actions#Create',
   );
+  const t = useTranslations();
 
   const createActionActionMutation = useMutation({
     mutationFn: async (variables: ICreateActionActionVariables) => {
@@ -51,13 +53,13 @@ export default function Create() {
       if (!variables.page) {
         toast.current.show({
           type: 'danger',
-          message: 'Please select a specific page',
+          message: t('common.pageFormText'),
         });
         return;
       } else if (!variables.button) {
         toast.current.show({
           type: 'danger',
-          message: 'Then choose an action within that page',
+          message: t('common.actionFormText'),
         });
         return;
       }
@@ -72,7 +74,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createActionActionMutation.reset();
@@ -95,7 +97,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Page
+            {t('common.page')}
           </label>
           <select
             required
@@ -113,13 +115,13 @@ export default function Create() {
               );
             })}
           </select>
-          <div className="form-text">Please select a specific page</div>
+          <div className="form-text">{t('common.pageFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Action
+            {t('common.action')}
           </label>
           <select
             required
@@ -137,35 +139,31 @@ export default function Create() {
               );
             })}
           </select>
-          <div className="form-text">
-            Then choose an action within that page
-          </div>
+          <div className="form-text"> {t('common.actionFormText')}</div>
           {(ACTION_PAGES_DATA as any)[form.page].length === 0 && (
-            <div className="form-text text-decoration-underline">
-              The current selection has no options available, cannot proceed
-              with the creation
+            <div className="form-text text-danger">
+              {t('common.thereAreNoOptionsAvailable')}
             </div>
           )}
         </div>
 
         <div>
-          <label className="form-label">Alias</label>
+          <label className="form-label">{t('common.alias')}</label>
           <input
             type="text"
             className="form-control"
             name="alias"
             value={form.alias}
             onChange={onChangeForm}
-            placeholder="Please enter the action alias"
             aria-describedby="link"
           />
-          <div className="form-text">Give this action a different name</div>
+          <div className="form-text">{t('common.actionAliasFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Sort
+            {t('common.sort')}
           </label>
           <input
             required
@@ -175,13 +173,9 @@ export default function Create() {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the menu sort"
             aria-describedby="sort"
           />
-          <div className="form-text">
-            Please enter the sorting value for the action, with a minimum value
-            of 0
-          </div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
@@ -195,8 +189,8 @@ export default function Create() {
             className="btn btn-success"
           >
             {createActionActionMutation.isPending
-              ? 'Creating'
-              : 'Create Action'}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>
