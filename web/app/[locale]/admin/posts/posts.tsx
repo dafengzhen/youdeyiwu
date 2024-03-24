@@ -168,7 +168,6 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                       data-bs-toggle="dropdown"
                     >
                       {t('common.more')}
-
                       <ul className="dropdown-menu">
                         <li>
                           <Link

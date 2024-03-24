@@ -200,6 +200,8 @@
     "reason": "Reason",
     "reasonFormText": "Optional reason. However, it is recommended that they are filled in to inform the other party of the specific reason, or to express encouragement, etc.",
     "estimatedCompletionTimeFormText": "The expected completion date of the audit should not be earlier than the current date, so please make a reasonable estimate of the expected completion date!",
-    "estimatedCompletionTime": "Estimated completion time"
+    "estimatedCompletionTime": "Estimated completion time",
+    "updateState": "Update State",
+    "failedUpdate": "Failed update"
   }
 }

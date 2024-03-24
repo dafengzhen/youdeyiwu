@@ -12,11 +12,13 @@ import type { IPost } from '@/app/[locale]/interfaces/posts';
 import QueryAllPostAction from '@/app/[locale]/actions/posts/query-all-post-action';
 import Nodata from '@/app/[locale]/common/nodata';
 import { convertToCamelCase } from '@/app/[locale]/common/client';
+import { useTranslations } from 'next-intl';
 
 export default function Posts({ data }: { data: IPage<IPost[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPost[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/posts', 'infinite'],
@@ -111,11 +113,11 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">States</th>
-              <th scope="col">Review State</th>
-              <th scope="col">Sort State</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.states')}</th>
+              <th scope="col">{t('common.reviewState')}</th>
+              <th scope="col">{t('common.sortState')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -133,7 +135,9 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                   </td>
                   <td>
                     {item.states.length === 0 ? (
-                      <span className="text-secondary">Default</span>
+                      <span className="text-secondary">
+                        {t('common.default')}
+                      </span>
                     ) : (
                       <div className="d-flex gap-2">
                         {item.states.map((state) => {
@@ -164,7 +168,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                       href={`/admin/comments/posts/${item.id}`}
                       className="link-dark text-decoration-none user-select-none"
                     >
-                      Comments
+                      {t('common.comments')}
                     </Link>
                   </td>
                 </tr>

@@ -21,6 +21,7 @@ import UpdateStateReplyAction, {
   type IUpdateStateReplyActionVariables,
 } from '@/app/[locale]/actions/replies/update-state-reply-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateStates({
   details,
@@ -43,6 +44,7 @@ export default function UpdateStates({
     '/admin/comments',
     'Comments#Update State',
   );
+  const t = useTranslations();
 
   const updateStateCommentActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -76,7 +78,7 @@ export default function UpdateStates({
       if (!reviewState) {
         toast.current.show({
           type: 'danger',
-          message: 'Review state cannot be empty',
+          message: t('common.reviewStateCannotBeEmpty'),
         });
         return;
       }
@@ -102,14 +104,14 @@ export default function UpdateStates({
       } else {
         toast.current.show({
           type: 'danger',
-          message: 'Unable to update status, data does not exist',
+          message: t('common.failedUpdate'),
         });
         return;
       }
 
       toast.current.show({
         type: 'success',
-        message: 'State updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       if (cid) {
@@ -141,13 +143,10 @@ export default function UpdateStates({
   }
 
   return (
-    <Box title="Update State">
+    <Box title={t('common.updateState')}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="fw-bold text-danger">*</span>
-            Review State
-          </label>
+          <label className="form-label">{t('common.reviewState')}</label>
           <div>
             {(
               ['APPROVED', 'REJECTED', 'PENDING_REVIEW'] as IPostReviewState[]
@@ -175,29 +174,19 @@ export default function UpdateStates({
               );
             })}
           </div>
-          <div className="form-text">
-            Select an review state, with the default state set to
-            &apos;Approved&lsquo;
-          </div>
         </div>
 
         <div>
-          <label className="form-label">Reason</label>
+          <label className="form-label">{t('common.reason')}</label>
           <textarea
             rows={2}
             className="form-control"
             name="reason"
             value={form.reason}
             onChange={onChangeForm}
-            placeholder="Please enter the reason"
             aria-describedby="reason"
           />
-          <div className="form-text">
-            Please enter the reasons for setting this state, if available
-          </div>
-          <div className="form-text">
-            The reason will be communicated to the user via a message
-          </div>
+          <div className="form-text">{t('common.reasonFormText')}</div>
         </div>
 
         <div>
@@ -212,8 +201,8 @@ export default function UpdateStates({
           >
             {updateStateCommentActionMutation.isPending ||
             updateStateReplyActionMutation.isPending
-              ? 'Updating'
-              : 'Update State'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

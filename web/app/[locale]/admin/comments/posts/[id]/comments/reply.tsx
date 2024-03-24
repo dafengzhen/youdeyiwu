@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
+import { useTranslations } from 'next-intl';
 
 export default function Reply({
   item,
@@ -13,6 +14,7 @@ export default function Reply({
   details: IPostDetails;
 }) {
   const user = item.user;
+  const t = useTranslations();
 
   return (
     <div className="card border-0 shadow-sm shadow-hover">
@@ -51,7 +53,7 @@ export default function Reply({
             className="btn btn-sm btn-outline-secondary"
           >
             <i className="bi bi-gear me-2"></i>
-            <span className="">Update State</span>
+            <span className="">{t('common.updateState')}</span>
           </Link>
         </div>
       </div>

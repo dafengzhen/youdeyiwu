@@ -198,6 +198,8 @@
     "reason": "理由",
     "reasonFormText": "可选理由。但建议填写，以告诉对方具体原因或者表达鼓励等",
     "estimatedCompletionTimeFormText": "审核的预计完成日期不应该比当前日期早，请合理评估预计完成日期！",
-    "estimatedCompletionTime": "预计完成审核时间"
+    "estimatedCompletionTime": "预计完成审核时间",
+    "updateState": "更新状态",
+    "failedUpdate": "更新失败"
   }
 }
