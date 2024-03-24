@@ -117,7 +117,7 @@ export default function Messages({
       if (!messagesInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

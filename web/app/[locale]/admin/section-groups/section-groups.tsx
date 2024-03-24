@@ -81,7 +81,7 @@ export default function SectionGroups({
       if (!sectionGroupsInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

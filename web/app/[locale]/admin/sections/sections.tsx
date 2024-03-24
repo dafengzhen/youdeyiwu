@@ -77,7 +77,7 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
       if (!sectionsInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

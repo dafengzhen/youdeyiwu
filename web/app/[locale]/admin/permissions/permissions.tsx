@@ -77,7 +77,7 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
       if (!permissionsInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

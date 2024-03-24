@@ -75,7 +75,7 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
       if (!rolesInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

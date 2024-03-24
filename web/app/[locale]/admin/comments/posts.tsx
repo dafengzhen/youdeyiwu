@@ -76,7 +76,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
       if (!postsInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

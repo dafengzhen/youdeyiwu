@@ -78,7 +78,7 @@ export default function Messages({ data }: { data: IPage<IGlobalMessage[]> }) {
       if (!globalMessagesInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

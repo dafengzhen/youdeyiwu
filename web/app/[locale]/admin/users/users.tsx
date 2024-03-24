@@ -75,7 +75,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
       if (!usersInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }

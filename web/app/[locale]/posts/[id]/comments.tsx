@@ -13,11 +13,13 @@ import CommentReplyPostAction from '@/app/[locale]/actions/posts/comment-reply-p
 import CommentBox from '@/app/[locale]/posts/[id]/comments/comment-box';
 import Reply from '@/app/[locale]/posts/[id]/comments/reply';
 import QuotedReply from '@/app/[locale]/posts/[id]/comments/quoted-reply';
+import { useTranslations } from 'next-intl';
 
 export default function Comments({ details }: { details: IPostDetails }) {
   const data = details.comments;
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<ICommentReply[]>(data.content);
+  const t = useTranslations();
 
   const commentReplyInfiniteQuery = useInfiniteQuery({
     queryKey: [`/posts/${details.id}/comment-reply`, 'infinite'],
@@ -102,7 +104,7 @@ export default function Comments({ details }: { details: IPostDetails }) {
       if (!commentReplyInfiniteQuery.hasNextPage) {
         toast.current.show({
           type: 'info',
-          message: 'No more data on the next page',
+          message: t('common.noMoreData'),
         });
         return;
       }
