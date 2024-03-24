@@ -11,6 +11,7 @@ import UpdateRolesPermissionAction, {
   type IUpdateRolesPermissionActionVariables,
 } from '@/app/[locale]/actions/permissions/update-roles-permission-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateRoles({
   permission,
@@ -25,6 +26,7 @@ export default function UpdateRoles({
     '/admin/permissions',
     'Permissions#Update Roles',
   );
+  const t = useTranslations();
 
   const updateRolesPermissionActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -57,7 +59,7 @@ export default function UpdateRoles({
 
       toast.current.show({
         type: 'success',
-        message: 'Roles updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateRolesPermissionActionMutation.reset();
@@ -72,7 +74,7 @@ export default function UpdateRoles({
     <Box title={`${permission.name} (ID. ${permission.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Roles</label>
+          <label className="form-label">{t('common.roles')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -82,9 +84,7 @@ export default function UpdateRoles({
               />
             </div>
           </div>
-          <div className="form-text">
-            Add roles to permissions, with values being role IDs
-          </div>
+          <div className="form-text">{t('common.rolesFormText')}</div>
         </div>
 
         <div>
@@ -96,8 +96,8 @@ export default function UpdateRoles({
             className="btn btn-success"
           >
             {updateRolesPermissionActionMutation.isPending
-              ? 'Updating'
-              : 'Update Permission Roles'}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

@@ -261,6 +261,19 @@
     "roleOverviewFormText": "关于角色的简要描述",
     "displayFormText": "可以选择是否在页面中，显示用户的角色信息",
     "permissions": "权限",
-    "permissionsFormText": "请输入权限 Id"
+    "permissionsFormText": "请输入权限 Id",
+    "method": "方法",
+    "permissionNameFormText": "请输入权限 URL，权限 URL 应以 '/' 开头",
+    "permissionAliasFormText": "考虑给权限 URL 一个别名",
+    "permissionOverviewFormText": "简要描述这个权限 URL 的用途",
+    "caseInSensitive": "不区分大小写",
+    "caseInSensitiveFormText": "默认权限 URL 区分大小写",
+    "methodFormText": "请选择权限请求方法",
+    "type": "类型",
+    "typeFormText": "请选择权限 URL 类型",
+    "matchers": "匹配",
+    "matchersFormText": "要添加的权限 ID，必须是已经存在的权限",
+    "del": "删除",
+    "add": "添加"
   }
 }

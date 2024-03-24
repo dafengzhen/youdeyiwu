@@ -11,11 +11,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/[locale]/common/nodata';
 import type { IPermission } from '@/app/[locale]/interfaces/permissions';
 import QueryAllPermissionAction from '@/app/[locale]/actions/permissions/query-all-permission-action';
+import { useTranslations } from 'next-intl';
 
 export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPermission[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const permissionsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/permissions', 'infinite'],
@@ -106,7 +108,7 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Permission
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -124,11 +126,11 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Alias</th>
-              <th scope="col">Method</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.alias')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.method')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -136,22 +138,16 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
-                  <td>{item.name}</td>
-                  <td>
-                    {item.alias ? (
-                      item.alias
-                    ) : (
-                      <span className="text-secondary">No Alias</span>
-                    )}
-                  </td>
                   <td>{item.sort}</td>
+                  <td>{item.alias}</td>
+                  <td>{item.name}</td>
                   <td>{item.method}</td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -164,7 +160,7 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
                             className="dropdown-item"
                             href={`/admin/permissions/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -178,7 +174,7 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
                             className="dropdown-item"
                             href={`/admin/permissions/${item.id}?type=roles`}
                           >
-                            Update Roles
+                            {t('common.updateRoles')}
                           </Link>
                         </li>
                         <li>
@@ -195,7 +191,7 @@ export default function Permissions({ data }: { data: IPage<IPermission[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/permissions/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

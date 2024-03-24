@@ -14,6 +14,7 @@ import CreatePermissionAction, {
 } from '@/app/[locale]/actions/permissions/create-permission-action';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -41,6 +42,7 @@ export default function Create() {
     '/admin/permissions',
     'Permissions#Create',
   );
+  const t = useTranslations();
 
   const createPermissionActionMutation = useMutation({
     mutationFn: async (variables: ICreatePermissionActionVariables) => {
@@ -62,7 +64,7 @@ export default function Create() {
       if (variables.name.length < 1) {
         toast.current.show({
           type: 'danger',
-          message: 'Permission name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
@@ -86,7 +88,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createPermissionActionMutation.reset();
@@ -114,7 +116,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -123,52 +125,44 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the permission URL"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">Please enter the permission URL</div>
-          <div className="form-text">
-            The permission URL should start with a &apos;/&apos;
-          </div>
+          <div className="form-text">{t('common.permissionNameFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Alias</label>
+          <label className="form-label">{t('common.alias')}</label>
           <input
             type="text"
             className="form-control"
             name="alias"
             value={form.alias}
             onChange={onChangeForm}
-            placeholder="Please enter the permission alias"
             aria-describedby="alias"
           />
-          <div className="form-text">
-            Consider giving the permission URL an alias
-          </div>
+          <div className="form-text">{t('common.permissionAliasFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Overview</label>
+          <label className="form-label">{t('common.overview')}</label>
           <input
             type="text"
             className="form-control"
             name="overview"
             value={form.overview}
             onChange={onChangeForm}
-            placeholder="Please enter the permission overview"
             aria-describedby="overview"
           />
           <div className="form-text">
-            Provide a brief overview of what this permission is for
+            {t('common.permissionOverviewFormText')}
           </div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Sort
+            {t('common.sort')}
           </label>
           <input
             required
@@ -178,16 +172,15 @@ export default function Create() {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the permission sort"
             aria-describedby="sort"
           />
-          <div className="form-text">The minimum value for sorting is 0</div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Case In Sensitive
+            {t('common.caseInSensitive')}
           </label>
           <select
             required
@@ -200,15 +193,13 @@ export default function Create() {
             <option value="true">true</option>
             <option value="false">false</option>
           </select>
-          <div className="form-text">
-            The default permission URL is case-sensitive
-          </div>
+          <div className="form-text">{t('common.caseInSensitiveFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Method
+            {t('common.method')}
           </label>
           <select
             required
@@ -235,15 +226,13 @@ export default function Create() {
               );
             })}
           </select>
-          <div className="form-text">
-            Please select the permission request method
-          </div>
+          <div className="form-text">{t('common.methodFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Type
+            {t('common.type')}
           </label>
           <select
             required
@@ -261,19 +250,17 @@ export default function Create() {
               );
             })}
           </select>
-          <div className="form-text">Please select the permission URL type</div>
+          <div className="form-text">{t('common.typeFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Matchers</label>
+          <label className="form-label">{t('common.matchers')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput items={matchers} setItems={setMatchers} />
             </div>
           </div>
-          <div className="form-text">
-            The permission ID to be added must be an existing permission
-          </div>
+          <div className="form-text">{t('common.matchersFormText')}</div>
         </div>
 
         <div>
@@ -285,8 +272,8 @@ export default function Create() {
             className="btn btn-success"
           >
             {createPermissionActionMutation.isPending
-              ? 'Creating'
-              : 'Create Permission'}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

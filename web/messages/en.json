@@ -263,6 +263,19 @@
     "roleOverviewFormText": "A brief description of the role.",
     "displayFormText": "You can choose whether or not to display the user's role information on the page.",
     "permissions": "Permissions",
-    "permissionsFormText": "Please enter the Permission ID"
+    "permissionsFormText": "Please enter the Permission ID",
+    "method": "Method",
+    "permissionNameFormText": "Please enter the permission URL, which should start with '/'.",
+    "permissionAliasFormText": "Consider giving permission URLs an alias.",
+    "permissionOverviewFormText": "Briefly describe the purpose of this permission URL.",
+    "caseInSensitive": "Case In Sensitive",
+    "caseInSensitiveFormText": "Default permission URLs are case-sensitive.",
+    "methodFormText": "Please select the method of authorisation request.",
+    "type": "Type",
+    "typeFormText": "Please select the permission URL type.",
+    "matchers": "Matchers",
+    "matchersFormText": "The Permission ID to be added must already exist.",
+    "del": "Del",
+    "add": "Add"
   }
 }

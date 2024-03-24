@@ -6,6 +6,7 @@ import {
   useState,
 } from 'react';
 import { nanoid } from 'nanoid';
+import { useTranslations } from 'next-intl';
 
 interface IValue {
   id: string;
@@ -26,6 +27,7 @@ export default function SimpleDynamicInput({
   const [values, setValues] = useState<IValue[]>(
     items.map((item) => ({ id: nanoid(), value: item })),
   );
+  const t = useTranslations();
 
   useEffect(() => {
     setItems(values.map((item) => item.value));
@@ -98,7 +100,7 @@ export default function SimpleDynamicInput({
                 className="btn btn-sm btn-outline-secondary"
               >
                 <i className="bi bi-dash-lg me-2"></i>
-                <span>Del</span>
+                <span>{t('common.del')}</span>
               </button>
             </div>
           );
@@ -112,7 +114,7 @@ export default function SimpleDynamicInput({
             className="btn btn-sm btn-secondary"
           >
             <i className="bi bi-plus-lg me-2"></i>
-            <span>Add</span>
+            <span>{t('common.add')}</span>
           </button>
         </div>
         {values.length > 0 && (
@@ -123,7 +125,7 @@ export default function SimpleDynamicInput({
               className="btn btn-sm btn-secondary"
             >
               <i className="bi bi-dash-lg me-2"></i>
-              <span>Del</span>
+              <span>{t('common.del')}</span>
             </button>
           </div>
         )}
