@@ -22,7 +22,7 @@ export interface IUpdateStatesPostActionVariables {
   accessKey?: string;
   reviewState: IPostReviewState;
   sortState: IPostSortState;
-  reason?: string;
+  reviewReason?: string;
 }
 
 export default async function UpdateStatesPostAction({

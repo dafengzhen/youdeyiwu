@@ -181,6 +181,15 @@
     "nameUniqueFormText": "The name is unique",
     "sections": "Sections",
     "sectionsFormText": "Please enter a section id, if you don't have a section, please create one first.",
-    "updateTagsFormText": "Please enter the tag id and create a tag if you don't have one."
+    "updateTagsFormText": "Please enter the tag id and create a tag if you don't have one.",
+    "reviewState": "Review State",
+    "sortState": "Sort State",
+    "updateSection": "Update Section",
+    "section": "Section",
+    "chooseSectionFormText": "Choose a section for the article, i.e. a category for the content.",
+    "reviewStateCannotBeEmpty": "Review state cannot be empty",
+    "sortStateCannotBeEmpty": "Sort state cannot be empty",
+    "reviewReason": "Review Reason",
+    "reviewReasonFormText": "Please enter the reasons for setting this state, if available, the reason will be communicated to the user via a message."
   }
 }

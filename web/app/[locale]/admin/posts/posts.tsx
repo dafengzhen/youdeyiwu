@@ -4,7 +4,7 @@ import LoadMore from '@/app/[locale]/home/load-more';
 import Box from '@/app/[locale]/admin/common/box';
 import Link from 'next/link';
 import type { IPage } from '@/app/[locale]/interfaces';
-import { MouseEvent, useContext, useEffect, useState } from 'react';
+import { type MouseEvent, useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -12,11 +12,13 @@ import type { IPost } from '@/app/[locale]/interfaces/posts';
 import QueryAllPostAction from '@/app/[locale]/actions/posts/query-all-post-action';
 import Nodata from '@/app/[locale]/common/nodata';
 import { convertToCamelCase } from '@/app/[locale]/common/client';
+import { useTranslations } from 'next-intl';
 
 export default function Posts({ data }: { data: IPage<IPost[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPost[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/posts', 'infinite'],
@@ -96,20 +98,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
 
   return (
     <Box
-      header={
-        <div className="d-flex align-items-center justify-content-between gap-4">
-          <div></div>
-          <div>
-            <Link
-              href="/posts/new"
-              type="button"
-              className="btn btn-sm btn-primary"
-            >
-              Create Article
-            </Link>
-          </div>
-        </div>
-      }
+      hideHeader={true}
       footer={
         <LoadMore
           className="w-100"
@@ -123,11 +112,11 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">States</th>
-              <th scope="col">Review State</th>
-              <th scope="col">Sort State</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.states')}</th>
+              <th scope="col">{t('common.reviewState')}</th>
+              <th scope="col">{t('common.sortState')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -145,7 +134,9 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                   </td>
                   <td>
                     {item.states.length === 0 ? (
-                      <span className="text-secondary">Default</span>
+                      <span className="text-secondary">
+                        {t('common.default')}
+                      </span>
                     ) : (
                       <div className="d-flex gap-2">
                         {item.states.map((state) => {
@@ -176,7 +167,8 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
+
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -189,7 +181,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                             className="dropdown-item"
                             href={`/admin/posts/${item.id}?type=states`}
                           >
-                            Update States
+                            {t('common.updateStates')}
                           </Link>
                         </li>
                         <li>
@@ -203,7 +195,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                             className="dropdown-item"
                             href={`/admin/posts/${item.id}?type=tags`}
                           >
-                            Update Tags
+                            {t('common.updateTags')}
                           </Link>
                         </li>
                         <li>
@@ -217,7 +209,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                             className="dropdown-item"
                             href={`/admin/posts/${item.id}?type=section`}
                           >
-                            Update Section
+                            {t('common.updateSection')}
                           </Link>
                         </li>
                         <li>
@@ -234,7 +226,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/posts/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

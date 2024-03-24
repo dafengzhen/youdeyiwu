@@ -181,6 +181,13 @@
     "nameUniqueFormText": "名称是唯一的",
     "sections": "版块",
     "sectionsFormText": "请输入版块 Id，如果还没有版块，请先创建一个版块",
-    "updateTagsFormText": "请输入标签 Id，如果还没有标签，请先创建一个标签"
+    "updateTagsFormText": "请输入标签 Id，如果还没有标签，请先创建一个标签",
+    "reviewState": "审核状态",
+    "sortState": "排序状态",
+    "updateSection": "更新版块",
+    "section": "版块",
+    "chooseSectionFormText": "为文章选择一个版块，即内容的分类",
+    "reviewReason": "审核理由",
+    "reviewReasonFormText": "请输入设置审核状态的原因（如果有），原因将通过信息告诉用户"
   }
 }

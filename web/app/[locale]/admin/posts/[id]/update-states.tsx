@@ -21,6 +21,7 @@ import UpdateStatesPostAction, {
   type IUpdateStatesPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-states-post-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 interface IState {
   id: number | string;
@@ -35,7 +36,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
     accessKey: string;
     reviewState: IPostReviewState;
     sortState: IPostSortState;
-    reason: string;
+    reviewReason: string;
   }>({
     states: [
       'SHOW',
@@ -54,7 +55,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
     accessKey: post.accessKey ?? '',
     reviewState: post.reviewState ?? 'APPROVED',
     sortState: post.sortState ?? 'DEFAULT',
-    reason: '',
+    reviewReason: '',
   });
   const [allows, setAllows] = useState<string[]>(
     post.allows.map((item) => item.id + ''),
@@ -66,6 +67,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
     '/admin/posts',
     'Posts#Update States',
   );
+  const t = useTranslations();
 
   const updateStatesPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -91,7 +93,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
       if (_states.includes('LOCK') && !form.accessKey.trim()) {
         toast.current.show({
           type: 'danger',
-          message: 'In the locked state, the unlocking key cannot be empty',
+          message: t('common.accessKeyFormText'),
         });
         return;
       }
@@ -102,7 +104,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
       if (_states.includes('ALLOW') && _allows.length === 0) {
         toast.current.show({
           type: 'danger',
-          message: 'Under the allows state, the whitelist cannot be empty',
+          message: t('common.whitelistStateFormText'),
         });
         return;
       }
@@ -113,7 +115,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
       if (_states.includes('BLOCK') && _blocks.length === 0) {
         toast.current.show({
           type: 'danger',
-          message: 'Under the blocks state, the blacklist cannot be empty',
+          message: t('common.blacklistStateFormText'),
         });
         return;
       }
@@ -122,7 +124,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
       if (!reviewState) {
         toast.current.show({
           type: 'danger',
-          message: 'Review state cannot be empty',
+          message: t('common.reviewStateCannotBeEmpty'),
         });
         return;
       }
@@ -131,12 +133,12 @@ export default function UpdateStates({ post }: { post: IPost }) {
       if (!sortState) {
         toast.current.show({
           type: 'danger',
-          message: 'Sort state cannot be empty',
+          message: t('common.sortStateCannotBeEmpty'),
         });
         return;
       }
 
-      const reason = form.reason;
+      const reviewReason = form.reviewReason;
 
       const id = post.id;
       await updateStatesPostActionMutation.mutateAsync({
@@ -148,13 +150,13 @@ export default function UpdateStates({ post }: { post: IPost }) {
           accessKey: form.accessKey,
           reviewState,
           sortState,
-          reason,
+          reviewReason,
         },
       });
 
       toast.current.show({
         type: 'success',
-        message: 'States updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateStatesPostActionMutation.reset();
@@ -191,7 +193,7 @@ export default function UpdateStates({ post }: { post: IPost }) {
     <Box title={`${post.name} (ID. ${post.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">States</label>
+          <label className="form-label">{t('common.states')}</label>
           <div>
             {form.states.map((item) => {
               return (
@@ -213,16 +215,13 @@ export default function UpdateStates({ post }: { post: IPost }) {
               );
             })}
           </div>
-          <div className="form-text">
-            The state can be selected multiple times
-          </div>
         </div>
 
         {form.states.find((item) => item.value === 'LOCK' && item.checked) && (
           <div>
             <label className="form-label">
               <span className="fw-bold text-danger">*</span>
-              Access Key
+              {t('common.accessKey')}
             </label>
             <input
               required
@@ -233,10 +232,9 @@ export default function UpdateStates({ post }: { post: IPost }) {
               onChange={(event) =>
                 setForm({ ...form, accessKey: event.target.value })
               }
-              placeholder="Please enter the post access key"
               aria-describedby="accessKey"
             />
-            <div className="form-text">The key required to access the post</div>
+            <div className="form-text">{t('common.theKeyCannotBeEmpty')}</div>
           </div>
         )}
 
@@ -244,20 +242,15 @@ export default function UpdateStates({ post }: { post: IPost }) {
           <div>
             <label className="form-label">
               <span className="fw-bold text-danger">*</span>
-              Allow
+              {t('common.allow')}
             </label>
             <div className="card rounded-2">
               <div className="card-body">
                 <SimpleDynamicInput items={allows} setItems={setAllows} />
               </div>
             </div>
-            <div className="form-text">
-              Please enter the user ID to add to the whitelist
-            </div>
-            <div className="form-text">
-              If a user is both on the whitelist and the blacklist, the user
-              will be ineffective in the whitelist
-            </div>
+            <div className="form-text">{t('common.allowFormText1')}</div>
+            <div className="form-text">{t('common.allowFormText2')}</div>
           </div>
         )}
 
@@ -265,27 +258,22 @@ export default function UpdateStates({ post }: { post: IPost }) {
           <div>
             <label className="form-label">
               <span className="fw-bold text-danger">*</span>
-              Block
+              {t('common.block')}
             </label>
             <div className="card rounded-2">
               <div className="card-body">
                 <SimpleDynamicInput items={blocks} setItems={setBlocks} />
               </div>
             </div>
-            <div className="form-text">
-              Please enter the user ID to add to the blacklist
-            </div>
-            <div className="form-text">
-              If a user is both on the whitelist and the blacklist, the user
-              will be considered effective in the blacklist
-            </div>
+            <div className="form-text">{t('common.blockFormText1')}</div>
+            <div className="form-text">{t('common.blockFormText2')}</div>
           </div>
         )}
 
         <div>
           <label className="form-label">
             <span className="fw-bold text-danger">*</span>
-            Review State
+            {t('common.reviewState')}
           </label>
           <div>
             {(
@@ -314,16 +302,12 @@ export default function UpdateStates({ post }: { post: IPost }) {
               );
             })}
           </div>
-          <div className="form-text">
-            Select an review state, with the default state set to
-            &apos;Approved&lsquo;
-          </div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="fw-bold text-danger">*</span>
-            Sort State
+            {t('common.sortState')}
           </label>
           <div>
             {(
@@ -357,31 +341,21 @@ export default function UpdateStates({ post }: { post: IPost }) {
               );
             })}
           </div>
-          <div className="form-text">
-            Select an sort state, with the default state set to
-            &apos;Default&lsquo;
-          </div>
         </div>
 
         <div>
-          <label className="form-label">Reason</label>
+          <label className="form-label"> {t('common.reviewReason')}</label>
           <textarea
             rows={2}
             className="form-control"
-            name="reason"
-            value={form.reason}
+            name="reviewReason"
+            value={form.reviewReason}
             onChange={(event) =>
-              setForm({ ...form, reason: event.target.value })
+              setForm({ ...form, reviewReason: event.target.value })
             }
-            placeholder="Please enter the reason"
-            aria-describedby="reason"
+            aria-describedby="reviewReason"
           />
-          <div className="form-text">
-            Please enter the reasons for setting this state, if available
-          </div>
-          <div className="form-text">
-            The reason will be communicated to the user via a message
-          </div>
+          <div className="form-text">{t('common.reviewReasonFormText')}</div>
         </div>
 
         <div>
@@ -393,8 +367,8 @@ export default function UpdateStates({ post }: { post: IPost }) {
             className="btn btn-success"
           >
             {updateStatesPostActionMutation.isPending
-              ? 'Updating'
-              : 'Update Post States'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

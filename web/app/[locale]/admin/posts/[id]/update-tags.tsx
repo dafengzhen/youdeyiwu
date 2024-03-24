@@ -11,6 +11,7 @@ import UpdateTagsPostAction, {
   type IUpdateTagsPostActionVariables,
 } from '@/app/[locale]/actions/posts/update-tags-post-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateTags({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdateTags({ post }: { post: IPost }) {
     '/admin/posts',
     'Posts#Update Tags',
   );
+  const t = useTranslations();
 
   const updateTagsPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdateTags({ post }: { post: IPost }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Tags updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateTagsPostActionMutation.reset();
@@ -68,7 +70,7 @@ export default function UpdateTags({ post }: { post: IPost }) {
     <Box title={`${post.name} (ID. ${post.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Tags</label>
+          <label className="form-label"> {t('common.tags')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -78,10 +80,7 @@ export default function UpdateTags({ post }: { post: IPost }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            Please enter the tag ID. If you haven&apos;t created a tag yet,
-            please create a tag first
-          </div>
+          <div className="form-text">{t('common.updateTagsFormText')}</div>
         </div>
 
         <div>
@@ -93,8 +92,8 @@ export default function UpdateTags({ post }: { post: IPost }) {
             className="btn btn-success"
           >
             {updateTagsPostActionMutation.isPending
-              ? 'Updating'
-              : 'Update Post Tags'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

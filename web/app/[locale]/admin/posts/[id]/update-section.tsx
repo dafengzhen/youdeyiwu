@@ -11,6 +11,7 @@ import UpdateSectionPostAction, {
 } from '@/app/[locale]/actions/posts/update-section-post-action';
 import { isNum } from '@/app/[locale]/common/tool';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdateSection({
   post,
@@ -27,6 +28,7 @@ export default function UpdateSection({
     '/admin/posts',
     'Posts#Update Section',
   );
+  const t = useTranslations();
 
   const updateSectionPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -56,7 +58,7 @@ export default function UpdateSection({
 
       toast.current.show({
         type: 'success',
-        message: 'Tags updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateSectionPostActionMutation.reset();
@@ -71,7 +73,7 @@ export default function UpdateSection({
     <Box title={`${post.name} (ID. ${post.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Select Section</label>
+          <label className="form-label">{t('common.section')}</label>
           <select
             className="form-select"
             size={sections.length + 1}
@@ -81,7 +83,7 @@ export default function UpdateSection({
             onChange={(event) => setSectionId(event.target.value)}
           >
             <option value="none" defaultValue="none">
-              None
+              {t('common.none')}
             </option>
             {sections.map((item) => {
               return (
@@ -91,7 +93,7 @@ export default function UpdateSection({
               );
             })}
           </select>
-          <div className="form-text">Please select a content topic</div>
+          <div className="form-text">{t('common.chooseSectionFormText')}</div>
         </div>
 
         <div>
@@ -103,8 +105,8 @@ export default function UpdateSection({
             className="btn btn-success"
           >
             {updateSectionPostActionMutation.isPending
-              ? 'Updating'
-              : 'Update Post Section'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
