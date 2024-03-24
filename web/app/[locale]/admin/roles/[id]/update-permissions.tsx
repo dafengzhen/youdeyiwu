@@ -11,6 +11,7 @@ import UpdatePermissionsRoleAction, {
   type IUpdatePermissionsRoleActionVariables,
 } from '@/app/[locale]/actions/roles/update-permissions-role-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function UpdatePermissions({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
     '/admin/roles',
     'Roles#Update Permissions',
   );
+  const t = useTranslations();
 
   const updatePermissionsRoleActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -53,7 +55,7 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Permissions updated successfully',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updatePermissionsRoleActionMutation.reset();
@@ -68,7 +70,7 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
     <Box title={`${role.name} (ID. ${role.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Permissions</label>
+          <label className="form-label">{t('common.permissions')}</label>
           <div className="card rounded-2">
             <div className="card-body">
               <SimpleDynamicInput
@@ -78,9 +80,7 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
               />
             </div>
           </div>
-          <div className="form-text">
-            To add a permission to a role, enter the permission id
-          </div>
+          <div className="form-text">{t('common.permissionsFormText')}</div>
         </div>
 
         <div>
@@ -92,8 +92,8 @@ export default function UpdatePermissions({ role }: { role: IRole }) {
             className="btn btn-success"
           >
             {updatePermissionsRoleActionMutation.isPending
-              ? 'Updating'
-              : 'Update Role Permissions'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

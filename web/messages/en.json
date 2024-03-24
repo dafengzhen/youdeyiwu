@@ -257,6 +257,12 @@
     "enabled": "Enabled",
     "noMoreData": "No more data",
     "roles": "Roles",
-    "rolesFormText": "Please enter your role id, if you don't have a role, please create one first."
+    "rolesFormText": "Please enter your role id, if you don't have a role, please create one first.",
+    "display": "Display",
+    "updatePermissions": "Update Permissions",
+    "roleOverviewFormText": "A brief description of the role.",
+    "displayFormText": "You can choose whether or not to display the user's role information on the page.",
+    "permissions": "Permissions",
+    "permissionsFormText": "Please enter the Permission ID"
   }
 }

@@ -9,6 +9,7 @@ import CreateRoleAction, {
 } from '@/app/[locale]/actions/roles/create-role-action';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Create() {
   const { toast } = useContext(GlobalContext);
@@ -27,6 +28,7 @@ export default function Create() {
     '/admin/roles',
     'Roles#Create',
   );
+  const t = useTranslations();
 
   const createRoleActionMutation = useMutation({
     mutationFn: async (variables: ICreateRoleActionVariables) => {
@@ -48,7 +50,7 @@ export default function Create() {
       if (variables.name.length < 1) {
         toast.current.show({
           type: 'danger',
-          message: 'Role name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
@@ -58,7 +60,7 @@ export default function Create() {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully created',
+        message: t('common.successfullyCreated'),
       });
     } catch (e: any) {
       createRoleActionMutation.reset();
@@ -86,7 +88,7 @@ export default function Create() {
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Name
+            {t('common.name')}
           </label>
           <input
             required
@@ -95,35 +97,29 @@ export default function Create() {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the role name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">
-            This is the name of the role to be filled in, and it cannot be empty
-          </div>
+          <div className="form-text">{t('common.nameCannotBeEmpty')}</div>
         </div>
 
         <div>
-          <label className="form-label">Overview</label>
+          <label className="form-label"> {t('common.overview')}</label>
           <input
             type="text"
             className="form-control"
             name="overview"
             value={form.overview}
             onChange={onChangeForm}
-            placeholder="Please enter the role overview"
             aria-describedby="overview"
           />
-          <div className="form-text">
-            A brief overview or note about the role
-          </div>
+          <div className="form-text">{t('common.roleOverviewFormText')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Sort
+            {t('common.sort')}
           </label>
           <input
             min={0}
@@ -132,16 +128,15 @@ export default function Create() {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the role sort"
             aria-describedby="sort"
           />
-          <div className="form-text">The minimum value for sorting is 0</div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
           <label className="form-label">
             <span className="text-danger fw-bold">*</span>
-            Display
+            {t('common.display')}
           </label>
           <select
             name="display"
@@ -153,9 +148,7 @@ export default function Create() {
             <option value="true">true</option>
             <option value="false">false</option>
           </select>
-          <div className="form-text">
-            Displaying user role information on the frontend
-          </div>
+          <div className="form-text">{t('common.displayFormText')}</div>
         </div>
 
         <div>
@@ -164,7 +157,9 @@ export default function Create() {
             type="submit"
             className="btn btn-success"
           >
-            {createRoleActionMutation.isPending ? 'Creating' : 'Create Role'}
+            {createRoleActionMutation.isPending
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

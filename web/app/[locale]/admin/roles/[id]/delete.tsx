@@ -8,6 +8,7 @@ import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import type { IRole } from '@/app/[locale]/interfaces/roles';
 import DeleteRoleAction from '@/app/[locale]/actions/roles/delete-role-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Delete({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
@@ -15,6 +16,7 @@ export default function Delete({ role }: { role: IRole }) {
     '/admin/roles',
     'Roles#Delete',
   );
+  const t = useTranslations();
 
   const deleteRoleActionMutation = useMutation({
     mutationFn: async (variables: { id: number }) => {
@@ -35,7 +37,7 @@ export default function Delete({ role }: { role: IRole }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Deleted Successfully, Refresh after 2 seconds',
+        message: t('common.successfullyDeleted'),
       });
 
       setTimeout(() => {
@@ -57,25 +59,12 @@ export default function Delete({ role }: { role: IRole }) {
     <Box>
       <div className="alert alert-danger" role="alert">
         <h4 className="alert-heading">
-          <span className="me-2 text-danger">Delete</span>
           <span className="text-danger">
             {role.name}&nbsp;(ID. {role.id})
           </span>
         </h4>
-        <ul className="list-unstyled fw-medium">
-          <li>
-            Irreversible deletion! All data related to the role will be deleted.
-          </li>
-          <li>
-            Please proceed with caution when performing deletion, as what you
-            may actually want to do is an update operation.
-          </li>
-        </ul>
         <hr />
-        <p className="mb-0">
-          After pressing the delete button, the processing will begin. Please
-          wait patiently for the deletion to be completed.
-        </p>
+        <p className="mb-0">{t('common.deleteFormText')}</p>
         <div className="mt-4">
           <button
             onClick={onClickDelete}
@@ -83,7 +72,9 @@ export default function Delete({ role }: { role: IRole }) {
             type="button"
             className="btn btn-sm btn-danger"
           >
-            {deleteRoleActionMutation.isPending ? 'Deleting' : 'Delete'}
+            {deleteRoleActionMutation.isPending
+              ? t('common.deleting')
+              : t('common.delete')}
           </button>
           <AccessDeniedAlert />
         </div>

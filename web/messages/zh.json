@@ -255,6 +255,12 @@
     "enabled": "启用",
     "noMoreData": "没有更多数据了",
     "roles": "角色",
-    "rolesFormText": "请输入角色 Id，如果还没有角色，请先创建一个角色"
+    "rolesFormText": "请输入角色 Id，如果还没有角色，请先创建一个角色",
+    "display": "展示",
+    "updatePermissions": "更新权限",
+    "roleOverviewFormText": "关于角色的简要描述",
+    "displayFormText": "可以选择是否在页面中，显示用户的角色信息",
+    "permissions": "权限",
+    "permissionsFormText": "请输入权限 Id"
   }
 }

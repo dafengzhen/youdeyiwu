@@ -11,11 +11,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import Nodata from '@/app/[locale]/common/nodata';
 import type { IRole } from '@/app/[locale]/interfaces/roles';
 import QueryAllRoleAction from '@/app/[locale]/actions/roles/query-all-role-action';
+import { useTranslations } from 'next-intl';
 
 export default function Roles({ data }: { data: IPage<IRole[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IRole[]>(data.content);
   const router = useRouter();
+  const t = useTranslations();
 
   const rolesInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/roles', 'infinite'],
@@ -104,7 +106,7 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
               type="button"
               className="btn btn-sm btn-primary"
             >
-              Create Role
+              {t('common.create')}
             </Link>
           </div>
         </div>
@@ -122,11 +124,11 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Sort</th>
-              <th scope="col">Display</th>
-              <th scope="col">Overview</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.sort')}</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.display')}</th>
+              <th scope="col">{t('common.overview')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -134,22 +136,16 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
               return (
                 <tr key={item.id}>
                   <th scope="row">{item.id}</th>
-                  <td>{item.name}</td>
                   <td>{item.sort}</td>
+                  <td>{item.name}</td>
                   <td>{item.display + ''}</td>
-                  <td>
-                    {item.overview ? (
-                      item.overview
-                    ) : (
-                      <span className="text-secondary">No Overview</span>
-                    )}
-                  </td>
+                  <td>{item.overview}</td>
                   <td>
                     <div
                       className="cursor-pointer user-select-none"
                       data-bs-toggle="dropdown"
                     >
-                      More
+                      {t('common.more')}
                       <ul className="dropdown-menu">
                         <li>
                           <Link
@@ -159,7 +155,7 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
                             className="dropdown-item"
                             href={`/admin/roles/${item.id}`}
                           >
-                            Update
+                            {t('common.update')}
                           </Link>
                         </li>
                         <li>
@@ -173,7 +169,7 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
                             className="dropdown-item"
                             href={`/admin/roles/${item.id}?type=permissions`}
                           >
-                            Update Permissions
+                            {t('common.updatePermissions')}
                           </Link>
                         </li>
                         <li>
@@ -190,7 +186,7 @@ export default function Roles({ data }: { data: IPage<IRole[]> }) {
                             className="dropdown-item text-danger"
                             href={`/admin/roles/${item.id}?type=del`}
                           >
-                            Delete
+                            {t('common.delete')}
                           </Link>
                         </li>
                       </ul>

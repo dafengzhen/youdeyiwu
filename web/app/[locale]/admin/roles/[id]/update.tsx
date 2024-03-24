@@ -10,6 +10,7 @@ import UpdateRoleAction, {
   type IUpdateRoleActionVariables,
 } from '@/app/[locale]/actions/roles/update-role-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Update({ role }: { role: IRole }) {
   const { toast } = useContext(GlobalContext);
@@ -28,6 +29,7 @@ export default function Update({ role }: { role: IRole }) {
     '/admin/roles',
     'Roles#Update',
   );
+  const t = useTranslations();
 
   const updateRoleActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -52,7 +54,7 @@ export default function Update({ role }: { role: IRole }) {
       if (!variables.name) {
         toast.current.show({
           type: 'danger',
-          message: 'The role name cannot be empty',
+          message: t('common.nameCannotBeEmpty'),
         });
         return;
       }
@@ -62,7 +64,7 @@ export default function Update({ role }: { role: IRole }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully updated',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       updateRoleActionMutation.reset();
@@ -88,10 +90,7 @@ export default function Update({ role }: { role: IRole }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Name
-          </label>
+          <label className="form-label">{t('common.name')}</label>
           <input
             required
             type="text"
@@ -99,36 +98,27 @@ export default function Update({ role }: { role: IRole }) {
             name="name"
             value={form.name}
             onChange={onChangeForm}
-            placeholder="Please enter the role name"
             aria-describedby="name"
             minLength={1}
           />
-          <div className="form-text">
-            This is the name of the role to be filled in, and it cannot be empty
-          </div>
+          <div className="form-text">{t('common.nameUniqueFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">Overview</label>
+          <label className="form-label">{t('common.overview')}</label>
           <input
             type="text"
             className="form-control"
             name="overview"
             value={form.overview}
             onChange={onChangeForm}
-            placeholder="Please enter the role overview"
             aria-describedby="overview"
           />
-          <div className="form-text">
-            A brief overview or note about the role
-          </div>
+          <div className="form-text">{t('common.roleOverviewFormText')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Sort
-          </label>
+          <label className="form-label">{t('common.sort')}</label>
           <input
             min={0}
             type="number"
@@ -136,17 +126,13 @@ export default function Update({ role }: { role: IRole }) {
             name="sort"
             value={form.sort}
             onChange={onChangeForm}
-            placeholder="Please enter the role sort"
             aria-describedby="sort"
           />
-          <div className="form-text">The minimum value for sorting is 0</div>
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
         </div>
 
         <div>
-          <label className="form-label">
-            <span className="text-danger fw-bold">*</span>
-            Display
-          </label>
+          <label className="form-label">{t('common.display')}</label>
           <select
             name="display"
             onChange={onChangeForm}
@@ -157,9 +143,7 @@ export default function Update({ role }: { role: IRole }) {
             <option value="true">true</option>
             <option value="false">false</option>
           </select>
-          <div className="form-text">
-            Displaying user role information on the frontend
-          </div>
+          <div className="form-text">{t('common.displayFormText')}</div>
         </div>
 
         <div>
@@ -168,7 +152,9 @@ export default function Update({ role }: { role: IRole }) {
             type="submit"
             className="btn btn-success"
           >
-            {updateRoleActionMutation.isPending ? 'Updating' : 'Update Role'}
+            {updateRoleActionMutation.isPending
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>
