@@ -9,6 +9,7 @@ import RefundPostReviewQueuesAction, {
   type IRefundPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/refund-post-review-queues-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Return({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function Return({ id }: { id: number }) {
     '/admin/posts/review-queues',
     'Post Review Queues#Return',
   );
+  const t = useTranslations();
 
   const refundPostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -44,7 +46,7 @@ export default function Return({ id }: { id: number }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully canceled the request to review the post',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       refundPostReviewQueuesActionMutation.reset();
@@ -72,9 +74,7 @@ export default function Return({ id }: { id: number }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">
-            The reason for cancellation of review
-          </label>
+          <label className="form-label">{t('common.reason')}</label>
           <textarea
             rows={3}
             disabled={refundPostReviewQueuesActionMutation.isSuccess}
@@ -82,16 +82,9 @@ export default function Return({ id }: { id: number }) {
             name="reason"
             value={form.reason}
             onChange={onChangeForm}
-            placeholder="Please enter the reason"
             aria-describedby="reason"
           />
-          <div className="form-text">
-            The reason is optional and there can be several factors that lead to
-            the cancellation of your review of the other party&apos;s post.
-            However, it is still recommended that you explain it to the other
-            party, as they have been waiting for your review and expecting a
-            decision
-          </div>
+          <div className="form-text">{t('common.reasonFormText')}</div>
         </div>
 
         <div>
@@ -106,8 +99,8 @@ export default function Return({ id }: { id: number }) {
             className="btn btn-success"
           >
             {refundPostReviewQueuesActionMutation.isPending
-              ? 'Processing'
-              : 'Cancel Reception'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

@@ -13,6 +13,7 @@ import {
 } from '@/app/[locale]/common/client';
 import { isBefore } from 'date-fns';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Receive({ postId }: { postId: number }) {
   const { toast } = useContext(GlobalContext);
@@ -25,6 +26,7 @@ export default function Receive({ postId }: { postId: number }) {
     '/admin/posts/review-queues',
     'Post Review Queues#Receive',
   );
+  const t = useTranslations();
 
   const receivePostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: IReceivePostReviewQueuesActionVariables) => {
@@ -47,8 +49,7 @@ export default function Receive({ postId }: { postId: number }) {
       if (isBefore(vars.latestReviewResultTime, currentDate)) {
         toast.current.show({
           type: 'danger',
-          message:
-            'The estimated completion date for the review should not be earlier than the current date, but it is also not recommended to complete the review too late',
+          message: t('common.estimatedCompletionTimeFormText'),
         });
         return;
       }
@@ -60,8 +61,7 @@ export default function Receive({ postId }: { postId: number }) {
 
       toast.current.show({
         type: 'success',
-        message:
-          'Successful receipt of the moderation request for this post. Thank you for your effort in reviewing this post',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       receivePostReviewQueuesActionMutation.reset();
@@ -90,7 +90,7 @@ export default function Receive({ postId }: { postId: number }) {
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
           <label className="form-label">
-            Estimated time for completing the review
+            {t('common.estimatedCompletionTime')}
           </label>
           <input
             disabled={receivePostReviewQueuesActionMutation.isSuccess}
@@ -99,17 +99,10 @@ export default function Receive({ postId }: { postId: number }) {
             name="latestReviewResultTime"
             value={form.latestReviewResultTime}
             onChange={onChangeForm}
-            placeholder="Please enter the date"
             aria-describedby="latestReviewResultTime"
           />
           <div className="form-text">
-            If the estimated time for completing the review is not provided, it
-            will default to the current date
-          </div>
-          <div className="form-text">
-            The estimated completion date for the review should not be earlier
-            than the current date, but it is also not recommended to complete
-            the review too late
+            {t('common.estimatedCompletionTimeFormText')}
           </div>
         </div>
 
@@ -125,8 +118,8 @@ export default function Receive({ postId }: { postId: number }) {
             className="btn btn-success"
           >
             {receivePostReviewQueuesActionMutation.isPending
-              ? 'Processing'
-              : 'Receive'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

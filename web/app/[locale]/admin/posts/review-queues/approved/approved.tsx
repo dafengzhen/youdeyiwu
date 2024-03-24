@@ -9,6 +9,7 @@ import ApprovedPostReviewQueuesAction, {
   type IApprovedPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/approved-post-review-queues-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function Approved({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function Approved({ id }: { id: number }) {
     '/admin/posts/review-queues',
     'Post Review Queues#Approved',
   );
+  const t = useTranslations();
 
   const approvedPostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -44,7 +46,7 @@ export default function Approved({ id }: { id: number }) {
 
       toast.current.show({
         type: 'success',
-        message: 'Thank you, your request to review the post has been approved',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       approvedPostReviewQueuesActionMutation.reset();
@@ -72,7 +74,7 @@ export default function Approved({ id }: { id: number }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Reason for approval</label>
+          <label className="form-label">{t('common.reason')}</label>
           <textarea
             rows={3}
             disabled={approvedPostReviewQueuesActionMutation.isSuccess}
@@ -80,13 +82,9 @@ export default function Approved({ id }: { id: number }) {
             name="reason"
             value={form.reason}
             onChange={onChangeForm}
-            placeholder="Please enter the reason"
             aria-describedby="reason"
           />
-          <div className="form-text">
-            Optional. If desired, you can provide a reason for approving the
-            post to encourage the person to keep up the good work
-          </div>
+          <div className="form-text">{t('common.reasonFormText')}</div>
         </div>
 
         <div>
@@ -101,8 +99,8 @@ export default function Approved({ id }: { id: number }) {
             className="btn btn-success"
           >
             {approvedPostReviewQueuesActionMutation.isPending
-              ? 'Processing'
-              : 'Cancel Reception'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

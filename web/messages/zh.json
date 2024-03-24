@@ -188,6 +188,16 @@
     "section": "版块",
     "chooseSectionFormText": "为文章选择一个版块，即内容的分类",
     "reviewReason": "审核理由",
-    "reviewReasonFormText": "请输入设置审核状态的原因（如果有），原因将通过信息告诉用户"
+    "reviewReasonFormText": "请输入设置审核状态的原因（如果有），原因将通过信息告诉用户",
+    "approved": "通过",
+    "notApproved": "不通过",
+    "cancelReception": "退还",
+    "receive": "接收",
+    "rejected": "拒绝",
+    "denied": "被拒绝",
+    "reason": "理由",
+    "reasonFormText": "可选理由。但建议填写，以告诉对方具体原因或者表达鼓励等",
+    "estimatedCompletionTimeFormText": "审核的预计完成日期不应该比当前日期早，请合理评估预计完成日期！",
+    "estimatedCompletionTime": "预计完成审核时间"
   }
 }

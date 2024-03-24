@@ -190,6 +190,16 @@
     "reviewStateCannotBeEmpty": "Review state cannot be empty",
     "sortStateCannotBeEmpty": "Sort state cannot be empty",
     "reviewReason": "Review Reason",
-    "reviewReasonFormText": "Please enter the reasons for setting this state, if available, the reason will be communicated to the user via a message."
+    "reviewReasonFormText": "Please enter the reasons for setting this state, if available, the reason will be communicated to the user via a message.",
+    "approved": "Approved",
+    "notApproved": "Not approved",
+    "cancelReception": "Cancel reception",
+    "receive": "Receive",
+    "rejected": "Rejected",
+    "denied": "Denied",
+    "reason": "Reason",
+    "reasonFormText": "Optional reason. However, it is recommended that they are filled in to inform the other party of the specific reason, or to express encouragement, etc.",
+    "estimatedCompletionTimeFormText": "The expected completion date of the audit should not be earlier than the current date, so please make a reasonable estimate of the expected completion date!",
+    "estimatedCompletionTime": "Estimated completion time"
   }
 }

@@ -9,6 +9,7 @@ import NotApprovedPostReviewQueuesAction, {
   type INotApprovedPostReviewQueuesActionVariables,
 } from '@/app/[locale]/actions/posts/review-queues/not-approved-post-review-queues-action';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
+import { useTranslations } from 'next-intl';
 
 export default function NotApproved({ id }: { id: number }) {
   const { toast } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export default function NotApproved({ id }: { id: number }) {
     '/admin/posts/review-queues',
     'Post Review Queues#NotApproved',
   );
+  const t = useTranslations();
 
   const notApprovedPostReviewQueuesActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -44,7 +46,7 @@ export default function NotApproved({ id }: { id: number }) {
 
       toast.current.show({
         type: 'success',
-        message: 'The post has been successfully rejected',
+        message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
       notApprovedPostReviewQueuesActionMutation.reset();
@@ -72,7 +74,7 @@ export default function NotApproved({ id }: { id: number }) {
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
-          <label className="form-label">Reason for rejection</label>
+          <label className="form-label">{t('common.reason')}</label>
           <textarea
             rows={3}
             disabled={notApprovedPostReviewQueuesActionMutation.isSuccess}
@@ -80,15 +82,9 @@ export default function NotApproved({ id }: { id: number }) {
             name="reason"
             value={form.reason}
             onChange={onChangeForm}
-            placeholder="Please enter the reason"
             aria-describedby="reason"
           />
-          <div className="form-text">
-            Optional. However, we still recommend that you inform the person of
-            the reasons for the rejection, so that they can make targeted
-            corrections or have a clear understanding of any requirements. We
-            believe that doing so would be beneficial
-          </div>
+          <div className="form-text">{t('common.reasonFormText')}</div>
         </div>
 
         <div>
@@ -103,8 +99,8 @@ export default function NotApproved({ id }: { id: number }) {
             className="btn btn-success"
           >
             {notApprovedPostReviewQueuesActionMutation.isPending
-              ? 'Processing'
-              : 'Cancel Reception'}
+              ? t('common.updating')
+              : t('common.update')}
           </button>
           <AccessDeniedAlert />
         </div>

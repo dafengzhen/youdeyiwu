@@ -4,17 +4,19 @@ import LoadMore from '@/app/[locale]/home/load-more';
 import Box from '@/app/[locale]/admin/common/box';
 import Link from 'next/link';
 import type { IPage } from '@/app/[locale]/interfaces';
-import { type MouseEvent, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { IPost } from '@/app/[locale]/interfaces/posts';
 import Nodata from '@/app/[locale]/common/nodata';
 import { convertToCamelCase } from '@/app/[locale]/common/client';
 import QueryAllPostReviewQueuesAction from '@/app/[locale]/actions/posts/review-queues/query-all-post-review-queues-action';
+import { useTranslations } from 'next-intl';
 
 export default function Posts({ data }: { data: IPage<IPost[]> }) {
   const { toast } = useContext(GlobalContext);
   const [content, setContent] = useState<IPost[]>(data.content);
+  const t = useTranslations();
 
   const postsInfiniteQuery = useInfiniteQuery({
     queryKey: ['/admin', '/posts', '/review-queues', 'infinite'],
@@ -86,12 +88,6 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
     }
   }
 
-  function onClickCancelReception(e: MouseEvent<HTMLAnchorElement>) {}
-
-  function onClickApproved(e: MouseEvent<HTMLAnchorElement>) {}
-
-  function onClickNotApproved(e: MouseEvent<HTMLAnchorElement>) {}
-
   return (
     <Box
       hideHeader={true}
@@ -108,9 +104,9 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
           <thead>
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Review State</th>
-              <th scope="col">Operate</th>
+              <th scope="col">{t('common.name')}</th>
+              <th scope="col">{t('common.reviewState')}</th>
+              <th scope="col">{t('common.operate')}</th>
             </tr>
           </thead>
           <tbody>
@@ -142,21 +138,21 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                             className="link-success link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2 link-underline-success"
                             href={`/admin/posts/review-queues/approved?id=${postReviewQueue.id}`}
                           >
-                            Approved
+                            {t('common.approved')}
                           </Link>
 
                           <Link
                             className="link-danger link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2 link-underline-danger"
                             href={`/admin/posts/review-queues/not-approved?id=${postReviewQueue.id}`}
                           >
-                            Not approved
+                            {t('common.notApproved')}
                           </Link>
 
                           <Link
                             className="link-secondary link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2 link-underline-secondary"
                             href={`/admin/posts/review-queues/cancel-reception?id=${postReviewQueue.id}`}
                           >
-                            Cancel reception
+                            {t('common.cancelReception')}
                           </Link>
                         </>
                       ) : (
@@ -164,7 +160,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                           className="link-primary link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2 link-underline-primary"
                           href={`/admin/posts/review-queues/receive?postId=${item.id}`}
                         >
-                          Receive
+                          {t('common.receive')}
                         </Link>
                       )}
                     </div>
