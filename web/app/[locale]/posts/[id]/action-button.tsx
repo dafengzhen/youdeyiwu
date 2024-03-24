@@ -63,22 +63,20 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
       const id = details.id;
       await likePostActionMutation.mutateAsync({ id });
 
-      let message;
       if (!liked) {
-        message = t('common.likeBtn.gets');
         setLiked(true);
         setLikesCount(likesCount + 1);
+
+        toast.current.show({
+          type: 'success',
+          message: t('common.likeBtn.gets'),
+        });
       } else {
         setLiked(false);
         setLikesCount(likesCount - 1);
       }
 
       pointsAlert.refresh();
-
-      toast.current.show({
-        type: 'success',
-        message,
-      });
     } catch (e: any) {
       likePostActionMutation.reset();
       toast.current.show({
@@ -109,22 +107,20 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
       const id = details.id;
       await favoritePostActionMutation.mutateAsync({ id });
 
-      let message;
       if (!favorited) {
-        message = t('common.favouriteBtn.gets');
         setFavorited(true);
         setFavoritesCount(favoritesCount + 1);
+
+        toast.current.show({
+          type: 'success',
+          message: t('common.favouriteBtn.gets'),
+        });
       } else {
         setFavorited(false);
         setFavoritesCount(favoritesCount - 1);
       }
 
       pointsAlert.refresh();
-
-      toast.current.show({
-        type: 'success',
-        message,
-      });
     } catch (e: any) {
       favoritePostActionMutation.reset();
       toast.current.show({

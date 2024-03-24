@@ -9,7 +9,7 @@ import Modals, { type IModalRef } from '@/app/[locale]/common/modals';
 import { type AbstractIntlMessages, NextIntlClientProvider } from 'next-intl';
 import PointsAlert, {
   type IPointsAlertRef,
-} from '@/app/[locale]/components/points-alert/points-alert';
+} from '@/app/[locale]/common/points-alert';
 
 export function Providers(props: {
   locale: string;

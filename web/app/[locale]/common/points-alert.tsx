@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import QueryAllMessageAction from '@/app/[locale]/actions/messages/query-all-message-action';
 import { nonNum } from '@/app/[locale]/common/client';
 import type { IMessage } from '@/app/[locale]/interfaces/messages';
+import useLocalStorage from '@/app/[locale]/hooks/use-local-storage';
 
 export interface IPointsAlert {
   id: string;
@@ -27,9 +28,12 @@ const pointMessagesDisplayedKey = '_youdeyiwu_point_messages_displayed';
 export default forwardRef(function PointsAlert(props, ref) {
   const [items, setItems] = useState<IPointsAlert[]>([]);
   const [updateTrigger, setUpdateTrigger] = useState(items.length);
-  const [pointMessagesDisplayed, setPointMessagesDisplayed] = useState<
-    { id: number }[]
-  >([]);
+  const initialValue: { id: number }[] = [];
+  const [store, setValue] = useLocalStorage(
+    pointMessagesDisplayedKey,
+    initialValue,
+  );
+  const pointMessagesDisplayed = store.value ?? initialValue;
 
   useImperativeHandle(ref, () => ({
     add,
@@ -46,21 +50,6 @@ export default forwardRef(function PointsAlert(props, ref) {
       return response.data;
     },
   });
-
-  useEffect(() => {
-    const pointMessagesDisplayedItem = localStorage.getItem(
-      pointMessagesDisplayedKey,
-    );
-
-    if (pointMessagesDisplayedItem) {
-      try {
-        const parse = JSON.parse(pointMessagesDisplayedItem);
-        if (Array.isArray(parse)) {
-          setPointMessagesDisplayed(parse);
-        }
-      } catch (e) {}
-    }
-  }, []);
 
   useEffect(() => {
     function extractValuesFromBrackets(message: string) {
@@ -85,40 +74,28 @@ export default forwardRef(function PointsAlert(props, ref) {
       let _pointMessagesDisplayed;
       let _filter: IMessage[] = [];
 
-      const pointMessagesDisplayedItem = localStorage.getItem(
-        pointMessagesDisplayedKey,
-      );
-
-      if (pointMessagesDisplayedItem) {
-        try {
-          const parse: any[] = JSON.parse(pointMessagesDisplayedItem);
-          const arr: any[] = [];
-          filter.forEach((item) => {
-            if (!parse.find((item2) => item2.id === item.id)) {
-              arr.push({
-                id: item.id,
-              });
-              _filter.push(item);
-            }
-          });
-
-          _pointMessagesDisplayed = [...arr, ...parse];
-        } catch (e) {
-          _pointMessagesDisplayed = pointMessagesDisplayed;
-        }
-      } else {
+      if (pointMessagesDisplayed.length === 0) {
         _filter = filter;
         _pointMessagesDisplayed = filter.map((item) => {
           return {
             id: item.id,
           };
         });
+      } else {
+        const arr: any[] = [];
+        filter.forEach((item) => {
+          if (!pointMessagesDisplayed.find((item2) => item2.id === item.id)) {
+            arr.push({
+              id: item.id,
+            });
+            _filter.push(item);
+          }
+        });
+
+        _pointMessagesDisplayed = [...arr, ...pointMessagesDisplayed];
       }
 
-      localStorage.setItem(
-        pointMessagesDisplayedKey,
-        JSON.stringify(_pointMessagesDisplayed.sort((a, b) => b.id - a.id)),
-      );
+      setValue(_pointMessagesDisplayed.sort((a, b) => b.id - a.id));
 
       _filter
         .sort((a, b) => a.id - b.id)
