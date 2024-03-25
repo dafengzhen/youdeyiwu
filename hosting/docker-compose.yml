@@ -32,6 +32,7 @@ services:
       - URL
       - NAME
       - DESCRIPTION
+      - SHOW_LANGUAGE_SWITCHER
       - API_SERVER=http://youdeyiwu:8080
       - IS_HTTPS_SITE
       - SERVER_ACTIONS_ALLOWED_ORIGINS=youdeyiwu:8080

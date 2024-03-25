@@ -23,6 +23,7 @@ export default async function Navbar({
   let id;
   let alias = getUserAlias(user);
   const t = await getTranslations({ locale });
+  const showLanguageSwitcher = process.env.SHOW_LANGUAGE_SWITCHER === 'true';
 
   if (user) {
     id = user.id;
@@ -146,11 +147,15 @@ export default async function Navbar({
             </li>
           </ul>
           <ul className="navbar-nav align-items-center">
-            <TranslateNavItem />
+            {showLanguageSwitcher && (
+              <>
+                <TranslateNavItem />
 
-            <li className="nav-item">
-              <div className="vr d-flex h-100 mx-2"></div>
-            </li>
+                <li className="nav-item">
+                  <div className="vr d-flex h-100 mx-2"></div>
+                </li>
+              </>
+            )}
 
             <ColorModeNavItem />
           </ul>
