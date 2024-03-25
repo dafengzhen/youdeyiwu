@@ -7,6 +7,7 @@ import type { IMessage } from '@/app/[locale]/interfaces/messages';
 import { getUserAlias } from '@/app/[locale]/common/tool';
 import { getTranslations } from 'next-intl/server';
 import TranslateNavItem from '@/app/[locale]/common/translate';
+import ColorModeNavItem from '@/app/[locale]/common/color-mode';
 
 export default async function Navbar({
   locale,
@@ -102,10 +103,10 @@ export default async function Navbar({
 
                 <li>
                   <Link
-                    className="dropdown-item"
+                    className="dropdown-item text-capitalize"
                     href={id ? `/users/${id}` : '/users'}
                   >
-                    {t('common.myProfile')}
+                    {id ? alias : t('common.myProfile')}
                   </Link>
                 </li>
                 <li>
@@ -147,22 +148,11 @@ export default async function Navbar({
           <ul className="navbar-nav align-items-center">
             <TranslateNavItem />
 
-            {id && (
-              <>
-                <li className="nav-item">
-                  <div className="vr d-flex h-100 mx-2"></div>
-                </li>
+            <li className="nav-item">
+              <div className="vr d-flex h-100 mx-2"></div>
+            </li>
 
-                <li className="nav-item">
-                  <Link
-                    href={id ? `/users/${id}` : '/users'}
-                    className="user-select-none link-secondary text-decoration-none"
-                  >
-                    {alias}
-                  </Link>
-                </li>
-              </>
-            )}
+            <ColorModeNavItem />
           </ul>
         </div>
       </div>

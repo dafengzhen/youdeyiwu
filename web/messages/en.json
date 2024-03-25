@@ -305,6 +305,9 @@
     "pointEnableFormText": "Please select whether you wish to activate the points system.",
     "startingPoints": "Starting points",
     "startingPointsFormText": "The default initial number of points is 100, but you can change this.",
-    "enable": "Enable"
+    "enable": "Enable",
+    "light": "Light",
+    "dark": "Dark",
+    "auto": "Auto"
   }
 }

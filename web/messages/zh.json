@@ -303,6 +303,9 @@
     "pointEnableFormText": "请选择是否启用积分系统",
     "startingPoints": "初始积分",
     "startingPointsFormText": "默认初始积分数为 100，或者你可以自定义",
-    "enable": "启用"
+    "enable": "启用",
+    "light": "浅色",
+    "dark": "深色",
+    "auto": "自动"
   }
 }

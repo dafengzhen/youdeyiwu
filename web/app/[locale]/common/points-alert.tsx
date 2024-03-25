@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import QueryAllMessageAction from '@/app/[locale]/actions/messages/query-all-message-action';
 import { nonNum } from '@/app/[locale]/common/client';
 import type { IMessage } from '@/app/[locale]/interfaces/messages';
-import useLocalStorage from '@/app/[locale]/hooks/use-local-storage';
+import useLocalStorageState from 'use-local-storage-state';
 
 export interface IPointsAlert {
   id: string;
@@ -28,12 +28,13 @@ const pointMessagesDisplayedKey = '_youdeyiwu_point_messages_displayed';
 export default forwardRef(function PointsAlert(props, ref) {
   const [items, setItems] = useState<IPointsAlert[]>([]);
   const [updateTrigger, setUpdateTrigger] = useState(items.length);
-  const initialValue: { id: number }[] = [];
-  const [store, setValue] = useLocalStorage(
-    pointMessagesDisplayedKey,
-    initialValue,
-  );
-  const pointMessagesDisplayed = store.value ?? initialValue;
+  const initialValue = { value: [] as { id: number }[] };
+
+  const [pointMessagesDisplayedItem, setPointMessagesDisplayed] =
+    useLocalStorageState(pointMessagesDisplayedKey, {
+      defaultValue: initialValue,
+    });
+  const pointMessagesDisplayed = pointMessagesDisplayedItem.value;
 
   useImperativeHandle(ref, () => ({
     add,
@@ -95,7 +96,9 @@ export default forwardRef(function PointsAlert(props, ref) {
         _pointMessagesDisplayed = [...arr, ...pointMessagesDisplayed];
       }
 
-      setValue(_pointMessagesDisplayed.sort((a, b) => b.id - a.id));
+      setPointMessagesDisplayed({
+        value: _pointMessagesDisplayed.sort((a, b) => b.id - a.id),
+      });
 
       _filter
         .sort((a, b) => a.id - b.id)
@@ -122,7 +125,6 @@ export default forwardRef(function PointsAlert(props, ref) {
         });
     }
   }, [messageQuery.data]);
-
   useEffect(() => {
     items
       .filter((item) => !item.displayed)
