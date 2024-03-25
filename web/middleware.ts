@@ -1,11 +1,10 @@
 import type { NextRequest } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
-
-const locales = ['en', 'zh'];
+import { defaultLocale, locales } from '@/i18n';
 
 const intlMiddleware = createIntlMiddleware({
   locales,
-  defaultLocale: 'en',
+  defaultLocale,
   localePrefix: 'never',
 });
 
