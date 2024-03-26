@@ -46,24 +46,22 @@ export default function SectionGroups({
               className="card border-0 cursor-pointer card-hover"
             >
               <div className="card-body py-2">
-                <div className="d-flex align-items-center gap-2">
-                  <i className="bi bi-journals"></i>
-                  <div className="line-clamp-2">
-                    <Link
-                      onClick={(event) => onClickLink(item, event)}
-                      className={clsx(
-                        'text-decoration-none',
-                        item.id === currentSectionGroupId
-                          ? 'link-primary'
-                          : 'link-body-emphasis',
-                      )}
-                      href={`/?sgid=${item.id}`}
-                      scroll={false}
-                    >
-                      {item.name}
-                    </Link>
+                <Link
+                  onClick={(event) => onClickLink(item, event)}
+                  className={clsx(
+                    'text-decoration-none',
+                    item.id === currentSectionGroupId
+                      ? 'link-primary'
+                      : 'link-body-emphasis',
+                  )}
+                  href={`/?sgid=${item.id}`}
+                  scroll={false}
+                >
+                  <div className="d-flex align-items-center gap-2">
+                    <i className="bi bi-journals"></i>
+                    <div className="line-clamp-2">{item.name}</div>
                   </div>
-                </div>
+                </Link>
               </div>
             </div>
           );

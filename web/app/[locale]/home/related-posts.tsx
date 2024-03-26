@@ -25,15 +25,13 @@ export default function RelatedPosts({
                   className="card border-0 cursor-pointer card-hover"
                 >
                   <div className="card-body py-2">
-                    <div className="line-clamp-2">
-                      <Link
-                        className="link-body-emphasis text-decoration-none"
-                        href={`/posts/${item.id}`}
-                        scroll={false}
-                      >
-                        {item.name}
-                      </Link>
-                    </div>
+                    <Link
+                      className="link-body-emphasis text-decoration-none"
+                      href={`/posts/${item.id}`}
+                      scroll={false}
+                    >
+                      <div className="line-clamp-2">{item.name}</div>
+                    </Link>
                   </div>
                 </div>
               );

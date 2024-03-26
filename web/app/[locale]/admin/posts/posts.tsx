@@ -126,7 +126,7 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                   <th scope="row">{item.id}</th>
                   <td>
                     <Link
-                      className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                      className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                       href={`/posts/${item.id}`}
                     >
                       {item.name}

@@ -26,7 +26,7 @@ export default function Configs() {
                   <td scope="row">{item}</td>
                   <td>
                     <Link
-                      className="link-dark text-decoration-none user-select-none"
+                      className="link-body-emphasis text-decoration-none user-select-none"
                       href={`/admin/configs/${item}`}
                     >
                       {t('common.update')}

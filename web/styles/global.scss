@@ -2,8 +2,12 @@
 @import 'bootstrap-icons';
 @import 'animate.css';
 @import 'editor';
-@import 'highlight.js/scss/stackoverflow-light';
 @import 'photoswipe/dist/photoswipe.css';
+@import 'highlight.js/scss/stackoverflow-light';
+
+@include color-mode(dark) {
+  @import 'highlight.js/scss/stackoverflow-dark';
+}
 
 // line-clamp
 
