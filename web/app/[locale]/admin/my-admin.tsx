@@ -59,13 +59,13 @@ export default function MyAdmin({
               <div className="flex-grow-1 d-flex flex-column justify-content-around">
                 <div className="text-break">
                   <Link
-                    className="text-break link-dark link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2"
+                    className="text-break link-body-emphasis link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2"
                     href={id ? `/users/${id}` : '/users'}
                   >
                     {alias}
                   </Link>
                 </div>
-                {id && <div>{`ID. ${id}`}</div>}
+                {id && <div className="text-body-secondary">{`ID. ${id}`}</div>}
               </div>
             </>
           )}

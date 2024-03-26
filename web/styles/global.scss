@@ -1,6 +1,6 @@
-@import 'custom';
-@import 'animate.css';
+@import 'bs';
 @import 'bootstrap-icons';
+@import 'animate.css';
 @import 'editor';
 @import 'highlight.js/scss/stackoverflow-light';
 @import 'photoswipe/dist/photoswipe.css';
@@ -110,11 +110,11 @@
 // other
 
 .card-hover-active {
-  background: var(--bs-light);
+  background: var(--bs-card-cap-bg);
 }
 
 .card-hover:hover {
-  background: var(--bs-light);
+  background: var(--bs-card-cap-bg);
 }
 
 .image-hover:hover {
@@ -182,5 +182,89 @@
 
   75% {
     clip-path: inset(0 0 0 98%);
+  }
+}
+
+// yw-card
+
+@include color-mode {
+  .yw-card {
+    @extend .border-0;
+  }
+
+  .yw-card-header {
+    @extend .bg-transparent;
+    @extend .border-bottom-0;
+  }
+}
+
+@include color-mode(auto) {
+  .yw-card {
+    @extend .border-0;
+  }
+
+  .yw-card-header {
+    @extend .bg-transparent;
+    @extend .border-bottom-0;
+  }
+}
+
+@include color-mode(dark) {
+  .yw-card {
+  }
+
+  .yw-card-header {
+  }
+}
+
+// yw-btn-outline-light
+
+@include color-mode {
+  .yw-btn-outline-light {
+    @extend .btn-light;
+  }
+}
+
+@include color-mode(auto) {
+  .yw-btn-outline-light {
+    @extend .btn-light;
+  }
+}
+
+@include color-mode(dark) {
+  .yw-btn-outline-light {
+    @extend .btn-outline-light;
+  }
+}
+
+// yw-homepage-bg
+
+@include color-mode {
+  .yw-homepage-bg {
+    background: linear-gradient(
+      91.7deg,
+      rgba(252, 190, 224, 1) 16.8%,
+      rgba(212, 254, 218, 1) 103.6%
+    );
+  }
+}
+
+@include color-mode(auto) {
+  .yw-homepage-bg {
+    background: linear-gradient(
+      91.7deg,
+      rgba(252, 190, 224, 1) 16.8%,
+      rgba(212, 254, 218, 1) 103.6%
+    );
+  }
+}
+
+@include color-mode(dark) {
+  .yw-homepage-bg {
+    background: linear-gradient(
+      91.7deg,
+      rgba(88, 27, 68, 1) 16.8%,
+      rgba(21, 82, 88, 1) 103.6%
+    );
   }
 }

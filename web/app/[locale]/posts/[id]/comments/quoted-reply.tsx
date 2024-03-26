@@ -24,8 +24,8 @@ export default function QuotedReply({
   }
 
   return (
-    <div className="card border-0 shadow-sm shadow-hover">
-      <div className="card-header bg-transparent border-bottom-0">
+    <div className="card yw-card shadow-sm shadow-hover">
+      <div className="card-header yw-card-header">
         <div className="d-flex justify-content-around gap-3">
           <Link href={user ? `/users/${user.id}` : '/users'}>
             <Image
@@ -49,7 +49,10 @@ export default function QuotedReply({
                 {getUserAlias(user)}
               </Link>
             </div>
-            <time dateTime={item.createdOn} className="fw-normal small">
+            <time
+              dateTime={item.createdOn}
+              className="fw-normal text-body-secondary small"
+            >
               {item.createdOnText}
             </time>
           </div>
@@ -75,7 +78,10 @@ export default function QuotedReply({
                     {getUserAlias(quotedItem.user)}
                   </Link>
                   <span className="mx-1">·</span>
-                  <time dateTime={quotedItem.createdOn}>
+                  <time
+                    className="text-body-secondary"
+                    dateTime={quotedItem.createdOn}
+                  >
                     {quotedItem.createdOnText}
                   </time>
                 </cite>

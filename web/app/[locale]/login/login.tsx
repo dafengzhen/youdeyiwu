@@ -20,7 +20,10 @@ export default function Login() {
                       {t('common.dontHaveAnAccountYet')}
                     </div>
                     <div>
-                      <Link className="btn btn-light" href="/register">
+                      <Link
+                        className="btn yw-btn-outline-light"
+                        href="/register"
+                      >
                         {t('common.startRegistration')}
                       </Link>
                     </div>

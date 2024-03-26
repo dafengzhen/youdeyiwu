@@ -13,8 +13,8 @@ export default function RelatedPosts({
   return (
     <>
       {randomData.length > 0 && (
-        <div className="card border-0 shadow-sm shadow-hover">
-          <div className="card-header bg-transparent border-bottom-0 fw-bold">
+        <div className="card yw-card shadow-sm shadow-hover">
+          <div className="card-header yw-card-header fw-bold">
             {t('common.relatedArticles')}
           </div>
           <div className="card-body p-0">
@@ -24,15 +24,17 @@ export default function RelatedPosts({
                   key={item.id}
                   className="card border-0 cursor-pointer card-hover"
                 >
-                  <Link
-                    className="link-body-emphasis text-decoration-none"
-                    href={`/posts/${item.id}`}
-                    scroll={false}
-                  >
-                    <div className="card-body py-2">
-                      <div className="line-clamp-2">{item.name}</div>
+                  <div className="card-body py-2">
+                    <div className="line-clamp-2">
+                      <Link
+                        className="link-body-emphasis text-decoration-none"
+                        href={`/posts/${item.id}`}
+                        scroll={false}
+                      >
+                        {item.name}
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               );
             })}

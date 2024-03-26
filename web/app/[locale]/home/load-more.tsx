@@ -16,7 +16,10 @@ export default function LoadMore({
     <button
       onClick={onCLickLoadMore}
       type="button"
-      className={clsx('btn btn-sm btn-hover rounded-pill', className)}
+      className={clsx(
+        'btn btn-sm btn-hover text-body-secondary rounded-pill',
+        className,
+      )}
       title="Load more"
     >
       {isLoading ? t('common.loading') : t('common.loadMore')}

@@ -31,7 +31,7 @@ export default function SubmenuNavbar() {
         styles.boxMarginLeft,
       )}
     >
-      <div className="d-flex flex-column gap-4">
+      <div className="d-flex flex-column gap-4 btn-primary">
         <MyAdmin hidden={true} />
 
         {(selectedMenu?.submenus ?? []).map((item, index) => {
@@ -51,6 +51,7 @@ export default function SubmenuNavbar() {
                   : styles.itemHover,
                 {
                   'link-info': selectedSubmenu?.id === item.id,
+                  'link-body-emphasis': selectedSubmenu?.id !== item.id,
                 },
               )}
             >

@@ -34,8 +34,8 @@ export default function Tags({
   }
 
   return (
-    <div className="card border-0 shadow-sm shadow-hover">
-      <div className="card-header bg-transparent border-bottom-0 fw-bold">
+    <div className="card yw-card shadow-sm shadow-hover">
+      <div className="card-header yw-card-header fw-bold">
         {t('common.tags')}
       </div>
       <div className="card-body p-0">
@@ -45,24 +45,26 @@ export default function Tags({
               key={item.id}
               className="card border-0 cursor-pointer card-hover"
             >
-              <Link
-                onClick={(event) => onClickLink(item, event)}
-                className={clsx(
-                  'text-decoration-none',
-                  item.id === currentTagId
-                    ? 'link-primary'
-                    : 'link-body-emphasis',
-                )}
-                href={`/?tid=${item.id}`}
-                scroll={false}
-              >
-                <div className="card-body py-2">
-                  <div className="d-flex align-items-center gap-2">
-                    <i className="bi bi-tag fs-5"></i>
-                    <div className="line-clamp-2">{item.name}</div>
+              <div className="card-body py-2">
+                <div className="d-flex align-items-center gap-2">
+                  <i className="bi bi-tag"></i>
+                  <div className="line-clamp-2">
+                    <Link
+                      onClick={(event) => onClickLink(item, event)}
+                      className={clsx(
+                        'text-decoration-none',
+                        item.id === currentTagId
+                          ? 'link-primary'
+                          : 'link-body-emphasis',
+                      )}
+                      href={`/?tid=${item.id}`}
+                      scroll={false}
+                    >
+                      {item.name}
+                    </Link>
                   </div>
                 </div>
-              </Link>
+              </div>
             </div>
           );
         })}

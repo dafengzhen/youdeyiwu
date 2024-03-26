@@ -33,30 +33,31 @@ export default function MyArticles({
     >
       <div className="card-body">
         <div className="d-flex flex-column gap-4">
-          <div className="row row-cols-2 g-4">
+          <div
+            className={clsx(
+              'row g-4',
+              content.length === 1 ? 'row-cols-1' : 'row-cols-2',
+            )}
+          >
             {content.map((item) => {
               return (
                 <div key={item.id} className="col">
-                  <div className="card border-0 text-center">
-                    <div className="card-header border-bottom-0 bg-transparent">
-                      <div className="card-title h5 fw-bold">
-                        <Link
-                          className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
-                          href={`/posts/${item.id}`}
-                          scroll={false}
-                        >
-                          {item.name}
-                        </Link>
-                      </div>
+                  <div className="card yw-card text-center">
+                    <div className="card-header yw-card-header fw-bold">
+                      <Link
+                        className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                        href={`/posts/${item.id}`}
+                        scroll={false}
+                      >
+                        {item.name}
+                      </Link>
                     </div>
-                    <div className="card-body">
-                      {item.overview && (
-                        <div className="text-secondary my-2">
-                          {item.overview}
-                        </div>
-                      )}
+
+                    <div className="card-body py-2">
+                      {item.overview && <div className="">{item.overview}</div>}
                     </div>
-                    <div className="card-footer border-top-0 bg-transparent">
+
+                    <div className="card-footer border-top-0 bg-transparent mb-2">
                       <Link
                         href={`/posts/${item.id}`}
                         type="button"

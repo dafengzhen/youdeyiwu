@@ -109,7 +109,9 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                     {alias}
                   </Link>
                 </div>
-                <time className="fw-normal small">{t('common.now')}</time>
+                <time className="fw-normal text-body-secondary small">
+                  {t('common.now')}
+                </time>
               </div>
             </div>
           </div>

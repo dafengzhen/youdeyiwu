@@ -24,17 +24,13 @@ export default function MyHomepage({
   return (
     <div
       className={clsx(
-        'card border-0',
+        'card border-0 yw-homepage-bg',
         {
           'border-info': selectedTabIndex === 'MyHomepage',
         },
         isClick ? 'shadow' : 'shadow-hover',
       )}
       onClick={onClickCard}
-      style={{
-        backgroundImage:
-          'linear-gradient(91.7deg, rgba(252, 190, 224, 1) 16.8%, rgba(212, 254, 218, 1) 103.6%)',
-      }}
     >
       <div className="card-body">
         <div className="d-flex gap-3">
@@ -49,12 +45,10 @@ export default function MyHomepage({
             <div className="fw-bold user-select-all">
               {`${getUserAlias(details)} (ID. ${details.id})`}
             </div>
-            <div>
-              {details.oneSentence ? (
-                details.oneSentence
-              ) : (
-                <span>{t('common.heDidntLeaveBehindASingleWord')}</span>
-              )}
+            <div className="text-secondary-emphasis">
+              {details.oneSentence
+                ? details.oneSentence
+                : t('common.heDidntLeaveBehindASingleWord')}
             </div>
           </div>
         </div>

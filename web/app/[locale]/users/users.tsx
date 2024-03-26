@@ -96,8 +96,8 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
             const avatar = item.avatar;
             return (
               <div key={item.id} className="col">
-                <div className="card border-0 shadow-sm shadow-hover">
-                  <div className="card-header bg-transparent border-bottom-0 fw-bold">
+                <div className="card yw-card shadow-sm shadow-hover">
+                  <div className="card-header yw-card-header fw-bold">
                     <div className="d-flex justify-content-around gap-3">
                       <Link href={`/users/${item.id}`}>
                         <Image
@@ -117,7 +117,7 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                             {getUserAlias(item)}
                           </Link>
                         </div>
-                        <div className="fw-normal small">
+                        <div className="fw-normal text-body-secondary small">
                           ID.&nbsp;{item.id}
                         </div>
                       </div>
@@ -125,12 +125,10 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                   </div>
                   <div className="card-body d-flex flex-column gap-3 py-2">
                     <hr className="my-0 text-secondary" />
-                    <div>
-                      {item.oneSentence ? (
-                        item.oneSentence
-                      ) : (
-                        <span>{t('common.heDidntLeaveBehindASingleWord')}</span>
-                      )}
+                    <div className="text-secondary-emphasis">
+                      {item.oneSentence
+                        ? item.oneSentence
+                        : t('common.heDidntLeaveBehindASingleWord')}
                     </div>
                     <hr className="my-0 text-secondary" />
                     <div>

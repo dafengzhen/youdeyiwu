@@ -96,8 +96,8 @@ export default function Create() {
             className="btn btn-success"
           >
             {createSectionGroupActionMutation.isPending
-              ? t('common.updating')
-              : t('common.update')}
+              ? t('common.creating')
+              : t('common.create')}
           </button>
           <AccessDeniedAlert />
         </div>

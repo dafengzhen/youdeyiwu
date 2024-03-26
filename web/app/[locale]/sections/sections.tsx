@@ -25,9 +25,9 @@ export default function Sections({
                 <div key={item.id} className="card border-0">
                   <div className="card-header bg-transparent border-bottom-0">
                     <div className="d-flex align-items-center justify-content-between">
-                      <div className="h4">{item.name}</div>
+                      <div className="h4 text-secondary">{item.name}</div>
                       <div>
-                        <i className="bi bi-arrow-right fs-4 text-secondary text-opacity-25"></i>
+                        <i className="bi bi-arrow-right fs-4 text-secondary text-opacity-50"></i>
                       </div>
                     </div>
                   </div>
@@ -76,7 +76,7 @@ const Items = ({ sections }: { sections: ISection[] }) => {
 
         return (
           <div key={section.id} className="col" style={{ maxWidth: 330 }}>
-            <div className="card border-0 shadow-sm shadow-hover">
+            <div className="card yw-card shadow-sm shadow-hover">
               <div className="card-body d-flex flex-column gap-4 p-0">
                 {isHttpOrHttps(cover) ? (
                   <Cover item={section} />
@@ -84,7 +84,7 @@ const Items = ({ sections }: { sections: ISection[] }) => {
                   <>
                     {section.overview && (
                       <Link
-                        className="line-clamp-3 link-dark text-decoration-none p-3"
+                        className="line-clamp-3 card-text text-reset text-decoration-none p-3"
                         href={`/sections/${section.id}`}
                         scroll={false}
                       >
@@ -103,7 +103,7 @@ const Items = ({ sections }: { sections: ISection[] }) => {
                           <Link
                             key={admin.id}
                             href={`/users/${admin.id}`}
-                            className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                            className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                           >
                             {getUserAlias(admin)}
                           </Link>

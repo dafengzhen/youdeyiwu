@@ -116,8 +116,8 @@ export default function Posts({
         const avatar = user?.avatar;
 
         return (
-          <div key={item.id} className="card border-0 shadow-sm shadow-hover">
-            <div className="card-header bg-transparent border-bottom-0 fw-bold">
+          <div key={item.id} className="card yw-card shadow-sm shadow-hover">
+            <div className="card-header yw-card-header fw-bold">
               <div className="d-flex justify-content-around gap-3">
                 <Link href={user ? `/users/${user.id}` : '/users'}>
                   <Image
@@ -139,19 +139,22 @@ export default function Posts({
                     </Link>
 
                     {item.reviewState !== 'APPROVED' && (
-                      <div className="badge rounded-pill text-bg-dark text-capitalize">
+                      <div className="badge rounded-pill text-bg-secondary text-capitalize">
                         {convertToCamelCase(item.reviewState)}
                       </div>
                     )}
                   </div>
                   <div className="d-flex gap-2 small">
                     <Link
-                      className="fw-medium text-truncate link-dark link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2"
+                      className="fw-medium text-truncate link-body-emphasis link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2"
                       href={user ? `/users/${user.id}` : '/users'}
                     >
                       {getUserAlias(user)}
                     </Link>
-                    <time dateTime={item.createdOn} className="fw-normal">
+                    <time
+                      dateTime={item.createdOn}
+                      className="fw-normal text-body-secondary"
+                    >
                       {item.createdOnText}
                     </time>
                   </div>
@@ -161,7 +164,7 @@ export default function Posts({
             <div className="card-body d-flex flex-column gap-3 py-2">
               {item.overview && (
                 <Link
-                  className="line-clamp-3 link-dark text-decoration-none"
+                  className="line-clamp-3 card-text text-reset text-decoration-none"
                   href={`/posts/${item.id}`}
                   scroll={false}
                 >

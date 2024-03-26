@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { IPostDetails } from '@/app/[locale]/interfaces/posts';
+import type { IPostDetails } from '@/app/[locale]/interfaces/posts';
 import {
   convertToCamelCase,
   fromNow,
@@ -34,8 +34,8 @@ export default function Navbar({ details }: { details: IPostDetails }) {
 
   return (
     <div className="d-flex flex-column gap-4">
-      <div className="card border-0 shadow-sm shadow-hover">
-        <div className="card-header bg-transparent border-bottom-0 fw-bold">
+      <div className="card yw-card shadow-sm shadow-hover">
+        <div className="card-header yw-card-header fw-bold">
           <div className="d-flex justify-content-around gap-3">
             <Link href={uid ? `/users/${uid}` : '/users'}>
               <Image
@@ -58,7 +58,7 @@ export default function Navbar({ details }: { details: IPostDetails }) {
                 </div>
 
                 {details.reviewState !== 'APPROVED' && (
-                  <div className="badge rounded-pill text-bg-dark text-capitalize">
+                  <div className="badge rounded-pill text-bg-secondary text-capitalize">
                     {convertToCamelCase(details.reviewState)}
                   </div>
                 )}
@@ -66,13 +66,15 @@ export default function Navbar({ details }: { details: IPostDetails }) {
               <div className="d-flex gap-2 small">
                 <div>
                   <Link
-                    className="fw-medium text-truncate link-dark link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2"
+                    className="fw-medium text-truncate link-body-emphasis link-underline-opacity-0 link-underline-opacity-100-hover link-offset-2"
                     href={uid ? `/users/${uid}` : '/users'}
                   >
                     {alias}
                   </Link>
                 </div>
-                <time className="fw-normal">{fromNow(details.createdOn)}</time>
+                <time className="fw-normal text-body-secondary">
+                  {fromNow(details.createdOn)}
+                </time>
               </div>
             </div>
           </div>
@@ -87,7 +89,7 @@ export default function Navbar({ details }: { details: IPostDetails }) {
           >
             {content ? <Content html={content} /> : <Nodata />}
 
-            {content.length > 600 && (
+            {content.length >= 600 && (
               <>
                 <div style={{ height: '3.75rem' }}></div>
                 <div
@@ -100,8 +102,8 @@ export default function Navbar({ details }: { details: IPostDetails }) {
                   )}
                   style={{
                     height: '8rem',
-                    backgroundImage:
-                      'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 95%)',
+                    background:
+                      'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--bs-body-bg) 95%)',
                   }}
                 ></div>
                 <button

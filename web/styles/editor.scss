@@ -60,3 +60,99 @@
   height: auto !important;
   line-height: 1 !important;
 }
+
+@include color-mode {
+  .ck.ck-toolbar {
+  }
+}
+
+@include color-mode(auto) {
+  .ck.ck-toolbar {
+  }
+}
+
+@include color-mode(dark) {
+  .ck.ck-toolbar {
+    --ck-color-base-foreground: #1a1a1a;
+    --ck-color-base-background: #2d2d2d;
+    --ck-color-base-border: #434343;
+    --ck-color-base-action: #4caf50;
+    --ck-color-base-focus: #64b5f6;
+    --ck-color-base-text: #e0e0e0;
+    --ck-color-base-active: #3f51b5;
+    --ck-color-base-active-focus: #283593;
+    --ck-color-base-error: #ff5722;
+    --ck-color-focus-border-coordinates: 218, 81.8%, 56.9%;
+    --ck-color-focus-border: hsl(var(--ck-color-focus-border-coordinates));
+    --ck-color-focus-outer-shadow: #424242;
+    --ck-color-focus-disabled-shadow: rgba(100, 181, 246, 0.3);
+    --ck-color-focus-error-shadow: rgba(255, 87, 34, 0.3);
+    --ck-color-text: var(--ck-color-base-text);
+    --ck-color-shadow-drop: rgba(255, 255, 255, 0.15);
+    --ck-color-shadow-drop-active: rgba(255, 255, 255, 0.2);
+    --ck-color-shadow-inner: rgba(255, 255, 255, 0.1);
+    --ck-color-button-default-background: transparent;
+    --ck-color-button-default-hover-background: #424242;
+    --ck-color-button-default-active-background: #424242;
+    --ck-color-button-default-disabled-background: transparent;
+    --ck-color-button-on-background: #37474f;
+    --ck-color-button-on-hover-background: #546e7a;
+    --ck-color-button-on-active-background: #546e7a;
+    --ck-color-button-on-disabled-background: #424242;
+    --ck-color-button-on-color: #2196f3;
+    --ck-color-button-action-background: var(--ck-color-base-action);
+    --ck-color-button-action-hover-background: #388e3c;
+    --ck-color-button-action-active-background: #388e3c;
+    --ck-color-button-action-disabled-background: #6aba66;
+    --ck-color-button-action-text: var(--ck-color-base-background);
+    --ck-color-button-save: #009688;
+    --ck-color-button-cancel: #ff5722;
+    --ck-color-switch-button-off-background: #757575;
+    --ck-color-switch-button-off-hover-background: #616161;
+    --ck-color-switch-button-on-background: var(
+      --ck-color-button-action-background
+    );
+    --ck-color-switch-button-on-hover-background: #388e3c;
+    --ck-color-switch-button-inner-background: var(--ck-color-base-background);
+    --ck-color-switch-button-inner-shadow: rgba(255, 255, 255, 0.1);
+    --ck-color-dropdown-panel-background: var(--ck-color-base-background);
+    --ck-color-dropdown-panel-border: var(--ck-color-base-border);
+    --ck-color-dialog-background: var(--ck-color-base-background);
+    --ck-color-dialog-form-header-border: var(--ck-color-base-border);
+    --ck-color-input-background: var(--ck-color-base-background);
+    --ck-color-input-border: var(--ck-color-base-border);
+    --ck-color-input-error-border: var(--ck-color-base-error);
+    --ck-color-input-text: var(--ck-color-base-text);
+    --ck-color-input-disabled-background: #424242;
+    --ck-color-input-disabled-border: var(--ck-color-base-border);
+    --ck-color-input-disabled-text: #9e9e9e;
+    --ck-color-list-background: var(--ck-color-base-background);
+    --ck-color-list-button-hover-background: var(
+      --ck-color-button-default-hover-background
+    );
+    --ck-color-list-button-on-background: var(--ck-color-button-on-color);
+    --ck-color-list-button-on-background-focus: var(--ck-color-button-on-color);
+    --ck-color-list-button-on-text: var(--ck-color-base-background);
+    --ck-color-panel-background: var(--ck-color-base-background);
+    --ck-color-panel-border: var(--ck-color-base-border);
+    --ck-color-toolbar-background: var(--ck-color-base-background);
+    --ck-color-toolbar-border: var(--ck-color-base-border);
+    --ck-color-tooltip-background: var(--ck-color-base-text);
+    --ck-color-tooltip-text: var(--ck-color-base-background);
+    --ck-color-engine-placeholder-text: #bdbdbd;
+    --ck-color-upload-bar-background: #64b5f6;
+    --ck-color-link-default: #448aff;
+    --ck-color-link-selected-background: rgba(63, 81, 181, 0.1);
+    --ck-color-link-fake-selection: rgba(63, 81, 181, 0.3);
+    --ck-color-highlight-background: #ff9800;
+    --ck-color-light-red: #e57373;
+    --ck-disabled-opacity: 0.5;
+    --ck-focus-outer-shadow-geometry: 0 0 0 3px;
+    --ck-focus-outer-shadow: var(--ck-focus-outer-shadow-geometry)
+      var(--ck-color-focus-outer-shadow);
+    --ck-focus-disabled-outer-shadow: var(--ck-focus-outer-shadow-geometry)
+      var(--ck-color-focus-disabled-shadow);
+    --ck-focus-error-outer-shadow: var(--ck-focus-outer-shadow-geometry)
+      var(--ck-color-focus-error-shadow);
+  }
+}

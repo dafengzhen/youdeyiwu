@@ -308,6 +308,7 @@
     "enable": "Enable",
     "light": "Light",
     "dark": "Dark",
-    "auto": "Auto"
+    "auto": "Auto",
+    "expand": "Expand"
   }
 }

@@ -83,6 +83,7 @@ export default function Navbar({
                   : styles.itemHover,
                 {
                   'link-info': selectedMenu?.id === item.id,
+                  'link-body-emphasis': selectedMenu?.id !== item.id,
                 },
               )}
             >

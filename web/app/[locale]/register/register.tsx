@@ -20,7 +20,7 @@ export default function Register() {
                       {t('common.existingAccount')}
                     </div>
                     <div>
-                      <Link className="btn btn-light" href="/login">
+                      <Link className="btn yw-btn-outline-light" href="/login">
                         {t('common.startLoggingIn')}
                       </Link>
                     </div>

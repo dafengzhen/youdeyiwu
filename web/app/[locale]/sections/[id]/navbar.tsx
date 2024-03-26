@@ -2,13 +2,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import clsx from 'clsx';
-import { ISectionDetails } from '@/app/[locale]/interfaces/sections';
+import type { ISectionDetails } from '@/app/[locale]/interfaces/sections';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
+import { useTranslations } from 'next-intl';
 
 export default function Navbar({ details }: { details: ISectionDetails }) {
   const content = details.content ?? '';
   const [continueReading, setContinueReading] = useState(false);
+  const t = useTranslations();
 
   function onClickContinueReading() {
     setContinueReading(!continueReading);
@@ -16,8 +18,8 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
 
   return (
     <div className="d-flex flex-column gap-4">
-      <div className="card border-0 shadow-sm shadow-hover">
-        <div className="card-header bg-transparent border-bottom-0 fw-bold">
+      <div className="card yw-card shadow-sm shadow-hover">
+        <div className="card-header yw-card-header fw-bold">
           <div className="d-flex align-items-center gap-4 justify-content-between">
             {details.name}
           </div>
@@ -66,7 +68,7 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
               <>
                 {content && <Content html={content} />}
 
-                {content.length > 600 && (
+                {content.length >= 600 && (
                   <>
                     <div style={{ height: '3.75rem' }}></div>
                     <div
@@ -79,8 +81,8 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
                       )}
                       style={{
                         height: '8rem',
-                        backgroundImage:
-                          'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 95%)',
+                        background:
+                          'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--bs-body-bg) 95%)',
                       }}
                     ></div>
                     <button
@@ -88,7 +90,9 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
                       type="button"
                       className="btn rounded-pill btn-outline-secondary position-absolute bottom-0"
                     >
-                      {continueReading ? 'Collapse' : 'Continue reading'}
+                      {continueReading
+                        ? t('common.collapse')
+                        : t('common.expand')}
                     </button>
                   </>
                 )}

@@ -97,7 +97,7 @@ export default function ReplyBox({
       <div className="card-body d-flex flex-column gap-3 py-2">
         <div>
           {replyingUser && (
-            <label className="form-label text-secondary">
+            <label className="form-label text-body-tertiary">
               <span>{t('common.quoteFromThisUser')}</span>
               <span>&nbsp;</span>
               <span className="fw-medium">@{getUserAlias(replyingUser)}</span>

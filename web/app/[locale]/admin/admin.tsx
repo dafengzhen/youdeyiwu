@@ -77,7 +77,7 @@ export default function Admin({
           <div className="col">
             <div className="card rounded-2">
               <div className="card-header bg-transparent border-bottom-0">
-                <div className="fw-bold">
+                <div className="fw-bold text-body-secondary">
                   {t('common.userRegistrationStatisticsForTheLast15Days')}
                 </div>
               </div>

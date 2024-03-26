@@ -66,12 +66,12 @@ export default function UserId({
       id: 'MyArticles',
       name: t('common.myArticles'),
     },
-    self
-      ? {
-          id: 'MyFavourites',
-          name: t('common.myFavourites'),
-        }
-      : null,
+    // self
+    //   ? {
+    //       id: 'MyFavourites',
+    //       name: t('common.myFavourites'),
+    //     }
+    //   : null,
     {
       id: 'RelatedContent',
       name: t('common.relatedContent'),
@@ -134,6 +134,7 @@ export default function UserId({
                           : styles.itemHover,
                         {
                           'link-info': selectedTabIndex === _item.id,
+                          'link-body-emphasis': selectedTabIndex !== _item.id,
                         },
                       )}
                     >

@@ -245,17 +245,20 @@ export default function Messages({
                   const key = item.id + '_' + item.messageRange;
 
                   return (
-                    <div key={key} className="card border-0 card-hover">
+                    <div key={key} className="card yw-card card-hover">
                       <div className="card-body py-2">
                         <div className="d-flex gap-4">
                           <div className="d-flex flex-column gap-2 flex-grow-1">
                             <div className="d-flex gap-2 align-items-center justify-content-between">
                               <div className="d-flex gap-2 align-items-center">
                                 <i
-                                  className="bi bi-bell fs-3"
+                                  className="bi bi-bell fs-3 text-body-secondary"
                                   title="Set Read"
                                 ></i>
-                                <time dateTime={item.createdOn}>
+                                <time
+                                  className="text-body-secondary"
+                                  dateTime={item.createdOn}
+                                >
                                   {item.createdOnText}
                                 </time>
                               </div>
