@@ -13,6 +13,7 @@
     "docs:preview": "vitepress preview"
   },
   "devDependencies": {
+    "@types/node": "^20.11.30",
     "prettier": "^3.2.5",
     "vitepress": "^1.0.1"
   },

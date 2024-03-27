@@ -2,6 +2,8 @@ import { defineConfig } from 'vitepress';
 import { en } from './en.mjs';
 import { zh } from './zh.mjs';
 
+const isDev = process.env.NODE_ENV === 'development';
+const isProd = !isDev;
 const base = '/youdeyiwu/';
 
 // https://vitepress.dev/reference/site-config
@@ -9,7 +11,7 @@ export default defineConfig({
   lang: 'en-US',
   locales: {
     root: { label: 'English', ...en },
-    zh: { label: '简体中文', ...zh }
+    zh: { label: '简体中文', ...zh },
   },
   base,
   cleanUrls: true,
@@ -22,8 +24,8 @@ export default defineConfig({
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        href: `${base}favicon/apple-touch-icon.png`
-      }
+        href: `${base}favicon/apple-touch-icon.png`,
+      },
     ],
     [
       'link',
@@ -31,8 +33,8 @@ export default defineConfig({
         rel: 'icon',
         type: 'image/png',
         sizes: '32x32',
-        href: `${base}favicon/favicon-32x32.png`
-      }
+        href: `${base}favicon/favicon-32x32.png`,
+      },
     ],
     [
       'link',
@@ -40,8 +42,8 @@ export default defineConfig({
         rel: 'icon',
         type: 'image/png',
         sizes: '16x16',
-        href: `${base}assets/favicon/favicon-16x16.png`
-      }
+        href: `${base}assets/favicon/favicon-16x16.png`,
+      },
     ],
     ['link', { rel: 'manifest', href: `${base}favicon/site.webmanifest` }],
     ['meta', { name: 'theme-color', content: '#fc5bb6' }],
@@ -51,28 +53,35 @@ export default defineConfig({
       'meta',
       {
         property: 'og:title',
-        content: 'Youdeyiwu | Youdeyiwu is an open-source lightweight forum'
-      }
+        content: 'Youdeyiwu | Youdeyiwu is an open-source lightweight forum',
+      },
     ],
     ['meta', { property: 'og:site_name', content: 'Youdeyiwu' }],
     [
       'meta',
       {
         property: 'og:image',
-        content: 'https://www.youdeyiwu.com/og.jpg'
-      }
+        content: 'https://www.youdeyiwu.com/og.jpg',
+      },
     ],
     ['meta', { property: 'og:url', content: 'https://www.youdeyiwu.com' }],
-    [
-      'script',
-      { async: '', src: 'https://eu.umami.is/script.js', 'data-website-id': '530fe927-a914-40f9-9055-ec7b1730bbdb' }
-    ]
+
+    isProd
+      ? [
+          'script',
+          {
+            async: '',
+            src: 'https://eu.umami.is/script.js',
+            'data-website-id': '530fe927-a914-40f9-9055-ec7b1730bbdb',
+          },
+        ]
+      : ([] as any),
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.png',
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/dafengzhen/youdeyiwu' }
+      { icon: 'github', link: 'https://github.com/dafengzhen/youdeyiwu' },
     ],
     search: {
       provider: 'local',
@@ -82,7 +91,7 @@ export default defineConfig({
             translations: {
               button: {
                 buttonText: '搜索文档',
-                buttonAriaLabel: '搜索文档'
+                buttonAriaLabel: '搜索文档',
               },
               modal: {
                 noResultsText: '无法找到相关结果',
@@ -92,21 +101,21 @@ export default defineConfig({
                 footer: {
                   selectText: '选择',
                   navigateText: '切换',
-                  closeText: '关闭'
-                }
-              }
-            }
-          }
-        }
-      }
+                  closeText: '关闭',
+                },
+              },
+            },
+          },
+        },
+      },
     },
     editLink: {
       pattern: 'https://github.com/dafengzhen/youdeyiwu/edit/main/docs/:path',
-      text: 'Edit this page on GitHub'
+      text: 'Edit this page on GitHub',
     },
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present Youdeyiwu'
-    }
-  }
+      copyright: 'Copyright © 2024-present Youdeyiwu',
+    },
+  },
 });
