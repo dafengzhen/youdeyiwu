@@ -17,6 +17,8 @@ COPY --chown=java:java --from=builder /youdeyiwu/dependencies/ ./
 COPY --chown=java:java --from=builder /youdeyiwu/spring-boot-loader/ ./
 COPY --chown=java:java --from=builder /youdeyiwu/snapshot-dependencies/ ./
 COPY --chown=java:java --from=builder /youdeyiwu/application/ ./
+VOLUME /youdeyiwu/logs
+VOLUME /youdeyiwu/indexs
 USER java
 ENV PORT 8080
 EXPOSE $PORT

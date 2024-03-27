@@ -21,6 +21,7 @@ RUN chown nextjs:nodejs .next
 COPY --chown=nextjs:nodejs --from=builder /youdeyiwu-web/public ./public
 COPY --chown=nextjs:nodejs --from=builder /youdeyiwu-web/.next/standalone ./
 COPY --chown=nextjs:nodejs --from=builder /youdeyiwu-web/.next/static ./.next/static
+VOLUME /youdeyiwu-web/public/assets
 USER nextjs
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
