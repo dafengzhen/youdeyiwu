@@ -44,6 +44,8 @@ services:
     depends_on:
       - youdeyiwu
     restart: on-failure
+    volumes:
+      - web_assets:/youdeyiwu-web/public/assets
     ports:
       - "3000:3000"
     networks:
@@ -83,3 +85,5 @@ volumes:
     name: youdeyiwu_db
   logs:
     name: youdeyiwu_logs
+  web_assets:
+    name: youdeyiwu_web_assets

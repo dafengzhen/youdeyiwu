@@ -36,6 +36,26 @@ export const metadata: Metadata = {
     template: `%s | ${process.env.NAME!}`,
     default: process.env.NAME!,
   },
+  icons: [
+    {
+      rel: 'icon',
+      url: '/assets/favicon/favicon.ico',
+      type: 'image/x-icon',
+      sizes: 'any',
+    },
+    {
+      rel: 'icon',
+      url: '/assets/favicon/favicon-32x32.png',
+      type: 'image/png',
+      sizes: '32x32',
+    },
+    {
+      rel: 'apple-touch-icon',
+      url: '/assets/favicon/apple-touch-icon.png',
+      type: 'image/png',
+      sizes: '180x180',
+    },
+  ],
   generator: 'Next.js',
   applicationName: process.env.NAME!,
   publisher: 'Youdeyiwu',

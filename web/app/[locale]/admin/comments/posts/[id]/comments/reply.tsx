@@ -26,7 +26,7 @@ export default function Reply({
               src={
                 user && isHttpOrHttps(user.avatar)
                   ? user.avatar!
-                  : '/avatar.png'
+                  : '/assets/avatar.png'
               }
               alt="avatar"
               width={50}

@@ -36,7 +36,7 @@ export default function MyHomepage({
         <div className="d-flex gap-3">
           <Image
             className="rounded-circle object-fit-contain"
-            src={isHttpOrHttps(avatar) ? avatar! : '/avatar.png'}
+            src={isHttpOrHttps(avatar) ? avatar! : '/assets/avatar.png'}
             alt="avatar"
             width={80}
             height={80}

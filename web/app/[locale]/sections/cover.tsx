@@ -1,8 +1,7 @@
-import { ISection } from '@/app/[locale]/interfaces/sections';
+import type { ISection } from '@/app/[locale]/interfaces/sections';
 import Link from 'next/link';
 import { type SyntheticEvent, useState } from 'react';
 import Image from 'next/image';
-import NoImage from '@/public/no-image.svg';
 
 export default function Cover({ item }: { item: ISection }) {
   const cover = item.cover;
@@ -24,7 +23,7 @@ export default function Cover({ item }: { item: ISection }) {
           className="rounded-top object-fit-cover image-hover cursor-pointer"
           width={260}
           height={195}
-          src={isError ? NoImage : cover}
+          src={cover}
           alt="cover"
           title={isError ? 'Image loading error occurred' : 'cover'}
         />

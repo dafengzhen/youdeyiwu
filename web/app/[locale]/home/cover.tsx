@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { type SyntheticEvent, useState } from 'react';
 import Image from 'next/image';
-import NoImage from '@/public/no-image.svg';
 import type { IPost } from '@/app/[locale]/interfaces/posts';
 
 export default function Cover({ item }: { item: IPost }) {
@@ -25,7 +24,7 @@ export default function Cover({ item }: { item: IPost }) {
             className="rounded object-fit-cover image-hover cursor-pointer"
             width={260}
             height={195}
-            src={isError ? NoImage : cover}
+            src={cover}
             alt="cover"
             title={isError ? 'Image loading error occurred' : 'cover'}
           />

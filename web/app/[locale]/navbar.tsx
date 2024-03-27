@@ -35,7 +35,7 @@ export default async function Navbar({
         <Link href="/" className="navbar-brand" scroll={false}>
           <Image
             className="d-inline-block me-2 rounded"
-            src="/favicon/android-chrome-512x512.png"
+            src="/assets/favicon/android-chrome-512x512.png"
             alt="logo"
             width={40}
             height={40}

@@ -33,7 +33,7 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
                   {details.admins.map((item) => {
                     const avatar = isHttpOrHttps(item.avatar)
                       ? item.avatar!
-                      : '/avatar.png';
+                      : '/assets/avatar.png';
 
                     return (
                       <Link

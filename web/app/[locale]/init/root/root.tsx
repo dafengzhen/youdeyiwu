@@ -2,13 +2,13 @@
 
 import type { IUser } from '@/app/[locale]/interfaces/users';
 import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
-import Link from 'next/link';
 import { useMutation } from '@tanstack/react-query';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
 import UpdateRootConfigAction, {
   type IUpdateRootActionVariables,
 } from '@/app/[locale]/actions/configs/root/update-root-config-action';
+import { useTranslations } from 'next-intl';
 
 export default function InitRoot({
   currentUser,
@@ -21,6 +21,7 @@ export default function InitRoot({
   });
   const [finish, setFinish] = useState(false);
   const isLogin = !!currentUser;
+  const t = useTranslations();
 
   const updateRootConfigActionMutation = useMutation({
     mutationFn: async (variables: IUpdateRootActionVariables) => {
@@ -39,7 +40,7 @@ export default function InitRoot({
       if (!isLogin) {
         toast.current.show({
           type: 'danger',
-          message: 'Not logged in yet. Please login before proceeding',
+          message: t('common.pleaseLoginBeforeContinuing'),
         });
         return;
       }
@@ -52,7 +53,7 @@ export default function InitRoot({
       if (!secret) {
         toast.current.show({
           type: 'danger',
-          message: 'Please enter the root secret',
+          message: t('common.theKeyCannotBeEmpty'),
         });
         return;
       }
@@ -60,11 +61,12 @@ export default function InitRoot({
       await updateRootConfigActionMutation.mutateAsync(variables);
       setFinish(true);
 
+      const alias = `${getUserAlias(currentUser)} (ID. ${currentUser.id})`;
       toast.current.show({
         type: 'success',
-        message: `Congratulations! User ${getUserAlias(currentUser)} (ID. ${
-          currentUser.id
-        }) has become a forum administrator`,
+        message: t('common.forumAdministratorInitialisationMsg', {
+          alias,
+        }),
       });
     } catch (e: any) {
       updateRootConfigActionMutation.reset();
@@ -93,20 +95,14 @@ export default function InitRoot({
             <div className="mb-5">
               <div>
                 <h2 className="fw-bold display-6">
-                  Initialize Forum Administrator
+                  {t('common.forumAdministratorInitialisation')}
                 </h2>
               </div>
             </div>
             <div className="mb-5">
               <div>
                 <p className="lead">
-                  To initiate initialization, you need to enter a specific
-                  secret, which can be found in the console output when the
-                  server program starts.
-                  <br />
-                  Note that it will only be output to the console during the
-                  initial initialization. Subsequently, it will be stored in the
-                  database, so please do not disclose it.
+                  {t('common.forumAdministratorInitialisationFormText1')}
                 </p>
               </div>
             </div>
@@ -115,7 +111,7 @@ export default function InitRoot({
                 <div className="text-start">
                   <label className="form-label">
                     <span className="text-danger fw-bold">*</span>
-                    Secret
+                    Key
                   </label>
                   <input
                     disabled={
@@ -127,28 +123,13 @@ export default function InitRoot({
                     name="secret"
                     value={form.secret}
                     onChange={onChangeForm}
-                    placeholder="Please enter the root secret"
                     aria-describedby="secret"
                   />
                   <div className="form-text">
-                    Prior to initialization, if you haven&apos;t logged in yet,
-                    please <Link href="/login">login</Link> first. If you
-                    don&apos;t have an account yet, please{' '}
-                    <Link href="/register">register</Link> an account of your
-                    choice
+                    {t('common.forumAdministratorInitialisationFormText2')}
                   </div>
                   <div className="form-text">
-                    The secret can only be used once, and once used, the key
-                    becomes invalid. The new password will be stored in the
-                    database configuration
-                  </div>
-                  <div className="form-text">
-                    <span className="fw-bold">Please note:</span> Once
-                    successfully set, a default role will also be assigned to
-                    the user, with the default role ID being &apos;1&apos;
-                    representing the role identity of an
-                    &apos;administrator&apos;. Please be sure to take note of
-                    this!
+                    {t('common.forumAdministratorInitialisationFormText3')}
                   </div>
                 </div>
 
@@ -159,7 +140,7 @@ export default function InitRoot({
                       type="button"
                       className="btn btn-secondary"
                     >
-                      Return Homepage
+                      {t('common.backToHomepage')}
                     </button>
                   ) : (
                     <button
@@ -168,8 +149,8 @@ export default function InitRoot({
                       className="btn btn-primary"
                     >
                       {updateRootConfigActionMutation.isPending
-                        ? 'Initializing'
-                        : 'Initialize'}
+                        ? t('common.inProgress')
+                        : t('common.submit')}
                     </button>
                   )}
                 </div>

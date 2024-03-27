@@ -307,6 +307,17 @@
     "light": "浅色",
     "dark": "深色",
     "auto": "自动",
-    "expand": "展开"
+    "expand": "展开",
+    "pleaseLoginBeforeContinuing": "请登录后再操作",
+    "forumAdministratorInitialisationMsg": "用户 {alias}，已成功设置为论坛管理员",
+    "forumAdministratorInitialisation": "初始化论坛管理员",
+    "forumAdministratorInitialisationFormText1": "为了安全起见，初始化时创建了默认权限，因此，你需要设置为论坛管理员才能对后台进行操作",
+    "forumAdministratorInitialisationFormText2": "初始化前，请先创建一个账号并登录，然后再继续操作",
+    "forumAdministratorInitialisationFormText3": "密钥可在后端服务输出的日志中找到",
+    "backToHomepage": "返回首页",
+    "submit": "提交",
+    "inProgress": "处理中",
+    "goToHomepage": "返回首页",
+    "goBack": "返回上一页"
   }
 }

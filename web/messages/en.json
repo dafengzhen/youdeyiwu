@@ -309,6 +309,17 @@
     "light": "Light",
     "dark": "Dark",
     "auto": "Auto",
-    "expand": "Expand"
+    "expand": "Expand",
+    "pleaseLoginBeforeContinuing": "Please login before continuing",
+    "forumAdministratorInitialisationMsg": "User {alias} successfully set as forum administrator",
+    "forumAdministratorInitialisation": "Forum administrator initialisation",
+    "forumAdministratorInitialisationFormText1": "For security reasons, default permissions are created on initialisation, so you must be set up as a forum administrator to operate on the back end.",
+    "forumAdministratorInitialisationFormText2": "Before initialisation, please create an account and login before proceeding.",
+    "forumAdministratorInitialisationFormText3": "The key can be found in the logs issued by the backend service.",
+    "backToHomepage": "Back to homepage",
+    "submit": "Submit",
+    "inProgress": "in progress",
+    "goToHomepage": "Go to homepage",
+    "goBack": "Go back"
   }
 }

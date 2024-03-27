@@ -27,6 +27,8 @@ services:
       context: .
     networks:
       - frontend
+    volumes:
+      - web_assets:/youdeyiwu-web/public/assets
     restart: on-failure
     ports:
       - "3000:3000"
@@ -36,3 +38,6 @@ networks:
     name: youdeyiwu_default
   frontend:
     name: youdeyiwu_frontend
+
+volumes:
+  web_assets:

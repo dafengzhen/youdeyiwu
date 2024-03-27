@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       siteName: name,
       images: {
-        url: '/og.jpg',
+        url: '/assets/og.jpg',
         type: 'jpg',
         width: 1280,
         height: 480,

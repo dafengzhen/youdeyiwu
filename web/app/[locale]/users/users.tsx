@@ -102,7 +102,11 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                       <Link href={`/users/${item.id}`}>
                         <Image
                           className="rounded-circle object-fit-contain image-hover"
-                          src={isHttpOrHttps(avatar) ? avatar! : '/avatar.png'}
+                          src={
+                            isHttpOrHttps(avatar)
+                              ? avatar!
+                              : '/assets/avatar.png'
+                          }
                           alt="avatar"
                           width={50}
                           height={50}

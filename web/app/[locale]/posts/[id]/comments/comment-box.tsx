@@ -94,7 +94,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
               <Link href={uid ? `/users/${uid}` : '/users'}>
                 <Image
                   className="rounded-circle object-fit-contain image-hover"
-                  src={avatar ?? '/avatar.png'}
+                  src={avatar ?? '/assets/avatar.png'}
                   alt="avatar"
                   width={50}
                   height={50}

@@ -53,7 +53,7 @@ export default function ErrorHandler({
               </div>
               <div className="d-flex flex-wrap gap-4 justify-content-center">
                 <Link href="/" className="btn btn-danger">
-                  Return Home
+                  Back to homepage
                 </Link>
                 <button onClick={reset} className="btn btn-danger">
                   Try again

@@ -122,7 +122,7 @@ export default function Posts({
                 <Link href={user ? `/users/${user.id}` : '/users'}>
                   <Image
                     className="rounded-circle object-fit-contain image-hover"
-                    src={isHttpOrHttps(avatar) ? avatar! : '/avatar.png'}
+                    src={isHttpOrHttps(avatar) ? avatar! : '/assets/avatar.png'}
                     alt="avatar"
                     width={50}
                     height={50}
