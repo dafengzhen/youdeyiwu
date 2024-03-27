@@ -76,6 +76,11 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
+      text: '使用',
+      collapsed: false,
+      items: [{ text: '准备好了吗？', link: 'are-you-ready' }],
+    },
+    {
       text: 'API 参考',
       base: '/zh/reference/',
       link: 'config-site',

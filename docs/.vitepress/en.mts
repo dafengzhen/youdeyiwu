@@ -62,6 +62,11 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
+      text: 'Use',
+      collapsed: false,
+      items: [{ text: 'Are you ready?', link: 'are-you-ready' }],
+    },
+    {
       text: 'API Reference',
       base: '/reference/',
       link: 'config-site',
