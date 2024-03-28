@@ -64,7 +64,10 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'Use',
       collapsed: false,
-      items: [{ text: 'Are you ready?', link: 'are-you-ready' }],
+      items: [
+        { text: 'Are you ready?', link: 'are-you-ready' },
+        { text: 'Create Article', link: 'create-article' },
+      ],
     },
     {
       text: 'Development',

@@ -12,7 +12,7 @@ Youdeyiwu 前端程序主要使用 [Next.js 14](https://nextjs.org) 开发，UI 
 
 拉取并用编辑器打开项目目录 ```web```
 
-```git
+```sh
 git clone https://github.com/dafengzhen/youdeyiwu
 ```
 
@@ -32,7 +32,7 @@ npm install
 
 修改对应后端请求地址
 
-```env
+```text
 API_SERVER=http://localhost:8080
 ```
 

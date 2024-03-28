@@ -12,7 +12,7 @@ Youdeyiwu 后端程序主要使用 [Spring Boot 3 (JDK 17)](https://spring.io/pr
 
 拉取并用编辑器打开项目
 
-```git
+```sh
 git clone https://github.com/dafengzhen/youdeyiwu
 ```
 

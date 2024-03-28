@@ -78,7 +78,10 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: '使用',
       collapsed: false,
-      items: [{ text: '准备好了吗？', link: 'are-you-ready' }],
+      items: [
+        { text: '准备好了吗？', link: 'are-you-ready' },
+        { text: '创建文章', link: 'create-article' },
+      ],
     },
     {
       text: '开发',

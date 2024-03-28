@@ -12,7 +12,7 @@ You can choose your preferred development editor, but we recommend using [Intell
 
 Clone the project and open it in your editor.
 
-```git
+```sh
 git clone https://github.com/dafengzhen/youdeyiwu
 ```
 

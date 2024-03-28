@@ -12,7 +12,7 @@ You can choose your preferred development editor, but we recommend using [WebSto
 
 Clone the repository and open the project directory ```web``` in your editor.
 
-```git
+```sh
 git clone https://github.com/dafengzhen/youdeyiwu
 ```
 
@@ -30,7 +30,7 @@ npm install
 
 Open the ```.env``` file (or create a new ```.env.development.local``` file) and modify the corresponding backend API request address.
 
-```env
+```txt
 API_SERVER=http://localhost:8080
 ```
 

@@ -1,10 +1,9 @@
 # Are you ready?
 
-Youdeyiwu was designed with inspiration from traditional forums, focusing on sections, tags and posts, without introducing new concepts.
+Youdeyiwu was developed with traditional forum design in mind, focusing on sections, tags and post extensions.
 
-It is very user-friendly and easy to get started with. You can think of it as a platform similar to a blog.
+It is very user-friendly and can be seen as a platform similar to a blog.
 
-In fact, forums and blogs have many similarities. For example, sections are like categories and posts are like articles.
+In fact, there are many similarities between forums and blogs. For example, sections are similar to categories and posts are similar to articles.
 
-Let's start by creating a new article.
-
+You can start by creating a new article.
