@@ -67,6 +67,14 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [{ text: 'Are you ready?', link: 'are-you-ready' }],
     },
     {
+      text: 'Development',
+      collapsed: false,
+      items: [
+        { text: 'Backend', link: 'backend-development' },
+        { text: 'Frontend', link: 'frontend-development' },
+      ],
+    },
+    {
       text: 'API Reference',
       base: '/reference/',
       link: 'config-site',

@@ -81,6 +81,14 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [{ text: '准备好了吗？', link: 'are-you-ready' }],
     },
     {
+      text: '开发',
+      collapsed: false,
+      items: [
+        { text: '后端开发', link: 'backend-development' },
+        { text: '前端开发', link: 'frontend-development' },
+      ],
+    },
+    {
       text: 'API 参考',
       base: '/zh/reference/',
       link: 'config-site',
