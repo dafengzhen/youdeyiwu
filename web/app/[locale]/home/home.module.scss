@@ -9,31 +9,31 @@
 .left {
   top: 4.625rem;
   height: calc(100vh - 4.625rem);
+  padding-bottom: 4.625rem;
 }
 
 .right {
   top: 4.625rem;
   height: calc(100vh - 4.625rem);
+  padding-bottom: 4.625rem;
 }
 
 .left::-webkit-scrollbar {
-  width: 0.625rem;
+  width: 0.5rem;
   border-radius: 9999px;
 }
 
 .left::-webkit-scrollbar-thumb {
-  background: #a1a1aa80;
-  //background: #71717A7F;
+  background: var(--bs-tertiary-bg);
   border-radius: 9999px;
 }
 
 .right::-webkit-scrollbar {
-  width: 0.625rem;
+  width: 0.5rem;
   border-radius: 9999px;
 }
 
 .right::-webkit-scrollbar-thumb {
-  background: #a1a1aa80;
-  //background: #71717A7F;
+  background: var(--bs-tertiary-bg);
   border-radius: 9999px;
 }
