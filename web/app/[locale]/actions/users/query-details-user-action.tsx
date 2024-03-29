@@ -13,6 +13,10 @@ export default async function QueryDetailsUserAction(variables: {
   id: number | string;
 }) {
   try {
+    if (typeof variables.id === 'string' && variables.id.includes('.')) {
+      return createErrorResponse('Invalid Id', 'Bad Request', null, 400);
+    }
+
     const { url } = createRequestUrl(`/users/${variables.id}/details`);
     const response = await createRequest({
       url,

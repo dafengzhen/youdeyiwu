@@ -88,7 +88,9 @@ public class PointPermissionRuleAspect {
   public void createPostBeforeAdvice() {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
-            PermissionRuleNameEnum.CREATE_POST
+            PermissionRuleNameEnum.CREATE_POST,
+            null,
+            null
         )
     ));
   }
@@ -100,7 +102,9 @@ public class PointPermissionRuleAspect {
   public void createCommentBeforeAdvice() {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
-            PermissionRuleNameEnum.CREATE_COMMENT
+            PermissionRuleNameEnum.CREATE_COMMENT,
+            null,
+            null
         )
     ));
   }
@@ -112,7 +116,9 @@ public class PointPermissionRuleAspect {
   public void createReplyBeforeAdvice() {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
-            PermissionRuleNameEnum.CREATE_REPLY
+            PermissionRuleNameEnum.CREATE_REPLY,
+            null,
+            null
         )
     ));
   }
@@ -124,7 +130,9 @@ public class PointPermissionRuleAspect {
   public void updatePostBeforeAdvice() {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
-            PermissionRuleNameEnum.UPDATE_POST
+            PermissionRuleNameEnum.UPDATE_POST,
+            null,
+            null
         )
     ));
   }
@@ -149,7 +157,9 @@ public class PointPermissionRuleAspect {
 
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
-              PermissionRuleNameEnum.ADD_POST_TAG
+              PermissionRuleNameEnum.ADD_POST_TAG,
+              postEntity.getNameAndId(),
+              postEntity.getLink()
           )
       ));
     }
@@ -160,7 +170,9 @@ public class PointPermissionRuleAspect {
     ) {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
-              PermissionRuleNameEnum.ADD_POST_CONTENT_LINK
+              PermissionRuleNameEnum.ADD_POST_CONTENT_LINK,
+              postEntity.getNameAndId(),
+              postEntity.getLink()
           )
       ));
     }
@@ -171,7 +183,9 @@ public class PointPermissionRuleAspect {
     ) {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
-              PermissionRuleNameEnum.ADD_POST_COVER_LINK
+              PermissionRuleNameEnum.ADD_POST_COVER_LINK,
+              postEntity.getNameAndId(),
+              postEntity.getLink()
           )
       ));
     }
@@ -185,7 +199,9 @@ public class PointPermissionRuleAspect {
 
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
-              PermissionRuleNameEnum.ADD_POST_SECTION
+              PermissionRuleNameEnum.ADD_POST_SECTION,
+              postEntity.getNameAndId(),
+              postEntity.getLink()
           )
       ));
     }

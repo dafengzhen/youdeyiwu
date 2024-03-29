@@ -1,6 +1,7 @@
 package com.youdeyiwu.repository.user;
 
 import com.youdeyiwu.model.entity.user.UserEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
@@ -23,7 +24,7 @@ public interface UserRepository
    * findByUsername.
    *
    * @param username username
-   * @return UserEntity
+   * @return Optional
    */
-  UserEntity findByUsername(String username);
+  Optional<UserEntity> findByUsername(String username);
 }

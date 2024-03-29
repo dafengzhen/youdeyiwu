@@ -190,6 +190,29 @@ public class PointRuleNotifier
       return;
     }
 
+    SignEnum sign;
+    if (Boolean.TRUE.equals(dto.checkHistoryPoints())) {
+      sign = pointHistoryRepository.findLatestPointsHistoryByUserIdAndRuleName(
+              user.getId(),
+              dto.ruleName()
+          )
+          .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
+            case POSITIVE -> SignEnum.NEGATIVE;
+            case NEGATIVE -> SignEnum.POSITIVE;
+            case ZERO -> {
+              if (Objects.isNull(dto.sign()) || dto.sign() == SignEnum.POSITIVE) {
+                yield SignEnum.ZERO;
+              } else {
+                yield SignEnum.NEGATIVE;
+              }
+            }
+          })
+          .orElseGet(dto::sign);
+
+    } else {
+      sign = dto.sign();
+    }
+
     PointEntity pointEntity = pointCoreService.update(
         pointService.findPointByUserEntity(user),
         new UpdatePointDto(
@@ -197,22 +220,7 @@ public class PointRuleNotifier
                 Boolean.TRUE.equals(isInitiator)
                     ? pointRuleEntity.getInitiatorRewardPoints()
                     : pointRuleEntity.getReceiverRewardPoints(),
-                pointHistoryRepository.findLatestPointsHistoryByUserIdAndRuleName(
-                        user.getId(),
-                        dto.ruleName()
-                    )
-                    .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
-                      case POSITIVE -> SignEnum.NEGATIVE;
-                      case NEGATIVE -> SignEnum.POSITIVE;
-                      case ZERO -> {
-                        if (Objects.isNull(dto.sign()) || dto.sign() == SignEnum.POSITIVE) {
-                          yield SignEnum.ZERO;
-                        } else {
-                          yield SignEnum.NEGATIVE;
-                        }
-                      }
-                    })
-                    .orElseGet(dto::sign)
+                sign
             ),
             null,
             null

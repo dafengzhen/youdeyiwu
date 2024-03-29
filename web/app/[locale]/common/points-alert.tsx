@@ -117,7 +117,7 @@ export default forwardRef(function PointsAlert(props, ref) {
                 : parseInt(output.decreasedBy ?? '0');
 
             add({
-              value,
+              value: value === 0 ? actualValue : value,
               actualValue,
               flag,
             });

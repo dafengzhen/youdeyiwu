@@ -8,13 +8,14 @@ import java.util.Set;
 /**
  * point rule.
  *
- * @param ruleName        ruleName
- * @param sign            sign
- * @param onlyInitiator   onlyInitiator
- * @param from            from
- * @param link            link
- * @param postId          postId
- * @param receiverUserIds receiverUserIds
+ * @param ruleName           ruleName
+ * @param sign               sign
+ * @param onlyInitiator      onlyInitiator
+ * @param from               from
+ * @param link               link
+ * @param postId             postId
+ * @param receiverUserIds    receiverUserIds
+ * @param checkHistoryPoints checkHistoryPoints
  */
 public record PointRuleEventDto(
     RuleNameEnum ruleName,
@@ -29,7 +30,9 @@ public record PointRuleEventDto(
 
     Long postId,
 
-    Set<Long> receiverUserIds
+    Set<Long> receiverUserIds,
+
+    Boolean checkHistoryPoints
 ) implements Serializable {
 
 }

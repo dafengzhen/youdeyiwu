@@ -7,9 +7,15 @@ import java.io.Serializable;
  * point permission rule.
  *
  * @param permissionRuleName permissionRuleName
+ * @param from               from
+ * @param link               link
  */
 public record PointPermissionRuleEventDto(
-    PermissionRuleNameEnum permissionRuleName
+    PermissionRuleNameEnum permissionRuleName,
+
+    String from,
+
+    String link
 ) implements Serializable {
 
 }

@@ -137,7 +137,8 @@ public class PointRuleAspect {
                 .formatted(postEntity.getName(), "Create Post"),
             "/posts/" + postEntity.getId(),
             null,
-            null
+            null,
+            false
         )
     ));
   }
@@ -155,7 +156,8 @@ public class PointRuleAspect {
             null,
             null,
             id,
-            null
+            null,
+            false
         )
     ));
   }
@@ -191,7 +193,8 @@ public class PointRuleAspect {
             null,
             null,
             id,
-            null
+            null,
+            true
         )
     ));
   }
@@ -227,7 +230,8 @@ public class PointRuleAspect {
             null,
             null,
             id,
-            null
+            null,
+            true
         )
     ));
   }
@@ -269,7 +273,8 @@ public class PointRuleAspect {
               null,
               null,
               id,
-              null
+              null,
+              false
           )
       ));
     }
@@ -288,7 +293,8 @@ public class PointRuleAspect {
             null,
             null,
             id,
-            null
+            null,
+            false
         )
     ));
   }
@@ -306,7 +312,8 @@ public class PointRuleAspect {
             null,
             null,
             id,
-            null
+            null,
+            false
         )
     ));
   }
@@ -324,7 +331,8 @@ public class PointRuleAspect {
             null,
             null,
             commentEntity.getPost().getId(),
-            null
+            null,
+            false
         )
     ));
   }
@@ -361,7 +369,8 @@ public class PointRuleAspect {
                 commentOrReplyUserEntity.orElse(null)
             )
                 ? null
-                : commentOrReplyUserEntity.map(user -> Set.of(user.getId())).orElse(null)
+                : commentOrReplyUserEntity.map(user -> Set.of(user.getId())).orElse(null),
+            false
         )
     ));
   }

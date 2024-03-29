@@ -150,7 +150,8 @@ public class UserServiceImpl implements UserService {
       throw new UserNotFoundException();
     }
 
-    UserEntity userEntity = userRepository.findByUsername(username);
+    UserEntity userEntity = userRepository.findByUsername(username)
+        .orElseThrow(UserNotFoundException::new);
     if (!passwordEncoder.matches(password, userEntity.getPassword())) {
       throw new CustomException(i18nTool.getMessage("user.usernameOrPassword.error"));
     }
@@ -422,7 +423,8 @@ public class UserServiceImpl implements UserService {
     return isLong(id)
         ? userRepository.findById(Long.parseLong(id))
         .orElseThrow(UserNotFoundException::new)
-        : userRepository.findByUsername(id);
+        : userRepository.findByUsername(id)
+        .orElseThrow(UserNotFoundException::new);
   }
 
   /**

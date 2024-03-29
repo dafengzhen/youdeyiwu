@@ -18,7 +18,6 @@ import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import com.youdeyiwu.service.user.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -156,8 +155,18 @@ public class UserController {
     return ResponseEntity.ok(userService.selectAll(pageable));
   }
 
+  /**
+   * query details.
+   *
+   * @param id id
+   * @return ResponseEntity
+   */
   @GetMapping(value = "/{id}/details")
   public ResponseEntity<UserEntityVo> queryDetails(@PathVariable String id) {
+    if (id.contains(".")) {
+      return ResponseEntity.badRequest().build();
+    }
+
     return ResponseEntity.ok(userService.queryDetails(id));
   }
 
