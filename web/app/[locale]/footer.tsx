@@ -8,7 +8,7 @@ export default async function Footer({ locale }: { locale: string }) {
   return (
     <footer className="p-4 mt-4">
       <aside>
-        <hr className="mb-4 text-secondary opacity-25" />
+        <hr className="mb-4 text-secondary opacity-25 w-25 mx-auto" />
         {customFooter ? (
           <div dangerouslySetInnerHTML={{ __html: customFooter }}></div>
         ) : (
