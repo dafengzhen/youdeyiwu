@@ -62,10 +62,15 @@ public class DefaultRateLimitFilter extends OncePerRequestFilter {
       FilterChain filterChain
   ) throws ServletException, IOException {
     response.addHeader("X-Powered-By", "www.youdeyiwu.com");
-    Bucket bucket = buckets.builder().build(
-        securityService.getDetails(request).getRemoteAddress(),
-        () -> configuration
-    );
+
+    String key;
+    if (securityService.isAnonymous()) {
+      key = securityService.getDetails(request).getRemoteAddress();
+    } else {
+      key = String.valueOf(securityService.getUserId());
+    }
+
+    Bucket bucket = buckets.builder().build(key, () -> configuration);
     ConsumptionProbe consumptionProbe = bucket.tryConsumeAndReturnRemaining(1);
     if (consumptionProbe.isConsumed()) {
       response.addHeader("X-Rate-Limit-Remaining",
