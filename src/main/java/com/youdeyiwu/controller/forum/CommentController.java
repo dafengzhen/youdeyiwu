@@ -43,6 +43,12 @@ public class CommentController {
     return ResponseEntity.noContent().build();
   }
 
+  @PutMapping(value = "/{id}/like")
+  public ResponseEntity<Void> updateLike(@PathVariable Long id) {
+    commentService.updateLike(id);
+    return ResponseEntity.noContent().build();
+  }
+
   @GetMapping(value = "/{id}")
   public ResponseEntity<CommentEntityVo> query(@PathVariable Long id) {
     return ResponseEntity.ok(commentService.query(id));

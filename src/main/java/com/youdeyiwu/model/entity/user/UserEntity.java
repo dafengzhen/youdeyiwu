@@ -3,9 +3,11 @@ package com.youdeyiwu.model.entity.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
+import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.message.GlobalMessageUserEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
@@ -175,6 +177,30 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   @JsonIgnore
   @ToString.Exclude
   private Set<PostUserEntity> userPosts = new HashSet<>();
+
+  /**
+   * user comments.
+   */
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<CommentUserEntity> userComments = new HashSet<>();
+
+  /**
+   * user quote replies.
+   */
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<QuoteReplyUserEntity> userQuoteReplies = new HashSet<>();
 
   /**
    * post allows.

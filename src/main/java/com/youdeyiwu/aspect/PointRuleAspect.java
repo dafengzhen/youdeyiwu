@@ -3,7 +3,9 @@ package com.youdeyiwu.aspect;
 import com.youdeyiwu.enums.point.RuleNameEnum;
 import com.youdeyiwu.enums.point.SignEnum;
 import com.youdeyiwu.event.PointRuleApplicationEvent;
+import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.PostNotFoundException;
+import com.youdeyiwu.exception.ReplyNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.model.dto.forum.ApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.CreateCommentDto;
@@ -13,11 +15,15 @@ import com.youdeyiwu.model.dto.forum.NotApprovedPostReviewQueueDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.point.PointRuleEventDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
+import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
+import com.youdeyiwu.repository.forum.ReplyRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import java.util.Objects;
@@ -49,6 +55,10 @@ public class PointRuleAspect {
 
   private final SecurityService securityService;
 
+  private final CommentRepository commentRepository;
+
+  private final ReplyRepository replyRepository;
+
   /**
    * create post.
    */
@@ -60,8 +70,8 @@ public class PointRuleAspect {
   /**
    * view page.
    */
-  @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.PostServiceImpl.viewPage(..)) && args(id)", argNames = "id")
-  public void viewPagePointcut(Long id) {
+  @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.PostServiceImpl.viewPage(..)) && args(id, ip)", argNames = "id,ip")
+  public void viewPagePointcut(Long id, String ip) {
     // Pointcut
   }
 
@@ -70,6 +80,22 @@ public class PointRuleAspect {
    */
   @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.PostServiceImpl.updateLike(..)) && args(id)", argNames = "id")
   public void updateLikePointcut(Long id) {
+    // Pointcut
+  }
+
+  /**
+   * update comment like.
+   */
+  @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.CommentServiceImpl.updateLike(..)) && args(id)", argNames = "id")
+  public void updateCommentLikePointcut(Long id) {
+    // Pointcut
+  }
+
+  /**
+   * update reply like.
+   */
+  @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.ReplyServiceImpl.updateLike(..)) && args(id)", argNames = "id")
+  public void updateReplyLikePointcut(Long id) {
     // Pointcut
   }
 
@@ -146,8 +172,8 @@ public class PointRuleAspect {
   /**
    * after advice.
    */
-  @After(value = "viewPagePointcut(id)", argNames = "id")
-  public void viewPageAfterAdvice(Long id) {
+  @After(value = "viewPagePointcut(id,ip)", argNames = "id,ip")
+  public void viewPageAfterAdvice(Long id, String ip) {
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.VISIT_POST,
@@ -193,6 +219,80 @@ public class PointRuleAspect {
             null,
             null,
             id,
+            null,
+            true
+        )
+    ));
+  }
+
+  /**
+   * after advice.
+   */
+  @After(value = "updateCommentLikePointcut(id)", argNames = "id")
+  public void updateCommentLikeAfterAdvice(Long id) {
+    UserEntity userEntity = userRepository
+        .findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    CommentEntity commentEntity = commentRepository.findById(id)
+        .orElseThrow(CommentNotFoundException::new);
+    Optional<CommentUserEntity> commentUserEntityOptional = userEntity.getUserComments()
+        .stream()
+        .filter(commentUserEntity -> commentUserEntity.getComment().equals(commentEntity)
+            && commentUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    Boolean liked = commentUserEntityOptional
+        .map(commentUserEntity -> !commentUserEntity.getLiked())
+        .orElse(true);
+
+    publisher.publishEvent(new PointRuleApplicationEvent(
+        new PointRuleEventDto(
+            RuleNameEnum.LIKE_COMMENT,
+            Boolean.TRUE.equals(liked)
+                ? SignEnum.NEGATIVE
+                : SignEnum.POSITIVE,
+            false,
+            null,
+            null,
+            commentEntity.getPost().getId(),
+            null,
+            true
+        )
+    ));
+  }
+
+  /**
+   * after advice.
+   */
+  @After(value = "updateReplyLikePointcut(id)", argNames = "id")
+  public void updateReplyLikeAfterAdvice(Long id) {
+    UserEntity userEntity = userRepository
+        .findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    QuoteReplyEntity quoteReplyEntity = replyRepository.findById(id)
+        .orElseThrow(ReplyNotFoundException::new);
+    Optional<QuoteReplyUserEntity> quoteReplyUserEntityOptional = userEntity.getUserQuoteReplies()
+        .stream()
+        .filter(quoteReplyUserEntity -> quoteReplyUserEntity.getQuoteReply().equals(quoteReplyEntity)
+            && quoteReplyUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    Boolean liked = quoteReplyUserEntityOptional
+        .map(commentUserEntity -> !commentUserEntity.getLiked())
+        .orElse(true);
+
+    publisher.publishEvent(new PointRuleApplicationEvent(
+        new PointRuleEventDto(
+            RuleNameEnum.LIKE_REPLY,
+            Boolean.TRUE.equals(liked)
+                ? SignEnum.NEGATIVE
+                : SignEnum.POSITIVE,
+            false,
+            null,
+            null,
+            quoteReplyEntity.getPost().getId(),
             null,
             true
         )
@@ -353,6 +453,20 @@ public class PointRuleAspect {
       commentOrReplyUserEntity = Optional.ofNullable(quoteReplyEntity.getQuoteReply().getUser());
     }
 
+    Set<Long> receiverUserIds;
+    if (securityService.isAnonymous()) {
+      receiverUserIds = null;
+    } else if (
+        Objects.equals(
+            userRepository.findById(securityService.getUserId()).orElseThrow(UserNotFoundException::new),
+            commentOrReplyUserEntity.orElse(null)
+        )
+    ) {
+      receiverUserIds = null;
+    } else {
+      receiverUserIds = commentOrReplyUserEntity.map(user -> Set.of(user.getId())).orElse(null);
+    }
+
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.REPLY_POST,
@@ -361,15 +475,7 @@ public class PointRuleAspect {
             null,
             null,
             quoteReplyEntity.getPost().getId(),
-            securityService.isAnonymous()
-                ? null
-                : Objects.equals(
-                userRepository.findById(securityService.getUserId())
-                    .orElseThrow(UserNotFoundException::new),
-                commentOrReplyUserEntity.orElse(null)
-            )
-                ? null
-                : commentOrReplyUserEntity.map(user -> Set.of(user.getId())).orElse(null),
+            receiverUserIds,
             false
         )
     ));

@@ -43,6 +43,12 @@ public class ReplyController {
     return ResponseEntity.noContent().build();
   }
 
+  @PutMapping(value = "/{id}/like")
+  public ResponseEntity<Void> updateLike(@PathVariable Long id) {
+    replyService.updateLike(id);
+    return ResponseEntity.noContent().build();
+  }
+
   @GetMapping(value = "/{id}")
   public ResponseEntity<QuoteReplyEntityVo> query(@PathVariable Long id) {
     return ResponseEntity.ok(replyService.query(id));

@@ -1,9 +1,9 @@
 import type { IBase, IPage } from '@/app/[locale]/interfaces/index';
-import { ISection } from '@/app/[locale]/interfaces/sections';
-import { IUser } from '@/app/[locale]/interfaces/users';
-import { ITag } from '@/app/[locale]/interfaces/tags';
-import { IComment } from '@/app/[locale]/interfaces/comments';
-import { IReply } from '@/app/[locale]/interfaces/replies';
+import type { ISection } from '@/app/[locale]/interfaces/sections';
+import type { IUser } from '@/app/[locale]/interfaces/users';
+import type { ITag } from '@/app/[locale]/interfaces/tags';
+import type { IComment } from '@/app/[locale]/interfaces/comments';
+import type { IReply } from '@/app/[locale]/interfaces/replies';
 
 export type IPostState =
   | 'SHOW'

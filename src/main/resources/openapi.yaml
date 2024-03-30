@@ -2571,6 +2571,26 @@ paths:
                 $ref: '#/components/schemas/Void'
       tags:
         - comments
+  /comments/{id}/like:
+    put:
+      summary: PUT comments/{id}/like
+      operationId: updateLike
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - comments
   /comments/{id}:
     get:
       summary: GET comments/{id}
@@ -2634,6 +2654,26 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateStateReplyDto'
         required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Void'
+      tags:
+        - replies
+  /replies/{id}/like:
+    put:
+      summary: PUT replies/{id}/like
+      operationId: updateLike
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '204':
           description: No Content

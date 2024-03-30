@@ -97,6 +97,8 @@
     "likeBtn": {
       "anonymousUsers": "抱歉，匿名用户不能参与点赞，请登录后操作",
       "gets": "作者的文章获得了一个赞！",
+      "commentGets": "该用户的评论获得了一个赞！",
+      "replyGets": "该用户的回复获得了一个赞！",
       "text": "点赞"
     },
     "favouriteBtn": {

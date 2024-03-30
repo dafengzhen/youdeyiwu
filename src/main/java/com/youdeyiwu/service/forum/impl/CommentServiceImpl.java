@@ -10,6 +10,7 @@ import com.youdeyiwu.mapper.forum.CommentMapper;
 import com.youdeyiwu.model.dto.forum.CreateCommentDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateCommentDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
+import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
@@ -19,6 +20,7 @@ import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.CommentService;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +74,40 @@ public class CommentServiceImpl implements CommentService {
     if (Objects.nonNull(dto.reviewState())) {
       commentEntity.setReviewState(dto.reviewState());
     }
+  }
+
+  @Transactional
+  @Override
+  public void updateLike(Long id) {
+    CommentEntity commentEntity = commentRepository.findById(id)
+        .orElseThrow(CommentNotFoundException::new);
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    Optional<CommentUserEntity> commentUserEntityOptional = userEntity.getUserComments()
+        .stream()
+        .filter(commentUserEntity -> commentUserEntity.getComment().equals(commentEntity)
+            && commentUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    CommentUserEntity commentUserEntity;
+    if (commentUserEntityOptional.isPresent()) {
+      commentUserEntity = commentUserEntityOptional.get();
+      commentUserEntity.setLiked(!commentUserEntity.getLiked());
+    } else {
+      commentUserEntity = new CommentUserEntity();
+      commentUserEntity.setLiked(!commentUserEntity.getLiked());
+      commentUserEntity.setComment(commentEntity);
+      commentUserEntity.setUser(userEntity);
+      userEntity.getUserComments().add(commentUserEntity);
+      commentEntity.getCommentUsers().add(commentUserEntity);
+    }
+
+    commentEntity.setLikesCount(
+        Boolean.TRUE.equals(commentUserEntity.getLiked())
+            ? commentEntity.getLikesCount() + 1
+            : Math.max(0, commentEntity.getLikesCount() - 1)
+    );
   }
 
   @Override

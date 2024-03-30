@@ -1,8 +1,8 @@
 import type { IBase } from '@/app/[locale]/interfaces/index';
-import { IUser } from '@/app/[locale]/interfaces/users';
-import { ITag } from '@/app/[locale]/interfaces/tags';
-import { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
-import { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
+import type { IUser } from '@/app/[locale]/interfaces/users';
+import type { ITag } from '@/app/[locale]/interfaces/tags';
+import type { ITagGroup } from '@/app/[locale]/interfaces/tag-groups';
+import type { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 
 export type ISectionState =
   | 'SHOW'

@@ -1,6 +1,6 @@
 import type { IBase } from '@/app/[locale]/interfaces/index';
-import { IUser } from '@/app/[locale]/interfaces/users';
-import { IComment } from '@/app/[locale]/interfaces/comments';
+import type { IUser } from '@/app/[locale]/interfaces/users';
+import type { IComment } from '@/app/[locale]/interfaces/comments';
 
 export type IReplyReviewState = 'APPROVED' | 'REJECTED' | 'PENDING_REVIEW';
 
@@ -12,4 +12,5 @@ export interface IReply extends IBase {
   quoteReply?: IReply;
   user?: IUser;
   uniqueIdentifier?: string;
+  liked?: boolean;
 }

@@ -77,6 +77,18 @@ public class CommentEntity extends AbstractEntity {
   private Set<QuoteReplyEntity> quoteReplies = new HashSet<>();
 
   /**
+   * comment users.
+   */
+  @OneToMany(
+      mappedBy = "comment",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<CommentUserEntity> commentUsers = new HashSet<>();
+
+  /**
    * unique identifier.
    */
   private String uniqueIdentifier;

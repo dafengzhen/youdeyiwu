@@ -29,6 +29,13 @@ public interface CommentService {
   void updateState(Long id, UpdateStateCommentDto dto);
 
   /**
+   * update like.
+   *
+   * @param id id
+   */
+  void updateLike(Long id);
+
+  /**
    * query.
    *
    * @param id id

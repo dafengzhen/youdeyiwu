@@ -13,6 +13,7 @@ import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.repository.forum.CommentRepository;
@@ -22,6 +23,7 @@ import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.ReplyService;
 import com.youdeyiwu.tool.I18nTool;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,6 +92,40 @@ public class ReplyServiceImpl implements ReplyService {
     if (Objects.nonNull(dto.reviewState())) {
       quoteReplyEntity.setReviewState(dto.reviewState());
     }
+  }
+
+  @Transactional
+  @Override
+  public void updateLike(Long id) {
+    QuoteReplyEntity quoteReplyEntity = replyRepository.findById(id)
+        .orElseThrow(ReplyNotFoundException::new);
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    Optional<QuoteReplyUserEntity> quoteReplyUserEntityOptional = userEntity.getUserQuoteReplies()
+        .stream()
+        .filter(quoteReplyUserEntity -> quoteReplyUserEntity.getQuoteReply().equals(quoteReplyEntity)
+            && quoteReplyUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    QuoteReplyUserEntity quoteReplyUserEntity;
+    if (quoteReplyUserEntityOptional.isPresent()) {
+      quoteReplyUserEntity = quoteReplyUserEntityOptional.get();
+      quoteReplyUserEntity.setLiked(!quoteReplyUserEntity.getLiked());
+    } else {
+      quoteReplyUserEntity = new QuoteReplyUserEntity();
+      quoteReplyUserEntity.setLiked(!quoteReplyUserEntity.getLiked());
+      quoteReplyUserEntity.setQuoteReply(quoteReplyEntity);
+      quoteReplyUserEntity.setUser(userEntity);
+      userEntity.getUserQuoteReplies().add(quoteReplyUserEntity);
+      quoteReplyEntity.getQuoteReplyUsers().add(quoteReplyUserEntity);
+    }
+
+    quoteReplyEntity.setLikesCount(
+        Boolean.TRUE.equals(quoteReplyUserEntity.getLiked())
+            ? quoteReplyEntity.getLikesCount() + 1
+            : Math.max(0, quoteReplyEntity.getLikesCount() - 1)
+    );
   }
 
   @Override

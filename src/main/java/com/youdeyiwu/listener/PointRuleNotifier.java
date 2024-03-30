@@ -150,7 +150,7 @@ public class PointRuleNotifier
 
       userIds.forEach(userId -> updatePointsAndSendMessage(
           getUserEntity(userId),
-          postEntity.getNameAndId(),
+          postEntity.getNameAndId() + '#' + from,
           postEntity.getLink(),
           false,
           dto,
@@ -159,7 +159,7 @@ public class PointRuleNotifier
     } else {
       userIds.forEach(userId -> updatePointsAndSendMessage(
           getUserEntity(userId),
-          dto.from(),
+          Objects.isNull(dto.from()) ? from : dto.from() + '#' + from,
           dto.link(),
           false,
           dto,

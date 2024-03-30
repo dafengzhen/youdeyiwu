@@ -26,6 +26,11 @@ public class QuoteReplyEntityVo extends AbstractEntityVo {
   private Long likesCount;
 
   /**
+   * liked.
+   */
+  private Boolean liked;
+
+  /**
    * reviewState.
    */
   private CommentReviewStateEnum reviewState;

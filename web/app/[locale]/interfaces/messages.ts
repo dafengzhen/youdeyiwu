@@ -1,5 +1,5 @@
-import { IBase } from '@/app/[locale]/interfaces/index';
-import { IUser } from '@/app/[locale]/interfaces/users';
+import type { IBase } from '@/app/[locale]/interfaces/index';
+import type { IUser } from '@/app/[locale]/interfaces/users';
 
 export interface IMessage extends IBase {
   name: string;

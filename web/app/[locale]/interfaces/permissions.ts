@@ -1,5 +1,5 @@
 import type { IBase } from '@/app/[locale]/interfaces/index';
-import { IRole } from '@/app/[locale]/interfaces/roles';
+import type { IRole } from '@/app/[locale]/interfaces/roles';
 
 export type TPermissionMethod =
   | 'GET'

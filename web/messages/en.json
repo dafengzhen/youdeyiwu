@@ -97,6 +97,8 @@
     "likeBtn": {
       "anonymousUsers": "Sorry, anonymous users are not allowed to participate in Likes, please login to do so!",
       "gets": "Author's article gets a Like!",
+      "commentGets": "The user's comment has been liked!",
+      "replyGets": "The user's reply has been liked!",
       "text": "Like"
     },
     "favouriteBtn": {

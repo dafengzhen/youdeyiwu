@@ -31,10 +31,12 @@ import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
+import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
+import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.other.UserContext;
@@ -648,6 +650,58 @@ public class PostServiceImpl implements PostService {
   }
 
   /**
+   * set socialInteraction.
+   *
+   * @param vo            vo
+   * @param commentEntity commentEntity
+   */
+  private void setSocialInteraction(CommentEntityVo vo, CommentEntity commentEntity) {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    Optional<CommentUserEntity> commentUserEntityOptional = userEntity.getUserComments()
+        .stream()
+        .filter(commentUserEntity -> commentUserEntity.getComment().equals(commentEntity)
+            && commentUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    if (commentUserEntityOptional.isPresent()) {
+      CommentUserEntity commentUserEntity = commentUserEntityOptional.get();
+      vo.setLiked(commentUserEntity.getLiked());
+    }
+  }
+
+  /**
+   * set socialInteraction.
+   *
+   * @param vo               vo
+   * @param quoteReplyEntity quoteReplyEntity
+   */
+  private void setSocialInteraction(QuoteReplyEntityVo vo, QuoteReplyEntity quoteReplyEntity) {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    Optional<QuoteReplyUserEntity> quoteReplyUserEntityOptional = userEntity.getUserQuoteReplies()
+        .stream()
+        .filter(quoteReplyUserEntity -> quoteReplyUserEntity.getQuoteReply().equals(quoteReplyEntity)
+            && quoteReplyUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    if (quoteReplyUserEntityOptional.isPresent()) {
+      QuoteReplyUserEntity quoteReplyUserEntity = quoteReplyUserEntityOptional.get();
+      vo.setLiked(quoteReplyUserEntity.getLiked());
+    }
+  }
+
+  /**
    * set tags.
    *
    * @param vo         vo
@@ -708,6 +762,7 @@ public class PostServiceImpl implements PostService {
 
     CommentEntityVo commentEntityVo = commentMapper.entityToVo(commentEntity);
     commentEntityVo.setUser(userMapper.entityToVo(commentEntity.getUser()));
+    setSocialInteraction(commentEntityVo, commentEntity);
     vo.setComment(commentEntityVo);
   }
 
@@ -738,6 +793,7 @@ public class PostServiceImpl implements PostService {
     }
 
     quoteReplyEntityVo.setUser(userMapper.entityToVo(quoteReplyEntity.getUser()));
+    setSocialInteraction(quoteReplyEntityVo, quoteReplyEntity);
     vo.setReply(quoteReplyEntityVo);
   }
 

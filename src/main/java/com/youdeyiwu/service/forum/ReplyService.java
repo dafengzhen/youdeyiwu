@@ -29,6 +29,13 @@ public interface ReplyService {
   void updateState(Long id, UpdateStateReplyDto dto);
 
   /**
+   * update like.
+   *
+   * @param id id
+   */
+  void updateLike(Long id);
+
+  /**
    * query.
    *
    * @param id id

@@ -1,12 +1,23 @@
 import type { IReply } from '@/app/[locale]/interfaces/replies';
 import type { IPostDetails } from '@/app/[locale]/interfaces/posts';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
+import {
+  formatCount,
+  getUserAlias,
+  isHttpOrHttps,
+  wait,
+} from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
 import ReplyBox from '@/app/[locale]/posts/[id]/comments/reply-box';
 import { useTranslations } from 'next-intl';
+import clsx from 'clsx';
+import { GlobalContext } from '@/app/[locale]/contexts';
+import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
+import { useMutation } from '@tanstack/react-query';
+import LikeReplyAction from '@/app/[locale]/actions/replies/like-reply-action';
+import { PostIdContext } from '@/app/[locale]/contexts/postid';
 
 export default function QuotedReply({
   item,
@@ -21,6 +32,21 @@ export default function QuotedReply({
   const t = useTranslations();
   let acronyms;
   let acronymsTitle;
+  const [likeProcessing, setLikeProcessing] = useState(false);
+  const [liked, setLiked] = useState(item.liked ?? false);
+  const [likesCount, setLikesCount] = useState(item.likesCount);
+  const { toast, modal } = useContext(GlobalContext);
+  const pointsAlert = usePointsAlert();
+  const { currentUser } = useContext(PostIdContext);
+
+  const likeReplyActionMutation = useMutation({
+    mutationFn: async (variables: { id: number | string }) => {
+      const response = await LikeReplyAction(variables);
+      if (response.isError) {
+        throw response;
+      }
+    },
+  });
 
   if (user) {
     if (
@@ -44,6 +70,50 @@ export default function QuotedReply({
     if (user.id === details.createdBy) {
       acronyms = 'Author';
       acronymsTitle = t('common.thisUserIsTheAuthorOfThisArticle');
+    }
+  }
+
+  async function onClickLike() {
+    if (likeProcessing) {
+      return;
+    }
+    setLikeProcessing(true);
+
+    try {
+      if (!currentUser) {
+        await wait();
+        toast.current.show({
+          type: 'danger',
+          message: t('common.likeBtn.anonymousUsers'),
+        });
+        return;
+      }
+
+      const id = item.id;
+      await likeReplyActionMutation.mutateAsync({ id });
+
+      if (!liked) {
+        setLiked(true);
+        setLikesCount(likesCount + 1);
+
+        toast.current.show({
+          type: 'success',
+          message: t('common.likeBtn.replyGets'),
+        });
+      } else {
+        setLiked(false);
+        setLikesCount(likesCount - 1);
+      }
+
+      pointsAlert.refresh();
+    } catch (e: any) {
+      likeReplyActionMutation.reset();
+      toast.current.show({
+        type: 'danger',
+        message: e.message,
+      });
+    } finally {
+      setLikeProcessing(false);
     }
   }
 
@@ -138,7 +208,33 @@ export default function QuotedReply({
         </div>
 
         {!openReplyBox && (
-          <div>
+          <div className="d-flex gap-3">
+            <button
+              disabled={likeProcessing || likeReplyActionMutation.isPending}
+              onClick={onClickLike}
+              type="button"
+              className="btn rounded-pill btn-outline-secondary position-relative"
+            >
+              <i
+                className={clsx(
+                  'bi me-2',
+                  liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
+                )}
+              ></i>
+              <span>
+                {likeProcessing || likeReplyActionMutation.isPending
+                  ? t('common.processing')
+                  : t('common.likeBtn.text')}
+              </span>
+
+              {likesCount > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
+                  <span>{formatCount(likesCount)}</span>
+                  <span className="visually-hidden">likes</span>
+                </span>
+              )}
+            </button>
+
             <button
               onClick={onClickReply}
               className="btn btn-outline-secondary rounded-pill"

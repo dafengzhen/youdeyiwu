@@ -69,6 +69,18 @@ public class QuoteReplyEntity extends AbstractEntity {
   private Set<QuoteReplyEntity> quoteReplies = new HashSet<>();
 
   /**
+   * quote reply users.
+   */
+  @OneToMany(
+      mappedBy = "quoteReply",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<QuoteReplyUserEntity> quoteReplyUsers = new HashSet<>();
+
+  /**
    * quote reply.
    */
   @ManyToOne
