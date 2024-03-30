@@ -4,13 +4,14 @@ import type { IComment } from '@/app/[locale]/interfaces/comments';
 import type { IReply } from '@/app/[locale]/interfaces/replies';
 import { type ChangeEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import CreateReplyAction, {
   type ICreateReplyActionVariables,
 } from '@/app/[locale]/actions/replies/create-reply-action';
 import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
 import { sanitizeHtmlContent } from '@/app/[locale]/common/editor';
 import { useTranslations } from 'next-intl';
+import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 
 export default function ReplyBox({
   details,
@@ -30,6 +31,8 @@ export default function ReplyBox({
     content: '',
   });
   const t = useTranslations();
+  const pointsAlert = usePointsAlert();
+  const queryClient = useQueryClient();
 
   const createReplyActionMutation = useMutation({
     mutationFn: async (variables: ICreateReplyActionVariables) => {
@@ -76,6 +79,12 @@ export default function ReplyBox({
 
       await createReplyActionMutation.mutateAsync(variables);
       setForm({ ...form, content: '' });
+
+      queryClient.refetchQueries({
+        queryKey: [`/posts/${details.id}/comment-reply`, 'infinite'],
+      });
+
+      pointsAlert.refresh();
 
       toast.current.show({
         type: 'success',

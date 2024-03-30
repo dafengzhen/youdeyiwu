@@ -327,6 +327,7 @@ public class UserServiceImpl implements UserService {
     UserEntity userEntity = findUser(securityService.getUserId());
     UserEntityVo vo = userMapper.entityToVo(userEntity);
     setRoles(vo, userEntity);
+    setSections(vo, userEntity);
     return vo;
   }
 
@@ -487,6 +488,21 @@ public class UserServiceImpl implements UserService {
         userEntity.getRoles()
             .stream()
             .map(roleMapper::entityToVo)
+            .collect(Collectors.toSet())
+    );
+  }
+
+  /**
+   * set sections.
+   *
+   * @param vo         vo
+   * @param userEntity userEntity
+   */
+  private void setSections(UserEntityVo vo, UserEntity userEntity) {
+    vo.setSections(
+        userEntity.getSections()
+            .stream()
+            .map(sectionMapper::entityToVo)
             .collect(Collectors.toSet())
     );
   }

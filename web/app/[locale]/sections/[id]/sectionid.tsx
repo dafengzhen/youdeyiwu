@@ -53,7 +53,7 @@ export default function SectionId({
           </div>
         )}
 
-        <div className="d-none d-lg-block col">
+        <div className="d-none d-lg-block col col-md-6 col-lg">
           <div className="d-flex flex-column gap-4">
             <Navbar details={details} />
             <Posts details={details} data={data} queryParams={queryParams} />

@@ -43,6 +43,7 @@ import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
+import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.SectionGroupRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
@@ -570,7 +571,17 @@ public class PostServiceImpl implements PostService {
    * @param postEntity postEntity
    */
   private void setSection(PostEntityVo vo, PostEntity postEntity) {
-    vo.setSection(sectionMapper.entityToVo(postEntity.getSection()));
+    SectionEntityVo sectionEntityVo = sectionMapper.entityToVo(postEntity.getSection());
+    if (Objects.nonNull(sectionEntityVo)) {
+      sectionEntityVo.setAdmins(
+          postEntity.getSection()
+              .getAdmins()
+              .stream()
+              .map(userMapper::entityToVo)
+              .collect(Collectors.toSet())
+      );
+    }
+    vo.setSection(sectionEntityVo);
   }
 
   /**

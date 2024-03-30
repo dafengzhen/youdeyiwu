@@ -23,6 +23,7 @@ public interface UserMapper {
   @Mapping(target = "roles", ignore = true)
   @Mapping(target = "posts", ignore = true)
   @Mapping(target = "favorites", ignore = true)
+  @Mapping(target = "sections", ignore = true)
   UserEntityVo entityToVo(UserEntity entity);
 
 }

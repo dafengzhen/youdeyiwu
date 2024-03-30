@@ -1,8 +1,8 @@
 import type { IBase } from '@/app/[locale]/interfaces/index';
-import { IRole } from '@/app/[locale]/interfaces/roles';
-import { IPost, IPostFavorite } from '@/app/[locale]/interfaces/posts';
-import { ISection } from '@/app/[locale]/interfaces/sections';
-import { ITag } from '@/app/[locale]/interfaces/tags';
+import type { IRole } from '@/app/[locale]/interfaces/roles';
+import type { IPost, IPostFavorite } from '@/app/[locale]/interfaces/posts';
+import type { ISection } from '@/app/[locale]/interfaces/sections';
+import type { ITag } from '@/app/[locale]/interfaces/tags';
 
 export interface IUser extends IBase {
   alias?: string;
@@ -18,6 +18,7 @@ export interface IUser extends IBase {
   enabled: boolean;
   roles: IRole[];
   posts: IPost[];
+  sections: ISection[];
 }
 
 export interface IUserDetails extends IBase {

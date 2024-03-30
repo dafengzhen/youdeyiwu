@@ -104,4 +104,9 @@ public class UserEntityVo extends AbstractEntityVo {
    */
   private UserStatisticsVo relatedStatistics;
 
+  /**
+   * sections.
+   */
+  private Set<SectionEntityVo> sections;
+
 }

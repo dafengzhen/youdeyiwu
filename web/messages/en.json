@@ -322,6 +322,13 @@
     "goToHomepage": "Go to homepage",
     "goBack": "Go back",
     "successfullyCopiedToClipboard": "Successfully copied to clipboard",
-    "share": "Share"
+    "share": "Share",
+    "thisUserIsTheAuthorOfThisArticle": "This user is the author of this article.",
+    "thisUserIsASectionAdministrator": "This user is a content administrator.",
+    "thisUserIsTheCurrentSectionAdministrator": "This user is the current content administrator.",
+    "thisUserIsAForumAdministrator": "This user is a forum administrator.",
+    "pointsHaveIncreased": "Points have increased",
+    "pointsHaveDecreased": "Points have decreased",
+    "pointHaveStabilised": "Points have stabilised"
   }
 }

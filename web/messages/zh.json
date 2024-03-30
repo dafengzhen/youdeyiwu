@@ -320,6 +320,13 @@
     "goToHomepage": "返回首页",
     "goBack": "返回上一页",
     "successfullyCopiedToClipboard": "成功复制到剪贴板",
-    "share": "分享"
+    "share": "分享",
+    "thisUserIsTheAuthorOfThisArticle": "这个用户是文章的作者",
+    "thisUserIsASectionAdministrator": "这个用户是内容管理员",
+    "thisUserIsTheCurrentSectionAdministrator": "这个用户是当前内容管理员",
+    "thisUserIsAForumAdministrator": "这个用户是内容管理员",
+    "pointsHaveIncreased": "积分增加了",
+    "pointsHaveDecreased": "积分减少了",
+    "pointHaveStabilised": "积分稳定了"
   }
 }

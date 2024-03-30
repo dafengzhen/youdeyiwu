@@ -7,7 +7,7 @@ import {
   isHttpOrHttps,
   trimObjectStrings,
 } from '@/app/[locale]/common/client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import CreateCommentAction, {
   type ICreateCommentActionVariables,
 } from '@/app/[locale]/actions/comments/create-comment-action';
@@ -15,6 +15,7 @@ import { sanitizeHtmlContent } from '@/app/[locale]/common/editor';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 
 export default function CommentBox({ details }: { details: IPostDetails }) {
   const { toast } = useContext(GlobalContext);
@@ -23,14 +24,41 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
   });
   const { openReplyBox, setOpenReplyBox, currentUser } =
     useContext(PostIdContext);
-  let uid;
   let avatar;
   let alias = getUserAlias(currentUser);
   const t = useTranslations();
+  let acronyms;
+  let acronymsTitle;
+  const pointsAlert = usePointsAlert();
+  const queryClient = useQueryClient();
 
   if (currentUser) {
-    uid = currentUser.id;
     avatar = isHttpOrHttps(currentUser.avatar) ? currentUser.avatar : undefined;
+
+    if (
+      details.section &&
+      details.section.admins.find((item) => item.id === currentUser.id)
+    ) {
+      acronyms = 'Admin';
+
+      if (
+        currentUser.sections.find((item) => item.id === details.section!.id)
+      ) {
+        acronymsTitle = t('common.thisUserIsASectionAdministrator');
+      } else {
+        acronymsTitle = t('common.thisUserIsTheCurrentSectionAdministrator');
+      }
+    }
+
+    if (currentUser.root) {
+      acronyms = 'Forum Admin';
+      acronymsTitle = t('common.thisUserIsAForumAdministrator');
+    }
+
+    if (currentUser.id === details.createdBy) {
+      acronyms = 'Author';
+      acronymsTitle = t('common.thisUserIsTheAuthorOfThisArticle');
+    }
   }
 
   const createCommentActionMutation = useMutation({
@@ -72,6 +100,12 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
       setForm({ ...form, content: '' });
       setOpenReplyBox!(false);
 
+      queryClient.refetchQueries({
+        queryKey: [`/posts/${details.id}/comment-reply`, 'infinite'],
+      });
+
+      pointsAlert.refresh();
+
       toast.current.show({
         type: 'success',
         message: t('common.replySuccessfully'),
@@ -89,9 +123,9 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
     <>
       {openReplyBox && (
         <div className="card rounded-4 border shadow">
-          <div className="card-header bg-transparent border-bottom-0">
+          <div className="card-header d-flex gap-2 justify-content-between bg-transparent border-bottom-0">
             <div className="d-flex justify-content-around gap-3">
-              <Link href={uid ? `/users/${uid}` : '/users'}>
+              <Link href={currentUser ? `/users/${currentUser.id}` : '/users'}>
                 <Image
                   className="rounded-circle object-fit-contain image-hover"
                   src={avatar ?? '/assets/avatar.png'}
@@ -104,7 +138,7 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                 <div>
                   <Link
                     className="fw-medium link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
-                    href={uid ? `/users/${uid}` : '/users'}
+                    href={currentUser ? `/users/${currentUser.id}` : '/users'}
                   >
                     {alias}
                   </Link>
@@ -114,6 +148,17 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                 </time>
               </div>
             </div>
+
+            {acronyms && (
+              <div className="align-self-center">
+                <div
+                  title={acronymsTitle}
+                  className="small border border-1 border-secondary px-2 rounded-pill"
+                >
+                  {acronyms}
+                </div>
+              </div>
+            )}
           </div>
           <div className="card-body d-flex flex-column gap-3 py-2">
             <div>

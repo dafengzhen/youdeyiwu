@@ -77,7 +77,7 @@ export default function PostId({
           </div>
         )}
 
-        <div className="d-none d-lg-block col">
+        <div className="d-none d-lg-block col col-md-6 col-lg">
           <div className="d-flex flex-column gap-4">
             <Navbar details={details} />
             <ActionButton details={details} />

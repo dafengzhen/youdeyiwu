@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
 import ReplyBox from '@/app/[locale]/posts/[id]/comments/reply-box';
+import { useTranslations } from 'next-intl';
 
 export default function QuotedReply({
   item,
@@ -16,8 +17,35 @@ export default function QuotedReply({
 }) {
   const user = item.user;
   const quotedItem = item.quoteReply ?? item.comment;
-
   const [openReplyBox, setOpenReplyBox] = useState(false);
+  const t = useTranslations();
+  let acronyms;
+  let acronymsTitle;
+
+  if (user) {
+    if (
+      details.section &&
+      details.section.admins.find((item) => item.id === user.id)
+    ) {
+      acronyms = 'Admin';
+
+      if (user.sections.find((item) => item.id === details.section!.id)) {
+        acronymsTitle = t('common.thisUserIsASectionAdministrator');
+      } else {
+        acronymsTitle = t('common.thisUserIsTheCurrentSectionAdministrator');
+      }
+    }
+
+    if (user.root) {
+      acronyms = 'Forum Admin';
+      acronymsTitle = t('common.thisUserIsAForumAdministrator');
+    }
+
+    if (user.id === details.createdBy) {
+      acronyms = 'Author';
+      acronymsTitle = t('common.thisUserIsTheAuthorOfThisArticle');
+    }
+  }
 
   function onClickReply() {
     setOpenReplyBox(!openReplyBox);
@@ -25,7 +53,7 @@ export default function QuotedReply({
 
   return (
     <div className="card yw-card shadow-sm shadow-hover">
-      <div className="card-header yw-card-header">
+      <div className="card-header d-flex justify-content-between gap-2 yw-card-header">
         <div className="d-flex justify-content-around gap-3">
           <Link href={user ? `/users/${user.id}` : '/users'}>
             <Image
@@ -57,6 +85,17 @@ export default function QuotedReply({
             </time>
           </div>
         </div>
+
+        {acronyms && (
+          <div className="align-self-center">
+            <div
+              title={acronymsTitle}
+              className="small border border-1 border-secondary px-2 rounded-pill"
+            >
+              {acronyms}
+            </div>
+          </div>
+        )}
       </div>
       <div className="card-body d-flex flex-column gap-3 py-2">
         {quotedItem && (

@@ -6,6 +6,7 @@ import QueryAllMessageAction from '@/app/[locale]/actions/messages/query-all-mes
 import { nonNum } from '@/app/[locale]/common/client';
 import type { IMessage } from '@/app/[locale]/interfaces/messages';
 import useLocalStorageState from 'use-local-storage-state';
+import { useTranslations } from 'next-intl';
 
 export interface IPointsAlert {
   id: string;
@@ -15,7 +16,7 @@ export interface IPointsAlert {
   displayed: boolean;
   ref: HTMLDivElement | null;
   sign: HTMLElement | null;
-  flag: '+' | '-';
+  flag: '+' | '-' | null;
 }
 
 export interface IPointsAlertRef {
@@ -29,6 +30,7 @@ export default forwardRef(function PointsAlert(props, ref) {
   const [items, setItems] = useState<IPointsAlert[]>([]);
   const [updateTrigger, setUpdateTrigger] = useState(items.length);
   const initialValue = { value: [] as { id: number }[] };
+  const t = useTranslations();
 
   const [pointMessagesDisplayedItem, setPointMessagesDisplayed] =
     useLocalStorageState(pointMessagesDisplayedKey, {
@@ -110,11 +112,22 @@ export default forwardRef(function PointsAlert(props, ref) {
             !nonNum(output.remainingPoints)
           ) {
             const value = parseInt(output.remainingPoints);
-            const flag = output.increasedBy === '0' ? '-' : '+';
-            const actualValue =
-              flag === '+'
-                ? parseInt(output.increasedBy ?? '0')
-                : parseInt(output.decreasedBy ?? '0');
+            let flag: '+' | '-' | null;
+            let actualValue;
+
+            if (output.increasedBy === '0' && output.decreasedBy !== '0') {
+              flag = '-';
+              actualValue = parseInt(output.decreasedBy ?? '0');
+            } else if (
+              output.increasedBy !== '0' &&
+              output.decreasedBy === '0'
+            ) {
+              flag = '+';
+              actualValue = parseInt(output.increasedBy ?? '0');
+            } else {
+              flag = null;
+              actualValue = 0;
+            }
 
             add({
               value: value === 0 ? actualValue : value,
@@ -129,7 +142,7 @@ export default forwardRef(function PointsAlert(props, ref) {
     items
       .filter((item) => !item.displayed)
       .forEach((item) => {
-        if (!item.ref || !item.sign) {
+        if (!item.ref) {
           return;
         }
 
@@ -202,13 +215,15 @@ export default forwardRef(function PointsAlert(props, ref) {
             },
           );
 
-        t1.add(() => {
-          gsap.to(signElement, {
-            rotation: 360,
-            ease: 'circ.out',
-            duration: 2,
-          });
-        }, 1);
+        if (signElement) {
+          t1.add(() => {
+            gsap.to(signElement, {
+              rotation: 360,
+              ease: 'circ.out',
+              duration: 2,
+            });
+          }, 1);
+        }
       });
   }, [updateTrigger]);
 
@@ -266,14 +281,27 @@ export default forwardRef(function PointsAlert(props, ref) {
                         className="bi bi-dash"
                       ></i>
                     )}
+                    {!item.flag && (
+                      <i
+                        ref={(instance) => {
+                          item.sign = instance;
+                        }}
+                        className="bi bi-soundwave"
+                      ></i>
+                    )}
                     {/*<i className="fs-6 mb-1">{item.actualValue}</i>*/}
                   </div>
                   <div className="d-flex align-content-center gap-2">
                     {item.show && <div className="fw-medium">{item.value}</div>}
                   </div>
                 </div>
-                {item.flag === '+' && <div>Points have increased</div>}
-                {item.flag === '-' && <div>Points have decreased</div>}
+                {item.flag === '+' && (
+                  <div>{t('common.pointsHaveIncreased')}</div>
+                )}
+                {item.flag === '-' && (
+                  <div>{t('common.pointsHaveDecreased')}</div>
+                )}
+                {!item.flag && <div>{t('common.pointHaveStabilised')}</div>}
               </div>
             </div>
           </div>

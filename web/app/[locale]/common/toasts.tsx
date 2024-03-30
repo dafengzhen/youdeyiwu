@@ -44,11 +44,7 @@ export default forwardRef(function Toasts(props, ref) {
 
   function show(options: IToastProps) {
     const _toast: IToastPropsSuper = { ...options, id: nanoid() };
-    if (toasts.length > 11) {
-      setToasts([_toast]);
-    } else {
-      setToasts([...toasts, _toast]);
-    }
+    setToasts([...toasts, _toast]);
   }
 
   return (
