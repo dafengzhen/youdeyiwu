@@ -32,6 +32,7 @@ import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
@@ -44,6 +45,7 @@ import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
+import com.youdeyiwu.repository.forum.PostFavoriteRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.SectionGroupRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
@@ -109,6 +111,8 @@ public class PostServiceImpl implements PostService {
   private final ReplyMapper replyMapper;
 
   private final I18nTool i18nTool;
+
+  private final PostFavoriteRepository postFavoriteRepository;
 
   @Transactional
   @Override
@@ -223,11 +227,28 @@ public class PostServiceImpl implements PostService {
       postEntity.getPostUsers().add(postUserEntity);
     }
 
-    postEntity.setFavoritesCount(
-        Boolean.TRUE.equals(postUserEntity.getFavorited())
-            ? postEntity.getFavoritesCount() + 1
-            : Math.max(0, postEntity.getFavoritesCount() - 1)
-    );
+    PostFavoriteEntity postFavoriteEntity;
+    Optional<PostFavoriteEntity> optionalPostFavoriteEntity = postFavoriteRepository.findByUserAndPost(userEntity, postEntity);
+    if (optionalPostFavoriteEntity.isPresent()) {
+      postFavoriteEntity = optionalPostFavoriteEntity.get();
+    } else {
+      PostFavoriteEntity newPostFavoriteEntity = new PostFavoriteEntity();
+      newPostFavoriteEntity.setName(postEntity.getName());
+      newPostFavoriteEntity.setOverview(postEntity.getOverview());
+      newPostFavoriteEntity.setContent(postEntity.getContent());
+      newPostFavoriteEntity.setContentLink(postEntity.getContentLink());
+      newPostFavoriteEntity.setUser(userEntity);
+      newPostFavoriteEntity.setPost(postEntity);
+      postFavoriteEntity = newPostFavoriteEntity;
+    }
+
+    if (Boolean.TRUE.equals(postUserEntity.getFavorited())) {
+      postEntity.setFavoritesCount(postEntity.getFavoritesCount() + 1);
+      userEntity.getPostFavorites().add(postFavoriteEntity);
+    } else {
+      postEntity.setFavoritesCount(Math.max(0, postEntity.getFavoritesCount() - 1));
+      userEntity.getPostFavorites().remove(postFavoriteEntity);
+    }
   }
 
   @Transactional

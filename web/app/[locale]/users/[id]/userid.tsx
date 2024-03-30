@@ -66,12 +66,12 @@ export default function UserId({
       id: 'MyArticles',
       name: t('common.myArticles'),
     },
-    // self
-    //   ? {
-    //       id: 'MyFavourites',
-    //       name: t('common.myFavourites'),
-    //     }
-    //   : null,
+    self
+      ? {
+          id: 'MyFavourites',
+          name: t('common.myFavourites'),
+        }
+      : null,
     {
       id: 'RelatedContent',
       name: t('common.relatedContent'),
