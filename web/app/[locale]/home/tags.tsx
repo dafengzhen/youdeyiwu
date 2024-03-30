@@ -57,7 +57,7 @@ export default function Tags({
                   href={`/?tid=${item.id}`}
                   scroll={false}
                 >
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex gap-2">
                     <i className="bi bi-tag"></i>
                     <div className="line-clamp-2">{item.name}</div>
                   </div>

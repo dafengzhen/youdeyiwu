@@ -4,7 +4,6 @@ import type { IUser } from '@/app/[locale]/interfaces/users';
 import type { IMenu } from '@/app/[locale]/interfaces/menus';
 import type { IPage } from '@/app/[locale]/interfaces';
 import type { IMessage } from '@/app/[locale]/interfaces/messages';
-import { getUserAlias } from '@/app/[locale]/common/tool';
 import { getTranslations } from 'next-intl/server';
 import TranslateNavItem from '@/app/[locale]/common/translate';
 import ColorModeNavItem from '@/app/[locale]/common/color-mode';
@@ -21,7 +20,6 @@ export default async function Navbar({
   messages?: IPage<IMessage[]>;
 }) {
   let id;
-  let alias = getUserAlias(user);
   const t = await getTranslations({ locale });
   const showLanguageSwitcher = process.env.SHOW_LANGUAGE_SWITCHER === 'true';
 
@@ -107,7 +105,7 @@ export default async function Navbar({
                     className="dropdown-item text-capitalize"
                     href={id ? `/users/${id}` : '/users'}
                   >
-                    {id ? alias : t('common.myProfile')}
+                    {t('common.myProfile')}
                   </Link>
                 </li>
                 <li>

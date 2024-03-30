@@ -320,6 +320,8 @@
     "submit": "Submit",
     "inProgress": "in progress",
     "goToHomepage": "Go to homepage",
-    "goBack": "Go back"
+    "goBack": "Go back",
+    "successfullyCopiedToClipboard": "Successfully copied to clipboard",
+    "share": "Share"
   }
 }

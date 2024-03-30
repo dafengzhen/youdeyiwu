@@ -53,7 +53,7 @@ export default function TagGroups({
                   href={`/?sgid=${item.id}`}
                   scroll={false}
                 >
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="d-flex gap-2">
                     <i className="bi bi-tags"></i>
                     <div className="line-clamp-2">{item.name}</div>
                   </div>

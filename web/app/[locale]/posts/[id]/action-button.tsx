@@ -10,6 +10,7 @@ import { formatCount, wait } from '@/app/[locale]/common/client';
 import RewardBox from '@/app/[locale]/posts/[id]/reward-box';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 import { useTranslations } from 'next-intl';
+import { formatTitleForURL } from '@/app/[locale]/common/tool';
 
 export default function ActionButton({ details }: { details: IPostDetails }) {
   const { toast, modal } = useContext(GlobalContext);
@@ -142,24 +143,22 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
     }
 
     setCopying(true);
-    const textToCopy = `[${details.name}](${location.origin}/posts/${details.id})`;
+    const textToCopy = `[${details.name}](${location.origin}/posts/${details.id}/${formatTitleForURL(details.name)})`;
     navigator.clipboard
       .writeText(textToCopy)
       .then(async () => {
-        await wait(500);
+        await wait();
       })
       .then(() => {
         toast.current.show({
           type: 'success',
-          message: 'Successfully copied to clipboard',
+          message: t('common.successfullyCopiedToClipboard'),
         });
       })
       .catch((e: any) => {
-        console.error(e);
         toast.current.show({
           type: 'danger',
-          message:
-            'Unable to copy to clipboard: ' + e.message ?? 'unknown error',
+          message: e.message,
         });
       })
       .finally(() => {
@@ -181,17 +180,17 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
             type="button"
             className="btn rounded-pill btn-outline-primary position-relative"
           >
-            <span className="me-2">
+            <i
+              className={clsx(
+                'bi me-2',
+                liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
+              )}
+            ></i>
+            <span>
               {likeProcessing || likePostActionMutation.isPending
                 ? t('common.processing')
                 : t('common.likeBtn.text')}
             </span>
-            <i
-              className={clsx(
-                'bi',
-                liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
-              )}
-            ></i>
 
             {likesCount > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
@@ -208,14 +207,17 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
             type="button"
             className="btn rounded-pill btn-outline-primary position-relative"
           >
-            <span className="me-2">
+            <i
+              className={clsx(
+                'bi me-2',
+                favorited ? 'bi-star-fill' : 'bi-star',
+              )}
+            ></i>
+            <span>
               {favouriteProcessing || favoritePostActionMutation.isPending
                 ? t('common.processing')
                 : t('common.favouriteBtn.text')}
             </span>
-            <i
-              className={clsx('bi', favorited ? 'bi-star-fill' : 'bi-star')}
-            ></i>
 
             {favoritesCount > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
@@ -224,6 +226,20 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
               </span>
             )}
           </button>
+
+          <button
+            disabled={copying}
+            onClick={onClickShare}
+            type="button"
+            className={clsx(
+              'btn rounded-pill',
+              copying ? 'btn-outline-secondary' : 'btn-outline-primary',
+            )}
+          >
+            <i className="bi bi-share me-2"></i>
+            <span>{copying ? t('common.processing') : t('common.share')}</span>
+          </button>
+
           <button
             onClick={onClickReply}
             type="button"
@@ -236,8 +252,8 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
               t('common.replyBtn.cancelReply')
             ) : (
               <>
-                <span className="me-2">{t('common.replyBtn.text')}</span>
-                <i className="bi bi-send"></i>
+                <i className="bi bi-send me-2"></i>
+                <span>{t('common.replyBtn.text')}</span>
               </>
             )}
           </button>
