@@ -1,6 +1,6 @@
 'use client';
 
-import type { IUser } from '@/app/[locale]/interfaces/users';
+import type { IUser, IUserDetails } from '@/app/[locale]/interfaces/users';
 import { format, formatDistanceStrict } from 'date-fns';
 
 export const isHttpOrHttps = (value?: string) => {
@@ -82,7 +82,7 @@ export const trimObjectStrings = (obj: Record<string, any>) => {
   return trimmedObj;
 };
 
-export const getUserAlias = (user?: IUser | null) => {
+export const getUserAlias = (user?: IUser | IUserDetails | null) => {
   if (!user) {
     return 'Anonymous';
   }

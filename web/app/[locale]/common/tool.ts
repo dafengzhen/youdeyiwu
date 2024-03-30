@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import type { IUser } from '@/app/[locale]/interfaces/users';
+import type { IUser, IUserDetails } from '@/app/[locale]/interfaces/users';
 
 export const isNum = (value: string) => {
   return /^\d+$/.test(value);
@@ -13,7 +13,7 @@ export const incorrectMetadataTitle = (e?: any): Metadata => {
   };
 };
 
-export const getUserAlias = (user?: IUser | null) => {
+export const getUserAlias = (user?: IUser | IUserDetails | null) => {
   if (!user) {
     return 'Anonymous';
   }
