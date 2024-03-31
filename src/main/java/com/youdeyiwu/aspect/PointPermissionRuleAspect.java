@@ -12,6 +12,7 @@ import com.youdeyiwu.model.entity.forum.TagEntity;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.SectionRepository;
 import com.youdeyiwu.repository.forum.TagRepository;
+import com.youdeyiwu.tool.I18nTool;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,8 @@ public class PointPermissionRuleAspect {
   private final TagRepository tagRepository;
 
   private final SectionRepository sectionRepository;
+
+  private final I18nTool i18nTool;
 
   /**
    * create post.
@@ -89,7 +92,7 @@ public class PointPermissionRuleAspect {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
             PermissionRuleNameEnum.CREATE_POST,
-            null,
+            i18nTool.getMessage("point.createPost"),
             null
         )
     ));
@@ -103,7 +106,7 @@ public class PointPermissionRuleAspect {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
             PermissionRuleNameEnum.CREATE_COMMENT,
-            null,
+            i18nTool.getMessage("point.commentPost"),
             null
         )
     ));
@@ -117,7 +120,7 @@ public class PointPermissionRuleAspect {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
             PermissionRuleNameEnum.CREATE_REPLY,
-            null,
+            i18nTool.getMessage("point.replyPost"),
             null
         )
     ));
@@ -131,7 +134,7 @@ public class PointPermissionRuleAspect {
     publisher.publishEvent(new PointPermissionRuleApplicationEvent(
         new PointPermissionRuleEventDto(
             PermissionRuleNameEnum.UPDATE_POST,
-            null,
+            i18nTool.getMessage("point.updatePost"),
             null
         )
     ));
@@ -158,7 +161,7 @@ public class PointPermissionRuleAspect {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_TAG,
-              postEntity.getNameAndId(),
+              postEntity.getNameAndId() + "#" + i18nTool.getMessage("point.updatePostTags"),
               postEntity.getLink()
           )
       ));
@@ -171,7 +174,7 @@ public class PointPermissionRuleAspect {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_CONTENT_LINK,
-              postEntity.getNameAndId(),
+              postEntity.getNameAndId() + "#" + i18nTool.getMessage("point.updatePostContentLink"),
               postEntity.getLink()
           )
       ));
@@ -184,7 +187,7 @@ public class PointPermissionRuleAspect {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_COVER_LINK,
-              postEntity.getNameAndId(),
+              postEntity.getNameAndId() + "#" + i18nTool.getMessage("point.updatePostCoverLink"),
               postEntity.getLink()
           )
       ));
@@ -200,7 +203,7 @@ public class PointPermissionRuleAspect {
       publisher.publishEvent(new PointPermissionRuleApplicationEvent(
           new PointPermissionRuleEventDto(
               PermissionRuleNameEnum.ADD_POST_SECTION,
-              postEntity.getNameAndId(),
+              postEntity.getNameAndId() + "#" + i18nTool.getMessage("point.updatePostSection"),
               postEntity.getLink()
           )
       ));

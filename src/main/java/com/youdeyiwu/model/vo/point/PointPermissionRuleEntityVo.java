@@ -29,4 +29,9 @@ public class PointPermissionRuleEntityVo extends AbstractEntityVo {
    */
   private Integer operationCost;
 
+  /**
+   * enable.
+   */
+  private Boolean enable;
+
 }

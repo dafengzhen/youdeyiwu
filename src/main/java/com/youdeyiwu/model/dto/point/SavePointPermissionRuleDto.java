@@ -9,6 +9,7 @@ import java.io.Serializable;
  *
  * @param permissionRuleName permissionRuleName
  * @param requiredPoints     requiredPoints
+ * @param enable             enable
  */
 public record SavePointPermissionRuleDto(
     @NotNull(message = "{point.permissionRuleName.required}")
@@ -16,7 +17,9 @@ public record SavePointPermissionRuleDto(
 
     Integer requiredPoints,
 
-    Integer operationCost
+    Integer operationCost,
+
+    Boolean enable
 ) implements Serializable {
 
 }

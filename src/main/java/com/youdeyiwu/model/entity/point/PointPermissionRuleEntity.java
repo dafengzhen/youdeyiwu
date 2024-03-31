@@ -40,4 +40,9 @@ public class PointPermissionRuleEntity extends AbstractEntity {
    */
   private Integer operationCost = 0;
 
+  /**
+   * enable.
+   */
+  private Boolean enable = false;
+
 }

@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @param ruleName              ruleName
  * @param initiatorRewardPoints initiatorRewardPoints
  * @param receiverRewardPoints  receiverRewardPoints
+ * @param enable                enable
  */
 public record SavePointRuleDto(
     @NotNull(message = "{point.ruleName.required}")
@@ -17,7 +18,9 @@ public record SavePointRuleDto(
 
     Integer initiatorRewardPoints,
 
-    Integer receiverRewardPoints
+    Integer receiverRewardPoints,
+
+    Boolean enable
 ) implements Serializable {
 
 }

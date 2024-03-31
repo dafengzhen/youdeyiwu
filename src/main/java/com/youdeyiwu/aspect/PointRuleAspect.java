@@ -26,6 +26,8 @@ import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.ReplyRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
+import com.youdeyiwu.tool.I18nTool;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -58,6 +60,8 @@ public class PointRuleAspect {
   private final CommentRepository commentRepository;
 
   private final ReplyRepository replyRepository;
+
+  private final I18nTool i18nTool;
 
   /**
    * create post.
@@ -156,13 +160,8 @@ public class PointRuleAspect {
         new PointRuleEventDto(
             RuleNameEnum.CREATE_POST,
             SignEnum.POSITIVE,
-            true,
-            """
-                %s [ %s ]
-                """
-                .formatted(postEntity.getName(), "Create Post"),
-            "/posts/" + postEntity.getId(),
-            null,
+            getPostNameAndIdWithMessage(postEntity, "point.createPost"),
+            postEntity.getLink(),
             null,
             false
         )
@@ -174,14 +173,13 @@ public class PointRuleAspect {
    */
   @After(value = "viewPagePointcut(id,ip)", argNames = "id,ip")
   public void viewPageAfterAdvice(Long id, String ip) {
+    PostEntity postEntity = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.VISIT_POST,
             SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            id,
+            getPostNameAndIdWithMessage(postEntity, "point.visitPost"),
+            postEntity.getLink(),
             null,
             false
         )
@@ -215,11 +213,9 @@ public class PointRuleAspect {
             Boolean.TRUE.equals(liked)
                 ? SignEnum.NEGATIVE
                 : SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            id,
-            null,
+            getPostNameAndIdWithMessage(postEntity, "point.likePost"),
+            postEntity.getLink(),
+            getReceivedUserIds(postEntity),
             true
         )
     ));
@@ -246,17 +242,16 @@ public class PointRuleAspect {
         .map(commentUserEntity -> !commentUserEntity.getLiked())
         .orElse(true);
 
+    PostEntity postEntity = commentEntity.getPost();
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.LIKE_COMMENT,
             Boolean.TRUE.equals(liked)
                 ? SignEnum.NEGATIVE
                 : SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            commentEntity.getPost().getId(),
-            null,
+            getPostNameAndIdWithMessage(postEntity, "point.likeComment"),
+            postEntity.getLink(),
+            getReceivedUserIds(postEntity),
             true
         )
     ));
@@ -283,17 +278,16 @@ public class PointRuleAspect {
         .map(commentUserEntity -> !commentUserEntity.getLiked())
         .orElse(true);
 
+    PostEntity postEntity = quoteReplyEntity.getPost();
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.LIKE_REPLY,
             Boolean.TRUE.equals(liked)
                 ? SignEnum.NEGATIVE
                 : SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            quoteReplyEntity.getPost().getId(),
-            null,
+            getPostNameAndIdWithMessage(postEntity, "point.likeReply"),
+            postEntity.getLink(),
+            getReceivedUserIds(postEntity),
             true
         )
     ));
@@ -326,11 +320,9 @@ public class PointRuleAspect {
             Boolean.TRUE.equals(favorited)
                 ? SignEnum.NEGATIVE
                 : SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            id,
-            null,
+            getPostNameAndIdWithMessage(postEntity, "point.favoritePost"),
+            postEntity.getLink(),
+            getReceivedUserIds(postEntity),
             true
         )
     ));
@@ -341,8 +333,7 @@ public class PointRuleAspect {
    */
   @After(value = "updateStatesPointcut(id,dto)", argNames = "id,dto")
   public void updateStatesAfterAdvice(Long id, UpdateStatesPostDto dto) {
-    PostEntity postEntity = postRepository.findById(id)
-        .orElseThrow(PostNotFoundException::new);
+    PostEntity postEntity = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 
     if (
         Objects.nonNull(dto.reviewState())
@@ -369,10 +360,8 @@ public class PointRuleAspect {
           new PointRuleEventDto(
               ruleName,
               sign,
-              false,
-              null,
-              null,
-              id,
+              getPostNameAndIdWithMessage(postEntity, "point.updatePostState"),
+              postEntity.getLink(),
               null,
               false
           )
@@ -385,14 +374,13 @@ public class PointRuleAspect {
    */
   @After(value = "postReviewApprovedPointcut(id,dto)", argNames = "id,dto")
   public void postReviewApprovedAfterAdvice(Long id, ApprovedPostReviewQueueDto dto) {
+    PostEntity postEntity = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.POST_APPROVED,
             SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            id,
+            getPostNameAndIdWithMessage(postEntity, "point.postApproved"),
+            postEntity.getLink(),
             null,
             false
         )
@@ -404,14 +392,13 @@ public class PointRuleAspect {
    */
   @After(value = "postReviewNotApprovedPointcut(id,dto)", argNames = "id,dto")
   public void postReviewNotApprovedAfterAdvice(Long id, NotApprovedPostReviewQueueDto dto) {
+    PostEntity postEntity = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.POST_NOT_APPROVED,
             SignEnum.NEGATIVE,
-            false,
-            null,
-            null,
-            id,
+            getPostNameAndIdWithMessage(postEntity, "point.postNotApproved"),
+            postEntity.getLink(),
             null,
             false
         )
@@ -423,14 +410,13 @@ public class PointRuleAspect {
    */
   @AfterReturning(value = "createCommentPointcut(dto)", returning = "commentEntity", argNames = "commentEntity,dto")
   public void createCommentAfterReturningAdvice(CommentEntity commentEntity, CreateCommentDto dto) {
+    PostEntity postEntity = commentEntity.getPost();
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.COMMENT_POST,
             SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            commentEntity.getPost().getId(),
+            getPostNameAndIdWithMessage(postEntity, "point.commentPost"),
+            postEntity.getLink(),
             null,
             false
         )
@@ -467,17 +453,44 @@ public class PointRuleAspect {
       receiverUserIds = commentOrReplyUserEntity.map(user -> Set.of(user.getId())).orElse(null);
     }
 
+    PostEntity postEntity = quoteReplyEntity.getPost();
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.REPLY_POST,
             SignEnum.POSITIVE,
-            false,
-            null,
-            null,
-            quoteReplyEntity.getPost().getId(),
+            getPostNameAndIdWithMessage(postEntity, "point.replyPost"),
+            postEntity.getLink(),
             receiverUserIds,
             false
         )
     ));
+  }
+
+  /**
+   * get post name and id with message.
+   *
+   * @param postEntity postEntity
+   * @param message    message
+   * @return String
+   */
+  private String getPostNameAndIdWithMessage(PostEntity postEntity, String message) {
+    return postEntity.getNameAndId() + "#" + i18nTool.getMessage(message);
+  }
+
+  /**
+   * get received user ids.
+   *
+   * @param postEntity postEntity
+   * @return Set
+   */
+  private Set<Long> getReceivedUserIds(PostEntity postEntity) {
+    if (
+        securityService.isAuthenticated()
+            && Objects.nonNull(postEntity.getUser())
+            && !postEntity.getUser().getId().equals(securityService.getUserId())
+    ) {
+      return Set.of(postEntity.getUser().getId());
+    }
+    return new HashSet<>();
   }
 }

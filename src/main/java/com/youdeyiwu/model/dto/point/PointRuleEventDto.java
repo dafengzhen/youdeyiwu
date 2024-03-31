@@ -10,11 +10,9 @@ import java.util.Set;
  *
  * @param ruleName           ruleName
  * @param sign               sign
- * @param onlyInitiator      onlyInitiator
  * @param from               from
  * @param link               link
- * @param postId             postId
- * @param receiverUserIds    receiverUserIds
+ * @param receivedUserIds    receivedUserIds
  * @param checkHistoryPoints checkHistoryPoints
  */
 public record PointRuleEventDto(
@@ -22,15 +20,11 @@ public record PointRuleEventDto(
 
     SignEnum sign,
 
-    Boolean onlyInitiator,
-
     String from,
 
     String link,
 
-    Long postId,
-
-    Set<Long> receiverUserIds,
+    Set<Long> receivedUserIds,
 
     Boolean checkHistoryPoints
 ) implements Serializable {

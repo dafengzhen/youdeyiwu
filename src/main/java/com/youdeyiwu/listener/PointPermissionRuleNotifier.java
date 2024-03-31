@@ -72,7 +72,7 @@ public class PointPermissionRuleNotifier
     PointPermissionRuleEventDto dto = (PointPermissionRuleEventDto) event.getSource();
     Optional<PointPermissionRuleEntity> byPermissionRuleName =
         pointPermissionRuleRepository.findByPermissionRuleName(dto.permissionRuleName());
-    if (byPermissionRuleName.isEmpty()) {
+    if (byPermissionRuleName.isEmpty() || Boolean.FALSE.equals(byPermissionRuleName.get().getEnable())) {
       return;
     }
 
@@ -123,9 +123,6 @@ public class PointPermissionRuleNotifier
         )
     );
 
-    String from = dto.from();
-    String link = dto.link();
-
     getDifferenceSign(
         pointEntity,
         (flag, difference) -> {
@@ -142,9 +139,9 @@ public class PointPermissionRuleNotifier
                   "increased", flag == SignEnum.POSITIVE ? difference : 0,
                   "decreased", flag == SignEnum.NEGATIVE ? difference : 0,
                   "remaining", pointEntity.getPoints(),
-                  "source", Objects.isNull(from) ? i18nTool.getMessage("point.systemService") : from
+                  "source", Objects.isNull(dto.from()) ? i18nTool.getMessage("point.systemService") : dto.from()
               ),
-              link,
+              dto.link(),
               userRepository.findById(securityService.getUserId())
                   .orElseThrow(UserNotFoundException::new)
           );

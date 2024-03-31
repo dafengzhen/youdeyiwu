@@ -29,4 +29,9 @@ public class PointRuleEntityVo extends AbstractEntityVo {
    */
   private Integer receiverRewardPoints;
 
+  /**
+   * enable.
+   */
+  private Boolean enable;
+
 }

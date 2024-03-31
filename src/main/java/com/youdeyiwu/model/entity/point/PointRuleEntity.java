@@ -43,6 +43,11 @@ public class PointRuleEntity extends AbstractEntity {
   private Integer receiverRewardPoints = 0;
 
   /**
+   * enable.
+   */
+  private Boolean enable = false;
+
+  /**
    * the user who initiated the point rule.
    */
   @Transient
