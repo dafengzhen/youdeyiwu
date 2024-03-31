@@ -24,6 +24,7 @@ export interface IPointRule extends IBase {
   ruleName: RuleNameEnum;
   initiatorRewardPoints: number;
   receiverRewardPoints: number;
+  enable: boolean;
   _tip?: string;
 }
 
@@ -31,6 +32,7 @@ export interface IPointPermissionRule extends IBase {
   permissionRuleName: PermissionRuleNameEnum;
   requiredPoints: number;
   operationCost: number;
+  enable: boolean;
   _tip?: string;
 }
 
@@ -47,7 +49,7 @@ export enum RuleNameEnum {
   // DISLIKE_REPLY = 'DISLIKE_REPLY',
   POST_APPROVED = 'POST_APPROVED',
   POST_NOT_APPROVED = 'POST_NOT_APPROVED',
-  POST_PENDING_REVIEW = 'POST_PENDING_REVIEW',
+  // POST_PENDING_REVIEW = 'POST_PENDING_REVIEW',
   VISIT_POST = 'VISIT_POST',
   CREATE_POST = 'CREATE_POST',
 }

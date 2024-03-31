@@ -21,6 +21,7 @@ const rules = Object.keys(PermissionRuleNameEnum).map((item) => {
     permissionRuleName: item,
     requiredPoints: 0,
     operationCost: 0,
+    enable: false,
   };
 }) as IPointPermissionRule[];
 
@@ -84,6 +85,7 @@ export default function PointPermissionRules({
         permissionRuleName: item.permissionRuleName,
         requiredPoints: item.requiredPoints,
         operationCost: item.operationCost,
+        enable: item.enable,
       }));
 
       for (let item of _content) {
@@ -151,6 +153,7 @@ export default function PointPermissionRules({
               <th scope="col">{t('common.rule')}</th>
               <th scope="col">{t('common.pointsRequired')}</th>
               <th scope="col">{t('common.costOfUse')}</th>
+              <th scope="col">{t('common.enable')}</th>
             </tr>
           </thead>
           <tbody>
@@ -218,6 +221,39 @@ export default function PointPermissionRules({
                       />
                     ) : (
                       <>{item.operationCost}</>
+                    )}
+                  </td>
+                  <td>
+                    {isUpdate ? (
+                      <input
+                        required
+                        disabled={saving}
+                        type="checkbox"
+                        className="form-check-input"
+                        name="enable"
+                        value={item.enable + ''}
+                        onChange={(event) => {
+                          const find = content.find(
+                            (_item) => item.id === _item.id,
+                          );
+                          if (!find) {
+                            return;
+                          }
+
+                          find.enable = event.target.checked;
+                          setContent([...content]);
+                        }}
+                        aria-describedby="enable"
+                      />
+                    ) : (
+                      <input
+                        disabled
+                        type="checkbox"
+                        className="form-check-input"
+                        name="enable"
+                        defaultChecked={item.enable}
+                        aria-describedby="enable"
+                      />
                     )}
                   </td>
                 </tr>

@@ -222,6 +222,7 @@
     "save": "保存",
     "saving": "保存中",
     "ruleText": "发送和接收者都可以获得积分奖励，默认值为 0， 在大多数情况下，该值应该为正数",
+    "ruleText2": "请注意，根据积分规则不同，发送者和接收者可能无法同时获得积分奖励",
     "rule": "规则",
     "senderBonusPoints": "发送者的奖励积分",
     "recipientBonusPoints": "接收者的奖励积分",

@@ -15,6 +15,7 @@ export interface ISavePermissionRulesPointsActionVariables {
   permissionRuleName: PermissionRuleNameEnum;
   requiredPoints?: number;
   operationCost?: number;
+  enable?: boolean;
 }
 
 export default async function SavePermissionRulesPointsAction(

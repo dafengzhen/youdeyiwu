@@ -15,6 +15,7 @@ export interface ISaveRulesPointsActionVariables {
   ruleName: RuleNameEnum;
   initiatorRewardPoints?: number;
   receiverRewardPoints?: number;
+  enable?: boolean;
 }
 
 export default async function SaveRulesPointsAction(

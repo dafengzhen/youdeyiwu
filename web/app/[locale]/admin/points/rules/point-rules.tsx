@@ -21,6 +21,7 @@ const rules = Object.keys(RuleNameEnum).map((item) => {
     ruleName: item,
     initiatorRewardPoints: 0,
     receiverRewardPoints: 0,
+    enable: false,
   };
 }) as IPointRule[];
 
@@ -39,7 +40,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
     // DISLIKE_REPLY: t('common.dontLikeThisPostReply'),
     POST_APPROVED: t('common.postsApprovedForModeration'),
     POST_NOT_APPROVED: t('common.postsNotApproved'),
-    POST_PENDING_REVIEW: t('common.postsInModeration'),
+    // POST_PENDING_REVIEW: t('common.postsInModeration'),
     VISIT_POST: t('common.browsePosts'),
     CREATE_POST: t('common.createAPost'),
   };
@@ -83,6 +84,7 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
         ruleName: item.ruleName,
         initiatorRewardPoints: item.initiatorRewardPoints,
         receiverRewardPoints: item.receiverRewardPoints,
+        enable: item.enable,
       }));
 
       for (let item of _content) {
@@ -144,12 +146,16 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
     >
       <div className="table-responsive">
         <table className="table align-middle table-striped">
-          <caption>{t('common.ruleText')}</caption>
+          <caption>
+            <div>{t('common.ruleText')}</div>
+            <div>{t('common.ruleText2')}</div>
+          </caption>
           <thead>
             <tr>
               <th scope="col">{t('common.rule')}</th>
               <th scope="col">{t('common.senderBonusPoints')}</th>
               <th scope="col">{t('common.recipientBonusPoints')}</th>
+              <th scope="col">{t('common.enable')}</th>
             </tr>
           </thead>
           <tbody>
@@ -217,6 +223,39 @@ export default function PointRules({ data }: { data: IPointRule[] }) {
                       />
                     ) : (
                       <>{item.receiverRewardPoints}</>
+                    )}
+                  </td>
+                  <td>
+                    {isUpdate ? (
+                      <input
+                        required
+                        disabled={saving}
+                        type="checkbox"
+                        className="form-check-input"
+                        name="enable"
+                        value={item.enable + ''}
+                        onChange={(event) => {
+                          const find = content.find(
+                            (_item) => item.id === _item.id,
+                          );
+                          if (!find) {
+                            return;
+                          }
+
+                          find.enable = event.target.checked;
+                          setContent([...content]);
+                        }}
+                        aria-describedby="enable"
+                      />
+                    ) : (
+                      <input
+                        disabled
+                        type="checkbox"
+                        className="form-check-input"
+                        name="enable"
+                        defaultChecked={item.enable}
+                        aria-describedby="enable"
+                      />
                     )}
                   </td>
                 </tr>
