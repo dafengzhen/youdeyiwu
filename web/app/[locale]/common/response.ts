@@ -95,12 +95,13 @@ export const createRequest = async ({
   options?: Omit<RequestInit, 'body'> & {
     skipAuth?: boolean;
     skipBody?: boolean;
+    skipHeader?: boolean;
     body?: any;
   };
 }) => {
   const _options = options ?? {};
-  let headers: any = {};
-  let body;
+  let headers = _options.headers;
+  let body = _options.body;
 
   if (!_options.skipAuth) {
     headers = {
@@ -108,7 +109,10 @@ export const createRequest = async ({
     };
   }
 
-  if (_options.method === 'POST' || _options.method === 'PUT') {
+  if (
+    !_options.skipHeader &&
+    (_options.method === 'POST' || _options.method === 'PUT')
+  ) {
     headers = { ...headers, ...JSON_HEADER };
   }
 

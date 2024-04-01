@@ -104,6 +104,7 @@
     "favouriteBtn": {
       "anonymousUsers": "Sorry, anonymous users are not allowed to add favourites, please login to add favourites",
       "gets": "This is a good article!",
+      "gets2": "It is bookmarked on my home page",
       "text": "Favourite"
     },
     "processing": "Processing",

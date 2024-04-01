@@ -116,6 +116,13 @@ export default function ActionButton({ details }: { details: IPostDetails }) {
           type: 'success',
           message: t('common.favouriteBtn.gets'),
         });
+
+        setTimeout(() => {
+          toast.current.show({
+            type: 'success',
+            message: t('common.favouriteBtn.gets2'),
+          });
+        }, 1500);
       } else {
         setFavorited(false);
         setFavoritesCount(favoritesCount - 1);

@@ -29,6 +29,7 @@ export default async function UploadCoverPostAction({
         method: POST,
         body: variables.formData,
         skipBody: true,
+        skipHeader: true,
       },
     });
 
