@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/node": "^20.11.30",
     "prettier": "^3.2.5",
+    "sass": "^1.72.0",
     "vitepress": "^1.0.1"
   },
   "peerDependencies": {
@@ -34,5 +35,8 @@
   "bugs": {
     "url": "https://github.com/dafengzhen/youdeyiwu/issues"
   },
-  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme"
+  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.3"
+  }
 }
