@@ -142,8 +142,7 @@ public class PointPermissionRuleNotifier
                   "source", Objects.isNull(dto.from()) ? i18nTool.getMessage("point.systemService") : dto.from()
               ),
               dto.link(),
-              userRepository.findById(securityService.getUserId())
-                  .orElseThrow(UserNotFoundException::new)
+              userRepository.findById(securityService.getUserId()).orElseThrow(UserNotFoundException::new)
           );
         }
     );

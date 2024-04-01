@@ -25,11 +25,11 @@ import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.point.PointCoreService;
 import com.youdeyiwu.service.point.PointService;
 import com.youdeyiwu.tool.I18nTool;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
@@ -91,33 +91,50 @@ public class PointRuleNotifier
    * @param pointRuleEntity pointRuleEntity
    */
   private void handleActions(PointRuleEventDto dto, PointRuleEntity pointRuleEntity) {
-    Set<Long> userIds = new HashSet<>();
+    List<Long> userIds = new ArrayList<>();
+    Integer rewardPoints = null;
+
     if (securityService.isAuthenticated()) {
       userIds.add(securityService.getUserId());
+      rewardPoints = pointRuleEntity.getInitiatorRewardPoints();
     }
 
     if (!CollectionUtils.isEmpty(dto.receivedUserIds())) {
       userIds.addAll(dto.receivedUserIds());
+      rewardPoints = pointRuleEntity.getReceiverRewardPoints();
     }
 
-    userIds.forEach(userId -> updatePointsAndSendMessage(
-        userRepository.findById(userId).orElseThrow(UserNotFoundException::new),
-        dto,
-        pointRuleEntity
-    ));
+    if (Objects.isNull(rewardPoints)) {
+      return;
+    }
+
+    final Integer finalRewardPoints = rewardPoints;
+    userIds.stream().findFirst().ifPresent(userId -> {
+      updatePointsAndSendMessage(
+          userRepository.findById(userId).orElseThrow(UserNotFoundException::new),
+          finalRewardPoints,
+          dto
+      );
+    });
+    userIds.stream().skip(1).forEach(userId -> {
+      updatePointsAndSendMessage(
+          userRepository.findById(userId).orElseThrow(UserNotFoundException::new),
+          finalRewardPoints,
+          dto
+      );
+    });
   }
 
   /**
    * Update points and send messages for a user.
    *
-   * @param user            user
-   * @param dto             dto
-   * @param pointRuleEntity pointRuleEntity
+   * @param user         user
+   * @param rewardPoints rewardPoints
+   * @param dto          dto
    */
   private void updatePointsAndSendMessage(
       UserEntity user,
-      PointRuleEventDto dto,
-      PointRuleEntity pointRuleEntity
+      Integer rewardPoints, PointRuleEventDto dto
   ) {
     SignEnum sign;
     if (Boolean.TRUE.equals(dto.checkHistoryPoints())) {
@@ -139,13 +156,6 @@ public class PointRuleNotifier
           .orElseGet(dto::sign);
     } else {
       sign = dto.sign();
-    }
-
-    Integer rewardPoints;
-    if (dto.receivedUserIds().contains(user.getId())) {
-      rewardPoints = pointRuleEntity.getReceiverRewardPoints();
-    } else {
-      rewardPoints = pointRuleEntity.getInitiatorRewardPoints();
     }
 
     PointEntity pointEntity = pointCoreService.update(
