@@ -31,6 +31,9 @@ IS_HTTPS_SITE=false
 
 # Should the page footer be displayed?
 SHOW_FOOTER=true
+
+# Define footer content with HTML support (Example："<div class='text-center'> Copyright&nbsp;&copy;&nbsp;2024-present Youdeyiwu </div>")
+CUSTOM_FOOTER=
 ```
 
 ::: tip Note

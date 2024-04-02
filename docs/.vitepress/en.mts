@@ -29,7 +29,7 @@ function nav(): DefaultTheme.NavItem[] {
     },
     {
       text: 'Reference',
-      link: '/reference/site-config',
+      link: '/reference/overview',
       activeMatch: '/reference/',
     },
     {
@@ -81,7 +81,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'API Reference',
       base: '/reference/',
-      link: 'config-site',
+      link: 'overview',
     },
   ];
 }
@@ -92,9 +92,13 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
       text: 'Reference',
       items: [
         {
-          text: 'Config',
-          base: '/reference/config-',
-          items: [{ text: 'Site Config', link: 'site' }],
+          text: 'Overview',
+          link: 'overview',
+        },
+        {
+          text: 'Apis',
+          base: '/reference/api-',
+          items: [{ text: 'Login', link: 'login' }],
         },
       ],
     },

@@ -43,7 +43,7 @@ function nav(): DefaultTheme.NavItem[] {
     },
     {
       text: '参考',
-      link: '/reference/site-config',
+      link: '/zh/reference/overview',
       activeMatch: '/reference/',
     },
     {
@@ -95,7 +95,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'API 参考',
       base: '/zh/reference/',
-      link: 'config-site',
+      link: 'overview',
     },
   ];
 }
@@ -106,9 +106,13 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
       text: '参考',
       items: [
         {
-          text: '配置',
-          base: '/zh/reference/config-',
-          items: [{ text: '站点配置', link: 'site' }],
+          text: '概述',
+          link: 'overview',
+        },
+        {
+          text: 'Apis',
+          base: '/zh/reference/api-',
+          items: [{ text: '登录', link: 'login' }],
         },
       ],
     },
