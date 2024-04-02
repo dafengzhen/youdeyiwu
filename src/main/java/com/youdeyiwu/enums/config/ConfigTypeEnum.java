@@ -23,6 +23,11 @@ public enum ConfigTypeEnum {
   /**
    * point.
    */
-  POINT
+  POINT,
+
+  /**
+   * post.
+   */
+  POST
 
 }

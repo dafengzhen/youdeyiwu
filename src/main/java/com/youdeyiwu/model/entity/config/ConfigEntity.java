@@ -2,6 +2,7 @@ package com.youdeyiwu.model.entity.config;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.constant.PointConfigConstant;
+import com.youdeyiwu.constant.PostConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.AbstractEntity;
 import jakarta.persistence.Column;
@@ -39,6 +40,7 @@ public class ConfigEntity extends AbstractEntity {
    * name.
    * {@link JwtConfigConstant}
    * {@link PointConfigConstant}
+   * {@link PostConfigConstant}
    */
   @Column(nullable = false)
   private String name;
@@ -46,7 +48,7 @@ public class ConfigEntity extends AbstractEntity {
   /**
    * value.
    */
-  @Column(nullable = false)
+  @Column(columnDefinition = "text", nullable = false)
   private String value;
 
   /**

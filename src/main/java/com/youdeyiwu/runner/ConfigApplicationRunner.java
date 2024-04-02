@@ -5,6 +5,7 @@ import static com.youdeyiwu.tool.Tool.randomUuId;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.constant.PointConfigConstant;
+import com.youdeyiwu.constant.PostConfigConstant;
 import com.youdeyiwu.constant.RootConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
@@ -37,7 +38,30 @@ public class ConfigApplicationRunner implements ApplicationRunner {
     initRootSecretConfig();
     initJwtSecretConfig();
     initPointConfig();
+    initPostConfig();
     log.info("=== Config === Initial configuration completed");
+  }
+
+  /**
+   * init post config.
+   */
+  private void initPostConfig() {
+    if (
+        Optional.ofNullable(
+                configRepository.findByTypeAndName(
+                    ConfigTypeEnum.POST,
+                    PostConfigConstant.createGuide
+                )
+            )
+            .isEmpty()
+    ) {
+      ConfigEntity configEntity = new ConfigEntity();
+      configEntity.setType(ConfigTypeEnum.POST);
+      configEntity.setName(PostConfigConstant.createGuide);
+      configEntity.setValue("");
+      configRepository.save(configEntity);
+      log.info("=== Config === Create post.createGuide option");
+    }
   }
 
   /**

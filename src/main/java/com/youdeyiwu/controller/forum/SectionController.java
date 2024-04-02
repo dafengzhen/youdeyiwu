@@ -4,6 +4,7 @@ import static com.youdeyiwu.tool.Tool.getMediaType;
 
 import com.youdeyiwu.model.dto.forum.CreateSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateAdminsSectionDto;
+import com.youdeyiwu.model.dto.forum.UpdateCreatePostGuideSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
@@ -54,6 +55,15 @@ public class SectionController {
   @PostMapping(value = "/{id}/upload-cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> uploadCover(@PathVariable Long id, @RequestParam MultipartFile file) {
     sectionService.uploadCover(id, file);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/{id}/create-post-guide")
+  public ResponseEntity<Void> updateCreatePostGuide(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateCreatePostGuideSectionDto dto
+  ) {
+    sectionService.updateCreatePostGuide(id, dto);
     return ResponseEntity.noContent().build();
   }
 

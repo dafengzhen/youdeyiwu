@@ -76,6 +76,12 @@ public class SectionEntity extends AbstractEntity {
   private String content;
 
   /**
+   * create a post guide.
+   */
+  @Column(columnDefinition = "text")
+  private String createPostGuide;
+
+  /**
    * sort.
    */
   @Column(nullable = false)

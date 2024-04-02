@@ -43,6 +43,7 @@ public interface SectionMapper {
   @Mapping(target = "tags", ignore = true)
   @Mapping(target = "sectionGroups", ignore = true)
   @Mapping(target = "coverImage", ignore = true)
+  @Mapping(target = "createPostGuide", ignore = true)
   SectionEntityVo entityToVo(SectionEntity entity);
 
   /**

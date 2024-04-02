@@ -18,6 +18,7 @@ import com.youdeyiwu.mapper.forum.TagMapper;
 import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.forum.CreateSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateAdminsSectionDto;
+import com.youdeyiwu.model.dto.forum.UpdateCreatePostGuideSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
@@ -109,6 +110,16 @@ public class SectionServiceImpl implements SectionService {
       sectionEntity.setCoverImageType(getFileType(file));
     } catch (IOException e) {
       throw new CustomException(e.getMessage());
+    }
+  }
+
+  @Transactional
+  @Override
+  public void updateCreatePostGuide(Long id, UpdateCreatePostGuideSectionDto dto) {
+    SectionEntity sectionEntity = findSection(id);
+
+    if (Objects.nonNull(dto.createPostGuide())) {
+      sectionEntity.setCreatePostGuide(cleanHtmlContent(dto.createPostGuide().trim()));
     }
   }
 
@@ -263,6 +274,7 @@ public class SectionServiceImpl implements SectionService {
     setSectionGroups(vo, sectionEntity);
     setTagGroup(vo, sectionEntity);
     setTags(vo, sectionEntity);
+    setCreatePostGuide(vo, sectionEntity);
     return vo;
   }
 
@@ -281,6 +293,7 @@ public class SectionServiceImpl implements SectionService {
           setAdmins(vo, sectionEntity);
           setTags(vo, sectionEntity);
           setSectionGroups(vo, sectionEntity);
+          setCreatePostGuide(vo, sectionEntity);
           return vo;
         })
         .toList();
@@ -370,6 +383,16 @@ public class SectionServiceImpl implements SectionService {
             .map(tagGroupMapper::entityToVo)
             .collect(Collectors.toSet())
     );
+  }
+
+  /**
+   * set create post guide.
+   *
+   * @param vo     vo
+   * @param entity entity
+   */
+  private void setCreatePostGuide(SectionEntityVo vo, SectionEntity entity) {
+    vo.setCreatePostGuide(entity.getCreatePostGuide());
   }
 
   /**

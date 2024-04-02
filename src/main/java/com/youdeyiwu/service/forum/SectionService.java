@@ -2,6 +2,7 @@ package com.youdeyiwu.service.forum;
 
 import com.youdeyiwu.model.dto.forum.CreateSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateAdminsSectionDto;
+import com.youdeyiwu.model.dto.forum.UpdateCreatePostGuideSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesSectionDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagGroupsSectionDto;
@@ -37,6 +38,14 @@ public interface SectionService {
    * @param file file
    */
   void uploadCover(Long id, MultipartFile file);
+
+  /**
+   * update create post guide.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void updateCreatePostGuide(Long id, UpdateCreatePostGuideSectionDto dto);
 
   /**
    * update states.

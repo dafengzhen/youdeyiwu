@@ -1567,6 +1567,39 @@ paths:
       tags:
         - configs
 
+  # === postConfig ===
+  /configs/post/create-guide:
+    get:
+      summary: GET configs/post/create-guide
+      operationId: queryCreateGuide
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+        - configs
+    put:
+      summary: PUT configs/post/create-guide
+      operationId: updateCreateGuide
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCreateGuidePostConfigDto"
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+      tags:
+        - configs
+
   # === rootConfig ===
   /configs/root:
     put:
@@ -1941,6 +1974,32 @@ paths:
                 items:
                   type: string
                   format: byte
+      tags:
+        - sections
+  /sections/{id}/create-post-guide:
+    put:
+      summary: PUT sections/{id}/create-post-guide
+      operationId: updateCreatePostGuide
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCreatePostGuideSectionDto"
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
       tags:
         - sections
 
@@ -5141,4 +5200,14 @@ components:
       type: "object"
       properties:
         reason:
+          type: "string"
+    UpdateCreateGuidePostConfigDto:
+      type: "object"
+      properties:
+        createGuide:
+          type: "string"
+    UpdateCreatePostGuideSectionDto:
+      type: "object"
+      properties:
+        createPostGuide:
           type: "string"

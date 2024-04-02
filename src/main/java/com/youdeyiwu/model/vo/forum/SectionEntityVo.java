@@ -48,6 +48,11 @@ public class SectionEntityVo extends AbstractEntityVo {
   private String content;
 
   /**
+   * create a post guide.
+   */
+  private String createPostGuide;
+
+  /**
    * sort.
    */
   private Integer sort;
