@@ -331,6 +331,11 @@
     "thisUserIsAForumAdministrator": "这个用户是内容管理员",
     "pointsHaveIncreased": "积分增加了",
     "pointsHaveDecreased": "积分减少了",
-    "pointHaveStabilised": "积分稳定了"
+    "pointHaveStabilised": "积分稳定了",
+    "createPostGuide": "创建帖子指南",
+    "createGuide": "创建指南",
+    "createPostGuideFormText": "创建帖子指南（何时显示：用户创建帖子时显示；目的：包括但不限于对帖子内容的要求、格式以及可能涉及的任何其他指南或限制）",
+    "updateCreatePostGuide": "更新创建帖子指南",
+    "userGuide": "用户指南"
   }
 }

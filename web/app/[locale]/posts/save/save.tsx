@@ -30,6 +30,7 @@ import UploadCover from '@/app/[locale]/posts/save/upload-cover';
 import { isNum } from '@/app/[locale]/common/tool';
 import { useTranslations } from 'next-intl';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
+import CreateGuide from '@/app/[locale]/posts/save/create-guide';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -38,9 +39,11 @@ const POST_EDITOR_CENTER = 'post-editor-center';
 export default function Save({
   post,
   sections,
+  createGuide,
 }: {
   post?: IPost;
-  sections: Pick<ISection, 'id' | 'name'>[];
+  sections: Pick<ISection, 'id' | 'name' | 'createPostGuide'>[];
+  createGuide?: string;
 }) {
   const isEdit = !!post;
   const { toast } = useContext(GlobalContext);
@@ -86,6 +89,7 @@ export default function Save({
   const [first, setFirst] = useState(false);
   const t = useTranslations();
   const pointsAlert = usePointsAlert();
+  const [createGuideData, setCreateGuideData] = useState(createGuide);
 
   const publishPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -104,6 +108,13 @@ export default function Save({
     mutationFn: RefreshAction,
   });
 
+  useEffect(() => {
+    const sectionId = form.sectionId;
+    if (sectionId) {
+      const find = sections.find((item) => item.id + '' === sectionId);
+      setCreateGuideData(find?.createPostGuide ?? createGuide ?? '');
+    }
+  }, [createGuide, form.sectionId, sections]);
   useEffect(() => {
     const item = localStorage.getItem(POST_EDITOR_COLLAPSE);
     if (item === 'true') {
@@ -269,6 +280,8 @@ export default function Save({
       <div className="row mx-0">
         <div className="col">
           <div className={clsx({ container: center })}>
+            <CreateGuide data={createGuideData} />
+
             <div className="card rounded-2">
               <div className="card-header">
                 <div className="d-flex align-items-center flex-wrap justify-content-between gap-4">

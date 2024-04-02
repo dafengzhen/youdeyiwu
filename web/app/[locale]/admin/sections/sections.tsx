@@ -258,6 +258,20 @@ export default function Sections({ data }: { data: IPage<ISection[]> }) {
                           </Link>
                         </li>
                         <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
+                                `/admin/sections/${item.id}?type=createPostGuide`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/sections/${item.id}?type=createPostGuide`}
+                          >
+                            {t('common.updateCreatePostGuide')}
+                          </Link>
+                        </li>
+                        <li>
                           <hr className="dropdown-divider" />
                         </li>
                         <li>

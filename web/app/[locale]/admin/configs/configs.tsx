@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 export default function Configs() {
-  const [items, setItems] = useState<string[]>(['jwt', 'point']);
+  const [items, setItems] = useState<string[]>(['jwt', 'point', 'post']);
   const t = useTranslations();
 
   return (

@@ -17,6 +17,7 @@ export interface ISection extends IBase {
   cover?: string;
   overview?: string;
   content?: string;
+  createPostGuide?: string;
   sort: number;
   states: ISectionState[];
   admins: IUser[];

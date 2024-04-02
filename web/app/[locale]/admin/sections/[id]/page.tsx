@@ -9,6 +9,7 @@ import QuerySectionAction from '@/app/[locale]/actions/sections/query-section-ac
 import UpdateTags from '@/app/[locale]/admin/sections/[id]/update-tags';
 import UpdateTagGroups from '@/app/[locale]/admin/sections/[id]/update-tag-groups';
 import ErrorPage from '@/app/[locale]/common/error-page';
+import UpdateCreatePostGuide from '@/app/[locale]/admin/sections/[id]/update-create-post-guide';
 
 export const metadata: Metadata = {
   title: 'Update Section',
@@ -22,7 +23,13 @@ export default async function Page({
     id: string;
   };
   searchParams: {
-    type?: 'del' | 'states' | 'admins' | 'tags' | 'tagGroups';
+    type?:
+      | 'del'
+      | 'states'
+      | 'admins'
+      | 'tags'
+      | 'tagGroups'
+      | 'createPostGuide';
   };
 }) {
   const id = params.id;
@@ -47,6 +54,8 @@ export default async function Page({
       return <UpdateTags section={response.data} />;
     case 'tagGroups':
       return <UpdateTagGroups section={response.data} />;
+    case 'createPostGuide':
+      return <UpdateCreatePostGuide section={response.data} />;
     default:
       return <Update section={response.data} />;
   }

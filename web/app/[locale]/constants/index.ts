@@ -23,6 +23,7 @@ export const ACTION_PAGES_DATA = {
   Sections: [
     'Create',
     'Update',
+    'Update Create Post Guide',
     'Update States',
     'Update Admins',
     'Update Tags',
@@ -46,4 +47,5 @@ export const ACTION_PAGES_DATA = {
   Actions: ['Create', 'Update', 'Update Roles', 'Delete'],
   JwtConfigs: ['Update'],
   PointConfigs: ['Update'],
+  PostConfigs: ['Update Create Guide'],
 };

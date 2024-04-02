@@ -333,6 +333,11 @@
     "thisUserIsAForumAdministrator": "This user is a forum administrator.",
     "pointsHaveIncreased": "Points have increased",
     "pointsHaveDecreased": "Points have decreased",
-    "pointHaveStabilised": "Points have stabilised"
+    "pointHaveStabilised": "Points have stabilised",
+    "createPostGuide": "Create Post Guide",
+    "createGuide": "Create Guide",
+    "createPostGuideFormText": "Posting Guidelines (When to display: Displayed when a user creates a post; Purpose: Includes, but is not limited to, requirements for post content, formatting, and any other guidelines or restrictions that may apply).",
+    "updateCreatePostGuide": "Update Create Post Guide",
+    "userGuide": "User Guide"
   }
 }
