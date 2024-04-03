@@ -95,6 +95,7 @@ export default function Save({
   const t = useTranslations();
   const pointsAlert = usePointsAlert();
   const [createGuideData, setCreateGuideData] = useState(createGuide);
+  const [isPreview, setIsPreview] = useState(false);
 
   const publishPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -157,6 +158,11 @@ export default function Save({
       setContent(content, editorRef);
     }
   }, [isEdit, editorRef.current]);
+
+  function onClickPreview() {
+    setIsPreview(!isPreview);
+    setForm({ ...form, content: getContent(editorRef) });
+  }
 
   function temporaryStorageSaveFn() {
     return getContent(editorRef);
@@ -361,6 +367,16 @@ export default function Save({
                         </>
                       )}
                     </div>
+                    <div className="vr text-secondary"></div>
+                    <div
+                      className={clsx(
+                        'cursor-pointer',
+                        isPreview ? 'text-primary' : 'text-secondary',
+                      )}
+                      onClick={onClickPreview}
+                    >
+                      {t('common.preview')}
+                    </div>
                   </div>
                   <div className="d-flex align-items-center flex-wrap gap-2">
                     <button
@@ -395,7 +411,11 @@ export default function Save({
                 </div>
               </div>
               <div className="card-body">
-                <form className={clsx(split ? 'row' : 'vstack gap-4')}>
+                <form
+                  className={clsx(split ? 'row' : 'vstack gap-4', {
+                    'd-none': isPreview,
+                  })}
+                >
                   <div className={clsx(split ? 'col-6' : '')}>
                     <div
                       className={clsx('vstack gap-4', {
@@ -578,6 +598,14 @@ export default function Save({
                     </div>
                   </div>
                 </form>
+
+                <div
+                  className={clsx({
+                    'd-none': !isPreview,
+                    'd-block': isPreview,
+                  })}
+                  dangerouslySetInnerHTML={{ __html: form.content }}
+                ></div>
               </div>
             </div>
           </div>

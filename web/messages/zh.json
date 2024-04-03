@@ -342,6 +342,8 @@
     "restore": "恢复",
     "successfulRecovery": "恢复成功",
     "restoreTip": "点击 '恢复' 后将替换当前的编辑器内容",
-    "tempStorageTip": "点击 '暂存' 后将替换之前暂存的内容"
+    "tempStorageTip": "点击 '暂存' 后将替换之前暂存的内容",
+    "preview": "预览",
+    "edit": "编辑"
   }
 }
