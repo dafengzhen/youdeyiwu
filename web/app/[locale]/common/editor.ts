@@ -30,6 +30,10 @@ export const setContent = (
   currentEditor.setData(content.trim());
 };
 
+export const getFocus = (editorRef: MutableRefObject<any>) => {
+  editorRef.current?.focus();
+};
+
 export const onLoadEditor = (
   editorElementRef: RefObject<HTMLDivElement>,
   editorRef: MutableRefObject<any>,

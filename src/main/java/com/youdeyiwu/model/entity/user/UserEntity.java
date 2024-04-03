@@ -78,6 +78,12 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   private String email;
 
   /**
+   * temporary storage (store post content temporarily).
+   */
+  @Column(columnDefinition = "text")
+  private String temporaryStorage;
+
+  /**
    * token.
    */
   @Column(unique = true)

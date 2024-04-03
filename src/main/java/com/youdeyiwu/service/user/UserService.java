@@ -7,6 +7,7 @@ import com.youdeyiwu.model.dto.user.UpdateRolesUserDto;
 import com.youdeyiwu.model.dto.user.UpdateUserPasswordDto;
 import com.youdeyiwu.model.dto.user.UpdateUserProfileDto;
 import com.youdeyiwu.model.dto.user.UpdateUserStatesDto;
+import com.youdeyiwu.model.dto.user.UpdateUserTemporaryStorageDto;
 import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.vo.PageVo;
@@ -109,6 +110,20 @@ public interface UserService {
    * @param dto dto
    */
   void updateStates(Long id, UpdateUserStatesDto dto);
+
+  /**
+   * update temporary storage.
+   *
+   * @param dto dto
+   */
+  void updateTemporaryStorage(UpdateUserTemporaryStorageDto dto);
+
+  /**
+   * query temporary storage.
+   *
+   * @return String
+   */
+  String queryTemporaryStorage();
 
   /**
    * get menus.

@@ -439,6 +439,33 @@ paths:
                 $ref: '#/components/schemas/PageVoUserEntityVo'
       tags:
         - users
+  /users/temporary-storage:
+    put:
+      summary: PUT users/temporary-storage
+      operationId: updateTemporaryStorage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserTemporaryStorageDto"
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
+    get:
+      summary: GET users/temporary-storage
+      operationId: queryTemporaryStorage
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
 
   # === role ===
   /roles:
@@ -5210,4 +5237,9 @@ components:
       type: "object"
       properties:
         createPostGuide:
+          type: "string"
+    UpdateUserTemporaryStorageDto:
+      type: "object"
+      properties:
+        temporaryStorage:
           type: "string"

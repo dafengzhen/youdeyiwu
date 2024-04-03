@@ -6,6 +6,7 @@ import SelectAllSectionAction from '@/app/[locale]/actions/sections/select-all-s
 import QueryPostAction from '@/app/[locale]/actions/posts/query-post-action';
 import ErrorPage from '@/app/[locale]/common/error-page';
 import QueryCreateGuidePostConfigAction from '@/app/[locale]/actions/configs/post/query-create-guide-post-config-action';
+import LoginInfoUserAction from '@/app/[locale]/actions/users/login-info-user-action';
 
 export const metadata: Metadata = {
   title: 'Edit Article',
@@ -33,10 +34,12 @@ export default async function Page({
     QueryPostAction({ id }),
     SelectAllSectionAction({ sectionKey }),
     QueryCreateGuidePostConfigAction(),
+    LoginInfoUserAction(),
   ]);
   const postResponse = responses[0];
   const sectionResponse = responses[1];
   const createGuideResponse = responses[2];
+  const currentUserResponse = responses[3];
 
   if (postResponse.isError) {
     return <ErrorPage message={postResponse.message} />;
@@ -50,11 +53,16 @@ export default async function Page({
     return <ErrorPage message={createGuideResponse.message} />;
   }
 
+  if (currentUserResponse.isError) {
+    return <ErrorPage message={currentUserResponse.message} />;
+  }
+
   return (
     <Save
       post={postResponse.data}
       sections={sectionResponse.data}
       createGuide={createGuideResponse.data}
+      currentUser={currentUserResponse.data}
     />
   );
 }

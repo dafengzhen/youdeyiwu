@@ -7,6 +7,7 @@ import com.youdeyiwu.model.dto.user.UpdateRolesUserDto;
 import com.youdeyiwu.model.dto.user.UpdateUserPasswordDto;
 import com.youdeyiwu.model.dto.user.UpdateUserProfileDto;
 import com.youdeyiwu.model.dto.user.UpdateUserStatesDto;
+import com.youdeyiwu.model.dto.user.UpdateUserTemporaryStorageDto;
 import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.vo.PageVo;
@@ -122,6 +123,17 @@ public class UserController {
   ) {
     userService.updateStates(id, dto);
     return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/temporary-storage")
+  public ResponseEntity<Void> updateTemporaryStorage(@Valid @RequestBody UpdateUserTemporaryStorageDto dto) {
+    userService.updateTemporaryStorage(dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping(value = "/temporary-storage")
+  public ResponseEntity<String> queryTemporaryStorage() {
+    return ResponseEntity.ok(userService.queryTemporaryStorage());
   }
 
   @GetMapping("/{id}/roles-permissions")

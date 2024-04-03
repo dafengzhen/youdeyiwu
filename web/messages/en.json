@@ -338,6 +338,12 @@
     "createGuide": "Create Guide",
     "createPostGuideFormText": "Posting Guidelines (When to display: Displayed when a user creates a post; Purpose: Includes, but is not limited to, requirements for post content, formatting, and any other guidelines or restrictions that may apply).",
     "updateCreatePostGuide": "Update Create Post Guide",
-    "userGuide": "User Guide"
+    "userGuide": "User Guide",
+    "tempStorage": "Temp Storage",
+    "temporaryStorageSuccess": "Temporary storage success",
+    "restore": "Restore",
+    "successfulRecovery": "Successful recovery",
+    "restoreTip": "After clicking 'Restore', the current editor content will be replaced.",
+    "tempStorageTip": "After clicking 'Temp Storage', the previously saved content will be replaced."
   }
 }

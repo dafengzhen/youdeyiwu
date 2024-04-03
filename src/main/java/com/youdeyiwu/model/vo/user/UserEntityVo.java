@@ -45,6 +45,11 @@ public class UserEntityVo extends AbstractEntityVo {
   private String email;
 
   /**
+   * temporary storage (store post content temporarily).
+   */
+  private String temporaryStorage;
+
+  /**
    * last login time.
    */
   private OffsetDateTime lastLoginTime;

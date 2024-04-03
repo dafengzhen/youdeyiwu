@@ -2,6 +2,7 @@ package com.youdeyiwu.service.user.impl;
 
 import static com.youdeyiwu.tool.JwtTool.createJwt;
 import static com.youdeyiwu.tool.JwtTool.decodeSecret;
+import static com.youdeyiwu.tool.Tool.cleanHtmlContent;
 import static com.youdeyiwu.tool.Tool.isHttpOrHttps;
 import static com.youdeyiwu.tool.Tool.isLong;
 
@@ -26,6 +27,7 @@ import com.youdeyiwu.model.dto.user.UpdateRolesUserDto;
 import com.youdeyiwu.model.dto.user.UpdateUserPasswordDto;
 import com.youdeyiwu.model.dto.user.UpdateUserProfileDto;
 import com.youdeyiwu.model.dto.user.UpdateUserStatesDto;
+import com.youdeyiwu.model.dto.user.UpdateUserTemporaryStorageDto;
 import com.youdeyiwu.model.dto.user.UpdateUserUsernameDto;
 import com.youdeyiwu.model.dto.user.UsersCountByDateDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
@@ -308,6 +310,21 @@ public class UserServiceImpl implements UserService {
     }
 
     userCache.removeUserFromCache(String.valueOf(userEntity.getId()));
+  }
+
+  @Transactional
+  @Override
+  public void updateTemporaryStorage(UpdateUserTemporaryStorageDto dto) {
+    UserEntity userEntity = findUser(securityService.getUserId());
+
+    if (Objects.nonNull(dto.temporaryStorage())) {
+      userEntity.setTemporaryStorage(cleanHtmlContent(dto.temporaryStorage().trim()));
+    }
+  }
+
+  @Override
+  public String queryTemporaryStorage() {
+    return findUser(securityService.getUserId()).getTemporaryStorage();
   }
 
   @Override

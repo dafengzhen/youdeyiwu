@@ -20,6 +20,7 @@ import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
 import { isHttpOrHttps, trimObjectStrings } from '@/app/[locale]/common/client';
 import {
   getContent,
+  getFocus,
   onErrorEditor,
   onLoadEditor,
   setContent,
@@ -31,6 +32,8 @@ import { isNum } from '@/app/[locale]/common/tool';
 import { useTranslations } from 'next-intl';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 import CreateGuide from '@/app/[locale]/posts/save/create-guide';
+import type { IUser } from '@/app/[locale]/interfaces/users';
+import TemporaryStorage from '@/app/[locale]/posts/save/temporary-storage';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -40,10 +43,12 @@ export default function Save({
   post,
   sections,
   createGuide,
+  currentUser,
 }: {
   post?: IPost;
   sections: Pick<ISection, 'id' | 'name' | 'createPostGuide'>[];
   createGuide?: string;
+  currentUser: IUser | null;
 }) {
   const isEdit = !!post;
   const { toast } = useContext(GlobalContext);
@@ -152,6 +157,15 @@ export default function Save({
       setContent(content, editorRef);
     }
   }, [isEdit, editorRef.current]);
+
+  function temporaryStorageSaveFn() {
+    return getContent(editorRef);
+  }
+
+  function temporaryStorageRestoreFn(value: string) {
+    setContent(value, editorRef);
+    getFocus(editorRef);
+  }
 
   function onClickReturn() {
     router.back();
@@ -544,8 +558,14 @@ export default function Save({
 
                     <div>
                       <label className="form-label">
-                        {t('common.content')}
+                        <span>{t('common.content')}</span>
+                        <TemporaryStorage
+                          currentUser={currentUser}
+                          saveFn={temporaryStorageSaveFn}
+                          restoreFn={temporaryStorageRestoreFn}
+                        />
                       </label>
+
                       <div className="form-text mb-2">
                         {t('common.contentFormText')}
                       </div>

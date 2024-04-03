@@ -24,6 +24,7 @@ public interface UserMapper {
   @Mapping(target = "posts", ignore = true)
   @Mapping(target = "favorites", ignore = true)
   @Mapping(target = "sections", ignore = true)
+  @Mapping(target = "temporaryStorage", ignore = true)
   UserEntityVo entityToVo(UserEntity entity);
 
 }
