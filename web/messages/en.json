@@ -346,6 +346,11 @@
     "restoreTip": "After clicking 'Restore', the current editor content will be replaced.",
     "tempStorageTip": "After clicking 'Temp Storage', the previously saved content will be replaced.",
     "preview": "Preview",
-    "edit": "Edit"
+    "edit": "Edit",
+    "disableCommentReply": "Disable Comment Reply",
+    "disableReason": "Disable Reason",
+    "disableReasonFormText": "Optional. Please provide a reason for prohibition.",
+    "disableComment": "Disable Comment",
+    "disableReply": "Disable Reply"
   }
 }

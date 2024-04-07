@@ -12,6 +12,7 @@ import com.youdeyiwu.model.dto.forum.CreateReplyDto;
 import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.forum.PostHistoryEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
@@ -22,11 +23,13 @@ import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.service.forum.ReplyService;
 import com.youdeyiwu.tool.I18nTool;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * reply.
@@ -70,6 +73,7 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     PostEntity postEntity = quoteReplyEntity.getPost();
+    checkIfReplyingIsDisabled(postEntity);
     postEntity.setRepliesCount(postEntity.getRepliesCount() + 1);
     quoteReplyEntity.setContent(cleanBasicContent(dto.content().trim()));
     quoteReplyEntity.setUniqueIdentifier(randomUuId());
@@ -133,5 +137,32 @@ public class ReplyServiceImpl implements ReplyService {
     QuoteReplyEntity quoteReplyEntity = replyRepository.findById(id)
         .orElseThrow(ReplyNotFoundException::new);
     return replyMapper.entityToVo(quoteReplyEntity);
+  }
+
+  /**
+   * check if replying is disabled.
+   *
+   * @param postEntity postEntity
+   */
+  private void checkIfReplyingIsDisabled(PostEntity postEntity) {
+    if (Boolean.TRUE.equals(postEntity.getDisableReplies())) {
+      Optional<PostHistoryEntity> postHistoryEntityOptional = postEntity.getHistories()
+          .stream()
+          .filter(postHistoryEntity -> Boolean.TRUE.equals(postHistoryEntity.getDisableComments()))
+          .findFirst();
+
+      String message = "-";
+      if (postHistoryEntityOptional.isPresent()) {
+        String replyDisableReason = postHistoryEntityOptional.get().getReplyDisableReason();
+        if (StringUtils.hasText(replyDisableReason)) {
+          message = replyDisableReason;
+        }
+      }
+
+      throw new CustomException(i18nTool.getMessage(
+          "reply.create.disable",
+          Map.of("reason", message)
+      ));
+    }
   }
 }

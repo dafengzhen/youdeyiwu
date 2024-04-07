@@ -156,6 +156,16 @@ public class SecurityServiceImpl implements SecurityService {
   }
 
   @Override
+  public String getAliasAndIdOrNull(UserEntity entity) {
+    return Objects.isNull(entity) ? null : getAliasAndId(entity);
+  }
+
+  @Override
+  public String getAliasAndIdOrNull() {
+    return isAuthenticated() ? getAliasAndId(getAuthenticatedUser()) : null;
+  }
+
+  @Override
   public UserContext getUserContext() {
     UserEntity user = null;
     UserEntity root = null;

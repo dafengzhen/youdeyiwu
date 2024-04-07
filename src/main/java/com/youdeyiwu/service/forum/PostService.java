@@ -1,6 +1,7 @@
 package com.youdeyiwu.service.forum;
 
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
+import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
@@ -59,6 +60,14 @@ public interface PostService {
    * @param id id
    */
   void updateFavorite(Long id);
+
+  /**
+   * disable comment reply.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void disableCommentReply(Long id, DisableCommentReplyPostDto dto);
 
   /**
    * update section.

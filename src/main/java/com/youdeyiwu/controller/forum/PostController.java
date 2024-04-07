@@ -3,6 +3,7 @@ package com.youdeyiwu.controller.forum;
 import static com.youdeyiwu.tool.Tool.getMediaType;
 
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
+import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
@@ -73,6 +74,15 @@ public class PostController {
   @PutMapping(value = "/{id}/favorite")
   public ResponseEntity<Void> updateFavorite(@PathVariable Long id) {
     postService.updateFavorite(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/{id}/disable-comment-reply")
+  public ResponseEntity<Void> disableCommentReply(
+      @PathVariable Long id,
+      @Valid @RequestBody DisableCommentReplyPostDto dto
+  ) {
+    postService.disableCommentReply(id, dto);
     return ResponseEntity.noContent().build();
   }
 

@@ -6,13 +6,16 @@ import type {
 } from '@/app/[locale]/interfaces';
 import queryString from 'query-string';
 import {
+  ACCEPT_LANGUAGE,
   AUTHORIZATION,
   BEARER,
   JSON_HEADER,
+  NEXT_LOCALE,
   SECURE_TK,
   TK,
 } from '@/app/[locale]/constants';
-import { cookies } from 'next/headers';
+import { cookies, headers as nextHeaders } from 'next/headers';
+import { defaultLocale } from '@/i18n';
 
 export const createSuccessResponse = <T>(
   data: T,
@@ -122,6 +125,16 @@ export const createRequest = async ({
 
   if (_options.body && !_options.skipBody) {
     body = JSON.stringify(_options.body);
+  }
+
+  const acceptLanguage =
+    cookies().get(NEXT_LOCALE)?.value ?? nextHeaders().get(ACCEPT_LANGUAGE);
+  if (acceptLanguage && acceptLanguage !== defaultLocale) {
+    if (headers) {
+      (headers as any)[ACCEPT_LANGUAGE] = acceptLanguage;
+    } else {
+      headers = { ACCEPT_LANGUAGE: acceptLanguage } as any;
+    }
   }
 
   return fetch(url, {

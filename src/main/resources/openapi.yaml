@@ -2605,6 +2605,30 @@ paths:
                   format: byte
       tags:
         - posts
+  /posts/{id}/disable-comment-reply:
+    put:
+      summary: PUT posts/{id}/disable-comment-reply
+      operationId: disableCommentReply
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisableCommentReplyPostDto"
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Void"
 
   # === comment ===
   /comments:
@@ -5242,4 +5266,15 @@ components:
       type: "object"
       properties:
         temporaryStorage:
+          type: "string"
+    DisableCommentReplyPostDto:
+      type: "object"
+      properties:
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
+        commentDisableReason:
+          type: "string"
+        replyDisableReason:
           type: "string"

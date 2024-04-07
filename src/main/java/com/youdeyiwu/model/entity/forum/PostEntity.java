@@ -86,6 +86,16 @@ public class PostEntity extends AbstractEntity {
   private String contentLink;
 
   /**
+   * disable comments.
+   */
+  private Boolean disableComments = false;
+
+  /**
+   * disable replies.
+   */
+  private Boolean disableReplies = false;
+
+  /**
    * badges.
    */
   @OneToMany(
@@ -212,6 +222,18 @@ public class PostEntity extends AbstractEntity {
   private SectionEntity section;
 
   /**
+   * histories.
+   */
+  @OneToMany(
+      mappedBy = "post",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<PostHistoryEntity> histories = new HashSet<>();
+
+  /**
    * tags.
    */
   @ManyToMany(cascade = {
@@ -287,6 +309,18 @@ public class PostEntity extends AbstractEntity {
    */
   @Transient
   private String reviewReason;
+
+  /**
+   * disable comments.
+   */
+  @Transient
+  private Boolean oldDisableComments;
+
+  /**
+   * disable replies.
+   */
+  @Transient
+  private Boolean oldDisableReplies;
 
   /**
    * get name and id.

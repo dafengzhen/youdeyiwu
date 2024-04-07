@@ -66,20 +66,14 @@ export const nonNum = (value: string) => {
 };
 
 export const trimObjectStrings = (obj: Record<string, any>) => {
-  const trimmedObj: Record<string, any> = {};
-
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
+  return Object.keys(obj).reduce(
+    (trimmedObj, key) => {
       const value = obj[key];
-      if (typeof value === 'string') {
-        trimmedObj[key] = value.trim();
-      } else {
-        trimmedObj[key] = value;
-      }
-    }
-  }
-
-  return trimmedObj;
+      trimmedObj[key] = typeof value === 'string' ? value.trim() : value;
+      return trimmedObj;
+    },
+    {} as Record<string, any>,
+  );
 };
 
 export const getUserAlias = (user?: IUser | IUserDetails | null) => {

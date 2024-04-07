@@ -45,6 +45,8 @@ export interface IPost extends IBase {
   accessKey?: string;
   user?: IUser;
   postReviewQueue?: IPostReviewQueue;
+  disableComments?: boolean;
+  disableReplies?: boolean;
 }
 
 export interface IPostDetails extends IBase {

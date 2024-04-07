@@ -14,6 +14,10 @@ export const BEARER = 'Bearer';
 
 export const LOCATION = 'Location';
 
+export const ACCEPT_LANGUAGE = 'Accept-Language';
+
+export const NEXT_LOCALE = 'NEXT_LOCALE';
+
 export const JSON_HEADER = {
   'Content-Type': 'application/json',
 };
@@ -33,7 +37,13 @@ export const ACTION_PAGES_DATA = {
   'Section Groups': ['Create', 'Update', 'Update Sections', 'Delete'],
   Tags: ['Create', 'Update', 'Delete'],
   'Tag Groups': ['Create', 'Update', 'Update Tags', 'Delete'],
-  Posts: ['Update States', 'Update Tags', 'Update Section', 'Delete'],
+  Posts: [
+    'Update States',
+    'Update Tags',
+    'Update Section',
+    'Delete',
+    'Disable Comment Reply',
+  ],
   'Post Review Queues': ['Receive', 'Return', 'Approved', 'NotApproved'],
   Comments: ['Update State'],
   Messages: ['Create'],

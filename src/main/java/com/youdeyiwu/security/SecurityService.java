@@ -123,6 +123,21 @@ public interface SecurityService {
   String getAliasAndId(UserEntity entity);
 
   /**
+   * get alias and id or null.
+   *
+   * @param entity entity
+   * @return String
+   */
+  String getAliasAndIdOrNull(UserEntity entity);
+
+  /**
+   * get alias and id or null.
+   *
+   * @return String
+   */
+  String getAliasAndIdOrNull();
+
+  /**
    * get user context.
    *
    * @return UserContext

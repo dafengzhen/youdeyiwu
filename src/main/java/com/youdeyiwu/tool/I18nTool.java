@@ -49,7 +49,12 @@ public class I18nTool {
     }
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(
-        key -> args.getOrDefault(key, "-").toString()
+        key -> {
+          if (args.get(key) instanceof String value && value.isEmpty()) {
+            return "-";
+          }
+          return args.getOrDefault(key, "-").toString();
+        }
     );
     stringSubstitutor.setVariablePrefix("{");
     stringSubstitutor.setVariableSuffix("}");

@@ -24,6 +24,7 @@ import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.CreateTagDto;
+import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
@@ -34,6 +35,7 @@ import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
+import com.youdeyiwu.model.entity.forum.PostHistoryEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
@@ -250,6 +252,35 @@ public class PostServiceImpl implements PostService {
     } else {
       postEntity.setFavoritesCount(Math.max(0, postEntity.getFavoritesCount() - 1));
       userEntity.getPostFavorites().remove(postFavoriteEntity);
+    }
+  }
+
+  @Transactional
+  @Override
+  public void disableCommentReply(Long id, DisableCommentReplyPostDto dto) {
+    PostEntity postEntity = findPost(id);
+    PostHistoryEntity postHistoryEntity = new PostHistoryEntity();
+
+    if (Objects.nonNull(dto.disableComments())) {
+      boolean disableComments = Boolean.TRUE.equals(dto.disableComments());
+      postEntity.setOldDisableComments(postEntity.getDisableComments());
+      postEntity.setDisableComments(disableComments);
+      postHistoryEntity.setDisableComments(disableComments);
+      postHistoryEntity.setCommentDisableReason(dto.commentDisableReason());
+      postHistoryEntity.setPost(postEntity);
+    }
+
+    if (Objects.nonNull(dto.disableReplies())) {
+      boolean disableReplies = Boolean.TRUE.equals(dto.disableReplies());
+      postEntity.setOldDisableReplies(postEntity.getDisableReplies());
+      postEntity.setDisableReplies(disableReplies);
+      postHistoryEntity.setDisableReplies(disableReplies);
+      postHistoryEntity.setReplyDisableReason(dto.replyDisableReason());
+      postHistoryEntity.setPost(postEntity);
+    }
+
+    if (Objects.nonNull(postHistoryEntity.getPost())) {
+      postEntity.getHistories().add(postHistoryEntity);
     }
   }
 

@@ -344,6 +344,11 @@
     "restoreTip": "点击 '恢复' 后将替换当前的编辑器内容",
     "tempStorageTip": "点击 '暂存' 后将替换之前暂存的内容",
     "preview": "预览",
-    "edit": "编辑"
+    "edit": "编辑",
+    "disableCommentReply": "禁止评论回复",
+    "disableReason": "禁止理由",
+    "disableReasonFormText": "可选。建议填写禁止的理由",
+    "disableComment": "禁止评论",
+    "disableReply": "禁止回复"
   }
 }

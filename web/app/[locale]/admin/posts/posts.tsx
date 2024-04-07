@@ -212,6 +212,20 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                           </Link>
                         </li>
                         <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
+                                `/admin/posts/${item.id}?type=disableCommentReply`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/posts/${item.id}?type=disableCommentReply`}
+                          >
+                            {t('common.disableCommentReply')}
+                          </Link>
+                        </li>
+                        <li>
                           <hr className="dropdown-divider" />
                         </li>
                         <li>

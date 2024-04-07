@@ -56,6 +56,16 @@ public class PostEntityVo extends AbstractEntityVo {
   private String contentLink;
 
   /**
+   * disable comments.
+   */
+  private Boolean disableComments;
+
+  /**
+   * disable replies.
+   */
+  private Boolean disableReplies;
+
+  /**
    * badges.
    */
   private Set<PostBadgeEntityVo> badges;
