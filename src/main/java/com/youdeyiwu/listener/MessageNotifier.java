@@ -7,6 +7,7 @@ import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.message.MessageRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
+import com.youdeyiwu.tool.I18nTool;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -28,11 +29,17 @@ public class MessageNotifier implements ApplicationListener<MessageApplicationEv
 
   private final SecurityService securityService;
 
+  private final I18nTool i18nTool;
+
   @Transactional
   @Override
   public void onApplicationEvent(MessageApplicationEvent event) {
     MessageEntity entity = (MessageEntity) event.getSource();
     UserEntity sender = entity.getSender();
+
+    if (Objects.isNull(entity.getName())) {
+      entity.setName(i18nTool.getMessage("common.system.message"));
+    }
 
     if (Objects.isNull(sender) && securityService.isAuthenticated()) {
       sender = userRepository.findById(securityService.getUserId())
