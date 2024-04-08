@@ -456,6 +456,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Void"
+      tags:
+        - users
     get:
       summary: GET users/temporary-storage
       operationId: queryTemporaryStorage
@@ -466,6 +468,34 @@ paths:
             application/json:
               schema:
                 type: string
+      tags:
+        - users
+  /users/{id}/disable-comment-reply:
+    put:
+      summary: PUT users/{id}/disable-comment-reply
+      operationId: disableCommentReply
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisableCommentReplyUserDto"
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+      tags:
+        - users
 
   # === role ===
   /roles:
@@ -2629,6 +2659,60 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Void"
+      tags:
+        - posts
+  /posts/{id}/users/{userId}/disable-comment-reply:
+    put:
+      summary: PUT posts/{id}/users/{userId}/disable-comment-reply
+      operationId: disableUserCommentReply
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DisableUserCommentReplyPostDto"
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+      tags:
+        - posts
+  /posts/{id}/user-relationship:
+    get:
+      summary: GET posts/{id}/user-relationship
+      operationId: queryUserRelationship
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PageVoPostUserEntityVo"
+      tags:
+        - posts
 
   # === comment ===
   /comments:
@@ -3284,89 +3368,59 @@ paths:
         - posts
 components:
   schemas:
-    RegisterDto:
+    PostBadgeEntityVo:
       type: "object"
       properties:
-        alias:
+        name:
           type: "string"
-        username:
+        sort:
+          type: "integer"
+          format: "int32"
+        styles:
           type: "string"
-          required: true
-        password:
+        classes:
           type: "string"
-          required: true
-    TokenVo:
-      type: "object"
-      properties:
         id:
           type: "integer"
           format: "int64"
-        alias:
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
           type: "string"
-        token:
+          format: "date-time"
+        updatedOn:
           type: "string"
-        expDays:
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    PostImageEntityVo:
+      type: "object"
+      properties:
+        url:
+          type: "string"
+        sort:
           type: "integer"
           format: "int32"
-    LoginDto:
-      type: "object"
-      properties:
-        username:
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
           type: "string"
-          required: true
-        password:
+          format: "date-time"
+        updatedOn:
           type: "string"
-          required: true
-    Void:
-      type: "object"
-      properties: { }
-    AssignRolesDto:
-      type: "object"
-      properties:
-        ids:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateRolesUserDto:
-      type: "object"
-      properties:
-        roles:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateUserProfileDto:
-      type: "object"
-      properties:
-        alias:
-          type: "string"
-        avatar:
-          type: "string"
-        oneSentence:
-          type: "string"
-    UpdateUserUsernameDto:
-      type: "object"
-      properties:
-        username:
-          type: "string"
-    UpdateUserPasswordDto:
-      type: "object"
-      properties:
-        oldPassword:
-          type: "string"
-        newPassword:
-          type: "string"
-    UpdateUserStatesDto:
-      type: "object"
-      properties:
-        accountNonExpired:
-          type: "boolean"
-        credentialsNonExpired:
-          type: "boolean"
-        accountNonLocked:
-          type: "boolean"
-        enabled:
+          format: "date-time"
+        deleted:
           type: "boolean"
     PermissionEntityVo:
       type: "object"
@@ -3460,43 +3514,20 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    PostBadgeEntityVo:
+    PostFavoriteEntityVo:
       type: "object"
       properties:
         name:
           type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        styles:
+        overview:
           type: "string"
-        classes:
+        content:
           type: "string"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
+        contentLink:
+          type: "string"
+        postId:
           type: "integer"
           format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
-    PostImageEntityVo:
-      type: "object"
-      properties:
-        url:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
         id:
           type: "integer"
           format: "int64"
@@ -3618,6 +3649,8 @@ components:
           type: "string"
         content:
           type: "string"
+        createPostGuide:
+          type: "string"
         sort:
           type: "integer"
           format: "int32"
@@ -3677,6 +3710,106 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
+    UserStatisticsVo:
+      type: "object"
+      properties:
+        sections:
+          type: "integer"
+          format: "int32"
+        tags:
+          type: "integer"
+          format: "int32"
+        posts:
+          type: "integer"
+          format: "int32"
+        comments:
+          type: "integer"
+          format: "int32"
+        replies:
+          type: "integer"
+          format: "int32"
+        views:
+          type: "integer"
+          format: "int32"
+    UserEntityVo:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+        avatar:
+          type: "string"
+        oneSentence:
+          type: "string"
+        username:
+          type: "string"
+        email:
+          type: "string"
+        temporaryStorage:
+          type: "string"
+        lastLoginTime:
+          type: "string"
+          format: "date-time"
+        root:
+          type: "boolean"
+        noPostingAllowed:
+          type: "boolean"
+        noPostingReason:
+          type: "string"
+        accountNonExpired:
+          type: "boolean"
+        credentialsNonExpired:
+          type: "boolean"
+        accountNonLocked:
+          type: "boolean"
+        enabled:
+          type: "boolean"
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        posts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostEntityVo"
+        favorites:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostFavoriteEntityVo"
+        relatedSections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        relatedTags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagEntityVo"
+        relatedStatistics:
+          $ref: "#/components/schemas/UserStatisticsVo"
+        sections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionEntityVo"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
     CommentEntityVo:
       type: "object"
       properties:
@@ -3685,6 +3818,8 @@ components:
         likesCount:
           type: "integer"
           format: "int64"
+        liked:
+          type: "boolean"
         reviewState:
           type: "string"
           enum:
@@ -3720,6 +3855,8 @@ components:
         likesCount:
           type: "integer"
           format: "int64"
+        liked:
+          type: "boolean"
         reviewState:
           type: "string"
           enum:
@@ -3810,6 +3947,10 @@ components:
           type: "string"
         contentLink:
           type: "string"
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
         badges:
           type: "array"
           items:
@@ -3905,10 +4046,12 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    PostFavoriteEntityVo:
+    CreatePostDto:
       type: "object"
       properties:
         name:
+          type: "string"
+        cover:
           type: "string"
         overview:
           type: "string"
@@ -3916,125 +4059,227 @@ components:
           type: "string"
         contentLink:
           type: "string"
-        postId:
-          type: "integer"
-          format: "int64"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
-    UserStatisticsVo:
-      type: "object"
-      properties:
-        sections:
-          type: "integer"
-          format: "int32"
         tags:
+          type: "array"
+          items:
+            type: "string"
+        sectionId:
           type: "integer"
-          format: "int32"
-        posts:
-          type: "integer"
-          format: "int32"
-        comments:
-          type: "integer"
-          format: "int32"
-        replies:
-          type: "integer"
-          format: "int32"
-        views:
-          type: "integer"
-          format: "int32"
-    UserEntityVo:
+          format: "int64"
+    Void:
+      type: "object"
+      properties: { }
+    UpdatePostDto:
       type: "object"
       properties:
-        alias:
+        name:
           type: "string"
-        avatar:
+        cover:
           type: "string"
-        oneSentence:
+        overview:
           type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        tags:
+          type: "array"
+          items:
+            type: "string"
+        sectionId:
+          type: "integer"
+          format: "int64"
+        removeSection:
+          type: "boolean"
+    DisableCommentReplyPostDto:
+      type: "object"
+      properties:
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
+        commentDisableReason:
+          type: "string"
+        replyDisableReason:
+          type: "string"
+    UpdateSectionPostDto:
+      type: "object"
+      properties:
+        sectionId:
+          type: "integer"
+          format: "int64"
+        removeSection:
+          type: "boolean"
+    UpdateStatesPostDto:
+      type: "object"
+      properties:
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        sortState:
+          type: "string"
+          enum:
+            - "DEFAULT"
+            - "POPULAR"
+            - "CURRENT_TOP"
+            - "GLOBAL_TOP"
+        allows:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        blocks:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        accessKey:
+          type: "string"
+        reason:
+          type: "string"
+        reviewReason:
+          type: "string"
+    UpdateTagsPostDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    DisableUserCommentReplyPostDto:
+      type: "object"
+      properties:
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
+        commentDisableReason:
+          type: "string"
+        replyDisableReason:
+          type: "string"
+    CreateSectionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+    UpdateSectionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        cover:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    UpdateAdminsSectionDto:
+      type: "object"
+      properties:
+        admins:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateCreatePostGuideSectionDto:
+      type: "object"
+      properties:
+        createPostGuide:
+          type: "string"
+    UpdateStatesSectionDto:
+      type: "object"
+      properties:
+        states:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "SHOW"
+              - "HIDE"
+              - "LOCK"
+              - "ALLOW"
+              - "BLOCK"
+              - "VISIBLE_AFTER_LOGIN"
+        allows:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        blocks:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+        accessKey:
+          type: "string"
+    UpdateTagGroupsSectionDto:
+      type: "object"
+      properties:
+        tagGroups:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateTagsSectionDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    UpdateCreateGuidePostConfigDto:
+      type: "object"
+      properties:
+        createGuide:
+          type: "string"
+    UsersCountByDateVo:
+      type: "object"
+      properties:
+        date:
+          type: "string"
+          format: "date"
+        count:
+          type: "integer"
+          format: "int64"
+    LoginDto:
+      type: "object"
+      properties:
         username:
           type: "string"
-        email:
+        password:
           type: "string"
-        lastLoginTime:
-          type: "string"
-          format: "date-time"
-        root:
-          type: "boolean"
-        accountNonExpired:
-          type: "boolean"
-        credentialsNonExpired:
-          type: "boolean"
-        accountNonLocked:
-          type: "boolean"
-        enabled:
-          type: "boolean"
-        roles:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/RoleEntityVo"
-        posts:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/PostEntityVo"
-        favorites:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/PostFavoriteEntityVo"
-        relatedSections:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/SectionEntityVo"
-        relatedTags:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/TagEntityVo"
-        relatedStatistics:
-          $ref: "#/components/schemas/UserStatisticsVo"
+    TokenVo:
+      type: "object"
+      properties:
         id:
           type: "integer"
           format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
+        alias:
           type: "string"
-          format: "date-time"
-        updatedOn:
+        token:
           type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
-    UserRolesPermissionsVo:
-      type: "object"
-      properties:
-        user:
-          $ref: "#/components/schemas/UserEntityVo"
-        roles:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/RoleEntityVo"
-        permissions:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/PermissionEntityVo"
+        expDays:
+          type: "integer"
+          format: "int32"
     ActionEntityVo:
       type: "object"
       properties:
@@ -4049,8 +4294,10 @@ components:
           $ref: "#/components/schemas/MenuEntityVo"
         submenu:
           $ref: "#/components/schemas/SubmenuEntityVo"
-        role:
-          $ref: "#/components/schemas/RoleEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
         id:
           type: "integer"
           format: "int64"
@@ -4144,39 +4391,21 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    UsersCountByDateVo:
+    RegisterDto:
       type: "object"
       properties:
-        date:
+        alias:
           type: "string"
-          format: "date"
-        count:
-          type: "integer"
-          format: "int64"
-    PageVoUserEntityVo:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    UpdateUserTemporaryStorageDto:
       type: "object"
       properties:
-        content:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/UserEntityVo"
-        pageable:
-          $ref: "#/components/schemas/PageableVo"
-    CreateRoleDto:
-      type: "object"
-      properties:
-        name:
+        temporaryStorage:
           type: "string"
-          description: "role name"
-          required: true
-        overview:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        display:
-          type: "boolean"
-    AssignPermissionsDto:
+    AssignRolesDto:
       type: "object"
       properties:
         ids:
@@ -4184,45 +4413,95 @@ components:
           items:
             type: "integer"
             format: "int64"
-    UpdatePermissionsRoleDto:
+    UpdateUserPasswordDto:
       type: "object"
       properties:
-        permissions:
+        oldPassword:
+          type: "string"
+        newPassword:
+          type: "string"
+    UpdateUserProfileDto:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+        avatar:
+          type: "string"
+        oneSentence:
+          type: "string"
+    UpdateRolesUserDto:
+      type: "object"
+      properties:
+        roles:
           type: "array"
           items:
             type: "integer"
             format: "int64"
-    UpdateRoleDto:
+    UserRolesPermissionsVo:
       type: "object"
       properties:
-        name:
-          type: "string"
-        overview:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-        display:
-          type: "boolean"
-    RolePermissionsVo:
-      type: "object"
-      properties:
-        role:
-          $ref: "#/components/schemas/RoleEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
         permissions:
           type: "array"
           items:
             $ref: "#/components/schemas/PermissionEntityVo"
-    PageVoRoleEntityVo:
+    UpdateUserStatesDto:
       type: "object"
       properties:
-        content:
+        accountNonExpired:
+          type: "boolean"
+        credentialsNonExpired:
+          type: "boolean"
+        accountNonLocked:
+          type: "boolean"
+        enabled:
+          type: "boolean"
+    UpdateUserUsernameDto:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+    CreatePermissionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        overview:
+          type: "string"
+        method:
+          type: "string"
+          enum:
+            - "GET"
+            - "HEAD"
+            - "POST"
+            - "PUT"
+            - "PATCH"
+            - "DELETE"
+            - "OPTIONS"
+            - "TRACE"
+        type:
+          type: "string"
+          enum:
+            - "ANT"
+            - "REGEX"
+        caseInsensitive:
+          type: "boolean"
+        sort:
+          type: "integer"
+          format: "int32"
+        matchers:
           type: "array"
           items:
-            $ref: "#/components/schemas/RoleEntityVo"
-        pageable:
-          $ref: "#/components/schemas/PageableVo"
-    CreatePermissionDto:
+            type: "integer"
+            format: "int64"
+    UpdatePermissionDto:
       type: "object"
       properties:
         name:
@@ -4265,86 +4544,16 @@ components:
           items:
             type: "integer"
             format: "int64"
-    UpdatePermissionDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        alias:
-          type: "string"
-        overview:
-          type: "string"
-        method:
-          type: "string"
-          enum:
-            - "GET"
-            - "HEAD"
-            - "POST"
-            - "PUT"
-            - "PATCH"
-            - "DELETE"
-            - "OPTIONS"
-            - "TRACE"
-        type:
-          type: "string"
-          enum:
-            - "ANT"
-            - "REGEX"
-        caseInsensitive:
-          type: "boolean"
-        sort:
-          type: "integer"
-          format: "int32"
-        matchers:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    PageableVo:
-      type: "object"
-      properties:
-        size:
-          type: "integer"
-          format: "int32"
-        page:
-          type: "integer"
-          format: "int32"
-        pages:
-          type: "integer"
-          format: "int32"
-        next:
-          type: "boolean"
-        previous:
-          type: "boolean"
-    PageVoPermissionEntityVo:
-      type: "object"
-      properties:
-        content:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/PermissionEntityVo"
-        pageable:
-          $ref: "#/components/schemas/PageableVo"
     CreateMenuDto:
       type: "object"
       properties:
         name:
           type: "string"
-          description: "menu name"
-          required: true
         link:
           type: "string"
         sort:
           type: "integer"
           format: "int32"
-    UpdateRolesMenuDto:
-      type: "object"
-      properties:
-        roles:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
     UpdateMenuDto:
       type: "object"
       properties:
@@ -4365,19 +4574,7 @@ components:
           items:
             type: "integer"
             format: "int64"
-    CreateSubmenuDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "submenu name"
-          required: true
-        link:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-    UpdateRolesSubmenuDto:
+    UpdateRolesMenuDto:
       type: "object"
       properties:
         roles:
@@ -4385,6 +4582,99 @@ components:
           items:
             type: "integer"
             format: "int64"
+    CreateActionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+    UpdateActionDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        alias:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        menu:
+          type: "integer"
+          format: "int64"
+        submenu:
+          type: "integer"
+          format: "int64"
+    UpdateRolesActionDto:
+      type: "object"
+      properties:
+        roles:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    CreateRoleDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+    UpdateRoleDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
+        display:
+          type: "boolean"
+    AssignPermissionsDto:
+      type: "object"
+      properties:
+        ids:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    RolePermissionsVo:
+      type: "object"
+      properties:
+        role:
+          $ref: "#/components/schemas/RoleEntityVo"
+        permissions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+    UpdatePermissionsRoleDto:
+      type: "object"
+      properties:
+        permissions:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    CreateSubmenuDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        link:
+          type: "string"
+        sort:
+          type: "integer"
+          format: "int32"
     UpdateSubmenuDto:
       type: "object"
       properties:
@@ -4403,19 +4693,7 @@ components:
           items:
             type: "integer"
             format: "int64"
-    CreateActionDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "action name"
-          required: true
-        alias:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
-    UpdateRolesActionDto:
+    UpdateRolesSubmenuDto:
       type: "object"
       properties:
         roles:
@@ -4423,158 +4701,126 @@ components:
           items:
             type: "integer"
             format: "int64"
-    UpdateActionDto:
+    CreateReplyDto:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        commentId:
+          type: "integer"
+          format: "int64"
+        replyId:
+          type: "integer"
+          format: "int64"
+    UpdateStateReplyDto:
+      type: "object"
+      properties:
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        reason:
+          type: "string"
+    CreateCommentDto:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+        postId:
+          type: "integer"
+          format: "int64"
+    UpdateStateCommentDto:
+      type: "object"
+      properties:
+        reviewState:
+          type: "string"
+          enum:
+            - "APPROVED"
+            - "REJECTED"
+            - "PENDING_REVIEW"
+        reason:
+          type: "string"
+    ReceivePostReviewQueueDto:
+      type: "object"
+      properties:
+        latestReviewResultTime:
+          type: "string"
+          format: "date"
+        postId:
+          type: "integer"
+          format: "int64"
+    ApprovedPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
+    NotApprovedPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
+    ReturnPostReviewQueueDto:
+      type: "object"
+      properties:
+        reason:
+          type: "string"
+    CreateTagGroupDto:
       type: "object"
       properties:
         name:
           type: "string"
-        alias:
+    UpdateTagGroupDto:
+      type: "object"
+      properties:
+        name:
           type: "string"
         sort:
           type: "integer"
           format: "int32"
-        menu:
-          type: "integer"
-          format: "int64"
-        submenu:
-          type: "integer"
-          format: "int64"
-    SavePointRuleDto:
+    UpdateTagsTagGroupDto:
       type: "object"
       properties:
-        ruleName:
-          type: "string"
-          enum:
-            - "LIKE_POST"
-            - "LIKE_COMMENT"
-            - "LIKE_REPLY"
-            - "COMMENT_POST"
-            - "REPLY_POST"
-            - "FOLLOW_POST"
-            - "FAVORITE_POST"
-            - "DISLIKE_POST"
-            - "DISLIKE_COMMENT"
-            - "DISLIKE_REPLY"
-            - "POST_APPROVED"
-            - "POST_NOT_APPROVED"
-            - "POST_PENDING_REVIEW"
-            - "VISIT_POST"
-            - "CREATE_POST"
-          description: "point rule name"
-          required: true
-        initiatorRewardPoints:
-          type: "integer"
-          format: "int32"
-          description: "initiator reward points"
-        receiverRewardPoints:
-          type: "integer"
-          format: "int32"
-          description: "receiver reward points"
-    SavePointPermissionRuleDto:
+        tags:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    CreateSectionGroupDto:
       type: "object"
       properties:
-        permissionRuleName:
+        name:
           type: "string"
-          enum:
-            - "CREATE_POST"
-            - "CREATE_COMMENT"
-            - "CREATE_REPLY"
-            - "UPDATE_POST"
-            - "ADD_POST_TAG"
-            - "ADD_POST_CONTENT_LINK"
-            - "ADD_POST_COVER_LINK"
-            - "ADD_POST_SECTION"
-          description: "point permission rule name"
-          required: true
-        requiredPoints:
-          type: "integer"
-          format: "int32"
-          description: "required points"
-        operationCost:
-          type: "integer"
-          format: "int32"
-          description: "operation cost"
-    PointRuleEntityVo:
+    UpdateSectionGroupDto:
       type: "object"
       properties:
-        ruleName:
+        name:
           type: "string"
-          enum:
-            - "LIKE_POST"
-            - "LIKE_COMMENT"
-            - "LIKE_REPLY"
-            - "COMMENT_POST"
-            - "REPLY_POST"
-            - "FOLLOW_POST"
-            - "FAVORITE_POST"
-            - "DISLIKE_POST"
-            - "DISLIKE_COMMENT"
-            - "DISLIKE_REPLY"
-            - "POST_APPROVED"
-            - "POST_NOT_APPROVED"
-            - "POST_PENDING_REVIEW"
-            - "VISIT_POST"
-            - "CREATE_POST"
-        initiatorRewardPoints:
+        sort:
           type: "integer"
           format: "int32"
-        receiverRewardPoints:
-          type: "integer"
-          format: "int32"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
-    PointPermissionRuleEntityVo:
+    UpdateSectionsSectionGroupDto:
       type: "object"
       properties:
-        permissionRuleName:
+        sections:
+          type: "array"
+          items:
+            type: "integer"
+            format: "int64"
+    CreateTagDto:
+      type: "object"
+      properties:
+        name:
           type: "string"
-          enum:
-            - "CREATE_POST"
-            - "CREATE_COMMENT"
-            - "CREATE_REPLY"
-            - "UPDATE_POST"
-            - "ADD_POST_TAG"
-            - "ADD_POST_CONTENT_LINK"
-            - "ADD_POST_COVER_LINK"
-            - "ADD_POST_SECTION"
-        requiredPoints:
+    UpdateTagDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sort:
           type: "integer"
           format: "int32"
-        operationCost:
-          type: "integer"
-          format: "int32"
-        id:
-          type: "integer"
-          format: "int64"
-        createdBy:
-          type: "integer"
-          format: "int64"
-        updatedBy:
-          type: "integer"
-          format: "int64"
-        createdOn:
-          type: "string"
-          format: "date-time"
-        updatedOn:
-          type: "string"
-          format: "date-time"
-        deleted:
-          type: "boolean"
     PointHistoryEntityVo:
       type: "object"
       properties:
@@ -4646,64 +4892,255 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    PageVoPointHistoryEntityVo:
+    PointPermissionRuleEntityVo:
       type: "object"
       properties:
-        content:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/PointHistoryEntityVo"
-        pageable:
-          $ref: "#/components/schemas/PageableVo"
-    CreateGlobalMessageDto:
+        permissionRuleName:
+          type: "string"
+          enum:
+            - "CREATE_POST"
+            - "CREATE_COMMENT"
+            - "CREATE_REPLY"
+            - "UPDATE_POST"
+            - "ADD_POST_TAG"
+            - "ADD_POST_CONTENT_LINK"
+            - "ADD_POST_COVER_LINK"
+            - "ADD_POST_SECTION"
+        requiredPoints:
+          type: "integer"
+          format: "int32"
+        operationCost:
+          type: "integer"
+          format: "int32"
+        enable:
+          type: "boolean"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SavePointPermissionRuleDto:
+      type: "object"
+      properties:
+        permissionRuleName:
+          type: "string"
+          enum:
+            - "CREATE_POST"
+            - "CREATE_COMMENT"
+            - "CREATE_REPLY"
+            - "UPDATE_POST"
+            - "ADD_POST_TAG"
+            - "ADD_POST_CONTENT_LINK"
+            - "ADD_POST_COVER_LINK"
+            - "ADD_POST_SECTION"
+        requiredPoints:
+          type: "integer"
+          format: "int32"
+        operationCost:
+          type: "integer"
+          format: "int32"
+        enable:
+          type: "boolean"
+    PointRuleEntityVo:
+      type: "object"
+      properties:
+        ruleName:
+          type: "string"
+          enum:
+            - "LIKE_POST"
+            - "LIKE_COMMENT"
+            - "LIKE_REPLY"
+            - "COMMENT_POST"
+            - "REPLY_POST"
+            - "FOLLOW_POST"
+            - "FAVORITE_POST"
+            - "DISLIKE_POST"
+            - "DISLIKE_COMMENT"
+            - "DISLIKE_REPLY"
+            - "POST_APPROVED"
+            - "POST_NOT_APPROVED"
+            - "POST_PENDING_REVIEW"
+            - "VISIT_POST"
+            - "CREATE_POST"
+        initiatorRewardPoints:
+          type: "integer"
+          format: "int32"
+        receiverRewardPoints:
+          type: "integer"
+          format: "int32"
+        enable:
+          type: "boolean"
+        id:
+          type: "integer"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
+    SavePointRuleDto:
+      type: "object"
+      properties:
+        ruleName:
+          type: "string"
+          enum:
+            - "LIKE_POST"
+            - "LIKE_COMMENT"
+            - "LIKE_REPLY"
+            - "COMMENT_POST"
+            - "REPLY_POST"
+            - "FOLLOW_POST"
+            - "FAVORITE_POST"
+            - "DISLIKE_POST"
+            - "DISLIKE_COMMENT"
+            - "DISLIKE_REPLY"
+            - "POST_APPROVED"
+            - "POST_NOT_APPROVED"
+            - "POST_PENDING_REVIEW"
+            - "VISIT_POST"
+            - "CREATE_POST"
+        initiatorRewardPoints:
+          type: "integer"
+          format: "int32"
+        receiverRewardPoints:
+          type: "integer"
+          format: "int32"
+        enable:
+          type: "boolean"
+    PointConfigVo:
+      type: "object"
+      properties:
+        enable:
+          type: "boolean"
+        initPoints:
+          type: "integer"
+          format: "int32"
+    UpdatePointConfigDto:
+      type: "object"
+      properties:
+        enable:
+          type: "boolean"
+        initPoints:
+          type: "integer"
+          format: "int32"
+    JwtConfigVo:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
+    UpdateJwtConfigDto:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
+    UpdateRootConfigDto:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
+    MessageEntityVo:
       type: "object"
       properties:
         name:
           type: "string"
-          description: "message name"
-          required: true
         overview:
           type: "string"
-          description: "message overview"
-          required: true
         link:
           type: "string"
-          description: "message link"
         links:
           type: "string"
-          description: "message links"
         content:
           type: "string"
-          description: "message content"
-        sort:
+        messageType:
+          type: "string"
+          enum:
+            - "SYSTEM"
+            - "GLOBAL_MESSAGE"
+            - "MESSAGE"
+            - "CONFIG"
+            - "FILE"
+            - "USER"
+            - "ROLE"
+            - "PERMISSION"
+            - "MENU"
+            - "SUBMENU"
+            - "ACTION"
+            - "SECTION"
+            - "SECTION_GROUP"
+            - "POST"
+            - "TAG"
+            - "TAG_GROUP"
+            - "COMMENT"
+            - "REPLY"
+            - "POINT"
+        messageRange:
+          type: "string"
+          enum:
+            - "ALL_USER"
+            - "USER"
+        state:
+          type: "string"
+          enum:
+            - "UNREAD"
+            - "READ"
+        sender:
+          $ref: "#/components/schemas/UserEntityVo"
+        receiver:
+          $ref: "#/components/schemas/UserEntityVo"
+        id:
           type: "integer"
-          format: "int32"
-          description: "message sort"
+          format: "int64"
+        createdBy:
+          type: "integer"
+          format: "int64"
+        updatedBy:
+          type: "integer"
+          format: "int64"
+        createdOn:
+          type: "string"
+          format: "date-time"
+        updatedOn:
+          type: "string"
+          format: "date-time"
+        deleted:
+          type: "boolean"
     CreateMessageDto:
       type: "object"
       properties:
         name:
           type: "string"
-          description: "message name"
-          required: true
         overview:
           type: "string"
-          description: "message overview"
-          required: true
         link:
           type: "string"
-          description: "message link"
         links:
           type: "string"
-          description: "message links"
         content:
           type: "string"
-          description: "message content"
         receiver:
           type: "integer"
           format: "int64"
-          description: "message receiver"
-          required: true
     GlobalMessageEntityVo:
       type: "object"
       properties:
@@ -4771,7 +5208,7 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
-    MessageEntityVo:
+    CreateGlobalMessageDto:
       type: "object"
       properties:
         name:
@@ -4784,45 +5221,30 @@ components:
           type: "string"
         content:
           type: "string"
-        messageType:
-          type: "string"
-          enum:
-            - "SYSTEM"
-            - "GLOBAL_MESSAGE"
-            - "MESSAGE"
-            - "CONFIG"
-            - "FILE"
-            - "USER"
-            - "ROLE"
-            - "PERMISSION"
-            - "MENU"
-            - "SUBMENU"
-            - "ACTION"
-            - "SECTION"
-            - "SECTION_GROUP"
-            - "POST"
-            - "TAG"
-            - "TAG_GROUP"
-            - "COMMENT"
-            - "REPLY"
-            - "POINT"
-        messageRange:
-          type: "string"
-          enum:
-            - "ALL_USER"
-            - "USER"
-        state:
-          type: "string"
-          enum:
-            - "UNREAD"
-            - "READ"
-        sender:
-          $ref: "#/components/schemas/UserEntityVo"
-        receiver:
-          $ref: "#/components/schemas/UserEntityVo"
-        id:
+        sort:
           type: "integer"
-          format: "int64"
+          format: "int32"
+    PostUserEntityVo:
+      type: "object"
+      properties:
+        liked:
+          type: "boolean"
+        followed:
+          type: "boolean"
+        favorited:
+          type: "boolean"
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
+        commentDisableReason:
+          type: "string"
+        replyDisableReason:
+          type: "string"
+        post:
+          $ref: "#/components/schemas/PostEntityVo"
+        user:
+          $ref: "#/components/schemas/UserEntityVo"
         createdBy:
           type: "integer"
           format: "int64"
@@ -4835,8 +5257,73 @@ components:
         updatedOn:
           type: "string"
           format: "date-time"
-        deleted:
+    DisableCommentReplyUserDto:
+      type: "object"
+      properties:
+        noPostingAllowed:
           type: "boolean"
+        disableComments:
+          type: "boolean"
+        disableReplies:
+          type: "boolean"
+        noPostingReason:
+          type: "string"
+        commentDisableReason:
+          type: "string"
+        replyDisableReason:
+          type: "string"
+    PageableVo:
+      type: "object"
+      properties:
+        size:
+          type: "integer"
+          format: "int32"
+        page:
+          type: "integer"
+          format: "int32"
+        pages:
+          type: "integer"
+          format: "int32"
+        next:
+          type: "boolean"
+        previous:
+          type: "boolean"
+    PageVoUserEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    PageVoRoleEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoleEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    PageVoPermissionEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PermissionEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
+    PageVoPointHistoryEntityVo:
+      type: "object"
+      properties:
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PointHistoryEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"
     PageVoGlobalMessageEntityVo:
       type: "object"
       properties:
@@ -4855,108 +5342,6 @@ components:
             $ref: "#/components/schemas/MessageEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
-    JwtConfigVo:
-      type: "object"
-      properties:
-        secret:
-          type: "string"
-    UpdateJwtConfigDto:
-      type: "object"
-      properties:
-        secret:
-          type: "string"
-    UpdateRootConfigDto:
-      type: "object"
-      properties:
-        secret:
-          type: "string"
-    PointConfigVo:
-      type: "object"
-      properties:
-        enable:
-          type: "boolean"
-        initPoints:
-          type: "integer"
-          format: "int32"
-    UpdatePointConfigDto:
-      type: "object"
-      properties:
-        enable:
-          type: "boolean"
-        initPoints:
-          type: "integer"
-          format: "int32"
-    CreateSectionDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "section name"
-          required: true
-    UpdateStatesSectionDto:
-      type: "object"
-      properties:
-        states:
-          type: "array"
-          items:
-            type: "string"
-            enum:
-              - "SHOW"
-              - "HIDE"
-              - "LOCK"
-              - "ALLOW"
-              - "BLOCK"
-              - "VISIBLE_AFTER_LOGIN"
-        allows:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-        blocks:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-        accessKey:
-          type: "string"
-    UpdateAdminsSectionDto:
-      type: "object"
-      properties:
-        admins:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateTagsSectionDto:
-      type: "object"
-      properties:
-        tags:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateTagGroupsSectionDto:
-      type: "object"
-      properties:
-        tagGroups:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateSectionDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        cover:
-          type: "string"
-        overview:
-          type: "string"
-        content:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
     PageVoSectionEntityVo:
       type: "object"
       properties:
@@ -4966,21 +5351,6 @@ components:
             $ref: "#/components/schemas/SectionEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
-    CreateTagDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "tag name"
-          required: true
-    UpdateTagDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
     PageVoTagEntityVo:
       type: "object"
       properties:
@@ -4990,109 +5360,6 @@ components:
             $ref: "#/components/schemas/TagEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
-    CreatePostDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "post name"
-          required: true
-        cover:
-          type: "string"
-        overview:
-          type: "string"
-        content:
-          type: "string"
-        contentLink:
-          type: "string"
-        tags:
-          type: "array"
-          items:
-            type: "string"
-        sectionId:
-          type: "integer"
-          format: "int64"
-    UpdateSectionPostDto:
-      type: "object"
-      properties:
-        sectionId:
-          type: "integer"
-          format: "int64"
-        removeSection:
-          type: "boolean"
-    UpdateStatesPostDto:
-      type: "object"
-      properties:
-        states:
-          type: "array"
-          items:
-            type: "string"
-            enum:
-              - "SHOW"
-              - "HIDE"
-              - "LOCK"
-              - "ALLOW"
-              - "BLOCK"
-              - "VISIBLE_AFTER_LOGIN"
-        reviewState:
-          type: "string"
-          enum:
-            - "APPROVED"
-            - "REJECTED"
-            - "PENDING_REVIEW"
-        sortState:
-          type: "string"
-          enum:
-            - "DEFAULT"
-            - "POPULAR"
-            - "CURRENT_TOP"
-            - "GLOBAL_TOP"
-        allows:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-        blocks:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-        accessKey:
-          type: "string"
-        reason:
-          type: "string"
-        reviewReason:
-          type: "string"
-    UpdateTagsPostDto:
-      type: "object"
-      properties:
-        tags:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdatePostDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        cover:
-          type: "string"
-        overview:
-          type: "string"
-        content:
-          type: "string"
-        contentLink:
-          type: "string"
-        tags:
-          type: "array"
-          items:
-            type: "string"
-        sectionId:
-          type: "integer"
-          format: "int64"
-        removeSection:
-          type: "boolean"
     PageVoPostEntityVo:
       type: "object"
       properties:
@@ -5111,78 +5378,6 @@ components:
             $ref: "#/components/schemas/CommentReplyVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
-    CreateCommentDto:
-      type: "object"
-      properties:
-        content:
-          type: "string"
-          description: "comment content"
-          required: true
-        postId:
-          type: "integer"
-          format: "int64"
-          description: "comment post id"
-          required: true
-    UpdateStateCommentDto:
-      type: "object"
-      properties:
-        reviewState:
-          type: "string"
-          enum:
-            - "APPROVED"
-            - "REJECTED"
-            - "PENDING_REVIEW"
-        reason:
-          type: "string"
-    CreateReplyDto:
-      type: "object"
-      properties:
-        content:
-          type: "string"
-          description: "reply content"
-          required: true
-        commentId:
-          type: "integer"
-          format: "int64"
-          description: "comment id"
-        replyId:
-          type: "integer"
-          format: "int64"
-          description: "reply id"
-    UpdateStateReplyDto:
-      type: "object"
-      properties:
-        reviewState:
-          type: "string"
-          enum:
-            - "APPROVED"
-            - "REJECTED"
-            - "PENDING_REVIEW"
-        reason:
-          type: "string"
-    CreateSectionGroupDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "section group name"
-          required: true
-    UpdateSectionsSectionGroupDto:
-      type: "object"
-      properties:
-        sections:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateSectionGroupDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
     PageVoSectionGroupEntityVo:
       type: "object"
       properties:
@@ -5192,29 +5387,6 @@ components:
             $ref: "#/components/schemas/SectionGroupEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
-    CreateTagGroupDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-          description: "tag group name"
-          required: true
-    UpdateTagsTagGroupDto:
-      type: "object"
-      properties:
-        tags:
-          type: "array"
-          items:
-            type: "integer"
-            format: "int64"
-    UpdateTagGroupDto:
-      type: "object"
-      properties:
-        name:
-          type: "string"
-        sort:
-          type: "integer"
-          format: "int32"
     PageVoTagGroupEntityVo:
       type: "object"
       properties:
@@ -5224,57 +5396,12 @@ components:
             $ref: "#/components/schemas/TagGroupEntityVo"
         pageable:
           $ref: "#/components/schemas/PageableVo"
-    ReceivePostReviewQueueDto:
+    PageVoPostUserEntityVo:
       type: "object"
       properties:
-        latestReviewResultTime:
-          type: "string"
-          format: "date"
-          description: "The estimated completion time of the review must be in the future"
-          required: true
-        postId:
-          type: "integer"
-          format: "int64"
-          description: "post id"
-          required: true
-    ReturnPostReviewQueueDto:
-      type: "object"
-      properties:
-        reason:
-          type: "string"
-    ApprovedPostReviewQueueDto:
-      type: "object"
-      properties:
-        reason:
-          type: "string"
-    NotApprovedPostReviewQueueDto:
-      type: "object"
-      properties:
-        reason:
-          type: "string"
-    UpdateCreateGuidePostConfigDto:
-      type: "object"
-      properties:
-        createGuide:
-          type: "string"
-    UpdateCreatePostGuideSectionDto:
-      type: "object"
-      properties:
-        createPostGuide:
-          type: "string"
-    UpdateUserTemporaryStorageDto:
-      type: "object"
-      properties:
-        temporaryStorage:
-          type: "string"
-    DisableCommentReplyPostDto:
-      type: "object"
-      properties:
-        disableComments:
-          type: "boolean"
-        disableReplies:
-          type: "boolean"
-        commentDisableReason:
-          type: "string"
-        replyDisableReason:
-          type: "string"
+        content:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostUserEntityVo"
+        pageable:
+          $ref: "#/components/schemas/PageableVo"

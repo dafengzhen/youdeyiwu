@@ -78,6 +78,18 @@ export interface IPostDetails extends IBase {
   comments: IPage<ICommentReply[]>;
 }
 
+export interface IPostUser extends Omit<IBase, 'id'> {
+  liked?: boolean;
+  followed?: boolean;
+  favorited?: boolean;
+  disableComments?: boolean;
+  disableReplies?: boolean;
+  commentDisableReason?: string;
+  replyDisableReason?: string;
+  post?: IPost;
+  user?: IUser;
+}
+
 export interface IPostReviewQueue extends IBase {
   received: boolean;
   latestReviewResultTime?: string;

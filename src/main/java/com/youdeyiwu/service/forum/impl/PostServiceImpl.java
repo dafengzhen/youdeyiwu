@@ -25,6 +25,7 @@ import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.CreateTagDto;
 import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
+import com.youdeyiwu.model.dto.forum.DisableUserCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
@@ -47,6 +48,7 @@ import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
+import com.youdeyiwu.model.vo.forum.PostUserEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
 import com.youdeyiwu.repository.forum.PostFavoriteRepository;
@@ -121,6 +123,7 @@ public class PostServiceImpl implements PostService {
   @Transactional
   @Override
   public PostEntity create(CreatePostDto dto) {
+    checkIfUserPostCreationAllowed();
     PostEntity postEntity = new PostEntity();
     postMapper.dtoToEntity(dto, postEntity);
     setContent(dto.content(), postEntity);
@@ -281,6 +284,44 @@ public class PostServiceImpl implements PostService {
 
     if (Objects.nonNull(postHistoryEntity.getPost())) {
       postEntity.getHistories().add(postHistoryEntity);
+    }
+  }
+
+  @Transactional
+  @Override
+  public void disableUserCommentReply(Long id, Long userId, DisableUserCommentReplyPostDto dto) {
+    PostEntity postEntity = findPost(id);
+    UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
+        .stream()
+        .filter(postUserEntity -> postUserEntity.getPost().equals(postEntity)
+            && postUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    PostUserEntity postUserEntity;
+    if (postUserEntityOptional.isPresent()) {
+      postUserEntity = postUserEntityOptional.get();
+    } else {
+      postUserEntity = new PostUserEntity();
+      postUserEntity.setUser(userEntity);
+      postUserEntity.setPost(postEntity);
+      userEntity.getUserPosts().add(postUserEntity);
+      postEntity.getPostUsers().add(postUserEntity);
+    }
+
+    if (Objects.nonNull(dto.disableComments())) {
+      boolean disableComments = Boolean.TRUE.equals(dto.disableComments());
+      postUserEntity.setOldDisableComments(postUserEntity.getDisableComments());
+      postUserEntity.setDisableComments(disableComments);
+      postUserEntity.setCommentDisableReason(dto.commentDisableReason());
+    }
+
+    if (Objects.nonNull(dto.disableReplies())) {
+      boolean disableReplies = Boolean.TRUE.equals(dto.disableReplies());
+      postUserEntity.setOldDisableReplies(postUserEntity.getDisableReplies());
+      postUserEntity.setDisableReplies(disableReplies);
+      postUserEntity.setReplyDisableReason(dto.replyDisableReason());
     }
   }
 
@@ -476,6 +517,19 @@ public class PostServiceImpl implements PostService {
     vo.setCoverImage(coverImage);
     vo.setCoverImageType(postEntity.getCoverImageType());
     return vo;
+  }
+
+  @Override
+  public PageVo<PostUserEntityVo> queryUserRelationship(Long id, Pageable pageable) {
+    Page<PostUserEntity> postUserEntityPage = postRepository.findPostUsersByPost(
+        new PaginationPositionDto(pageable),
+        findPost(id)
+    );
+    return new PageVo<>(postUserEntityPage.map(postUserEntity -> {
+      PostUserEntityVo vo = postMapper.entityToVo(postUserEntity);
+      vo.setUser(userMapper.entityToVo(postUserEntity.getUser()));
+      return vo;
+    }));
   }
 
   @Override
@@ -924,5 +978,25 @@ public class PostServiceImpl implements PostService {
           || post.getBlocks().contains(user));
       case VISIBLE_AFTER_LOGIN -> Objects.nonNull(user);
     };
+  }
+
+  /**
+   * check if user post creation allowed.
+   */
+  private void checkIfUserPostCreationAllowed() {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    if (Boolean.TRUE.equals(userEntity.getNoPostingAllowed())) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "user.post.create.disable",
+              Map.of("reason", userEntity.getNoPostingReason())
+          )
+      );
+    }
   }
 }

@@ -21,6 +21,7 @@ import com.youdeyiwu.mapper.user.RoleMapper;
 import com.youdeyiwu.mapper.user.SubmenuMapper;
 import com.youdeyiwu.mapper.user.UserMapper;
 import com.youdeyiwu.model.dto.user.AssignRolesDto;
+import com.youdeyiwu.model.dto.user.DisableCommentReplyUserDto;
 import com.youdeyiwu.model.dto.user.LoginDto;
 import com.youdeyiwu.model.dto.user.RegisterDto;
 import com.youdeyiwu.model.dto.user.UpdateRolesUserDto;
@@ -319,6 +320,33 @@ public class UserServiceImpl implements UserService {
 
     if (Objects.nonNull(dto.temporaryStorage())) {
       userEntity.setTemporaryStorage(cleanHtmlContent(dto.temporaryStorage().trim()));
+    }
+  }
+
+  @Transactional
+  @Override
+  public void disableCommentReply(Long id, DisableCommentReplyUserDto dto) {
+    UserEntity userEntity = findUser(id);
+
+    if (Objects.nonNull(dto.noPostingAllowed())) {
+      boolean noPostingAllowed = Boolean.TRUE.equals(dto.noPostingAllowed());
+      userEntity.setOldNoPostingAllowed(userEntity.getNoPostingAllowed());
+      userEntity.setNoPostingAllowed(noPostingAllowed);
+      userEntity.setNoPostingReason(dto.noPostingReason());
+    }
+
+    if (Objects.nonNull(dto.disableComments())) {
+      boolean disableComments = Boolean.TRUE.equals(dto.disableComments());
+      userEntity.setOldDisableComments(userEntity.getDisableComments());
+      userEntity.setDisableComments(disableComments);
+      userEntity.setCommentDisableReason(dto.commentDisableReason());
+    }
+
+    if (Objects.nonNull(dto.disableReplies())) {
+      boolean disableReplies = Boolean.TRUE.equals(dto.disableReplies());
+      userEntity.setOldDisableReplies(userEntity.getDisableReplies());
+      userEntity.setDisableReplies(disableReplies);
+      userEntity.setReplyDisableReason(dto.replyDisableReason());
     }
   }
 

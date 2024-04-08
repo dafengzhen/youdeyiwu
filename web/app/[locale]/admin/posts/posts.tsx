@@ -226,6 +226,20 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                           </Link>
                         </li>
                         <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
+                                `/admin/posts/${item.id}?type=queryUserRelationship`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/posts/${item.id}?type=queryUserRelationship`}
+                          >
+                            {t('common.queryUserRelationship')}
+                          </Link>
+                        </li>
+                        <li>
                           <hr className="dropdown-divider" />
                         </li>
                         <li>

@@ -9,6 +9,7 @@ import UpdateSection from '@/app/[locale]/admin/posts/[id]/update-section';
 import SelectAllSectionAction from '@/app/[locale]/actions/sections/select-all-section-action';
 import ErrorPage from '@/app/[locale]/common/error-page';
 import DisableCommentReply from '@/app/[locale]/admin/posts/[id]/disable-comment-reply';
+import UserRelationship from '@/app/[locale]/admin/posts/[id]/user-relationship';
 
 export const metadata: Metadata = {
   title: 'Update Post',
@@ -22,7 +23,13 @@ export default async function Page({
     id: string;
   };
   searchParams: {
-    type?: 'del' | 'states' | 'tags' | 'section' | 'disableCommentReply';
+    type?:
+      | 'del'
+      | 'states'
+      | 'tags'
+      | 'section'
+      | 'disableCommentReply'
+      | 'queryUserRelationship';
     sKey?: string;
     sectionKey?: string;
   };
@@ -56,6 +63,8 @@ export default async function Page({
       return <UpdateStates post={postResponse.data} />;
     case 'disableCommentReply':
       return <DisableCommentReply post={postResponse.data} />;
+    case 'queryUserRelationship':
+      return <UserRelationship post={postResponse.data} />;
     case 'tags':
       return <UpdateTags post={postResponse.data} />;
     case 'section':

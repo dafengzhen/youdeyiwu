@@ -1,6 +1,7 @@
 package com.youdeyiwu.service.user;
 
 import com.youdeyiwu.model.dto.user.AssignRolesDto;
+import com.youdeyiwu.model.dto.user.DisableCommentReplyUserDto;
 import com.youdeyiwu.model.dto.user.LoginDto;
 import com.youdeyiwu.model.dto.user.RegisterDto;
 import com.youdeyiwu.model.dto.user.UpdateRolesUserDto;
@@ -117,6 +118,14 @@ public interface UserService {
    * @param dto dto
    */
   void updateTemporaryStorage(UpdateUserTemporaryStorageDto dto);
+
+  /**
+   * disable comment reply.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void disableCommentReply(Long id, DisableCommentReplyUserDto dto);
 
   /**
    * query temporary storage.

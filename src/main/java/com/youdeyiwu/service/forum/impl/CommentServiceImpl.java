@@ -14,6 +14,7 @@ import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostHistoryEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 import com.youdeyiwu.repository.forum.CommentRepository;
@@ -28,7 +29,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 /**
  * comment.
@@ -55,11 +55,13 @@ public class CommentServiceImpl implements CommentService {
   @Transactional
   @Override
   public CommentEntity create(CreateCommentDto dto) {
-    CommentEntity commentEntity = new CommentEntity();
     PostEntity postEntity = postRepository.findById(dto.postId())
         .orElseThrow(PostNotFoundException::new);
+    checkIfUserIsCommentBanned();
+    checkIfUserPostIsCommentBanned(postEntity);
     checkIfCommentingIsDisabled(postEntity);
     postEntity.setCommentsCount(postEntity.getCommentsCount() + 1);
+    CommentEntity commentEntity = new CommentEntity();
     commentEntity.setPost(postEntity);
     commentEntity.setContent(cleanBasicContent(dto.content().trim()));
     commentEntity.setUniqueIdentifier(randomUuId());
@@ -137,18 +139,72 @@ public class CommentServiceImpl implements CommentService {
           .filter(postHistoryEntity -> Boolean.TRUE.equals(postHistoryEntity.getDisableComments()))
           .findFirst();
 
-      String message = "-";
+      String reason = "-";
       if (postHistoryEntityOptional.isPresent()) {
-        String commentDisableReason = postHistoryEntityOptional.get().getCommentDisableReason();
-        if (StringUtils.hasText(commentDisableReason)) {
-          message = commentDisableReason;
-        }
+        reason = postHistoryEntityOptional.get().getCommentDisableReason();
       }
 
-      throw new CustomException(i18nTool.getMessage(
-          "comment.create.disable",
-          Map.of("reason", message)
-      ));
+      throw new CustomException(
+          i18nTool.getMessage(
+              "comment.create.disable",
+              Map.of("reason", reason)
+          )
+      );
+    }
+  }
+
+  /**
+   * check if user is comment banned.
+   */
+  private void checkIfUserIsCommentBanned() {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+
+    if (Boolean.TRUE.equals(userEntity.getDisableComments())) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "user.comment.create.disable",
+              Map.of("reason", userEntity.getCommentDisableReason())
+          )
+      );
+    }
+  }
+
+  /**
+   * check if user post is comment banned.
+   *
+   * @param postEntity postEntity
+   */
+  private void checkIfUserPostIsCommentBanned(PostEntity postEntity) {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
+        .stream()
+        .filter(postUserEntity -> postUserEntity.getPost().equals(postEntity)
+            && postUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    if (postUserEntityOptional.isEmpty()) {
+      return;
+    }
+
+    PostUserEntity postUserEntity = postUserEntityOptional.get();
+    if (Boolean.TRUE.equals(postUserEntity.getDisableComments())) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "user.post.comment.create.disable",
+              Map.of("reason", postUserEntity.getCommentDisableReason())
+          )
+      );
     }
   }
 }

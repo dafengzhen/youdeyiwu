@@ -13,6 +13,7 @@ import com.youdeyiwu.model.dto.forum.UpdateStateReplyDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostHistoryEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
@@ -73,6 +74,8 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     PostEntity postEntity = quoteReplyEntity.getPost();
+    checkIfUserIsReplyBanned();
+    checkIfUserPostIsReplyBanned(postEntity);
     checkIfReplyingIsDisabled(postEntity);
     postEntity.setRepliesCount(postEntity.getRepliesCount() + 1);
     quoteReplyEntity.setContent(cleanBasicContent(dto.content().trim()));
@@ -163,6 +166,61 @@ public class ReplyServiceImpl implements ReplyService {
           "reply.create.disable",
           Map.of("reason", message)
       ));
+    }
+  }
+
+  /**
+   * check if user is reply banned.
+   */
+  private void checkIfUserIsReplyBanned() {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+
+    if (Boolean.TRUE.equals(userEntity.getDisableReplies())) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "user.reply.create.disable",
+              Map.of("reason", userEntity.getReplyDisableReason())
+          )
+      );
+    }
+  }
+
+  /**
+   * check if user post is reply banned.
+   *
+   * @param postEntity postEntity
+   */
+  private void checkIfUserPostIsReplyBanned(PostEntity postEntity) {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
+        .stream()
+        .filter(postUserEntity -> postUserEntity.getPost().equals(postEntity)
+            && postUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    if (postUserEntityOptional.isEmpty()) {
+      return;
+    }
+
+    PostUserEntity postUserEntity = postUserEntityOptional.get();
+    if (Boolean.TRUE.equals(postUserEntity.getDisableReplies())) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "user.post.reply.create.disable",
+              Map.of("reason", postUserEntity.getReplyDisableReason())
+          )
+      );
     }
   }
 }

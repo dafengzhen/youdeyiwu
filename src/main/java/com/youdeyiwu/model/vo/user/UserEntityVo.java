@@ -60,6 +60,36 @@ public class UserEntityVo extends AbstractEntityVo {
   private Boolean root;
 
   /**
+   * no posting allowed (Here refers to creating a post).
+   */
+  private Boolean noPostingAllowed;
+
+  /**
+   * disable comments.
+   */
+  private Boolean disableComments;
+
+  /**
+   * disable replies.
+   */
+  private Boolean disableReplies;
+
+  /**
+   * no posting reason.
+   */
+  private String noPostingReason;
+
+  /**
+   * comment disable reason.
+   */
+  private String commentDisableReason;
+
+  /**
+   * reply disable reason.
+   */
+  private String replyDisableReason;
+
+  /**
    * account not expired.
    */
   private Boolean accountNonExpired;

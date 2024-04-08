@@ -4,39 +4,43 @@ import Box from '@/app/[locale]/admin/common/box';
 import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
-import type { IPost } from '@/app/[locale]/interfaces/posts';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 import { useTranslations } from 'next-intl';
-import DisableCommentReplyPostAction, {
-  type IDisableCommentReplyPostActionVariables,
-} from '@/app/[locale]/actions/posts/disable-comment-reply-post-action';
-import { trimObjectStrings } from '@/app/[locale]/common/client';
+import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
+import type { IUser } from '@/app/[locale]/interfaces/users';
+import DisableCommentReplyUserAction, {
+  type IDisableCommentReplyUserActionVariables,
+} from '@/app/[locale]/actions/users/disable-comment-reply-user-action';
 
-export default function DisableCommentReply({ post }: { post: IPost }) {
+export default function DisableCommentReply({ user }: { user: IUser }) {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
+    noPostingAllowed: boolean;
     disableComments: boolean;
     disableReplies: boolean;
     commentDisableReason: string;
     replyDisableReason: string;
+    noPostingReason: string;
   }>({
-    disableComments: post.disableComments ?? false,
-    disableReplies: post.disableReplies ?? false,
+    noPostingAllowed: user.noPostingAllowed ?? false,
+    disableComments: user.disableComments ?? false,
+    disableReplies: user.disableReplies ?? false,
     commentDisableReason: '',
     replyDisableReason: '',
+    noPostingReason: '',
   });
   const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
-    '/admin/posts',
-    'Posts#Disable Comment Reply',
+    '/admin/users',
+    'Users#Disable Comment Reply',
   );
   const t = useTranslations();
 
-  const disableCommentReplyPostActionMutation = useMutation({
+  const disableCommentReplyUserActionMutation = useMutation({
     mutationFn: async (variables: {
       id: number;
-      variables: IDisableCommentReplyPostActionVariables;
+      variables: IDisableCommentReplyUserActionVariables;
     }) => {
-      const response = await DisableCommentReplyPostAction(variables);
+      const response = await DisableCommentReplyUserAction(variables);
       if (response.isError) {
         throw response;
       }
@@ -49,8 +53,8 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
       e.preventDefault();
 
       const variables = trimObjectStrings(form);
-      const id = post.id;
-      await disableCommentReplyPostActionMutation.mutateAsync({
+      const id = user.id;
+      await disableCommentReplyUserActionMutation.mutateAsync({
         id,
         variables,
       });
@@ -60,7 +64,7 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
         message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
-      disableCommentReplyPostActionMutation.reset();
+      disableCommentReplyUserActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -72,20 +76,61 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
     const name = e.target.name;
     const value = e.target.value;
 
-    if (name === 'disableComments' || name === 'disableReplies') {
+    if (
+      name === 'noPostingAllowed' ||
+      name === 'disableComments' ||
+      name === 'disableReplies'
+    ) {
       setForm({ ...form, [name]: value === 'true' });
     } else {
       setForm({ ...form, [name]: value });
     }
   }
 
-  function onClickLabel(name: 'disableComments' | 'disableReplies') {
+  function onClickLabel(
+    name: 'noPostingAllowed' | 'disableComments' | 'disableReplies',
+  ) {
     setForm({ ...form, [name]: !form[name] });
   }
 
   return (
-    <Box title={`${post.name} (ID. ${post.id})`}>
+    <Box title={`${getUserAlias(user)} (ID. ${user.id})`}>
       <form className="vstack gap-4" onSubmit={onSubmit}>
+        <div className="card">
+          <div className="card-body">
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value={form.noPostingAllowed ? 'true' : 'false'}
+                checked={form.noPostingAllowed}
+                onChange={onChange}
+              />
+              <label
+                onClick={() => onClickLabel('noPostingAllowed')}
+                className="cursor-pointer form-check-label text-capitalize user-select-none"
+              >
+                {t('common.disableArticleCreation')}
+              </label>
+            </div>
+
+            <div className="mt-4">
+              <label className="form-label"> {t('common.disableReason')}</label>
+              <textarea
+                rows={2}
+                className="form-control"
+                name="noPostingReason"
+                value={form.noPostingReason}
+                onChange={onChange}
+                aria-describedby="noPostingReason"
+              />
+              <div className="form-text">
+                {t('common.disableReasonFormText')}
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="card">
           <div className="card-body">
             <div className="form-check form-check-inline">
@@ -160,12 +205,12 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
           <button
             disabled={
               isActionDisabled ||
-              disableCommentReplyPostActionMutation.isPending
+              disableCommentReplyUserActionMutation.isPending
             }
             type="submit"
             className="btn btn-success"
           >
-            {disableCommentReplyPostActionMutation.isPending
+            {disableCommentReplyUserActionMutation.isPending
               ? t('common.updating')
               : t('common.update')}
           </button>

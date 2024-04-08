@@ -6,6 +6,7 @@ import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.dto.forum.TypedQueryPostPage;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.forum.QuoteReplyEntity;
 import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.forum.SectionGroupEntity;
@@ -264,6 +265,32 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
             .getResultList(),
         position.pageable(),
         totalSizeQuery.getSingleResult()
+    );
+  }
+
+  @Override
+  public Page<PostUserEntity> findPostUsersByPost(PaginationPositionDto position, PostEntity post) {
+    return new PageImpl<>(
+        entityManager.createQuery(
+                """
+                    select pu from PostUserEntity pu
+                    where pu.post = :post
+                    order by pu.user.id desc
+                    """,
+                PostUserEntity.class
+            )
+            .setFirstResult(position.firstResult())
+            .setMaxResults(position.maxResults())
+            .getResultList(),
+        position.pageable(),
+        entityManager.createQuery(
+                """
+                    select count(pu.user.id) from PostUserEntity pu
+                    where pu.post = :post
+                    """,
+                Long.class
+            )
+            .getSingleResult()
     );
   }
 

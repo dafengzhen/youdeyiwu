@@ -4,6 +4,7 @@ import static com.youdeyiwu.tool.Tool.getMediaType;
 
 import com.youdeyiwu.model.dto.forum.CreatePostDto;
 import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
+import com.youdeyiwu.model.dto.forum.DisableUserCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
@@ -13,6 +14,7 @@ import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
 import com.youdeyiwu.model.vo.forum.CommentReplyVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
+import com.youdeyiwu.model.vo.forum.PostUserEntityVo;
 import com.youdeyiwu.service.forum.PostService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -83,6 +85,16 @@ public class PostController {
       @Valid @RequestBody DisableCommentReplyPostDto dto
   ) {
     postService.disableCommentReply(id, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/{id}/users/{userId}/disable-comment-reply")
+  public ResponseEntity<Void> disableUserCommentReply(
+      @PathVariable Long id,
+      @PathVariable Long userId,
+      @Valid @RequestBody DisableUserCommentReplyPostDto dto
+  ) {
+    postService.disableUserCommentReply(id, userId, dto);
     return ResponseEntity.noContent().build();
   }
 
@@ -172,6 +184,16 @@ public class PostController {
         .contentType(getMediaType(vo.getCoverImageType()))
         .contentLength(vo.getCoverImage().length)
         .body(vo.getCoverImage());
+  }
+
+  @GetMapping(value = "/{id}/user-relationship")
+  public ResponseEntity<PageVo<PostUserEntityVo>> queryUserRelationship(
+      @PathVariable
+      Long id,
+      @PageableDefault(size = 15)
+      Pageable pageable
+  ) {
+    return ResponseEntity.ok(postService.queryUserRelationship(id, pageable));
   }
 
   @GetMapping(value = "/{id}")

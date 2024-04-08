@@ -351,6 +351,12 @@
     "disableReason": "Disable Reason",
     "disableReasonFormText": "Optional. Please provide a reason for prohibition.",
     "disableComment": "Disable Comment",
-    "disableReply": "Disable Reply"
+    "disableReply": "Disable Reply",
+    "disableArticleCreation": "Disable article creation",
+    "userRelationship": "User Relationship",
+    "disableComments": "Disable Comments",
+    "disableReplies": "Disable Replies",
+    "updateUserRelationship": "Update User Relationship",
+    "queryUserRelationship": "Query User Relationship"
   }
 }

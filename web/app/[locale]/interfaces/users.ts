@@ -12,6 +12,12 @@ export interface IUser extends IBase {
   email?: string;
   lastLoginTime: string;
   root?: boolean;
+  noPostingAllowed?: boolean;
+  disableComments?: boolean;
+  disableReplies?: boolean;
+  noPostingReason?: string;
+  commentDisableReason?: string;
+  replyDisableReason?: string;
   accountNonExpired: boolean;
   credentialsNonExpired: boolean;
   accountNonLocked: boolean;

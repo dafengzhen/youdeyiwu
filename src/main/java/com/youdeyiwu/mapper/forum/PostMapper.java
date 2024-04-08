@@ -8,10 +8,12 @@ import com.youdeyiwu.model.entity.forum.PostBadgeEntity;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
 import com.youdeyiwu.model.entity.forum.PostImageEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.vo.forum.PostBadgeEntityVo;
 import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostFavoriteEntityVo;
 import com.youdeyiwu.model.vo.forum.PostImageEntityVo;
+import com.youdeyiwu.model.vo.forum.PostUserEntityVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -88,6 +90,16 @@ public interface PostMapper {
   @Mapping(target = "coverImage", ignore = true)
   @Mapping(target = "postReviewQueue", ignore = true)
   PostEntityVo entityToVo(PostEntity entity);
+
+  /**
+   * entityToVo.
+   *
+   * @param entity entity
+   * @return PostUserEntityVo
+   */
+  @Mapping(target = "user", ignore = true)
+  @Mapping(target = "post", ignore = true)
+  PostUserEntityVo entityToVo(PostUserEntity entity);
 
   /**
    * entityToVo.

@@ -167,6 +167,20 @@ export default function Users({ data }: { data: IPage<IUser[]> }) {
                           </Link>
                         </li>
                         <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
+                                `/admin/users/${item.id}?type=disableCommentReply`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/users/${item.id}?type=disableCommentReply`}
+                          >
+                            {t('common.disableCommentReply')}
+                          </Link>
+                        </li>
+                        <li>
                           <hr className="dropdown-divider" />
                         </li>
                         <li>

@@ -102,6 +102,36 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   private Boolean root = false;
 
   /**
+   * no posting allowed (Here refers to creating a post).
+   */
+  private Boolean noPostingAllowed = false;
+
+  /**
+   * disable comments.
+   */
+  private Boolean disableComments = false;
+
+  /**
+   * disable replies.
+   */
+  private Boolean disableReplies = false;
+
+  /**
+   * no posting reason.
+   */
+  private String noPostingReason;
+
+  /**
+   * comment disable reason.
+   */
+  private String commentDisableReason;
+
+  /**
+   * reply disable reason.
+   */
+  private String replyDisableReason;
+
+  /**
    * account not expired.
    */
   @Getter(AccessLevel.NONE)
@@ -128,6 +158,24 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   @Getter(AccessLevel.NONE)
   @Column(nullable = false)
   private Boolean enabled = true;
+
+  /**
+   * no posting allowed (Here refers to creating a post).
+   */
+  @Transient
+  private Boolean oldNoPostingAllowed;
+
+  /**
+   * disable comments.
+   */
+  @Transient
+  private Boolean oldDisableComments;
+
+  /**
+   * disable replies.
+   */
+  @Transient
+  private Boolean oldDisableReplies;
 
   /**
    * authorities.

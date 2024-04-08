@@ -4,13 +4,13 @@ import Box from '@/app/[locale]/admin/common/box';
 import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
-import type { IPost } from '@/app/[locale]/interfaces/posts';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 import { useTranslations } from 'next-intl';
-import DisableCommentReplyPostAction, {
-  type IDisableCommentReplyPostActionVariables,
-} from '@/app/[locale]/actions/posts/disable-comment-reply-post-action';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
+import DisableCommentReplyUserPostAction, {
+  type IDisableCommentReplyUserPostActionVariables,
+} from '@/app/[locale]/actions/posts/disable-comment-reply-user-post-action';
+import type { IPost } from '@/app/[locale]/interfaces/posts';
 
 export default function DisableCommentReply({ post }: { post: IPost }) {
   const { toast } = useContext(GlobalContext);
@@ -20,23 +20,24 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
     commentDisableReason: string;
     replyDisableReason: string;
   }>({
-    disableComments: post.disableComments ?? false,
-    disableReplies: post.disableReplies ?? false,
+    disableComments: false,
+    disableReplies: false,
     commentDisableReason: '',
     replyDisableReason: '',
   });
   const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
     '/admin/posts',
-    'Posts#Disable Comment Reply',
+    'Posts#Update User Relationship',
   );
   const t = useTranslations();
 
-  const disableCommentReplyPostActionMutation = useMutation({
+  const disableCommentReplyUserPostActionMutation = useMutation({
     mutationFn: async (variables: {
       id: number;
-      variables: IDisableCommentReplyPostActionVariables;
+      userId: number;
+      variables: IDisableCommentReplyUserPostActionVariables;
     }) => {
-      const response = await DisableCommentReplyPostAction(variables);
+      const response = await DisableCommentReplyUserPostAction(variables);
       if (response.isError) {
         throw response;
       }
@@ -49,18 +50,18 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
       e.preventDefault();
 
       const variables = trimObjectStrings(form);
-      const id = post.id;
-      await disableCommentReplyPostActionMutation.mutateAsync({
-        id,
-        variables,
-      });
+      // const id = post.id;
+      // await disableCommentReplyUserPostActionMutation.mutateAsync({
+      //   id,
+      //   variables,
+      // });
 
       toast.current.show({
         type: 'success',
         message: t('common.successfulUpdate'),
       });
     } catch (e: any) {
-      disableCommentReplyPostActionMutation.reset();
+      disableCommentReplyUserPostActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -84,7 +85,7 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
   }
 
   return (
-    <Box title={`${post.name} (ID. ${post.id})`}>
+    <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div className="card">
           <div className="card-body">
@@ -160,12 +161,12 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
           <button
             disabled={
               isActionDisabled ||
-              disableCommentReplyPostActionMutation.isPending
+              disableCommentReplyUserPostActionMutation.isPending
             }
             type="submit"
             className="btn btn-success"
           >
-            {disableCommentReplyPostActionMutation.isPending
+            {disableCommentReplyUserPostActionMutation.isPending
               ? t('common.updating')
               : t('common.update')}
           </button>

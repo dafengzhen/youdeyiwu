@@ -349,6 +349,12 @@
     "disableReason": "禁止理由",
     "disableReasonFormText": "可选。建议填写禁止的理由",
     "disableComment": "禁止评论",
-    "disableReply": "禁止回复"
+    "disableReply": "禁止回复",
+    "disableArticleCreation": "禁止创建文章",
+    "userRelationship": "用户关系",
+    "disableComments": "禁止评论",
+    "disableReplies": "禁止回复",
+    "updateUserRelationship": "更新用户关系",
+    "queryUserRelationship": "查询用户关系"
   }
 }

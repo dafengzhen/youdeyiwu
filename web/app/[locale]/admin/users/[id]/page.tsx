@@ -6,6 +6,7 @@ import UpdateStates from '@/app/[locale]/admin/users/[id]/update-states';
 import UpdateRoles from '@/app/[locale]/admin/users/[id]/update-roles';
 import QueryUserAction from '@/app/[locale]/actions/users/query-user-action';
 import ErrorPage from '@/app/[locale]/common/error-page';
+import DisableCommentReply from '@/app/[locale]/admin/users/[id]/disable-comment-reply';
 
 export const metadata: Metadata = {
   title: 'Update Tag',
@@ -19,7 +20,7 @@ export default async function Page({
     id: string;
   };
   searchParams: {
-    type?: 'del' | 'states' | 'roles';
+    type?: 'del' | 'states' | 'roles' | 'disableCommentReply';
   };
 }) {
   const id = params.id;
@@ -40,6 +41,8 @@ export default async function Page({
       return <UpdateStates user={response.data} />;
     case 'roles':
       return <UpdateRoles user={response.data} />;
+    case 'disableCommentReply':
+      return <DisableCommentReply user={response.data} />;
     default:
       notFound();
   }

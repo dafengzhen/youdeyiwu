@@ -7,8 +7,10 @@ import com.youdeyiwu.event.PostReviewStateApplicationEvent;
 import com.youdeyiwu.exception.PointNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
+import com.youdeyiwu.model.dto.forum.DisableUserCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.forum.PostRepository;
@@ -17,6 +19,7 @@ import com.youdeyiwu.security.SecurityService;
 import com.youdeyiwu.tool.I18nTool;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -57,6 +60,16 @@ public class PostAspect {
    */
   @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.PostServiceImpl.disableCommentReply(..)) && args(id,dto)", argNames = "id,dto")
   public void disableCommentReplyPointcut(Long id, DisableCommentReplyPostDto dto) {
+    // Pointcut
+  }
+
+  /**
+   * disableUserCommentReply.
+   */
+  @Pointcut(
+      value = "execution(* com.youdeyiwu.service.forum.impl.PostServiceImpl.disableUserCommentReply(..)) && args(id,userId,dto)", argNames = "id,userId,dto"
+  )
+  public void disableUserCommentReplyPointcut(Long id, Long userId, DisableUserCommentReplyPostDto dto) {
     // Pointcut
   }
 
@@ -145,6 +158,86 @@ public class PostAspect {
   }
 
   /**
+   * after advice.
+   */
+  @After(value = "disableUserCommentReplyPointcut(id,userId,dto)", argNames = "id,userId,dto")
+  public void disableUserCommentReplyAfterAdvice(Long id, Long userId, DisableUserCommentReplyPostDto dto) {
+    PostEntity postEntity = postRepository.findById(id).orElseThrow(PointNotFoundException::new);
+    UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+    Optional<PostUserEntity> postUserEntityOptional = userEntity.getUserPosts()
+        .stream()
+        .filter(postUserEntity -> postUserEntity.getPost().equals(postEntity)
+            && postUserEntity.getUser().equals(userEntity)
+        )
+        .findFirst();
+
+    if (postUserEntityOptional.isEmpty()) {
+      return;
+    }
+
+    PostUserEntity postUserEntity = postUserEntityOptional.get();
+    if (
+        Objects.nonNull(dto.disableComments())
+            && Objects.nonNull(postUserEntity.getOldDisableComments())
+            && !Objects.equals(
+            postUserEntity.getDisableComments(),
+            postUserEntity.getOldDisableComments()
+        )
+    ) {
+      String key;
+      String userKey;
+      if (Boolean.TRUE.equals(postUserEntity.getDisableComments())) {
+        key = "user.post.comment.create.disable.message";
+        userKey = "user.post.comment.create.disable.user.message";
+      } else {
+        key = "user.post.comment.create.disable.cancel.message";
+        userKey = "user.post.comment.create.disable.cancel.user.message";
+      }
+
+      sendUserDisableCommentReplyMessage(
+          key,
+          dto.commentDisableReason(),
+          postUserEntity
+      );
+      sendUserDisableCommentReplyUserMessage(
+          userKey,
+          dto.commentDisableReason(),
+          postUserEntity
+      );
+    }
+
+    if (
+        Objects.nonNull(dto.disableReplies())
+            && Objects.nonNull(postUserEntity.getOldDisableReplies())
+            && !Objects.equals(
+            postUserEntity.getDisableReplies(),
+            postUserEntity.getOldDisableReplies()
+        )
+    ) {
+      String key;
+      String userKey;
+      if (Boolean.TRUE.equals(postUserEntity.getDisableReplies())) {
+        key = "user.post.reply.create.disable.message";
+        userKey = "user.post.reply.create.disable.user.message";
+      } else {
+        key = "user.post.reply.create.disable.cancel.message";
+        userKey = "user.post.reply.create.disable.cancel.user.message";
+      }
+
+      sendUserDisableCommentReplyMessage(
+          key,
+          dto.replyDisableReason(),
+          postUserEntity
+      );
+      sendUserDisableCommentReplyUserMessage(
+          userKey,
+          dto.replyDisableReason(),
+          postUserEntity
+      );
+    }
+  }
+
+  /**
    * sendDisableCommentReplyMessage.
    *
    * @param key        key
@@ -199,6 +292,62 @@ public class PostAspect {
     ));
     messageEntity.setLink(postEntity.getLink());
     messageEntity.setReceiver(postEntity.getUser());
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * sendUserDisableCommentReplyMessage.
+   *
+   * @param key            key
+   * @param reason         reason
+   * @param postUserEntity postUserEntity
+   */
+  private void sendUserDisableCommentReplyMessage(String key, String reason, PostUserEntity postUserEntity) {
+    if (securityService.isAnonymous()) {
+      return;
+    }
+
+    PostEntity postEntity = postUserEntity.getPost();
+    UserEntity receiver = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setOverview(
+        i18nTool.getMessage(
+            key,
+            Map.of(
+                "name", postEntity.getNameAndId(),
+                "alias", securityService.getAliasAndId(postUserEntity.getUser()),
+                "reason", reason,
+                "time", getCurrentDateTime()
+            )
+        )
+    );
+    messageEntity.setLink(postEntity.getLink());
+    messageEntity.setReceiver(receiver);
+    publisher.publishEvent(new MessageApplicationEvent(messageEntity));
+  }
+
+  /**
+   * sendUserDisableCommentReplyUserMessage.
+   *
+   * @param key            key
+   * @param reason         reason
+   * @param postUserEntity postUserEntity
+   */
+  private void sendUserDisableCommentReplyUserMessage(String key, String reason, PostUserEntity postUserEntity) {
+    PostEntity postEntity = postUserEntity.getPost();
+    MessageEntity messageEntity = new MessageEntity();
+    messageEntity.setOverview(i18nTool.getMessage(
+        key,
+        Map.of(
+            "name", postEntity.getNameAndId(),
+            "alias", securityService.getAliasAndIdOrNull(),
+            "reason", reason,
+            "time", getCurrentDateTime()
+        )
+    ));
+    messageEntity.setLink(postEntity.getLink());
+    messageEntity.setReceiver(postUserEntity.getUser());
     publisher.publishEvent(new MessageApplicationEvent(messageEntity));
   }
 }

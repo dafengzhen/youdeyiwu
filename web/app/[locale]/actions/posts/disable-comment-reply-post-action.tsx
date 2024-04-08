@@ -10,19 +10,19 @@ import {
   createSuccessResponse,
 } from '@/app/[locale]/common/response';
 
-export interface IDisableCommentReplyActionVariables {
+export interface IDisableCommentReplyPostActionVariables {
   disableComments?: boolean;
   disableReplies?: boolean;
   commentDisableReason?: string;
   replyDisableReason?: string;
 }
 
-export default async function DisableCommentReplyAction({
+export default async function DisableCommentReplyPostAction({
   id,
   variables,
 }: {
   id: number;
-  variables: IDisableCommentReplyActionVariables;
+  variables: IDisableCommentReplyPostActionVariables;
 }) {
   try {
     const { url, str } = createRequestUrl(`/posts/${id}/disable-comment-reply`);

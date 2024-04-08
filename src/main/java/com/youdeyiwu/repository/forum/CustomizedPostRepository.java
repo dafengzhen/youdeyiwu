@@ -3,6 +3,7 @@ package com.youdeyiwu.repository.forum;
 import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPost;
 import com.youdeyiwu.model.entity.forum.PostEntity;
+import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentReplyEntityVo;
 import java.util.List;
@@ -75,4 +76,13 @@ public interface CustomizedPostRepository {
       UserEntity user,
       UserEntity root
   );
+
+  /**
+   * find post users by post.
+   *
+   * @param position position
+   * @param post     post
+   * @return Page
+   */
+  Page<PostUserEntity> findPostUsersByPost(PaginationPositionDto position, PostEntity post);
 }

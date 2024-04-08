@@ -6,6 +6,7 @@ import com.youdeyiwu.model.entity.user.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,38 @@ public class PostUserEntity extends IdLessAbstractEntity {
    * favorited.
    */
   private Boolean favorited = false;
+
+  /**
+   * disable comments.
+   */
+  private Boolean disableComments = false;
+
+  /**
+   * disable replies.
+   */
+  private Boolean disableReplies = false;
+
+  /**
+   * comment disable reason.
+   */
+  private String commentDisableReason;
+
+  /**
+   * reply disable reason.
+   */
+  private String replyDisableReason;
+
+  /**
+   * disable comments.
+   */
+  @Transient
+  private Boolean oldDisableComments;
+
+  /**
+   * disable replies.
+   */
+  @Transient
+  private Boolean oldDisableReplies;
 
   /**
    * post.

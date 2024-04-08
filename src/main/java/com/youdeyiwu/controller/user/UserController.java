@@ -1,6 +1,7 @@
 package com.youdeyiwu.controller.user;
 
 import com.youdeyiwu.model.dto.user.AssignRolesDto;
+import com.youdeyiwu.model.dto.user.DisableCommentReplyUserDto;
 import com.youdeyiwu.model.dto.user.LoginDto;
 import com.youdeyiwu.model.dto.user.RegisterDto;
 import com.youdeyiwu.model.dto.user.UpdateRolesUserDto;
@@ -128,6 +129,15 @@ public class UserController {
   @PutMapping(value = "/temporary-storage")
   public ResponseEntity<Void> updateTemporaryStorage(@Valid @RequestBody UpdateUserTemporaryStorageDto dto) {
     userService.updateTemporaryStorage(dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/{id}/disable-comment-reply")
+  public ResponseEntity<Void> disableCommentReply(
+      @PathVariable Long id,
+      @Valid @RequestBody DisableCommentReplyUserDto dto
+  ) {
+    userService.disableCommentReply(id, dto);
     return ResponseEntity.noContent().build();
   }
 
