@@ -60,9 +60,7 @@ export default function PostId({
       value={{ details, currentUser, openReplyBox, setOpenReplyBox }}
     >
       <div className={clsx('row mx-0 position-sticky', styles.box)}>
-        {(sectionGroups.length > 0 ||
-          sections.length > 0 ||
-          tags.length > 0) && (
+        {(!!sectionGroups.length || !!sections.length || !!tags.length) && (
           <div
             className={clsx(
               'd-none d-lg-block col-2 position-sticky overflow-y-auto',

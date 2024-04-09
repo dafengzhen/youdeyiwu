@@ -25,7 +25,7 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
           </div>
         </div>
         <div className="card-body d-flex flex-column gap-3 py-2">
-          {details.admins.length > 0 && (
+          {!!details.admins.length && (
             <div className="d-flex mb-2 align-items-center gap-2">
               <div className="text-secondary">
                 <div className="">Admins</div>

@@ -31,10 +31,10 @@ export function Providers({
       }}
     >
       <Navbar user={user} menus={menus} />
-      {selectedMenu && selectedMenu.submenus.length > 0 && <SubmenuNavbar />}
+      {selectedMenu && !!selectedMenu.submenus.length && <SubmenuNavbar />}
       <div
         className={clsx(
-          selectedMenu && selectedMenu.submenus.length > 0
+          selectedMenu && !!selectedMenu.submenus.length
             ? styles.boxMarginLeft2
             : styles.boxMarginLeft,
         )}

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ISectionGroup } from '@/app/[locale]/interfaces/section-groups';
 import { ISection } from '@/app/[locale]/interfaces/sections';
 import Nodata from '@/app/[locale]/common/nodata';
-import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
-import Cover from '@/app/[locale]/sections/cover';
+import { getUserAlias } from '@/app/[locale]/common/client';
+import Image from 'next/image';
 
 export default function Sections({
   sectionGroups,
@@ -19,7 +19,7 @@ export default function Sections({
       <div className="col">
         <div className="d-flex flex-column gap-4">
           {sectionGroups
-            .filter((item) => item.sections.length > 0)
+            .filter((item) => item.sections.length)
             .map((item) => {
               return (
                 <div key={item.id} className="card border-0">
@@ -40,9 +40,9 @@ export default function Sections({
               );
             })}
 
-          {sections.length > 0 && (
+          {!!sections.length && (
             <div className="card border-0">
-              {sectionGroups.filter((item) => item.sections.length > 0).length >
+              {sectionGroups.filter((item) => item.sections.length).length >
                 0 && (
                 <div className="card-header bg-transparent border-bottom-0">
                   <div className="d-flex align-items-center justify-content-between">
@@ -72,29 +72,35 @@ const Items = ({ sections }: { sections: ISection[] }) => {
   return (
     <>
       {sections.map((section) => {
-        const cover = section.cover;
-
         return (
           <div key={section.id} className="col" style={{ maxWidth: 330 }}>
             <div className="card yw-card shadow-sm shadow-hover">
-              <div className="card-body d-flex flex-column gap-4 p-0">
-                {isHttpOrHttps(cover) ? (
-                  <Cover item={section} />
+              <div className="card-body d-flex flex-column p-0">
+                {section.cover ? (
+                  <div className="p-3">
+                    <Link href={`/sections/${section.id}`} scroll={false}>
+                      <Image
+                        className="rounded-top object-fit-contain image-hover cursor-pointer"
+                        width={260}
+                        height={195}
+                        src={section.cover}
+                        alt="cover"
+                      />
+                    </Link>
+                  </div>
                 ) : (
-                  <>
-                    {section.overview && (
-                      <Link
-                        className="line-clamp-3 card-text text-reset text-decoration-none p-3"
-                        href={`/sections/${section.id}`}
-                        scroll={false}
-                      >
-                        {section.overview}
-                      </Link>
-                    )}
-                  </>
+                  section.overview && (
+                    <Link
+                      className="line-clamp-3 card-text text-reset text-decoration-none p-3"
+                      href={`/sections/${section.id}`}
+                      scroll={false}
+                    >
+                      {section.overview}
+                    </Link>
+                  )
                 )}
 
-                {section.admins.length > 0 && (
+                {!!section.admins.length && (
                   <div className="text-secondary p-3">
                     <div className="">Admins</div>
                     <div className="mt-2 d-flex flex-wrap align-items-center column-gap-2">
@@ -113,7 +119,7 @@ const Items = ({ sections }: { sections: ISection[] }) => {
                   </div>
                 )}
 
-                <div className="p-3">
+                <div className="px-3 py-2">
                   <Link
                     href={`/sections/${section.id}`}
                     className="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"

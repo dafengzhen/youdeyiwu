@@ -131,7 +131,7 @@ export default function Comments({ details }: { details: IPostDetails }) {
         );
       })}
 
-      {content.length > 0 && (
+      {!!content.length && (
         <LoadMore
           onCLickLoadMore={onCLickLoadMore}
           isLoading={commentReplyInfiniteQuery.isPending}

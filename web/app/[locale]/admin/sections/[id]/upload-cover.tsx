@@ -159,16 +159,16 @@ export default function UploadCover({
 
       {form.uploadCoverObjectUrl && (
         <div
-          className="mt-2 position-relative"
+          className="mt-4 mb-2 position-relative"
           style={{ width: 260, height: 195 }}
         >
-          <div className="ratio ratio-16x9" style={{ width: 260, height: 195 }}>
+          <div className="ratio ratio-16x9">
             <Image
               width={260}
               height={195}
               src={form.uploadCoverObjectUrl}
               alt="cover"
-              className="rounded object-fit-cover"
+              className="rounded object-fit-contain"
             />
           </div>
 

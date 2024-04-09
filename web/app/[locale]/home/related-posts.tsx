@@ -12,7 +12,7 @@ export default function RelatedPosts({
 
   return (
     <>
-      {randomData.length > 0 && (
+      {!!randomData.length && (
         <div className="card yw-card shadow-sm shadow-hover">
           <div className="card-header yw-card-header fw-bold">
             {t('common.relatedArticles')}

@@ -357,6 +357,8 @@
     "updateUserRelationship": "更新用户关系",
     "queryUserRelationship": "查询用户关系",
     "userId": "用户 Id",
-    "userIdFormText": "请输入用户 Id"
+    "userIdFormText": "请输入用户 Id",
+    "contentGroups": "内容组",
+    "uploadArticleCoverFormText": "请创建文章后再操作上传文章封面"
   }
 }

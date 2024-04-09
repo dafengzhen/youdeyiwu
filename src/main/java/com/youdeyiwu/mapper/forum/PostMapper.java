@@ -51,8 +51,6 @@ public interface PostMapper {
    */
   @Mapping(target = "name", qualifiedByName = "trim")
   @Mapping(target = "overview", qualifiedByName = "trim")
-  @Mapping(target = "cover", ignore = true)
-  @Mapping(target = "contentLink", ignore = true)
   @Mapping(target = "content", ignore = true)
   @Mapping(target = "tags", ignore = true)
   @Mapping(target = "coverImage", ignore = true)
@@ -66,8 +64,6 @@ public interface PostMapper {
    */
   @Mapping(target = "name", qualifiedByName = "trim")
   @Mapping(target = "overview", qualifiedByName = "trim")
-  @Mapping(target = "cover", ignore = true)
-  @Mapping(target = "contentLink", ignore = true)
   @Mapping(target = "content", ignore = true)
   @Mapping(target = "tags", ignore = true)
   @Mapping(target = "coverImage", ignore = true)

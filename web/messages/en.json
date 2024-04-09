@@ -359,6 +359,8 @@
     "updateUserRelationship": "Update User Relationship",
     "queryUserRelationship": "Query User Relationship",
     "userId": "User Id",
-    "userIdFormText": "Please enter a User ID."
+    "userIdFormText": "Please enter a User ID.",
+    "contentGroups": "Content Groups",
+    "uploadArticleCoverFormText": "Please create the article first and then proceed to upload the article cover."
   }
 }

@@ -24,7 +24,7 @@ function useMenuActionPermission(link: string, name: string) {
       let find = menus.find((item) => item.link === link);
       if (!find) {
         const findSubmenu = menus
-          .filter((item) => item.submenus.length > 0)
+          .filter((item) => !!item.submenus.length)
           .find((item) =>
             item.submenus.find((submenuItem) => submenuItem.link === link),
           );

@@ -20,7 +20,7 @@ export default function RelatedTags({
       })}
     >
       <div className="card-body">
-        {tags.length > 0 ? (
+        {!!tags.length ? (
           <div className="row row-cols-6 g-4">
             {tags.map((item) => {
               return (

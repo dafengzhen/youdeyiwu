@@ -117,7 +117,7 @@ export default function SimpleDynamicInput({
             <span>{t('common.add')}</span>
           </button>
         </div>
-        {values.length > 0 && (
+        {!!values.length && (
           <div>
             <button
               type="button"

@@ -129,7 +129,7 @@ export default async function Navbar({
                   </>
                 )}
 
-                {menus && menus.length > 0 && (
+                {menus && !!menus.length && (
                   <>
                     <li>
                       <hr className="dropdown-divider" />

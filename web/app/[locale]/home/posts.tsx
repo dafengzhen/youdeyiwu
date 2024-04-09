@@ -145,7 +145,7 @@ export default function Posts({
               )}
 
               <div className="row row-cols-auto g-2">
-                {isHttpOrHttps(cover) && <Cover item={item} />}
+                <Cover item={item} />
               </div>
               <div className="d-flex align-items-center gap-2">
                 <div className="d-flex gap-3">

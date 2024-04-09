@@ -56,7 +56,7 @@ export default function UploadCover({
       if (!id) {
         toast.current.show({
           type: 'danger',
-          message: 'The anonymous article cannot be uploaded',
+          message: t('common.uploadArticleCoverFormText'),
         });
         return;
       }
@@ -65,7 +65,7 @@ export default function UploadCover({
       if (!file) {
         toast.current.show({
           type: 'danger',
-          message: 'Please upload files locally first',
+          message: t('common.theFileCannotBeEmpty'),
         });
         return;
       }
@@ -81,16 +81,8 @@ export default function UploadCover({
 
       toast.current.show({
         type: 'success',
-        message: 'Successfully uploaded',
+        message: t('common.uploadedSuccessfully'),
       });
-
-      setTimeout(() => {
-        toast.current.show({
-          type: 'success',
-          message:
-            'Upload successful. Changes will take effect after clicking the "Update" button',
-        });
-      }, 1500);
     } catch (e: any) {
       uploadCoverPostActionMutation.reset();
       toast.current.show({
@@ -175,16 +167,16 @@ export default function UploadCover({
 
       {form.uploadCoverObjectUrl && (
         <div
-          className="mt-2 position-relative"
-          style={{ width: 260, height: 195 }}
+          className="mt-4 mb-2 position-relative"
+          style={{ maxWidth: 260, maxHeight: 195 }}
         >
-          <div className="ratio ratio-16x9" style={{ width: 260, height: 195 }}>
+          <div className="ratio ratio-16x9">
             <Image
               width={260}
               height={195}
               src={form.uploadCoverObjectUrl}
               alt="cover"
-              className="rounded object-fit-cover"
+              className="rounded object-fit-contain"
             />
           </div>
 

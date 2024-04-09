@@ -535,7 +535,7 @@ export default function Save({
                       <div>
                         <label className="form-label">
                           {t('common.overview')}
-                          {form.overview.length > 0 && (
+                          {!!form.overview.length && (
                             <span>&nbsp;({form.overview.length})</span>
                           )}
                         </label>

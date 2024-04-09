@@ -36,7 +36,7 @@ export default function SectionGroups({
   return (
     <div className="card yw-card shadow-sm shadow-hover">
       <div className="card-header yw-card-header fw-bold">
-        {t('common.categories')}
+        {t('common.contentGroups')}
       </div>
       <div className="card-body p-0">
         {sectionGroups.map((item) => {

@@ -20,7 +20,7 @@ export default function RelatedContent({
       })}
     >
       <div className="card-body">
-        {sections.length > 0 ? (
+        {!!sections.length ? (
           <div className="row row-cols-6 g-4">
             {sections.map((item) => {
               return (
