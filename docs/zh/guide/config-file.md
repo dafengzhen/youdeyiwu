@@ -23,13 +23,7 @@ DESCRIPTION=Youdeyiwu is an open-source lightweight forum
 # Is it an HTTPS site
 IS_HTTPS_SITE=false
 
-# Set the remotePatterns to allow images, in the format of an array
-# IMAGES_REMOTE_PATTERNS_0_PROTOCOL=https
-# IMAGES_REMOTE_PATTERNS_0_HOSTNAME=example.com
-# IMAGES_REMOTE_PATTERNS_0_PORT=
-# IMAGES_REMOTE_PATTERNS_0_PATHNAME=**
-
-# Should the page footer be displayed?
+# Whether to display the footer
 SHOW_FOOTER=true
 
 # Define footer content with HTML support (Example："<div class='text-center'> Copyright&nbsp;&copy;&nbsp;2024-present Youdeyiwu </div>")

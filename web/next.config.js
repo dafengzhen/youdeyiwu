@@ -25,16 +25,27 @@ function parseImageRemotePatterns() {
 
   while (process.env[`IMAGES_REMOTE_PATTERNS_${index}_PROTOCOL`]) {
     imagesRemotePatterns.push({
-      protocol: process.env[`IMAGES_REMOTE_PATTERNS_${index}_PROTOCOL`] ?? '',
-      hostname: process.env[`IMAGES_REMOTE_PATTERNS_${index}_HOSTNAME`] ?? '',
-      port: process.env[`IMAGES_REMOTE_PATTERNS_${index}_PORT`] ?? '',
-      pathname: process.env[`IMAGES_REMOTE_PATTERNS_${index}_PATHNAME`] ?? '',
+      protocol: process.env[`IMAGES_REMOTE_PATTERNS_${index}_PROTOCOL`],
+      hostname: process.env[`IMAGES_REMOTE_PATTERNS_${index}_HOSTNAME`],
+      port: process.env[`IMAGES_REMOTE_PATTERNS_${index}_PORT`],
+      pathname: process.env[`IMAGES_REMOTE_PATTERNS_${index}_PATHNAME`],
     });
 
     index++;
   }
 
-  return imagesRemotePatterns;
+  return !!imagesRemotePatterns.length
+    ? imagesRemotePatterns
+    : [
+        {
+          protocol: 'https',
+          hostname: '**',
+        },
+        {
+          protocol: 'http',
+          hostname: '**',
+        },
+      ];
 }
 
 module.exports = withNextIntl(nextConfig);
