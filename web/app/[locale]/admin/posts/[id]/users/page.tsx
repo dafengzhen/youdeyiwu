@@ -10,19 +10,22 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({
+  params,
   searchParams,
 }: {
+  params: {
+    id: string;
+  };
   searchParams: {
-    postId: string;
     type?: 'disableCommentReply';
   };
 }) {
-  const postId = searchParams.postId;
-  if (!isNum(postId)) {
+  const id = params.id;
+  if (!isNum(id)) {
     notFound();
   }
 
-  const response = await QueryPostAction({ id: postId });
+  const response = await QueryPostAction({ id });
   if (response.isError) {
     return <ErrorPage message={response.message} />;
   }

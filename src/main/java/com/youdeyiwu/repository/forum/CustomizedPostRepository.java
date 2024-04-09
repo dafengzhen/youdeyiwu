@@ -85,4 +85,13 @@ public interface CustomizedPostRepository {
    * @return Page
    */
   Page<PostUserEntity> findPostUsersByPost(PaginationPositionDto position, PostEntity post);
+
+  /**
+   * find post user by post and user.
+   *
+   * @param post post
+   * @param user user
+   * @return PostUserEntity
+   */
+  PostUserEntity findPostUserByPostAndUser(PostEntity post, UserEntity user);
 }

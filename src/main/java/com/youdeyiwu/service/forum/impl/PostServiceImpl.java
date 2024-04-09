@@ -520,6 +520,17 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  public PostUserEntityVo queryUserRelationship(Long id, Long userId) {
+    PostEntity postEntity = findPost(id);
+    UserEntity userEntity = userRepository.findById(userId)
+        .orElseThrow(UserNotFoundException::new);
+    PostUserEntity postUserEntity = postRepository.findPostUserByPostAndUser(postEntity, userEntity);
+    PostUserEntityVo vo = postMapper.entityToVo(postUserEntity);
+    vo.setUser(userMapper.entityToVo(postUserEntity.getUser()));
+    return vo;
+  }
+
+  @Override
   public PageVo<PostUserEntityVo> queryUserRelationship(Long id, Pageable pageable) {
     Page<PostUserEntity> postUserEntityPage = postRepository.findPostUsersByPost(
         new PaginationPositionDto(pageable),

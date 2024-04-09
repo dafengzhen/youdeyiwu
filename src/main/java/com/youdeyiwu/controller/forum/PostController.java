@@ -186,6 +186,16 @@ public class PostController {
         .body(vo.getCoverImage());
   }
 
+  @GetMapping(value = "/{id}/users/{userId}/user-relationship")
+  public ResponseEntity<PostUserEntityVo> queryUserRelationship(
+      @PathVariable
+      Long id,
+      @PathVariable
+      Long userId
+  ) {
+    return ResponseEntity.ok(postService.queryUserRelationship(id, userId));
+  }
+
   @GetMapping(value = "/{id}/user-relationship")
   public ResponseEntity<PageVo<PostUserEntityVo>> queryUserRelationship(
       @PathVariable

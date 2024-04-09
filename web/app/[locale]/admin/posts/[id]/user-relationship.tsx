@@ -123,7 +123,7 @@ export default function UserRelationship({ post }: { post: IPost }) {
           <div className="d-flex align-items-center gap-2">
             <div>
               <Link
-                href={`/admin/posts/${post.id}/users?postId=${post.id}&type=disableCommentReply`}
+                href={`/admin/posts/${post.id}/users?type=disableCommentReply`}
                 type="button"
                 className="btn btn-sm btn-primary"
               >

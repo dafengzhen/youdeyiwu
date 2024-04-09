@@ -10,18 +10,26 @@ import { trimObjectStrings } from '@/app/[locale]/common/client';
 import DisableCommentReplyUserPostAction, {
   type IDisableCommentReplyUserPostActionVariables,
 } from '@/app/[locale]/actions/posts/disable-comment-reply-user-post-action';
-import type { IPost } from '@/app/[locale]/interfaces/posts';
+import type { IPost, IPostUser } from '@/app/[locale]/interfaces/posts';
 
-export default function DisableCommentReply({ post }: { post: IPost }) {
+export default function DisableCommentReply({
+  post,
+  userRelationship,
+}: {
+  post: IPost;
+  userRelationship?: IPostUser;
+}) {
   const { toast } = useContext(GlobalContext);
   const [form, setForm] = useState<{
+    userId: string;
     disableComments: boolean;
     disableReplies: boolean;
     commentDisableReason: string;
     replyDisableReason: string;
   }>({
-    disableComments: false,
-    disableReplies: false,
+    userId: userRelationship?.user?.id ? userRelationship.user.id + '' : '',
+    disableComments: userRelationship?.disableComments ?? false,
+    disableReplies: userRelationship?.disableReplies ?? false,
     commentDisableReason: '',
     replyDisableReason: '',
   });
@@ -49,12 +57,26 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
       e.stopPropagation();
       e.preventDefault();
 
-      const variables = trimObjectStrings(form);
-      // const id = post.id;
-      // await disableCommentReplyUserPostActionMutation.mutateAsync({
-      //   id,
-      //   variables,
-      // });
+      const data = trimObjectStrings(form);
+      if (!data.userId) {
+        toast.current.show({
+          type: 'danger',
+          message: t('common.userIdFormText'),
+        });
+        return;
+      }
+
+      const id = post.id;
+      await disableCommentReplyUserPostActionMutation.mutateAsync({
+        id,
+        userId: data.userId,
+        variables: {
+          disableComments: data.disableComments,
+          disableReplies: data.disableReplies,
+          commentDisableReason: data.commentDisableReason,
+          replyDisableReason: data.replyDisableReason,
+        },
+      });
 
       toast.current.show({
         type: 'success',
@@ -87,6 +109,22 @@ export default function DisableCommentReply({ post }: { post: IPost }) {
   return (
     <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
+        <div>
+          <label className="form-label">{t('common.userId')}</label>
+          <input
+            disabled={!!userRelationship}
+            required
+            type="text"
+            className="form-control"
+            name="userId"
+            value={form.userId}
+            onChange={onChange}
+            aria-describedby="userId"
+            minLength={1}
+          />
+          <div className="form-text">{t('common.userIdFormText')}</div>
+        </div>
+
         <div className="card">
           <div className="card-body">
             <div className="form-check form-check-inline">

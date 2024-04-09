@@ -355,6 +355,8 @@
     "disableComments": "禁止评论",
     "disableReplies": "禁止回复",
     "updateUserRelationship": "更新用户关系",
-    "queryUserRelationship": "查询用户关系"
+    "queryUserRelationship": "查询用户关系",
+    "userId": "用户 Id",
+    "userIdFormText": "请输入用户 Id"
   }
 }

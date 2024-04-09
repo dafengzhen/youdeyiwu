@@ -357,6 +357,8 @@
     "disableComments": "Disable Comments",
     "disableReplies": "Disable Replies",
     "updateUserRelationship": "Update User Relationship",
-    "queryUserRelationship": "Query User Relationship"
+    "queryUserRelationship": "Query User Relationship",
+    "userId": "User Id",
+    "userIdFormText": "Please enter a User ID."
   }
 }

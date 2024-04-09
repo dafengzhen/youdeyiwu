@@ -163,6 +163,15 @@ public interface PostService {
   /**
    * query user relationship.
    *
+   * @param id     id
+   * @param userId userId
+   * @return PostUserEntityVo
+   */
+  PostUserEntityVo queryUserRelationship(Long id, Long userId);
+
+  /**
+   * query user relationship.
+   *
    * @param id       id
    * @param pageable pageable
    * @return PageVo

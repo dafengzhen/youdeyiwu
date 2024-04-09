@@ -281,6 +281,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
             )
             .setFirstResult(position.firstResult())
             .setMaxResults(position.maxResults())
+            .setParameter("post", post)
             .getResultList(),
         position.pageable(),
         entityManager.createQuery(
@@ -290,8 +291,23 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                     """,
                 Long.class
             )
+            .setParameter("post", post)
             .getSingleResult()
     );
+  }
+
+  @Override
+  public PostUserEntity findPostUserByPostAndUser(PostEntity post, UserEntity user) {
+    return entityManager.createQuery(
+            """
+                select pu from PostUserEntity pu
+                where pu.post = :post and pu.user = :user
+                """,
+            PostUserEntity.class
+        )
+        .setParameter("post", post)
+        .setParameter("user", user)
+        .getSingleResult();
   }
 
   /**

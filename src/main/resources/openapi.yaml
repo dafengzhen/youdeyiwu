@@ -2713,6 +2713,30 @@ paths:
                 $ref: "#/components/schemas/PageVoPostUserEntityVo"
       tags:
         - posts
+  /posts/{id}/users/{userId}/user-relationship:
+    get:
+      summary: GET posts/{id}/users/{userId}/user-relationship
+      operationId: queryUserRelationship
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostUserEntityVo"
 
   # === comment ===
   /comments:
