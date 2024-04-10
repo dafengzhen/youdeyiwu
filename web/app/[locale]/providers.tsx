@@ -17,6 +17,7 @@ export function Providers(props: {
   children: ReactNode;
 }) {
   const [queryClient] = useState(() => new QueryClient());
+  const bsRef = useRef<any>();
   const toastRef = useRef<IToastRef>({
     show: () => {},
   });
@@ -31,6 +32,7 @@ export function Providers(props: {
   useEffect(() => {
     import('bootstrap')
       .then((bootstrap) => {
+        bsRef.current = bootstrap;
         [...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(
           (element) => bootstrap.Tooltip.getOrCreateInstance(element),
         );
@@ -52,6 +54,7 @@ export function Providers(props: {
       >
         <GlobalContext.Provider
           value={{
+            bs: bsRef,
             toast: toastRef,
             modal: modalRef,
             pointsAlert: pointsAlertRef,

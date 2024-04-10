@@ -3,13 +3,14 @@
 import {
   forwardRef,
   type ReactNode,
+  useContext,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 import { nanoid } from 'nanoid';
 import clsx from 'clsx';
+import { GlobalContext } from '@/app/[locale]/contexts';
 
 export interface IToastProps {
   message: string | ReactNode;
@@ -29,6 +30,8 @@ export interface IToastProps {
 
 interface IToastPropsSuper extends IToastProps {
   id: string;
+  ref: HTMLDivElement | null;
+  displayed: boolean;
 }
 
 export interface IToastRef {
@@ -36,92 +39,86 @@ export interface IToastRef {
 }
 
 export default forwardRef(function Toasts(props, ref) {
-  const [toasts, setToasts] = useState<IToastPropsSuper[]>([]);
+  const { bs } = useContext(GlobalContext);
+  const [items, setItems] = useState<IToastPropsSuper[]>([]);
 
   useImperativeHandle(ref, () => ({
     show,
   }));
 
-  function show(options: IToastProps) {
-    const _toast: IToastPropsSuper = { ...options, id: nanoid() };
-    setToasts([...toasts, _toast]);
-  }
-
-  return (
-    <div aria-live="polite" aria-atomic="true" className="position-relative">
-      <div className="toast-container top-0 start-50 translate-middle-x p-3 overflow-x-hidden overflow-y-auto position-fixed vh-100">
-        {toasts.map((item) => {
-          return <Toast key={item.id} item={item} />;
-        })}
-      </div>
-    </div>
-  );
-});
-
-const Toast = ({ item }: { item: IToastPropsSuper }) => {
-  const toastElementRef = useRef<HTMLDivElement>(null);
-  const type = item.type ?? 'info';
-  const title = item.title ?? 'Tips';
-  const subtitle = item.title ?? '';
-  const message = item.message ?? '';
-  const autohide = item.autohide ?? true;
-  const delay = item.delay ?? 5000;
-
   useEffect(() => {
-    const current = toastElementRef.current;
-    if (!current) {
+    const bootstrap = bs.current;
+    if (!bootstrap) {
       return;
     }
 
-    let toast: any;
-    import('bootstrap')
-      .then((value) => {
-        toast = value.Toast.getOrCreateInstance(current, {
-          autohide,
-          delay,
+    items
+      .filter((item) => item.displayed && item.ref)
+      .forEach((item) => {
+        item.displayed = false;
+        const instance = bootstrap.Toast.getOrCreateInstance(item.ref!, {
+          autohide: item.autohide,
+          delay: item.delay,
         });
-        toast.show();
-      })
-      .catch((reason) => {
-        console.error(reason);
+        instance.show();
       });
+  }, [bs, items]);
 
-    return () => {
-      if (current) {
-        toast?.dispose();
-      }
-    };
-  }, []);
+  function show(options: IToastProps) {
+    setItems([
+      {
+        ...options,
+        type: options.type ?? 'info',
+        title: options.title ?? 'Message',
+        autohide: options.autohide ?? true,
+        delay: options.delay ?? 5000,
+        id: nanoid(),
+        ref: null,
+        displayed: true,
+      },
+      ...items,
+    ]);
+  }
 
   return (
-    <div
-      ref={toastElementRef}
-      className="toast"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-    >
-      <div className="toast-header">
-        <div
-          className={clsx('rounded me-2', {
-            'bg-primary': type === 'info' || type === 'primary',
-            'bg-danger': type === 'error' || type === 'danger',
-            'bg-success': type === 'success',
-            'bg-secondary': type === 'secondary',
-            'bg-warning': type === 'warning',
-          })}
-          style={{ width: 20, height: 20 }}
-        ></div>
-        <strong className="me-auto">{title}</strong>
-        <small className="text-body-secondary">{subtitle}</small>
-        <button
-          type="button"
-          className="btn-close"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div className="toast-body">{message}</div>
+    <div className="toast-container top-0 start-50 translate-middle-x p-3 overflow-x-hidden overflow-y-auto position-fixed vh-100">
+      {items.map((item) => {
+        return (
+          <div
+            key={item.id}
+            ref={(instance) => {
+              item.ref = instance;
+            }}
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            tabIndex={-1}
+          >
+            <div className="toast-header">
+              <div
+                className={clsx('rounded me-2', {
+                  'bg-primary': item.type === 'info' || item.type === 'primary',
+                  'bg-danger': item.type === 'error' || item.type === 'danger',
+                  'bg-success': item.type === 'success',
+                  'bg-secondary': item.type === 'secondary',
+                  'bg-warning': item.type === 'warning',
+                })}
+                style={{ width: 20, height: 20 }}
+              ></div>
+              <strong className="me-auto">{item.title}</strong>
+              <small className="text-body-secondary">{item.subtitle}</small>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{item.message}</div>
+          </div>
+        );
+      })}
     </div>
   );
-};
+});

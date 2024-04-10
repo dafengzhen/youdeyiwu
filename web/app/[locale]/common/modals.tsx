@@ -1,22 +1,26 @@
 import {
   forwardRef,
-  ReactNode,
+  type ReactNode,
+  useContext,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 import { nanoid } from 'nanoid';
+import { GlobalContext } from '@/app/[locale]/contexts';
 
 interface IModalProps {
   body: string | ReactNode;
   footer?: string | ReactNode;
   title?: string;
   backdrop?: boolean | 'static';
+  keyboard?: boolean;
 }
 
 interface IModalPropsSuper extends IModalProps {
   id: string;
+  ref: HTMLDivElement | null;
+  displayed: boolean;
 }
 
 export interface IModalRef {
@@ -24,83 +28,76 @@ export interface IModalRef {
 }
 
 export default forwardRef(function Modals(props, ref) {
-  const [modals, setModals] = useState<IModalPropsSuper[]>([]);
+  const { bs } = useContext(GlobalContext);
+  const [items, setItems] = useState<IModalPropsSuper[]>([]);
 
   useImperativeHandle(ref, () => ({
     show,
   }));
 
-  function show(options: IModalProps) {
-    const _modal: IModalPropsSuper = { ...options, id: nanoid() };
-    if (modals.length > 11) {
-      setModals([_modal]);
-    } else {
-      setModals([...modals, _modal]);
+  useEffect(() => {
+    const bootstrap = bs.current;
+    if (!bootstrap) {
+      return;
     }
+
+    items
+      .filter((item) => item.displayed && item.ref)
+      .forEach((item) => {
+        item.displayed = false;
+        const instance = bootstrap.Modal.getOrCreateInstance(item.ref!, {
+          backdrop: item.backdrop,
+        });
+        instance.show();
+      });
+  }, [bs, items]);
+
+  function show(options: IModalProps) {
+    setItems([
+      {
+        ...options,
+        title: options.title ?? 'Message',
+        backdrop: options.backdrop ?? true,
+        id: nanoid(),
+        ref: null,
+        displayed: true,
+      },
+      ...items,
+    ]);
   }
 
   return (
     <div>
-      {modals.map((item) => {
-        return <Modal key={item.id} item={item} />;
+      {items.map((item) => {
+        return (
+          <div
+            key={item.id}
+            ref={(instance) => {
+              item.ref = instance;
+            }}
+            className="modal fade"
+            data-bs-backdrop={item.backdrop === 'static' ? item.backdrop : ''}
+            data-bs-keyboard={item.keyboard === true ? 'true' : 'false'}
+            tabIndex={-1}
+          >
+            <div className="modal-dialog modal-dialog-scrollable">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">{item.title}</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <div className="modal-body">{item.body}</div>
+                <div className="modal-footer">{item.footer}</div>
+              </div>
+            </div>
+          </div>
+        );
       })}
     </div>
   );
 });
-
-const Modal = ({ item }: { item: IModalPropsSuper }) => {
-  const modalElementRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<any>(null);
-  const title = item.title ?? 'Tips';
-  const body = item.body ?? '';
-  const footer = item.footer ?? '';
-  const backdrop = item.backdrop ?? true;
-
-  useEffect(() => {
-    const current = modalElementRef.current;
-    if (!current) {
-      return;
-    }
-
-    let modal: any;
-    import('bootstrap')
-      .then((value) => {
-        modal = value.Modal.getOrCreateInstance(current, { backdrop });
-        modal.show();
-      })
-      .catch((reason) => {
-        console.error(reason);
-      });
-
-    return () => {
-      if (current) {
-        modal?.dispose();
-      }
-    };
-  }, []);
-
-  return (
-    <div
-      ref={modalElementRef}
-      className="modal"
-      data-bs-backdrop={backdrop + ''}
-      tabIndex={-1}
-    >
-      <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{title}</h5>
-            <button
-              type="button"
-              className="btn-close"
-              aria-label="Close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div className="modal-body">{body}</div>
-          <div className="modal-footer">{footer}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
