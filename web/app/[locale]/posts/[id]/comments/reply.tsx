@@ -1,6 +1,6 @@
 import type { IComment } from '@/app/[locale]/interfaces/comments';
 import type { IPostDetails } from '@/app/[locale]/interfaces/posts';
-import { useContext, useState } from 'react';
+import { type MouseEvent, useContext, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -12,12 +12,12 @@ import {
 import Content from '@/app/[locale]/components/content/content';
 import ReplyBox from '@/app/[locale]/posts/[id]/comments/reply-box';
 import { useTranslations } from 'next-intl';
-import clsx from 'clsx';
 import { useMutation } from '@tanstack/react-query';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 import LikeCommentAction from '@/app/[locale]/actions/comments/like-comment-action';
 import { PostIdContext } from '@/app/[locale]/contexts/postid';
+import clsx from 'clsx';
 
 export default function Reply({
   item,
@@ -72,7 +72,14 @@ export default function Reply({
     }
   }
 
-  async function onClickLike() {
+  async function onClickLike(
+    e?: MouseEvent<HTMLAnchorElement | HTMLSpanElement>,
+  ) {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
     if (likeProcessing) {
       return;
     }
@@ -116,7 +123,11 @@ export default function Reply({
     }
   }
 
-  function onClickReply() {
+  function onClickReply(e?: MouseEvent<HTMLAnchorElement>) {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     setOpenReplyBox(!openReplyBox);
   }
 
@@ -172,41 +183,45 @@ export default function Reply({
         </div>
 
         {!openReplyBox && (
-          <div className="d-flex gap-3">
-            <button
-              disabled={likeProcessing || likeCommentActionMutation.isPending}
-              onClick={onClickLike}
-              type="button"
-              className="btn rounded-pill btn-outline-secondary position-relative"
-            >
-              <i
-                className={clsx(
-                  'bi me-2',
-                  liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
-                )}
-              ></i>
-              <span>
-                {likeProcessing || likeCommentActionMutation.isPending
-                  ? t('common.processing')
-                  : t('common.likeBtn.text')}
-              </span>
-
-              {likesCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
-                  <span>{formatCount(likesCount)}</span>
-                  <span className="visually-hidden">likes</span>
+          <div className="d-flex align-items-center gap-3">
+            {likeProcessing || likeCommentActionMutation.isPending ? (
+              <div>
+                <span>{t('common.processing')}</span>
+              </div>
+            ) : (
+              <div>
+                <a
+                  href=""
+                  onClick={onClickLike}
+                  className="link-body-emphasis link-opacity-75 link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+                >
+                  <i
+                    className={clsx(
+                      'bi',
+                      liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
+                      {
+                        'me-1': !!likesCount,
+                      },
+                    )}
+                  ></i>
+                </a>
+                <span onClick={onClickLike} className="cursor-pointer">
+                  {formatCount(likesCount)}
                 </span>
-              )}
-            </button>
+              </div>
+            )}
 
-            <button
-              onClick={onClickReply}
-              className="btn btn-outline-secondary rounded-pill"
-              type="button"
-            >
-              <i className="bi bi-send me-2"></i>
-              <span className="">{t('common.reply')}</span>
-            </button>
+            <div className="vr h-50 my-auto"></div>
+
+            <div>
+              <a
+                href=""
+                className="link-body-emphasis link-opacity-75 link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+                onClick={onClickReply}
+              >
+                Reply
+              </a>
+            </div>
           </div>
         )}
 

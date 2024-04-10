@@ -1,6 +1,6 @@
 import type { IReply } from '@/app/[locale]/interfaces/replies';
 import type { IPostDetails } from '@/app/[locale]/interfaces/posts';
-import { useContext, useState } from 'react';
+import { type MouseEvent, useContext, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -73,7 +73,14 @@ export default function QuotedReply({
     }
   }
 
-  async function onClickLike() {
+  async function onClickLike(
+    e?: MouseEvent<HTMLAnchorElement | HTMLSpanElement>,
+  ) {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
     if (likeProcessing) {
       return;
     }
@@ -117,7 +124,12 @@ export default function QuotedReply({
     }
   }
 
-  function onClickReply() {
+  function onClickReply(e?: MouseEvent<HTMLAnchorElement>) {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
     setOpenReplyBox(!openReplyBox);
   }
 
@@ -208,41 +220,45 @@ export default function QuotedReply({
         </div>
 
         {!openReplyBox && (
-          <div className="d-flex gap-3">
-            <button
-              disabled={likeProcessing || likeReplyActionMutation.isPending}
-              onClick={onClickLike}
-              type="button"
-              className="btn rounded-pill btn-outline-secondary position-relative"
-            >
-              <i
-                className={clsx(
-                  'bi me-2',
-                  liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
-                )}
-              ></i>
-              <span>
-                {likeProcessing || likeReplyActionMutation.isPending
-                  ? t('common.processing')
-                  : t('common.likeBtn.text')}
-              </span>
-
-              {likesCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
-                  <span>{formatCount(likesCount)}</span>
-                  <span className="visually-hidden">likes</span>
+          <div className="d-flex align-items-center gap-3">
+            {likeProcessing || likeReplyActionMutation.isPending ? (
+              <div>
+                <span>{t('common.processing')}</span>
+              </div>
+            ) : (
+              <div>
+                <a
+                  href=""
+                  onClick={onClickLike}
+                  className="link-body-emphasis link-opacity-75 link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+                >
+                  <i
+                    className={clsx(
+                      'bi',
+                      liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up',
+                      {
+                        'me-1': !!likesCount,
+                      },
+                    )}
+                  ></i>
+                </a>
+                <span onClick={onClickLike} className="cursor-pointer">
+                  {formatCount(likesCount)}
                 </span>
-              )}
-            </button>
+              </div>
+            )}
 
-            <button
-              onClick={onClickReply}
-              className="btn btn-outline-secondary rounded-pill"
-              type="button"
-            >
-              <i className="bi bi-send me-2"></i>
-              <span className="">Reply</span>
-            </button>
+            <div className="vr h-50 my-auto"></div>
+
+            <div>
+              <a
+                href=""
+                className="link-body-emphasis link-opacity-75 link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+                onClick={onClickReply}
+              >
+                Reply
+              </a>
+            </div>
           </div>
         )}
 
