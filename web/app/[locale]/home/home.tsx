@@ -15,6 +15,9 @@ import type { ISection } from '@/app/[locale]/interfaces/sections';
 import type { ITag } from '@/app/[locale]/interfaces/tags';
 import type { IPage, TQueryParams } from '@/app/[locale]/interfaces';
 import type { IUser } from '@/app/[locale]/interfaces/users';
+import dynamic from 'next/dynamic';
+
+const PostsH5Component = dynamic(() => import('./posts-h5'));
 
 export default function Home({
   sectionGroups,
@@ -59,6 +62,9 @@ export default function Home({
           <EmptyBox />
         </div>
       </div>
+
+      <PostsH5Component data={data} queryParams={queryParams} />
+
       <div
         className={clsx(
           'd-none d-lg-block col-2 position-sticky overflow-y-auto',

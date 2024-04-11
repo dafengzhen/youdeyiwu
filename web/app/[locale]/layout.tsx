@@ -10,6 +10,7 @@ import LoginInfoUserAction from '@/app/[locale]/actions/users/login-info-user-ac
 import MenusUserAction from '@/app/[locale]/actions/users/menus-user-action';
 import QueryAllMessageAction from '@/app/[locale]/actions/messages/query-all-message-action';
 import { getMessages } from 'next-intl/server';
+import BottomNavH5 from '@/app/[locale]/bottom-nav-h5';
 
 import('@popperjs/core');
 
@@ -125,6 +126,7 @@ export default async function RootLayout({
           {process.env.SHOW_FOOTER === 'true' && (
             <Footer locale={params.locale} />
           )}
+          <BottomNavH5 />
         </Providers>
       </body>
     </html>

@@ -22,6 +22,9 @@ export const JSON_HEADER = {
   'Content-Type': 'application/json',
 };
 
+export const BLUR_DATA_URL =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8v+9JPQAIhwMirBSLJQAAAABJRU5ErkJggg==';
+
 export const ACTION_PAGES_DATA = {
   Dashboard: [],
   Sections: [

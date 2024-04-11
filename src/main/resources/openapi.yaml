@@ -2737,6 +2737,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PostUserEntityVo"
+      tags:
+        - posts
 
   # === comment ===
   /comments:

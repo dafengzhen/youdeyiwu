@@ -14,8 +14,8 @@ import {
   getUserAlias,
   isHttpOrHttps,
 } from '@/app/[locale]/common/client';
-import Cover from '@/app/[locale]/home/cover';
 import { useTranslations } from 'next-intl';
+import { BLUR_DATA_URL } from '@/app/[locale]/constants';
 
 export default function Posts({
   data,
@@ -68,16 +68,7 @@ export default function Posts({
   });
 
   useEffect(() => {
-    if (postsInfiniteQuery.data) {
-      setContent(
-        postsInfiniteQuery.data.pages
-          .flatMap((item) => item.content)
-          .map((item) => {
-            item.createdOnText = fromNow(item.createdOn);
-            return item;
-          }),
-      );
-    }
+    setContent(postsInfiniteQuery.data.pages.flatMap((item) => item.content));
   }, [postsInfiniteQuery.data]);
 
   async function onCLickLoadMore() {
@@ -110,7 +101,6 @@ export default function Posts({
   return (
     <div className="d-flex flex-column gap-4">
       {content.map((item) => {
-        const cover = item.cover;
         const user = item.user;
         const avatar = user?.avatar;
 
@@ -134,19 +124,36 @@ export default function Posts({
               </div>
             </div>
             <div className="card-body d-flex flex-column gap-3 py-2">
-              {item.overview && (
-                <Link
-                  className="line-clamp-3 card-text text-reset text-decoration-none"
-                  href={`/posts/${item.id}`}
-                  scroll={false}
-                >
-                  {item.overview}
-                </Link>
+              {(item.overview || item.cover) && (
+                <div className="d-flex gap-4">
+                  {item.overview && (
+                    <div>
+                      <Link
+                        className="line-clamp-3 card-text text-reset text-decoration-none"
+                        href={`/posts/${item.id}`}
+                        scroll={false}
+                      >
+                        {item.overview}
+                      </Link>
+                    </div>
+                  )}
+
+                  {item.cover && (
+                    <Link href={`/posts/${item.id}`} scroll={false}>
+                      <Image
+                        className="rounded object-fit-contain image-hover cursor-pointer"
+                        width={260}
+                        height={195}
+                        src={item.cover}
+                        alt="cover"
+                        placeholder="blur"
+                        blurDataURL={BLUR_DATA_URL}
+                      />
+                    </Link>
+                  )}
+                </div>
               )}
 
-              <div className="row row-cols-auto g-2">
-                <Cover item={item} />
-              </div>
               <div className="d-flex align-items-center gap-2">
                 <div className="d-flex gap-3">
                   <div className="rounded-circle flex-shrink-0">
@@ -173,7 +180,7 @@ export default function Posts({
                       dateTime={item.createdOn}
                       className="fw-normal text-body-secondary"
                     >
-                      {item.createdOnText}
+                      {fromNow(item.createdOn)}
                     </time>
                   </div>
                 </div>
