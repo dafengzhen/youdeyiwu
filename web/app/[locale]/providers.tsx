@@ -66,7 +66,7 @@ export function Providers(props: {
           <PointsAlert ref={pointsAlertRef} />
         </GlobalContext.Provider>
       </NextIntlClientProvider>
-      {<ReactQueryDevtools initialIsOpen={false} buttonPosition="top-left" />}
+      {<ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }
