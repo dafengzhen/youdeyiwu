@@ -53,6 +53,7 @@ export const ACTION_PAGES_DATA = {
   Messages: ['Create'],
   'Point Rules': ['Update'],
   'Point Permissions': ['Update'],
+  Files: ['Delete'],
   Users: [
     'Create',
     'Update States',

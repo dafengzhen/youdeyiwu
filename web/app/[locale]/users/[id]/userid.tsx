@@ -16,6 +16,7 @@ import Link from 'next/link';
 import type { IUser, IUserDetails } from '@/app/[locale]/interfaces/users';
 import { UserIdContext } from '@/app/[locale]/contexts/userid';
 import { useTranslations } from 'next-intl';
+import UploadedFiles from '@/app/[locale]/users/[id]/uploaded-files';
 
 export type TTabId =
   | 'MyHomepage'
@@ -23,6 +24,7 @@ export type TTabId =
   | 'ChangePassword'
   | 'MyArticles'
   | 'MyFavourites'
+  | 'UploadedFiles'
   | 'RelatedContent'
   | 'RelatedTags'
   | 'RelatedStatistics'
@@ -72,6 +74,10 @@ export default function UserId({
           name: t('common.myFavourites'),
         }
       : null,
+    {
+      id: 'UploadedFiles',
+      name: t('common.uploadedFiles'),
+    },
     {
       id: 'RelatedContent',
       name: t('common.relatedContent'),
@@ -200,6 +206,14 @@ export default function UserId({
                     <MyFavourites
                       details={details}
                       selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'UploadedFiles') {
+                  renderItem = (
+                    <UploadedFiles
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                      currentUser={currentUser}
                     />
                   );
                 } else if (id === 'RelatedContent') {

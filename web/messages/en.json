@@ -361,6 +361,12 @@
     "userId": "User Id",
     "userIdFormText": "Please enter a User ID.",
     "contentGroups": "Content Groups",
-    "uploadArticleCoverFormText": "Please create the article first and then proceed to upload the article cover."
+    "uploadArticleCoverFormText": "Please create the article first and then proceed to upload the article cover.",
+    "mediaType": "Media Type",
+    "viewCount": "View Count",
+    "user": "User",
+    "url": "Url",
+    "myFiles": "My Files",
+    "uploadedFiles": "Uploaded Files"
   }
 }

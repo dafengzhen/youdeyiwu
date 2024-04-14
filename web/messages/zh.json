@@ -359,6 +359,12 @@
     "userId": "用户 Id",
     "userIdFormText": "请输入用户 Id",
     "contentGroups": "内容组",
-    "uploadArticleCoverFormText": "请创建文章后再操作上传文章封面"
+    "uploadArticleCoverFormText": "请创建文章后再操作上传文章封面",
+    "mediaType": "媒体类型",
+    "viewCount": "浏览数",
+    "user": "用户",
+    "url": "地址",
+    "myFiles": "我的文件",
+    "uploadedFiles": "上传的文件"
   }
 }

@@ -8,9 +8,11 @@ import {
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: { id: string; name: string } },
 ) {
-  const { url, str } = createRequestUrl(`/sections/${context.params.id}/cover`);
+  const { url, str } = createRequestUrl(
+    `/files/images/${context.params.id}/${context.params.name}`,
+  );
   const response = await createRequest({
     url,
   });

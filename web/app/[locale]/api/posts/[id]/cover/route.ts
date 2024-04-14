@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import type { IError } from '@/app/[locale]/interfaces';
 import {
   createErrorResponse,
@@ -17,8 +17,8 @@ export async function GET(
 
   if (!response.ok) {
     const data = (await response.json()) as IError;
-    return createErrorResponse(data);
+    return NextResponse.json(createErrorResponse(data));
   }
 
-  return response as any;
+  return response;
 }
