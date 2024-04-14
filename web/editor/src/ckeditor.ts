@@ -34,7 +34,7 @@ import {SpecialCharacters, SpecialCharactersArrows, SpecialCharactersCurrency, S
 import {Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar} from '@ckeditor/ckeditor5-table';
 import {TextTransformation} from '@ckeditor/ckeditor5-typing';
 import {Undo} from '@ckeditor/ckeditor5-undo';
-import {Base64UploadAdapter} from '@ckeditor/ckeditor5-upload';
+import {SimpleUploadAdapter} from '@ckeditor/ckeditor5-upload';
 import {EditorWatchdog} from '@ckeditor/ckeditor5-watchdog';
 
 // You can read more about extending the build with additional plugins in the "Installing plugins" guide.
@@ -47,7 +47,7 @@ class Editor extends ClassicEditor {
         AutoLink,
         Autoformat,
         Autosave,
-        Base64UploadAdapter,
+        SimpleUploadAdapter,
         BlockQuote,
         Bold,
         Code,
@@ -152,7 +152,10 @@ class Editor extends ClassicEditor {
                 'imageStyle:block',
                 'imageStyle:side',
                 'linkImage'
-            ]
+            ],
+            upload: {
+                types: ['jpeg', 'png', 'gif']
+            }
         },
         table: {
             contentToolbar: [
