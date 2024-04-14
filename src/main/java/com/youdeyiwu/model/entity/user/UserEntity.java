@@ -2,6 +2,7 @@ package com.youdeyiwu.model.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youdeyiwu.model.entity.AbstractEntity;
+import com.youdeyiwu.model.entity.file.FileEntity;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.CommentUserEntity;
 import com.youdeyiwu.model.entity.forum.PostFavoriteEntity;
@@ -255,6 +256,18 @@ public class UserEntity extends AbstractEntity implements UserDetails {
   @JsonIgnore
   @ToString.Exclude
   private Set<QuoteReplyUserEntity> userQuoteReplies = new HashSet<>();
+
+  /**
+   * files.
+   */
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  @JsonIgnore
+  @ToString.Exclude
+  private Set<FileEntity> files = new HashSet<>();
 
   /**
    * post allows.

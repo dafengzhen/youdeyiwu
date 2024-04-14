@@ -25,8 +25,18 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ErrorVo> handleCustomException(CustomException exception) {
-    return ResponseEntity.badRequest()
-        .body(new ErrorVo(HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
+    String message = exception.getMessage();
+    int status = 400;
+    if (HttpStatus.UNAUTHORIZED.getReasonPhrase().equals(message)) {
+      status = HttpStatus.UNAUTHORIZED.value();
+    } else if (HttpStatus.FORBIDDEN.getReasonPhrase().equals(message)) {
+      status = HttpStatus.FORBIDDEN.value();
+    } else if (HttpStatus.NOT_FOUND.getReasonPhrase().equals(message)) {
+      status = HttpStatus.NOT_FOUND.value();
+    } else if (HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase().equals(message)) {
+      status = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    }
+    return ResponseEntity.status(status).body(new ErrorVo(status, message));
   }
 
   /**
