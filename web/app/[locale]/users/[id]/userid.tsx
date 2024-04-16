@@ -17,6 +17,7 @@ import type { IUser, IUserDetails } from '@/app/[locale]/interfaces/users';
 import { UserIdContext } from '@/app/[locale]/contexts/userid';
 import { useTranslations } from 'next-intl';
 import UploadedFiles from '@/app/[locale]/users/[id]/uploaded-files';
+import PointsRecord from '@/app/[locale]/users/[id]/points-record';
 
 export type TTabId =
   | 'MyHomepage'
@@ -24,6 +25,7 @@ export type TTabId =
   | 'ChangePassword'
   | 'MyArticles'
   | 'MyFavourites'
+  | 'PointsRecord'
   | 'UploadedFiles'
   | 'RelatedContent'
   | 'RelatedTags'
@@ -74,6 +76,10 @@ export default function UserId({
           name: t('common.myFavourites'),
         }
       : null,
+    {
+      id: 'PointsRecord',
+      name: t('common.pointsRecord'),
+    },
     {
       id: 'UploadedFiles',
       name: t('common.uploadedFiles'),
@@ -204,6 +210,13 @@ export default function UserId({
                 } else if (id === 'MyFavourites') {
                   renderItem = (
                     <MyFavourites
+                      details={details}
+                      selectedTabIndex={selectedTabIndex}
+                    />
+                  );
+                } else if (id === 'PointsRecord') {
+                  renderItem = (
+                    <PointsRecord
                       details={details}
                       selectedTabIndex={selectedTabIndex}
                     />

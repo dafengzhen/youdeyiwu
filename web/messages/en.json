@@ -367,6 +367,13 @@
     "user": "User",
     "url": "Url",
     "myFiles": "My Files",
-    "uploadedFiles": "Uploaded Files"
+    "uploadedFiles": "Uploaded Files",
+    "pointsRecord": "Points Record",
+    "pointsChange": "Points Change",
+    "source": "Source",
+    "point": "Point",
+    "change": "Change",
+    "changeTime": "Change Time",
+    "totalPoints": "Total points"
   }
 }

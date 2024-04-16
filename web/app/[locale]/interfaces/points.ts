@@ -17,6 +17,8 @@ export interface IPointHistory extends IBase {
   ruleName: RuleNameEnum;
   permissionRuleName: PermissionRuleNameEnum;
   reason?: string;
+  source?: string;
+  sourceLink?: string;
   user: IUser;
 }
 

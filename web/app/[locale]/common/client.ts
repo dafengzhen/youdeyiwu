@@ -18,7 +18,7 @@ export const getFormattedTime = (time: string) => {
   );
 };
 
-export const formatCurrentDateTime = (date?: Date, f?: string) => {
+export const formatCurrentDateTime = (date?: Date | string, f?: string) => {
   return format(date ?? new Date(), f ?? 'yyyy-MM-dd HH:mm:ss');
 };
 

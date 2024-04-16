@@ -204,15 +204,15 @@ public class PointRuleAspect {
         .findFirst();
 
     Boolean liked = postUserEntityOptional
-        .map(postUserEntity -> !postUserEntity.getLiked())
+        .map(PostUserEntity::getLiked)
         .orElse(true);
 
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.LIKE_POST,
             Boolean.TRUE.equals(liked)
-                ? SignEnum.NEGATIVE
-                : SignEnum.POSITIVE,
+                ? SignEnum.POSITIVE
+                : SignEnum.NEGATIVE,
             getPostNameAndIdWithMessage(postEntity, "point.likePost"),
             postEntity.getLink(),
             getReceivedUserIds(postEntity),
@@ -239,7 +239,7 @@ public class PointRuleAspect {
         .findFirst();
 
     Boolean liked = commentUserEntityOptional
-        .map(commentUserEntity -> !commentUserEntity.getLiked())
+        .map(CommentUserEntity::getLiked)
         .orElse(true);
 
     PostEntity postEntity = commentEntity.getPost();
@@ -247,8 +247,8 @@ public class PointRuleAspect {
         new PointRuleEventDto(
             RuleNameEnum.LIKE_COMMENT,
             Boolean.TRUE.equals(liked)
-                ? SignEnum.NEGATIVE
-                : SignEnum.POSITIVE,
+                ? SignEnum.POSITIVE
+                : SignEnum.NEGATIVE,
             getPostNameAndIdWithMessage(postEntity, "point.likeComment"),
             postEntity.getLink(),
             getReceivedUserIds(postEntity),
@@ -275,7 +275,7 @@ public class PointRuleAspect {
         .findFirst();
 
     Boolean liked = quoteReplyUserEntityOptional
-        .map(commentUserEntity -> !commentUserEntity.getLiked())
+        .map(QuoteReplyUserEntity::getLiked)
         .orElse(true);
 
     PostEntity postEntity = quoteReplyEntity.getPost();
@@ -283,8 +283,8 @@ public class PointRuleAspect {
         new PointRuleEventDto(
             RuleNameEnum.LIKE_REPLY,
             Boolean.TRUE.equals(liked)
-                ? SignEnum.NEGATIVE
-                : SignEnum.POSITIVE,
+                ? SignEnum.POSITIVE
+                : SignEnum.NEGATIVE,
             getPostNameAndIdWithMessage(postEntity, "point.likeReply"),
             postEntity.getLink(),
             getReceivedUserIds(postEntity),
@@ -311,15 +311,15 @@ public class PointRuleAspect {
         .findFirst();
 
     Boolean favorited = postUserEntityOptional
-        .map(postUserEntity -> !postUserEntity.getFavorited())
+        .map(PostUserEntity::getFavorited)
         .orElse(true);
 
     publisher.publishEvent(new PointRuleApplicationEvent(
         new PointRuleEventDto(
             RuleNameEnum.FAVORITE_POST,
             Boolean.TRUE.equals(favorited)
-                ? SignEnum.NEGATIVE
-                : SignEnum.POSITIVE,
+                ? SignEnum.POSITIVE
+                : SignEnum.NEGATIVE,
             getPostNameAndIdWithMessage(postEntity, "point.favoritePost"),
             postEntity.getLink(),
             getReceivedUserIds(postEntity),

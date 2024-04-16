@@ -231,6 +231,10 @@ public class Tool {
    * @return Integer
    */
   public static Integer calculatePoints(Integer requiredPoints, SignEnum sign) {
+    if (Objects.isNull(sign)) {
+      return 0;
+    }
+
     int points = Math.abs(requiredPoints);
     return switch (sign) {
       case POSITIVE -> points;

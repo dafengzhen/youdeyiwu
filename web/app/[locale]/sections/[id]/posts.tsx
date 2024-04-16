@@ -16,6 +16,7 @@ import {
 import Nodata from '@/app/[locale]/common/nodata';
 import LoadMore from '@/app/[locale]/home/load-more';
 import { useTranslations } from 'next-intl';
+import { BLUR_DATA_URL } from '@/app/[locale]/constants';
 
 export default function Posts({
   details,
@@ -162,36 +163,35 @@ export default function Posts({
               </div>
             </div>
             <div className="card-body d-flex flex-column gap-3 py-2">
-              {item.overview && (
-                <Link
-                  className="line-clamp-3 card-text text-reset text-decoration-none"
-                  href={`/posts/${item.id}`}
-                  scroll={false}
-                >
-                  {item.overview}
-                </Link>
-              )}
-
-              <div className="row row-cols-auto g-2">
-                {isHttpOrHttps(cover) && (
-                  <div className="col">
-                    <div
-                      className="ratio ratio-16x9"
-                      style={{ width: 260, height: 195 }}
-                    >
-                      <Link href={`/posts/${item.id}`} scroll={false}>
-                        <Image
-                          className="rounded object-fit-cover image-hover cursor-pointer"
-                          width={260}
-                          height={195}
-                          src={cover!}
-                          alt="cover"
-                        />
+              {(item.overview || item.cover) && (
+                <div className="d-flex gap-4">
+                  {item.overview && (
+                    <div>
+                      <Link
+                        className="line-clamp-3 card-text text-reset text-decoration-none"
+                        href={`/posts/${item.id}`}
+                        scroll={false}
+                      >
+                        {item.overview}
                       </Link>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+
+                  {item.cover && (
+                    <Link href={`/posts/${item.id}`} scroll={false}>
+                      <Image
+                        className="rounded object-fit-contain image-hover cursor-pointer"
+                        width={260}
+                        height={195}
+                        src={item.cover}
+                        alt="cover"
+                        placeholder="blur"
+                        blurDataURL={BLUR_DATA_URL}
+                      />
+                    </Link>
+                  )}
+                </div>
+              )}
 
               <div className="d-flex align-items-center gap-2">
                 <Link

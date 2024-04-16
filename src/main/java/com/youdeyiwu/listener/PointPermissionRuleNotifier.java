@@ -15,6 +15,7 @@ import com.youdeyiwu.model.dto.point.UpdatePointDto;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
+import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.point.PointPermissionRuleEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
@@ -126,20 +127,21 @@ public class PointPermissionRuleNotifier
     getDifferenceSign(
         pointEntity,
         (flag, difference) -> {
-          pointCoreService.create(
-              pointEntity,
-              difference,
-              flag,
-              null,
-              dto.permissionRuleName(),
-              POINT_REWARD_BY_SYSTEM
-          );
+          String source = Objects.isNull(dto.from()) ? i18nTool.getMessage("point.systemService") : dto.from();
+          PointHistoryEntity pointHistoryEntity = new PointHistoryEntity();
+          pointHistoryEntity.setPointValue(difference);
+          pointHistoryEntity.setSign(flag);
+          pointHistoryEntity.setPermissionRuleName(dto.permissionRuleName());
+          pointHistoryEntity.setReason(POINT_REWARD_BY_SYSTEM);
+          pointHistoryEntity.setSource(source);
+          pointHistoryEntity.setSourceLink(dto.link());
+          pointCoreService.create(pointEntity, pointHistoryEntity);
           sendMessage(
               Map.of(
                   "increased", flag == SignEnum.POSITIVE ? difference : 0,
                   "decreased", flag == SignEnum.NEGATIVE ? difference : 0,
                   "remaining", pointEntity.getPoints(),
-                  "source", Objects.isNull(dto.from()) ? i18nTool.getMessage("point.systemService") : dto.from()
+                  "source", source
               ),
               dto.link(),
               userRepository.findById(securityService.getUserId()).orElseThrow(UserNotFoundException::new)

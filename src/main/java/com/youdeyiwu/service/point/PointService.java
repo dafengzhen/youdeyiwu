@@ -55,6 +55,15 @@ public interface PointService {
   PageVo<PointHistoryEntityVo> queryAll(Pageable pageable);
 
   /**
+   * query all history by user id.
+   *
+   * @param userId   userId
+   * @param pageable pageable
+   * @return PageVo
+   */
+  PageVo<PointHistoryEntityVo> queryAllHistoryByUserId(Long userId, Pageable pageable);
+
+  /**
    * find point by user id.
    *
    * @param userId userId

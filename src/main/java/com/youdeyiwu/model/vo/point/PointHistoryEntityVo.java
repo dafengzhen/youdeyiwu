@@ -58,6 +58,16 @@ public class PointHistoryEntityVo extends AbstractEntityVo {
   private String reason;
 
   /**
+   * source.
+   */
+  private String source;
+
+  /**
+   * source link.
+   */
+  private String sourceLink;
+
+  /**
    * user.
    */
   private UserEntityVo user;

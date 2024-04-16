@@ -15,6 +15,7 @@ import com.youdeyiwu.model.dto.point.UpdatePointDto;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
+import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.point.PointRuleEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
@@ -92,34 +93,36 @@ public class PointRuleNotifier
    */
   private void handleActions(PointRuleEventDto dto, PointRuleEntity pointRuleEntity) {
     List<Long> userIds = new ArrayList<>();
-    Integer rewardPoints = null;
+    Integer initiatorRewardPoints = null;
+    Integer receiverRewardPoints = null;
 
     if (securityService.isAuthenticated()) {
       userIds.add(securityService.getUserId());
-      rewardPoints = pointRuleEntity.getInitiatorRewardPoints();
+      initiatorRewardPoints = pointRuleEntity.getInitiatorRewardPoints();
     }
 
     if (!CollectionUtils.isEmpty(dto.receivedUserIds())) {
       userIds.addAll(dto.receivedUserIds());
-      rewardPoints = pointRuleEntity.getReceiverRewardPoints();
+      receiverRewardPoints = pointRuleEntity.getReceiverRewardPoints();
     }
 
-    if (Objects.isNull(rewardPoints)) {
+    if (Objects.isNull(initiatorRewardPoints) && Objects.isNull(receiverRewardPoints)) {
       return;
     }
 
-    final Integer finalRewardPoints = rewardPoints;
+    final Integer finalInitiatorRewardPoints = initiatorRewardPoints;
+    final Integer finalReceiverRewardPoints = receiverRewardPoints;
     userIds.stream().findFirst().ifPresent(userId -> {
       updatePointsAndSendMessage(
           userRepository.findById(userId).orElseThrow(UserNotFoundException::new),
-          finalRewardPoints,
+          finalInitiatorRewardPoints,
           dto
       );
     });
     userIds.stream().skip(1).forEach(userId -> {
       updatePointsAndSendMessage(
           userRepository.findById(userId).orElseThrow(UserNotFoundException::new),
-          finalRewardPoints,
+          finalReceiverRewardPoints,
           dto
       );
     });
@@ -136,7 +139,7 @@ public class PointRuleNotifier
       UserEntity user,
       Integer rewardPoints, PointRuleEventDto dto
   ) {
-    SignEnum sign;
+    SignEnum sign = dto.sign();
     if (Boolean.TRUE.equals(dto.checkHistoryPoints())) {
       sign = pointHistoryRepository.findLatestPointsHistoryByUserIdAndRuleName(
               user.getId(),
@@ -145,17 +148,9 @@ public class PointRuleNotifier
           .map(pointHistoryEntity -> switch (pointHistoryEntity.getSign()) {
             case POSITIVE -> SignEnum.NEGATIVE;
             case NEGATIVE -> SignEnum.POSITIVE;
-            case ZERO -> {
-              if (Objects.isNull(dto.sign()) || dto.sign() == SignEnum.POSITIVE) {
-                yield SignEnum.ZERO;
-              } else {
-                yield SignEnum.NEGATIVE;
-              }
-            }
+            case ZERO -> dto.sign();
           })
           .orElseGet(dto::sign);
-    } else {
-      sign = dto.sign();
     }
 
     PointEntity pointEntity = pointCoreService.update(
@@ -166,20 +161,21 @@ public class PointRuleNotifier
     getDifferenceSign(
         pointEntity,
         (flag, difference) -> {
-          pointCoreService.create(
-              pointEntity,
-              difference,
-              flag,
-              dto.ruleName(),
-              null,
-              POINT_REWARD_BY_SYSTEM
-          );
+          String source = Objects.isNull(dto.from()) ? i18nTool.getMessage("point.systemService") : dto.from();
+          PointHistoryEntity pointHistoryEntity = new PointHistoryEntity();
+          pointHistoryEntity.setPointValue(difference);
+          pointHistoryEntity.setSign(flag);
+          pointHistoryEntity.setRuleName(dto.ruleName());
+          pointHistoryEntity.setReason(POINT_REWARD_BY_SYSTEM);
+          pointHistoryEntity.setSource(source);
+          pointHistoryEntity.setSourceLink(dto.link());
+          pointCoreService.create(pointEntity, pointHistoryEntity);
           sendMessage(
               Map.of(
                   "increased", flag == SignEnum.POSITIVE ? difference : 0,
                   "decreased", flag == SignEnum.NEGATIVE ? difference : 0,
                   "remaining", pointEntity.getPoints(),
-                  "source", Objects.isNull(dto.from()) ? i18nTool.getMessage("point.systemService") : dto.from()
+                  "source", source
               ),
               dto.link(),
               user

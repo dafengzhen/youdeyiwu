@@ -7,6 +7,7 @@ import type { IMessage } from '@/app/[locale]/interfaces/messages';
 import { getTranslations } from 'next-intl/server';
 import TranslateNavItem from '@/app/[locale]/common/translate';
 import ColorModeNavItem from '@/app/[locale]/common/color-mode';
+import { BLUR_DATA_URL } from '@/app/[locale]/constants';
 
 export default async function Navbar({
   locale,
@@ -37,6 +38,8 @@ export default async function Navbar({
             alt="logo"
             width={40}
             height={40}
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
           />
           {process.env.NAME}
         </Link>

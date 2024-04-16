@@ -5,6 +5,7 @@ import { useState } from 'react';
 import type { IUserDetails } from '@/app/[locale]/interfaces/users';
 import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
 import { useTranslations } from 'next-intl';
+import { BLUR_DATA_URL } from '@/app/[locale]/constants';
 
 export default function MyHomepage({
   selectedTabIndex,
@@ -40,6 +41,8 @@ export default function MyHomepage({
             alt="avatar"
             width={80}
             height={80}
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
           />
           <div className="flex-grow-1 d-flex flex-column justify-content-around">
             <div className="fw-bold user-select-all">

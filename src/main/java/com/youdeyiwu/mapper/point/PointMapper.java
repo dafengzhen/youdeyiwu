@@ -40,6 +40,16 @@ public interface PointMapper {
   void dtoToEntity(SavePointPermissionRuleDto dto, @MappingTarget PointPermissionRuleEntity entity);
 
   /**
+   * entityToEntity.
+   *
+   * @param pointHistoryEntity pointHistoryEntity
+   * @param entity             entity
+   */
+  @Mapping(target = "points", ignore = true)
+  @Mapping(target = "user", ignore = true)
+  void entityToEntity(PointHistoryEntity pointHistoryEntity, @MappingTarget PointHistoryEntity entity);
+
+  /**
    * entityToVo.
    *
    * @param entity entity

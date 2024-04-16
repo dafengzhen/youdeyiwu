@@ -72,6 +72,16 @@ public class PointHistoryEntity extends AbstractEntity {
   private String reason;
 
   /**
+   * source.
+   */
+  private String source;
+
+  /**
+   * source link.
+   */
+  private String sourceLink;
+
+  /**
    * user.
    */
   @ManyToOne

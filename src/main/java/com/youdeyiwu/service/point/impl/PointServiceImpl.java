@@ -88,6 +88,15 @@ public class PointServiceImpl implements PointService {
   }
 
   @Override
+  public PageVo<PointHistoryEntityVo> queryAllHistoryByUserId(Long userId, Pageable pageable) {
+    UserEntity userEntity = userRepository.findById(userId)
+        .orElseThrow(UserNotFoundException::new);
+    return new PageVo<>(
+        pointHistoryRepository.findAllByUser(userEntity, pageable).map(pointMapper::entityToVo)
+    );
+  }
+
+  @Override
   public PointEntity findPointByUserId(Long userId) {
     UserEntity userEntity = userRepository.findById(userId)
         .orElseThrow(UserNotFoundException::new);

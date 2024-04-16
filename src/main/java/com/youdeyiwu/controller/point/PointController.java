@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,5 +63,15 @@ public class PointController {
       Pageable pageable
   ) {
     return ResponseEntity.ok(pointService.queryAll(pageable));
+  }
+
+  @GetMapping(value = "/histories/users/{userId}")
+  public ResponseEntity<PageVo<PointHistoryEntityVo>> queryAllHistoryByUserId(
+      @PathVariable Long userId,
+      @PageableDefault(size = 15)
+      @SortDefault(value = {"id"}, direction = Sort.Direction.DESC)
+      Pageable pageable
+  ) {
+    return ResponseEntity.ok(pointService.queryAllHistoryByUserId(userId, pageable));
   }
 }

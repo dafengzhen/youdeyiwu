@@ -365,6 +365,13 @@
     "user": "用户",
     "url": "地址",
     "myFiles": "我的文件",
-    "uploadedFiles": "上传的文件"
+    "uploadedFiles": "上传的文件",
+    "pointsRecord": "积分记录",
+    "pointsChange": "积分变更",
+    "source": "来源",
+    "point": "积分",
+    "change": "变更",
+    "changeTime": "变更时间",
+    "totalPoints": "总积分"
   }
 }
