@@ -1,0 +1,78 @@
+{
+  "name": "youdeyiwu",
+  "version": "1.0.0",
+  "description": "youdeyiwu is an open-source lightweight forum",
+  "author": "dafengzhen",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "dev": "concurrently npm:start npm:electron --kill-others",
+    "electron": "wait-on tcp:4200 && cross-env NODE_ENV=development ELECTRON_DISABLE_SECURITY_WARNINGS=true electron-forge start",
+    "publish": "electron-forge publish",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "dependencies": {
+    "@angular/animations": "^17.3.4",
+    "@angular/common": "^17.3.4",
+    "@angular/compiler": "^17.3.4",
+    "@angular/core": "^17.3.4",
+    "@angular/forms": "^17.3.4",
+    "@angular/platform-browser": "^17.3.4",
+    "@angular/platform-browser-dynamic": "^17.3.4",
+    "@angular/router": "^17.3.4",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
+    "electron-squirrel-startup": "^1.0.0",
+    "highlight.js": "^11.9.0",
+    "photoswipe": "^5.4.3",
+    "rxjs": "~7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.14.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^17.3.4",
+    "@angular/cli": "^17.3.4",
+    "@angular/compiler-cli": "^17.3.4",
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
+    "@types/jasmine": "~5.1.4",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^30.0.0",
+    "jasmine-core": "~5.1.2",
+    "karma": "~6.4.3",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.1",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.4.5",
+    "wait-on": "^7.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dafengzhen/youdeyiwu.git"
+  },
+  "keywords": [
+    "youdeyiwu",
+    "forum",
+    "blog",
+    "note",
+    "seo"
+  ],
+  "bugs": {
+    "url": "https://github.com/dafengzhen/youdeyiwu/issues"
+  },
+  "homepage": "https://github.com/dafengzhen/youdeyiwu#readme"
+}
