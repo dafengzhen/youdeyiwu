@@ -374,6 +374,7 @@
     "point": "Point",
     "change": "Change",
     "changeTime": "Change Time",
-    "totalPoints": "Total points"
+    "totalPoints": "Total points",
+    "avatarFormText": "Supports uploading image files in JPG or PNG format, with a maximum size of 500KB."
   }
 }

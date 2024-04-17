@@ -9,6 +9,7 @@ import UpdateProfileUserAction, {
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
 import { useTranslations } from 'next-intl';
+import UploadAvatar from '@/app/[locale]/users/[id]/upload-avatar';
 
 export default function EditProfile({
   selectedTabIndex,
@@ -105,6 +106,12 @@ export default function EditProfile({
             />
             <div className="form-text">{t('common.userAvatarFormText')}</div>
           </div>
+
+          <UploadAvatar
+            callback={(value) => {
+              setForm({ ...form, avatar: location.origin + value.url });
+            }}
+          />
 
           <div>
             <label className="form-label">{t('common.oneSentence')}</label>

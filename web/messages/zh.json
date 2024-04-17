@@ -372,6 +372,7 @@
     "point": "积分",
     "change": "变更",
     "changeTime": "变更时间",
-    "totalPoints": "总积分"
+    "totalPoints": "总积分",
+    "avatarFormText": "支持上传 JPG 或 PNG 格式图像文件，大小不能超过 500KB"
   }
 }

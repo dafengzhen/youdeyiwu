@@ -8,6 +8,7 @@ import {
   createRequestUrl,
   createSuccessResponse,
 } from '@/app/[locale]/common/response';
+import type { IFileUrls } from '@/app/[locale]/interfaces/file';
 
 export default async function UploadImageFileAction(variables: {
   formData: FormData;
@@ -24,12 +25,12 @@ export default async function UploadImageFileAction(variables: {
       },
     });
 
+    const data = (await response.json()) as IFileUrls | IError;
     if (!response.ok) {
-      const data = (await response.json()) as IError;
       return createErrorResponse(data);
     }
 
-    return createSuccessResponse(null);
+    return createSuccessResponse(data as IFileUrls);
   } catch (e) {
     return createErrorResponse(e);
   }

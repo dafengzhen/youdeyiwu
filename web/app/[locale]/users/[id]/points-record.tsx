@@ -125,67 +125,69 @@ export default function PointsRecord({
       )}
 
       <div className="card-body">
-        <div className="table-responsive">
-          <table className="table align-middle table-striped">
-            <thead>
-              <tr>
-                <th scope="col"> {t('common.pointsChange')}</th>
-                <th scope="col"> {t('common.source')}</th>
-                <th scope="col"> {t('common.changeTime')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {content.map((item) => {
-                let sign = '';
-                if (item.sign === 'NEGATIVE') {
-                  sign = '-';
-                } else if (item.sign === 'POSITIVE') {
-                  sign = '+';
-                }
+        {!!content.length && (
+          <div className="table-responsive">
+            <table className="table align-middle table-striped">
+              <thead>
+                <tr>
+                  <th scope="col"> {t('common.pointsChange')}</th>
+                  <th scope="col"> {t('common.source')}</th>
+                  <th scope="col"> {t('common.changeTime')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {content.map((item) => {
+                  let sign = '';
+                  if (item.sign === 'NEGATIVE') {
+                    sign = '-';
+                  } else if (item.sign === 'POSITIVE') {
+                    sign = '+';
+                  }
 
-                return (
-                  <tr key={item.id}>
-                    <td>
-                      <span className="me-1">{t('common.point')}</span>
-                      <span
-                        className={clsx({
-                          'text-danger': item.sign === 'NEGATIVE',
-                          'text-success': item.sign === 'POSITIVE',
-                        })}
-                      >{`${sign}${item.pointValue}`}</span>
-                    </td>
-
-                    {item.source ? (
+                  return (
+                    <tr key={item.id}>
                       <td>
-                        {item.sourceLink ? (
-                          <Link
-                            className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
-                            href={item.sourceLink}
-                          >
-                            {item.source}
-                          </Link>
-                        ) : (
-                          <span>{item.source}</span>
-                        )}
+                        <span className="me-1">{t('common.point')}</span>
+                        <span
+                          className={clsx({
+                            'text-danger': item.sign === 'NEGATIVE',
+                            'text-success': item.sign === 'POSITIVE',
+                          })}
+                        >{`${sign}${item.pointValue}`}</span>
                       </td>
-                    ) : (
-                      <td>{item.ruleName ?? item.permissionRuleName}</td>
-                    )}
 
-                    <td>
-                      <time
-                        dateTime={item.createdOn}
-                        className="fw-normal text-body-secondary"
-                      >
-                        {formatCurrentDateTime(item.createdOn)}
-                      </time>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      {item.source ? (
+                        <td>
+                          {item.sourceLink ? (
+                            <Link
+                              className="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                              href={item.sourceLink}
+                            >
+                              {item.source}
+                            </Link>
+                          ) : (
+                            <span>{item.source}</span>
+                          )}
+                        </td>
+                      ) : (
+                        <td>{item.ruleName ?? item.permissionRuleName}</td>
+                      )}
+
+                      <td>
+                        <time
+                          dateTime={item.createdOn}
+                          className="fw-normal text-body-secondary"
+                        >
+                          {formatCurrentDateTime(item.createdOn)}
+                        </time>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {content.length === 0 ? (
           <Nodata />
