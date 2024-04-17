@@ -1,11 +1,9 @@
-@import 'styles/bs';
-@import 'bootstrap-icons';
-@import 'styles/editor';
-@import 'photoswipe/dist/photoswipe.css';
-@import 'highlight.js/scss/stackoverflow-light';
+@import "styles/bs";
+@import "styles/editor";
+@import "highlight.js/scss/stackoverflow-light";
 
 @include color-mode(dark) {
-  @import 'highlight.js/scss/stackoverflow-dark';
+  @import "highlight.js/scss/stackoverflow-dark";
 }
 
 // line-clamp
@@ -141,7 +139,7 @@
 .point-clippath:before {
   border: 2px solid var(--bs-success-border-subtle);
   border-radius: var(--bs-toast-border-radius);
-  content: '';
+  content: "";
   opacity: 0;
   position: absolute;
   left: -2px;
@@ -245,9 +243,9 @@
 @include color-mode {
   .yw-homepage-bg {
     background: linear-gradient(
-        91.7deg,
-        rgba(252, 190, 224, 1) 16.8%,
-        rgba(212, 254, 218, 1) 103.6%
+      91.7deg,
+      rgba(252, 190, 224, 1) 16.8%,
+      rgba(212, 254, 218, 1) 103.6%
     );
   }
 }
@@ -255,9 +253,9 @@
 @include color-mode(auto) {
   .yw-homepage-bg {
     background: linear-gradient(
-        91.7deg,
-        rgba(252, 190, 224, 1) 16.8%,
-        rgba(212, 254, 218, 1) 103.6%
+      91.7deg,
+      rgba(252, 190, 224, 1) 16.8%,
+      rgba(212, 254, 218, 1) 103.6%
     );
   }
 }
@@ -265,9 +263,41 @@
 @include color-mode(dark) {
   .yw-homepage-bg {
     background: linear-gradient(
-        91.7deg,
-        rgba(88, 27, 68, 1) 16.8%,
-        rgba(21, 82, 88, 1) 103.6%
+      91.7deg,
+      rgba(88, 27, 68, 1) 16.8%,
+      rgba(21, 82, 88, 1) 103.6%
     );
+  }
+}
+
+// yw-home
+
+.yw-home {
+  --sb-track-color: var(--bs-tertiary-bg);
+  --sb-thumb-color: var(--bs-info-border-subtle);
+  --sb-size: 8px;
+}
+
+.yw-home-margin-right {
+  margin-right: -1.25rem;
+}
+
+.yw-home::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+.yw-home::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 8px;
+}
+
+.yw-home::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 8px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .yw-home {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
