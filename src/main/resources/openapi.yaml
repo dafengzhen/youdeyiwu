@@ -1697,6 +1697,38 @@ paths:
                 $ref: '#/components/schemas/Void'
       tags:
         - configs
+  /configs/root/disable-registration:
+    get:
+      summary: "GET configs/root/disable-registration"
+      operationId: "queryDisableRegistration"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "boolean"
+      tags:
+        - configs
+  /configs/root/secret:
+    put:
+      summary: "PUT configs/root/secret"
+      operationId: "update"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSecretRootConfigDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+      tags:
+        - configs
 
   # === pointConfig ===
   /configs/point:
@@ -3413,6 +3445,7 @@ paths:
       tags:
         - posts
 
+  # === files ===
   /files/images:
     post:
       summary: "POST files/images"
@@ -5544,6 +5577,11 @@ components:
           format: "date-time"
         deleted:
           type: "boolean"
+    UpdateSecretRootConfigDto:
+      type: "object"
+      properties:
+        secret:
+          type: "string"
     PageableVo:
       type: "object"
       properties:

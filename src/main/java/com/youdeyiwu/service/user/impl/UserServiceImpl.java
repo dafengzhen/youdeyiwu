@@ -448,6 +448,13 @@ public class UserServiceImpl implements UserService {
     userRepository.delete(userEntity);
   }
 
+  @Override
+  public void checkDisableRegistration(Boolean value) {
+    if (Boolean.TRUE.equals(value)) {
+      throw new CustomException(i18nTool.getMessage(""));
+    }
+  }
+
   /**
    * find user.
    *

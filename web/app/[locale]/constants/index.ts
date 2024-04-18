@@ -69,4 +69,5 @@ export const ACTION_PAGES_DATA = {
   JwtConfigs: ['Update'],
   PointConfigs: ['Update'],
   PostConfigs: ['Update Create Guide'],
+  RootConfigs: ['Update'],
 };

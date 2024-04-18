@@ -10,3 +10,7 @@ export interface IPointConfig {
   enable: boolean;
   initPoints: number;
 }
+
+export interface IRootConfig {
+  disableRegistration: boolean;
+}

@@ -2,11 +2,12 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import RegisterAction, {
   type IRegisterActionVariables,
 } from '@/app/[locale]/actions/users/register-action';
 import { useTranslations } from 'next-intl';
+import QueryDisableRegistrationRootConfigAction from '@/app/[locale]/actions/configs/root/query-disable-registration-root-config-action';
 
 export default function Username() {
   const [form, setForm] = useState({
@@ -17,6 +18,18 @@ export default function Username() {
   const [isRegister, setIsRegister] = useState(false);
   const router = useRouter();
   const t = useTranslations();
+
+  const queryDisableRegistrationRootConfigActionQuery = useQuery({
+    queryKey: ['/configs/root/disable-registration'],
+    queryFn: async (context) => {
+      const response = await QueryDisableRegistrationRootConfigAction();
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
+    },
+  });
 
   const registerActionMutation = useMutation({
     mutationFn: async (variables: IRegisterActionVariables) => {
@@ -133,15 +146,31 @@ export default function Username() {
         <div className="form-text">{t('common.passwordFromText')}</div>
       </div>
 
-      <button
-        disabled={isRegister || registerActionMutation.isPending}
-        type="submit"
-        className="btn btn-outline-primary my-4"
-      >
-        {registerActionMutation.isPending
-          ? t('common.registering')
-          : t('common.quickRegister')}
-      </button>
+      {queryDisableRegistrationRootConfigActionQuery.data ? (
+        <div>
+          <button
+            disabled={true}
+            type="submit"
+            className="btn btn-outline-danger mt-4 w-100"
+          >
+            <i className="bi bi-slash-circle me-2"></i>
+            {t('common.quickRegister')}
+          </button>
+          <div className="form-text text-danger text-center mt-2">
+            {t('common.disableRegistrationMessage')}
+          </div>
+        </div>
+      ) : (
+        <button
+          disabled={isRegister || registerActionMutation.isPending}
+          type="submit"
+          className="btn btn-outline-primary my-4"
+        >
+          {registerActionMutation.isPending
+            ? t('common.registering')
+            : t('common.quickRegister')}
+        </button>
+      )}
     </form>
   );
 }

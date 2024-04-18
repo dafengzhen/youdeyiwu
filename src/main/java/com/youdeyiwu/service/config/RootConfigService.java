@@ -10,6 +10,13 @@ import com.youdeyiwu.model.dto.config.UpdateRootConfigDto;
 public interface RootConfigService {
 
   /**
+   * query disable registration.
+   *
+   * @return Boolean
+   */
+  Boolean queryDisableRegistration();
+
+  /**
    * update.
    *
    * @param dto dto

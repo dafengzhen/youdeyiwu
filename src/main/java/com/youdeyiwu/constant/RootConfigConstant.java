@@ -16,4 +16,9 @@ public class RootConfigConstant {
    */
   public static final String SECRET = "secret";
 
+  /**
+   * disable registration.
+   */
+  public static final String DISABLE_REGISTRATION = "disableRegistration";
+
 }

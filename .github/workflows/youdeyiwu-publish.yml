@@ -7,12 +7,14 @@ on:
       - 'docs/**'
       - 'hosting/**'
       - 'web/**'
+      - 'desktop/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - 'docs/**'
       - 'hosting/**'
       - 'web/**'
+      - 'desktop/**'
   workflow_dispatch:
 
 concurrency:

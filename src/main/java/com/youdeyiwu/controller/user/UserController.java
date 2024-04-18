@@ -17,6 +17,7 @@ import com.youdeyiwu.model.vo.user.MenuEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
 import com.youdeyiwu.model.vo.user.UserRolesPermissionsVo;
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
+import com.youdeyiwu.service.config.RootConfigService;
 import com.youdeyiwu.service.user.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -47,8 +48,11 @@ public class UserController {
 
   private final UserService userService;
 
+  private final RootConfigService rootConfigService;
+
   @PostMapping(value = "/register")
   public ResponseEntity<TokenVo> register(@Valid @RequestBody RegisterDto dto) {
+    userService.checkDisableRegistration(rootConfigService.queryDisableRegistration());
     return ResponseEntity.ok(userService.register(dto));
   }
 

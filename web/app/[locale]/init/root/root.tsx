@@ -5,10 +5,11 @@ import { type ChangeEvent, type FormEvent, useContext, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
-import UpdateRootConfigAction, {
-  type IUpdateRootActionVariables,
-} from '@/app/[locale]/actions/configs/root/update-root-config-action';
+import { type IUpdateRootActionVariables } from '@/app/[locale]/actions/configs/root/update-root-config-action';
 import { useTranslations } from 'next-intl';
+import UpdateSecretRootConfigAction, {
+  IUpdateSecretRootConfigActionVariables,
+} from '@/app/[locale]/actions/configs/root/update-secret-root-config-action';
 
 export default function InitRoot({
   currentUser,
@@ -23,9 +24,9 @@ export default function InitRoot({
   const isLogin = !!currentUser;
   const t = useTranslations();
 
-  const updateRootConfigActionMutation = useMutation({
-    mutationFn: async (variables: IUpdateRootActionVariables) => {
-      const response = await UpdateRootConfigAction(variables);
+  const updateSecretRootConfigActionMutation = useMutation({
+    mutationFn: async (variables: IUpdateSecretRootConfigActionVariables) => {
+      const response = await UpdateSecretRootConfigAction(variables);
       if (response.isError) {
         throw response;
       }
@@ -58,7 +59,7 @@ export default function InitRoot({
         return;
       }
 
-      await updateRootConfigActionMutation.mutateAsync(variables);
+      await updateSecretRootConfigActionMutation.mutateAsync(variables);
       setFinish(true);
 
       const alias = `${getUserAlias(currentUser)} (ID. ${currentUser.id})`;
@@ -69,7 +70,7 @@ export default function InitRoot({
         }),
       });
     } catch (e: any) {
-      updateRootConfigActionMutation.reset();
+      updateSecretRootConfigActionMutation.reset();
       toast.current.show({
         type: 'danger',
         message: e.message,
@@ -115,7 +116,7 @@ export default function InitRoot({
                   </label>
                   <input
                     disabled={
-                      updateRootConfigActionMutation.isPending || finish
+                      updateSecretRootConfigActionMutation.isPending || finish
                     }
                     required
                     type="text"
@@ -144,11 +145,11 @@ export default function InitRoot({
                     </button>
                   ) : (
                     <button
-                      disabled={updateRootConfigActionMutation.isPending}
+                      disabled={updateSecretRootConfigActionMutation.isPending}
                       type="submit"
                       className="btn btn-primary"
                     >
-                      {updateRootConfigActionMutation.isPending
+                      {updateSecretRootConfigActionMutation.isPending
                         ? t('common.inProgress')
                         : t('common.submit')}
                     </button>

@@ -65,5 +65,23 @@ public class RootConfigServiceImpl implements RootConfigService {
             userEntity.getRoles().add(roleEntity);
           });
     }
+
+    if (Objects.nonNull(dto.disableRegistration())) {
+      configRepository.saveByTypeAndName(
+          ConfigTypeEnum.ROOT,
+          RootConfigConstant.DISABLE_REGISTRATION,
+          dto.disableRegistration().toString()
+      );
+    }
+  }
+
+  @Override
+  public Boolean queryDisableRegistration() {
+    return configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.ROOT,
+            RootConfigConstant.DISABLE_REGISTRATION
+        )
+        .map(configEntity -> Boolean.valueOf(configEntity.getValue()))
+        .orElse(false);
   }
 }

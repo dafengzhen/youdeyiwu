@@ -9,16 +9,15 @@ import {
   createSuccessResponse,
 } from '@/app/[locale]/common/response';
 
-export interface IUpdateRootActionVariables {
+export interface IUpdateSecretRootConfigActionVariables {
   secret?: string;
-  disableRegistration?: boolean;
 }
 
-export default async function UpdateRootConfigAction(
-  variables: IUpdateRootActionVariables,
+export default async function UpdateSecretRootConfigAction(
+  variables: IUpdateSecretRootConfigActionVariables,
 ) {
   try {
-    const { url } = createRequestUrl('/configs/root');
+    const { url } = createRequestUrl('/configs/root/secret');
     const response = await createRequest({
       url,
       options: {

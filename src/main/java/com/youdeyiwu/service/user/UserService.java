@@ -194,4 +194,11 @@ public interface UserService {
    * @param id id
    */
   void delete(Long id);
+
+  /**
+   * check disable registration.
+   *
+   * @param value value
+   */
+  void checkDisableRegistration(Boolean value);
 }

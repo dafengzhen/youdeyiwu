@@ -375,6 +375,9 @@
     "change": "Change",
     "changeTime": "Change Time",
     "totalPoints": "Total points",
-    "avatarFormText": "Supports uploading image files in JPG or PNG format, with a maximum size of 500KB."
+    "avatarFormText": "Supports uploading image files in JPG or PNG format, with a maximum size of 500KB.",
+    "disableRegistrationMessage": "Sorry, the current site is not open for registration.",
+    "disableRegistrationFormText": "Please select whether to enable or disable the registration function.",
+    "disableRegistration": "Disable Registration"
   }
 }

@@ -2,6 +2,7 @@ package com.youdeyiwu.repository.config;
 
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 
 /**
@@ -9,10 +10,10 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
  *
  * @author dafengzhen
  */
-public interface ConfigRepository extends JpaRepositoryImplementation<ConfigEntity, Long> {
+public interface ConfigRepository extends JpaRepositoryImplementation<ConfigEntity, Long>, CustomizedConfigRepository {
 
   /**
-   * findByName.
+   * findByTypeAndName.
    *
    * @param type type
    * @param name name
@@ -20,4 +21,12 @@ public interface ConfigRepository extends JpaRepositoryImplementation<ConfigEnti
    */
   ConfigEntity findByTypeAndName(ConfigTypeEnum type, String name);
 
+  /**
+   * findOptionalByTypeAndName.
+   *
+   * @param type type
+   * @param name name
+   * @return ConfigEntity
+   */
+  Optional<ConfigEntity> findOptionalByTypeAndName(ConfigTypeEnum type, String name);
 }
