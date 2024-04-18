@@ -1,22 +1,18 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
-import { PostService } from '../../services/post.service';
+import { NavComponent } from '@/src/app/components/home/nav/nav.component';
+import { HeaderComponent } from '@/src/app/components/home/header/header.component';
+import { FooterComponent } from '@/src/app/components/home/footer/footer.component';
+import { BodyComponent } from '@/src/app/components/home/body/body.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgOptimizedImage],
+  imports: [NavComponent, HeaderComponent, FooterComponent, BodyComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements AfterViewInit {
   @ViewChild('myDiv') myDiv: ElementRef | undefined;
-
-  constructor(private postService: PostService) {
-    this.postService.selectAll().subscribe((value) => {
-      console.log(value);
-    });
-  }
 
   ngAfterViewInit(): void {
     this.checkScrollbar();

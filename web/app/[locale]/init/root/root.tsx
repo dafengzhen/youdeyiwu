@@ -8,7 +8,7 @@ import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
 import { type IUpdateRootActionVariables } from '@/app/[locale]/actions/configs/root/update-root-config-action';
 import { useTranslations } from 'next-intl';
 import UpdateSecretRootConfigAction, {
-  IUpdateSecretRootConfigActionVariables,
+  type IUpdateSecretRootConfigActionVariables,
 } from '@/app/[locale]/actions/configs/root/update-secret-root-config-action';
 
 export default function InitRoot({
