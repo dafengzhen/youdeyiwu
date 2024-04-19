@@ -163,10 +163,10 @@ export default function RewardBox({
                 {alias}
               </Link>
             </div>
-            <time className="fw-normal small">
+            <div className="fw-normal small">
               If you find my articles helpful, please feel free to reward/tip
               me. Your support will encourage me to continue creating!
-            </time>
+            </div>
           </div>
         </div>
 

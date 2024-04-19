@@ -13,4 +13,7 @@ export interface IPointConfig {
 
 export interface IRootConfig {
   disableRegistration: boolean;
+  disableAnonymousPosts: boolean;
+  disableAnonymousComments: boolean;
+  disableAnonymousReplies: boolean;
 }

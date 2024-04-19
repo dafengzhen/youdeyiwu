@@ -13,6 +13,11 @@ import com.youdeyiwu.model.vo.forum.CommentEntityVo;
 public interface CommentService {
 
   /**
+   * check disable anonymous comments.
+   */
+  void checkDisableAnonymousComments();
+
+  /**
    * create.
    *
    * @param dto dto

@@ -4,7 +4,7 @@ import type { IComment } from '@/app/[locale]/interfaces/comments';
 import type { IReply } from '@/app/[locale]/interfaces/replies';
 import { type ChangeEvent, useContext, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CreateReplyAction, {
   type ICreateReplyActionVariables,
 } from '@/app/[locale]/actions/replies/create-reply-action';
@@ -12,6 +12,8 @@ import { getUserAlias, trimObjectStrings } from '@/app/[locale]/common/client';
 import { sanitizeHtmlContent } from '@/app/[locale]/common/editor';
 import { useTranslations } from 'next-intl';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
+import QueryRootConfigAction from '@/app/[locale]/actions/configs/root/query-root-config-action';
+import { PostIdContext } from '@/app/[locale]/contexts/postid';
 
 export default function ReplyBox({
   details,
@@ -33,6 +35,22 @@ export default function ReplyBox({
   const t = useTranslations();
   const pointsAlert = usePointsAlert();
   const queryClient = useQueryClient();
+  const { currentUser } = useContext(PostIdContext);
+
+  const queryRootConfigActionQuery = useQuery({
+    queryKey: ['/configs/root', 'disableAnonymous'],
+    queryFn: async () => {
+      const response = await QueryRootConfigAction({
+        disableAnonymous: true,
+      });
+
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
+    },
+  });
 
   const createReplyActionMutation = useMutation({
     mutationFn: async (variables: ICreateReplyActionVariables) => {
@@ -122,7 +140,15 @@ export default function ReplyBox({
             className="form-control mt-2"
             rows={4}
           ></textarea>
-          <div className="form-text">{t('common.rulesForReplying')}</div>
+
+          {queryRootConfigActionQuery.data?.disableAnonymousReplies &&
+          !currentUser ? (
+            <div className="form-text text-danger">
+              {t('common.disableAnonymousRepliesMessage')}
+            </div>
+          ) : (
+            <div className="form-text">{t('common.rulesForReplying')}</div>
+          )}
         </div>
         <div className="d-flex justify-content-end gap-2">
           <div className="d-flex gap-2">
@@ -132,22 +158,34 @@ export default function ReplyBox({
               className="btn btn-link link-secondary text-decoration-none"
               type="button"
             >
-              <span className="">{t('common.cancel')}</span>
+              <span>{t('common.cancel')}</span>
             </button>
 
-            <button
-              disabled={createReplyActionMutation.isPending}
-              onClick={onClickSendReply}
-              className="btn btn-success rounded-pill"
-              type="button"
-            >
-              <i className="bi bi-send-check me-2"></i>
-              <span>
-                {createReplyActionMutation.isPending
-                  ? t('common.replying')
-                  : t('common.sendReply')}
-              </span>
-            </button>
+            {queryRootConfigActionQuery.data?.disableAnonymousReplies &&
+            !currentUser ? (
+              <button
+                disabled
+                className="btn btn-success rounded-pill"
+                type="button"
+              >
+                <i className="bi bi-send-check me-2"></i>
+                <span>{t('common.sendReply')}</span>
+              </button>
+            ) : (
+              <button
+                disabled={createReplyActionMutation.isPending}
+                onClick={onClickSendReply}
+                className="btn btn-success rounded-pill"
+                type="button"
+              >
+                <i className="bi bi-send-check me-2"></i>
+                <span>
+                  {createReplyActionMutation.isPending
+                    ? t('common.replying')
+                    : t('common.sendReply')}
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>

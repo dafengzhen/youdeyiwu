@@ -21,4 +21,19 @@ public class RootConfigConstant {
    */
   public static final String DISABLE_REGISTRATION = "disableRegistration";
 
+  /**
+   * disable anonymous posts.
+   */
+  public static final String DISABLE_ANONYMOUS_POSTS = "disableAnonymousPosts";
+
+  /**
+   * disable anonymous comments.
+   */
+  public static final String DISABLE_ANONYMOUS_COMMENTS = "disableAnonymousComments";
+
+  /**
+   * disable anonymous replies.
+   */
+  public static final String DISABLE_ANONYMOUS_REPLIES = "disableAnonymousReplies";
+
 }

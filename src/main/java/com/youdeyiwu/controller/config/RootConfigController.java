@@ -2,6 +2,7 @@ package com.youdeyiwu.controller.config;
 
 import com.youdeyiwu.model.dto.config.UpdateRootConfigDto;
 import com.youdeyiwu.model.dto.config.UpdateSecretRootConfigDto;
+import com.youdeyiwu.model.vo.config.RootConfigVo;
 import com.youdeyiwu.service.config.RootConfigService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,9 +31,17 @@ public class RootConfigController {
     return ResponseEntity.ok(rootConfigService.queryDisableRegistration());
   }
 
+  @GetMapping
+  public ResponseEntity<RootConfigVo> query(
+      @RequestParam(required = false) Boolean disableRegistration,
+      @RequestParam(required = false) Boolean disableAnonymous
+  ) {
+    return ResponseEntity.ok(rootConfigService.query(disableRegistration, disableAnonymous));
+  }
+
   @PutMapping(value = "/secret")
   public ResponseEntity<Void> update(@Valid @RequestBody UpdateSecretRootConfigDto dto) {
-    rootConfigService.update(new UpdateRootConfigDto(dto.secret(), null));
+    rootConfigService.update(new UpdateRootConfigDto(dto.secret(), null, null, null, null));
     return ResponseEntity.noContent().build();
   }
 

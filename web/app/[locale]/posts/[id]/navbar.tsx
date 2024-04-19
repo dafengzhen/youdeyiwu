@@ -72,7 +72,10 @@ export default function Navbar({ details }: { details: IPostDetails }) {
                     {alias}
                   </Link>
                 </div>
-                <time className="fw-normal text-body-secondary">
+                <time
+                  dateTime={details.createdOn}
+                  className="fw-normal text-body-secondary"
+                >
                   {fromNow(details.createdOn)}
                 </time>
               </div>

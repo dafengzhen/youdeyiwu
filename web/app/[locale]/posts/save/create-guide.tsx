@@ -1,7 +1,20 @@
 import { useTranslations } from 'next-intl';
+import useLocalStorageState from 'use-local-storage-state';
+
+const openPostCreateGuideKey = '_youdeyiwu_post_create_guide_open';
 
 export default function CreateGuide({ data }: { data?: string }) {
   const t = useTranslations();
+  const [openPostCreateGuide, setOpenPostCreateGuide] = useLocalStorageState(
+    openPostCreateGuideKey,
+    {
+      defaultValue: true,
+    },
+  );
+
+  function onClick() {
+    setOpenPostCreateGuide(!openPostCreateGuide);
+  }
 
   return (
     data && (
@@ -11,6 +24,7 @@ export default function CreateGuide({ data }: { data?: string }) {
             <button
               className="accordion-button"
               type="button"
+              onClick={onClick}
               data-bs-toggle="collapse"
               data-bs-target="#yw-collapse-post-create-guide"
               aria-expanded="true"

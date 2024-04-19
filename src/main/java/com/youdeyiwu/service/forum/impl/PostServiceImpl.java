@@ -5,6 +5,8 @@ import static com.youdeyiwu.tool.Tool.getFileType;
 import static com.youdeyiwu.tool.Tool.isValidImageFile;
 
 import com.google.common.net.InetAddresses;
+import com.youdeyiwu.constant.RootConfigConstant;
+import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.enums.file.FileTypeEnum;
 import com.youdeyiwu.enums.forum.PostReviewStateEnum;
 import com.youdeyiwu.enums.forum.PostStateEnum;
@@ -51,6 +53,7 @@ import com.youdeyiwu.model.vo.forum.PostEntityVo;
 import com.youdeyiwu.model.vo.forum.PostUserEntityVo;
 import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 import com.youdeyiwu.model.vo.forum.SectionEntityVo;
+import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostFavoriteRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.forum.SectionGroupRepository;
@@ -119,6 +122,22 @@ public class PostServiceImpl implements PostService {
   private final I18nTool i18nTool;
 
   private final PostFavoriteRepository postFavoriteRepository;
+
+  private final ConfigRepository configRepository;
+
+  @Override
+  public void checkDisableAnonymousPosts() {
+    Boolean disableAnonymousPosts = configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.ROOT,
+            RootConfigConstant.DISABLE_ANONYMOUS_POSTS
+        )
+        .map(configEntity -> Boolean.valueOf(configEntity.getValue()))
+        .orElse(false);
+
+    if (Boolean.TRUE.equals(disableAnonymousPosts) && securityService.isAnonymous()) {
+      throw new CustomException(i18nTool.getMessage("config.root.disableAnonymousPosts"));
+    }
+  }
 
   @Transactional
   @Override

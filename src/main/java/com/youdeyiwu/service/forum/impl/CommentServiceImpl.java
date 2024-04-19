@@ -3,6 +3,8 @@ package com.youdeyiwu.service.forum.impl;
 import static com.youdeyiwu.tool.Tool.cleanBasicContent;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
+import com.youdeyiwu.constant.RootConfigConstant;
+import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.exception.CommentNotFoundException;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PostNotFoundException;
@@ -17,6 +19,7 @@ import com.youdeyiwu.model.entity.forum.PostHistoryEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.model.vo.forum.CommentEntityVo;
+import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.CommentRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.user.UserRepository;
@@ -51,6 +54,22 @@ public class CommentServiceImpl implements CommentService {
   private final SecurityService securityService;
 
   private final I18nTool i18nTool;
+
+  private final ConfigRepository configRepository;
+
+  @Override
+  public void checkDisableAnonymousComments() {
+    Boolean disableAnonymousComments = configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.ROOT,
+            RootConfigConstant.DISABLE_ANONYMOUS_COMMENTS
+        )
+        .map(configEntity -> Boolean.valueOf(configEntity.getValue()))
+        .orElse(false);
+
+    if (Boolean.TRUE.equals(disableAnonymousComments) && securityService.isAnonymous()) {
+      throw new CustomException(i18nTool.getMessage("config.root.disableAnonymousComments"));
+    }
+  }
 
   @Transactional
   @Override

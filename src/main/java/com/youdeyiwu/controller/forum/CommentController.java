@@ -28,8 +28,15 @@ public class CommentController {
 
   private final CommentService commentService;
 
+  /**
+   * create.
+   *
+   * @param dto dto
+   * @return ResponseEntity
+   */
   @PostMapping
   public ResponseEntity<Void> create(@Valid @RequestBody CreateCommentDto dto) {
+    commentService.checkDisableAnonymousComments();
     return ResponseEntity.created(URI.create("/comments/" + commentService.create(dto).getId()))
         .build();
   }

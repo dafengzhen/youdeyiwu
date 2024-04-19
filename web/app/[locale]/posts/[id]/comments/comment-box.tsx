@@ -7,7 +7,7 @@ import {
   isHttpOrHttps,
   trimObjectStrings,
 } from '@/app/[locale]/common/client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import CreateCommentAction, {
   type ICreateCommentActionVariables,
 } from '@/app/[locale]/actions/comments/create-comment-action';
@@ -16,6 +16,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
+import QueryRootConfigAction from '@/app/[locale]/actions/configs/root/query-root-config-action';
 
 export default function CommentBox({ details }: { details: IPostDetails }) {
   const { toast } = useContext(GlobalContext);
@@ -60,6 +61,21 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
       acronymsTitle = t('common.thisUserIsTheAuthorOfThisArticle');
     }
   }
+
+  const queryRootConfigActionQuery = useQuery({
+    queryKey: ['/configs/root', 'disableAnonymous'],
+    queryFn: async () => {
+      const response = await QueryRootConfigAction({
+        disableAnonymous: true,
+      });
+
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
+    },
+  });
 
   const createCommentActionMutation = useMutation({
     mutationFn: async (variables: ICreateCommentActionVariables) => {
@@ -171,7 +187,15 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                 className="form-control mt-2"
                 rows={4}
               ></textarea>
-              <div className="form-text">{t('common.rulesForReplying')}</div>
+
+              {queryRootConfigActionQuery.data?.disableAnonymousComments &&
+              !currentUser ? (
+                <div className="form-text text-danger">
+                  {t('common.disableAnonymousCommentsMessage')}
+                </div>
+              ) : (
+                <div className="form-text">{t('common.rulesForReplying')}</div>
+              )}
             </div>
             <div className="d-flex justify-content-end gap-2">
               <div className="d-flex gap-2">
@@ -184,19 +208,31 @@ export default function CommentBox({ details }: { details: IPostDetails }) {
                   <span className="">{t('common.cancel')}</span>
                 </button>
 
-                <button
-                  disabled={createCommentActionMutation.isPending}
-                  onClick={onClickSendReply}
-                  className="btn btn-success rounded-pill"
-                  type="button"
-                >
-                  <i className="bi bi-send-check me-2"></i>
-                  <span className="">
-                    {createCommentActionMutation.isPending
-                      ? t('common.replying')
-                      : t('common.sendReply')}
-                  </span>
-                </button>
+                {queryRootConfigActionQuery.data?.disableAnonymousComments &&
+                !currentUser ? (
+                  <button
+                    disabled
+                    className="btn btn-success rounded-pill"
+                    type="button"
+                  >
+                    <i className="bi bi-send-check me-2"></i>
+                    <span>{t('common.sendReply')}</span>
+                  </button>
+                ) : (
+                  <button
+                    disabled={createCommentActionMutation.isPending}
+                    onClick={onClickSendReply}
+                    className="btn btn-success rounded-pill"
+                    type="button"
+                  >
+                    <i className="bi bi-send-check me-2"></i>
+                    <span>
+                      {createCommentActionMutation.isPending
+                        ? t('common.replying')
+                        : t('common.sendReply')}
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

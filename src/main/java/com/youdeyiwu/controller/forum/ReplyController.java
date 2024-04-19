@@ -28,8 +28,15 @@ public class ReplyController {
 
   private final ReplyService replyService;
 
+  /**
+   * create.
+   *
+   * @param dto dto
+   * @return ResponseEntity
+   */
   @PostMapping
   public ResponseEntity<Void> create(@Valid @RequestBody CreateReplyDto dto) {
+    replyService.checkDisableAnonymousReplies();
     return ResponseEntity.created(URI.create("/replies/" + replyService.create(dto).getId()))
         .build();
   }

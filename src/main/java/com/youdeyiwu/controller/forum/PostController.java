@@ -49,8 +49,15 @@ public class PostController {
 
   private final PostService postService;
 
+  /**
+   * create.
+   *
+   * @param dto dto
+   * @return ResponseEntity
+   */
   @PostMapping
   public ResponseEntity<Void> create(@Valid @RequestBody CreatePostDto dto) {
+    postService.checkDisableAnonymousPosts();
     return ResponseEntity.created(URI.create("/posts/" + postService.create(dto).getId()))
         .build();
   }

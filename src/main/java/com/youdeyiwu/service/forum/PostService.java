@@ -26,6 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 public interface PostService {
 
   /**
+   * check disable anonymous posts.
+   */
+  void checkDisableAnonymousPosts();
+
+  /**
    * create.
    *
    * @param dto dto

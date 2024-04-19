@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import PublishPostAction, {
   type IPublishPostActionVariables,
 } from '@/app/[locale]/actions/posts/publish-post-action';
@@ -34,6 +34,7 @@ import usePointsAlert from '@/app/[locale]/hooks/use-points-alert ';
 import CreateGuide from '@/app/[locale]/posts/save/create-guide';
 import type { IUser } from '@/app/[locale]/interfaces/users';
 import TemporaryStorage from '@/app/[locale]/posts/save/temporary-storage';
+import QueryRootConfigAction from '@/app/[locale]/actions/configs/root/query-root-config-action';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
@@ -96,6 +97,22 @@ export default function Save({
   const pointsAlert = usePointsAlert();
   const [createGuideData, setCreateGuideData] = useState(createGuide);
   const [isPreview, setIsPreview] = useState(false);
+
+  const queryRootConfigActionQuery = useQuery({
+    queryKey: ['/configs/root', 'disableAnonymous'],
+    queryFn: async () => {
+      const response = await QueryRootConfigAction({
+        disableAnonymous: true,
+      });
+
+      if (response.isError) {
+        throw response;
+      }
+
+      return response.data;
+    },
+    enabled: !isEdit,
+  });
 
   const publishPostActionMutation = useMutation({
     mutationFn: async (variables: {
@@ -379,26 +396,44 @@ export default function Save({
                     </div>
                   </div>
                   <div className="d-flex align-items-center flex-wrap gap-2">
-                    <button
-                      disabled={first || publishPostActionMutation.isPending}
-                      onClick={onSubmit}
-                      type="button"
-                      className="btn btn-success"
-                    >
-                      {isEdit ? (
-                        <>
-                          {publishPostActionMutation.isPending
-                            ? t('common.updating')
-                            : t('common.update')}
-                        </>
-                      ) : (
-                        <>
-                          {publishPostActionMutation.isPending
-                            ? t('common.publishing')
-                            : t('common.publish')}
-                        </>
-                      )}
-                    </button>
+                    {queryRootConfigActionQuery.data?.disableAnonymousPosts &&
+                    !currentUser ? (
+                      <div className="d-flex align-items-center gap-2">
+                        <div className="form-text text-danger">
+                          {t('common.disableAnonymousPostsMessage')}
+                        </div>
+
+                        <button
+                          disabled
+                          type="button"
+                          className="btn btn-success"
+                        >
+                          {t('common.publish')}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        disabled={first || publishPostActionMutation.isPending}
+                        onClick={onSubmit}
+                        type="button"
+                        className="btn btn-success"
+                      >
+                        {isEdit ? (
+                          <>
+                            {publishPostActionMutation.isPending
+                              ? t('common.updating')
+                              : t('common.update')}
+                          </>
+                        ) : (
+                          <>
+                            {publishPostActionMutation.isPending
+                              ? t('common.publishing')
+                              : t('common.publish')}
+                          </>
+                        )}
+                      </button>
+                    )}
+
                     <button
                       disabled={publishPostActionMutation.isPending}
                       onClick={onClickReturn}

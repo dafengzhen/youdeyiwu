@@ -13,6 +13,11 @@ import com.youdeyiwu.model.vo.forum.QuoteReplyEntityVo;
 public interface ReplyService {
 
   /**
+   * check disable anonymous replies.
+   */
+  void checkDisableAnonymousReplies();
+
+  /**
    * create.
    *
    * @param dto dto

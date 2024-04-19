@@ -1697,6 +1697,29 @@ paths:
                 $ref: '#/components/schemas/Void'
       tags:
         - configs
+    get:
+      summary: "GET configs/root"
+      operationId: "query"
+      parameters:
+        - name: "disableRegistration"
+          in: "query"
+          required: false
+          schema:
+            type: "boolean"
+        - name: "disableAnonymous"
+          in: "query"
+          required: false
+          schema:
+            type: "boolean"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RootConfigVo"
+      tags:
+        - configs
   /configs/root/disable-registration:
     get:
       summary: "GET configs/root/disable-registration"
@@ -5582,6 +5605,17 @@ components:
       properties:
         secret:
           type: "string"
+    RootConfigVo:
+      type: "object"
+      properties:
+        disableRegistration:
+          type: "boolean"
+        disableAnonymousPosts:
+          type: "boolean"
+        disableAnonymousComments:
+          type: "boolean"
+        disableAnonymousReplies:
+          type: "boolean"
     PageableVo:
       type: "object"
       properties:

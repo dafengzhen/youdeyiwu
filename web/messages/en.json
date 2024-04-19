@@ -378,6 +378,12 @@
     "avatarFormText": "Supports uploading image files in JPG or PNG format, with a maximum size of 500KB.",
     "disableRegistrationMessage": "Sorry, the current site is not open for registration.",
     "disableRegistrationFormText": "Please select whether to enable or disable the registration function.",
-    "disableRegistration": "Disable Registration"
+    "disableRegistration": "Disable Registration",
+    "disableAnonymousPosts": "Disable Anonymous Posts",
+    "disableAnonymousComments": "Disable Anonymous Comments",
+    "disableAnonymousReplies": "Disable Anonymous Replies",
+    "disableAnonymousPostsMessage": "Sorry, the current site does not allow anonymous article creation.",
+    "disableAnonymousCommentsMessage": "Sorry, the current site does not allow anonymous comment creation.",
+    "disableAnonymousRepliesMessage": "Sorry, the current site does not allow anonymous reply creation."
   }
 }
