@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
+        <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.youdeyiwu</groupId>
@@ -81,12 +81,12 @@
         <dependency>
             <groupId>com.bucket4j</groupId>
             <artifactId>bucket4j-core</artifactId>
-            <version>8.10.0</version>
+            <version>8.10.1</version>
         </dependency>
         <dependency>
             <groupId>com.bucket4j</groupId>
             <artifactId>bucket4j-caffeine</artifactId>
-            <version>8.10.0</version>
+            <version>8.10.1</version>
         </dependency>
 
         <!-- https://github.com/mapstruct/mapstruct#maven -->
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.11.0</version>
+            <version>1.12.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
