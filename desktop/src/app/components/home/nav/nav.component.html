@@ -1,7 +1,14 @@
 <button
   type="button"
-  class="btn btn-outline-secondary border-0 shadow shadow-hover d-flex align-items-center rounded-3 p-4 gap-4 text-truncate w-100"
+  class="btn btn-secondary shadow shadow-hover d-flex align-items-center rounded-3 p-3 gap-4 text-truncate w-100"
+  [class.active]="name === currentName"
+  (click)="onClick()"
 >
-  <div><i class="bi bi-tags fs-4"></i></div>
-  <div class="">{{ name }}</div>
+  <div>
+    <i
+      class="bi fs-4"
+      [class]="[name === currentName ? 'bi-tags-fill' : 'bi-tags']"
+    ></i>
+  </div>
+  <div>{{ name }}</div>
 </button>

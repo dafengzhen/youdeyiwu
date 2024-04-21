@@ -1,21 +1,58 @@
 <div class="mt-2 d-flex align-items-center justify-content-between">
-  <nav aria-label="Page navigation example">
-    <ul class="pagination mb-0">
-      <li class="page-item">
-        <a class="page-link rounded-start-pill border-end-0" href="#">
-          <i class="bi bi-chevron-left"></i>
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link border-start-0 border-end-0" href="#">1</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link rounded-end-pill border-start-0" href="#">
-          <i class="bi bi-chevron-right"></i>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  @if (showPageable) {
+    @if (pageable) {
+      <nav aria-label="Page navigation items">
+        <ul class="pagination mb-0">
+          @if (showBackBtn) {
+            <li class="page-item">
+              <a
+                class="page-link rounded-start-pill border-end-0"
+                href=""
+                (click)="onClickBackBtn($event)"
+              >
+                <i class="bi bi-chevron-double-left"></i>
+              </a>
+            </li>
+          }
+
+          <li class="page-item">
+            <a
+              class="page-link border-end-0"
+              [class.rounded-start-pill]="!showBackBtn"
+              [class.disabled]="!pageable.previous"
+              href=""
+              (click)="onClickPreviousPage($event)"
+            >
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+          <li class="page-item">
+            <a
+              class="page-link border-start-0 border-end-0"
+              href=""
+              (click)="onClickPage($event)"
+              >{{ pageable.page + 1 }}</a
+            >
+          </li>
+          <li class="page-item">
+            <a
+              class="page-link rounded-end-pill border-start-0"
+              [class.disabled]="!pageable.next"
+              href=""
+              (click)="onClickNextPage($event)"
+            >
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    } @else {
+      <nav></nav>
+    }
+  } @else {
+    <nav></nav>
+  }
+
   <div class="dropup align-self-center">
     <button
       class="btn btn-outline-secondary border-0"
@@ -27,9 +64,9 @@
     </button>
 
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="#">Action</a></li>
-      <li><a class="dropdown-item" href="#">Action two</a></li>
-      <li><a class="dropdown-item" href="#">Action three</a></li>
+      <li><a class="dropdown-item" href="">Action</a></li>
+      <li><a class="dropdown-item" href="">Action two</a></li>
+      <li><a class="dropdown-item" href="">Action three</a></li>
     </ul>
   </div>
 </div>

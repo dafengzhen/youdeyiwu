@@ -2,36 +2,78 @@
   <div class="d-flex flex-column gap-4">
     <div class="row mb-4">
       <div class="col">
-        <app-home-nav name="Content Groups"></app-home-nav>
+        <app-home-nav
+          name="Content Groups"
+          [currentName]="currentNavName"
+          (clickEvent)="onClickNav('Content Groups')"
+        ></app-home-nav>
       </div>
       <div class="col">
-        <app-home-nav name="Contents"></app-home-nav>
+        <app-home-nav
+          name="Contents"
+          [currentName]="currentNavName"
+          (clickEvent)="onClickNav('Contents')"
+        ></app-home-nav>
       </div>
       <div class="col">
-        <app-home-nav name="Tag Groups"></app-home-nav>
+        <app-home-nav
+          name="Tag Groups"
+          [currentName]="currentNavName"
+          (clickEvent)="onClickNav('Tag Groups')"
+        ></app-home-nav>
       </div>
       <div class="col">
-        <app-home-nav name="Tags"></app-home-nav>
+        <app-home-nav
+          name="Tags"
+          [currentName]="currentNavName"
+          (clickEvent)="onClickNav('Tags')"
+        ></app-home-nav>
       </div>
       <div class="col">
-        <app-home-nav name="Posts"></app-home-nav>
+        <app-home-nav
+          name="Articles"
+          [currentName]="currentNavName"
+          (clickEvent)="onClickNav('Articles')"
+        ></app-home-nav>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <app-home-header></app-home-header>
+        @switch (currentNavName) {
+          @case ("Tags") {
+            <app-home-tags-header></app-home-tags-header>
+          }
+          @default {
+            <app-home-posts-header></app-home-posts-header>
+          }
+        }
       </div>
     </div>
     <div class="row overflow-y-auto yw-home" style="max-height: 60vh" #myDiv>
       <div class="col">
-        <div class="d-flex flex-column gap-2">
-          <app-home-body></app-home-body>
-        </div>
+        @switch (currentNavName) {
+          @case ("Tags") {
+            <app-home-tags (itemEvent)="onClickTags($event)"></app-home-tags>
+          }
+          @default {
+            <app-home-posts
+              [params]="postsParams"
+              (pageableEvent)="onPageablePosts($event)"
+              class="d-flex flex-column gap-2"
+            ></app-home-posts>
+          }
+        }
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <app-home-footer></app-home-footer>
+        <app-home-footer
+          [showPageable]="showPageable"
+          [showBackBtn]="showBackBtn"
+          [pageable]="pageable"
+          (pageEvent)="onPage($event)"
+          (backBtnEvent)="onBackBtn()"
+        ></app-home-footer>
       </div>
     </div>
   </div>

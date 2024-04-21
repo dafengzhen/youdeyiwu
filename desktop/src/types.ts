@@ -1,3 +1,5 @@
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
+
 export type TPermissionMethod =
   | 'GET'
   | 'POST'
@@ -10,7 +12,7 @@ export type TPermissionMethod =
 
 export type TPermissionType = 'ANT' | 'REGEX';
 
-export type IPostState =
+export type TPostState =
   | 'SHOW'
   | 'HIDE'
   | 'LOCK'
@@ -18,15 +20,15 @@ export type IPostState =
   | 'BLOCK'
   | 'VISIBLE_AFTER_LOGIN';
 
-export type IPostReviewState = 'APPROVED' | 'REJECTED' | 'PENDING_REVIEW';
+export type TPostReviewState = 'APPROVED' | 'REJECTED' | 'PENDING_REVIEW';
 
-export type IPostSortState =
+export type TPostSortState =
   | 'DEFAULT'
   | 'POPULAR'
   | 'CURRENT_TOP'
   | 'GLOBAL_TOP';
 
-export type ISectionState =
+export type TSectionState =
   | 'SHOW'
   | 'HIDE'
   | 'LOCK'
@@ -34,7 +36,29 @@ export type ISectionState =
   | 'BLOCK'
   | 'VISIBLE_AFTER_LOGIN';
 
+export type TQueryParams =
+  | HttpParams
+  | {
+      [param: string]:
+        | string
+        | number
+        | boolean
+        | ReadonlyArray<string | number | boolean>;
+    };
+
 // ================================================================================================
+
+export interface IApiError {
+  message: string;
+  status: number;
+  error?: string;
+  path?: string;
+  timestamp?: string;
+}
+
+export interface IError extends HttpErrorResponse {
+  error: IApiError;
+}
 
 export interface IPageable {
   page: number;
@@ -83,6 +107,35 @@ export interface IUser extends IBase {
   sections: ISection[];
 }
 
+export interface IUserDetails extends IBase {
+  alias?: string;
+  avatar?: string;
+  oneSentence?: string;
+  username: string;
+  email?: string;
+  lastLoginTime: string;
+  root?: boolean;
+  accountNonExpired: boolean;
+  credentialsNonExpired: boolean;
+  accountNonLocked: boolean;
+  enabled: boolean;
+  roles: IRole[];
+  posts: IPost[];
+  favorites?: IPostFavorite[];
+  relatedSections?: ISection[];
+  relatedTags?: ITag[];
+  relatedStatistics?: IUserStatistics;
+}
+
+export interface IUserStatistics {
+  sections?: number;
+  tags?: number;
+  posts?: number;
+  comments?: number;
+  replies?: number;
+  views?: number;
+}
+
 export interface IRole extends IBase {
   name: string;
   overview?: string;
@@ -123,7 +176,7 @@ export interface ISection extends IBase {
   content?: string;
   createPostGuide?: string;
   sort: number;
-  states: ISectionState[];
+  states: TSectionState[];
   admins: IUser[];
   allows: IUser[];
   blocks: IUser[];
@@ -145,11 +198,11 @@ export interface IPost extends IBase {
   overview?: string;
   content?: string;
   contentLink?: string;
-  states: IPostState[];
+  states: TPostState[];
   badges: [];
   images: [];
-  reviewState: IPostReviewState;
-  sortState: IPostSortState;
+  reviewState: TPostReviewState;
+  sortState: TPostSortState;
   allows: IUser[];
   blocks: IUser[];
   pageViews: number;
@@ -172,4 +225,12 @@ export interface IPostReviewQueue extends IBase {
   latestReviewResultTime?: string;
   receiver: IUser;
   post?: IPost;
+}
+
+export interface IPostFavorite extends IBase {
+  name: string;
+  overview?: string;
+  content?: string;
+  contentLink?: string;
+  postId: number;
 }

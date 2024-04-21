@@ -1,0 +1,17 @@
+@if (avatar) {
+  <img
+    [ngSrc]="avatar"
+    alt="avatar"
+    class="rounded-circle w-40-px h-40-px"
+    height="460"
+    width="460"
+  />
+} @else {
+  <img
+    ngSrc="assets/images/avatar.png"
+    alt="avatar"
+    class="rounded-circle w-40-px h-40-px"
+    height="460"
+    width="460"
+  />
+}

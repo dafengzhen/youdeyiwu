@@ -1,0 +1,82 @@
+@if (postsQuery.isSuccess()){
+  @for (item of postsQuery.data(); track item.id) {
+    <div class="row">
+      <div class="col">
+        <div class="card border-0 shadow-sm-hover">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-6">
+                <app-post-link [post]="item"></app-post-link>
+              </div>
+              <div class="col-3 text-truncate">{{ item.overview }}</div>
+              <div class="col-2">
+                <app-user-link [user]="item.user"></app-user-link>
+                <span>&nbsp;/&nbsp;</span>
+                <app-date-time [time]="item.createdOn"></app-date-time>
+              </div>
+              <div class="col-1">
+                @if ((item.user | userAlias) === "Anonymous") {
+                  <span class="badge text-bg-secondary">Anon</span>
+                } @else {
+                  <app-user-avatar
+                    [avatar]="item.user?.avatar"
+                  ></app-user-avatar>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <div class="row">
+      <div class="col">
+        <div class="card border-0 shadow-sm-hover">
+          <div class="card-body">
+            <div class="alert alert-info d-flex align-items-center fade show" role="alert">
+              <i class="bi bi-info-circle-fill me-2"></i>
+              <div>No Data</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}@else if (postsQuery.isPending()) {
+  <div class="row">
+    <div class="col">
+      <div class="card border-0 shadow-sm-hover">
+        <div class="card-body">
+          <div class="row align-items-center placeholder-wave">
+            <div class="col-6">
+              <span class="placeholder col-6 rounded"></span>
+            </div>
+            <div class="col-3 text-truncate">
+              <span class="placeholder col-3 rounded"></span>
+            </div>
+            <div class="col-2">
+              <span class="placeholder col-2 rounded"></span>
+            </div>
+            <div class="col-1">
+              <span class="placeholder col-1 rounded"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else if (postsQuery.isError()) {
+  <div class="row">
+    <div class="col">
+      <div class="card border-0 shadow-sm-hover">
+        <div class="card-body">
+          <div class="alert alert-danger d-flex align-items-center fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>{{postsQuery.error().error.message}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+

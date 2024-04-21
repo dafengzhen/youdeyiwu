@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-home-nav',
@@ -9,4 +9,11 @@ import { Component, Input } from '@angular/core';
 })
 export class NavComponent {
   @Input() name: string | undefined;
+  @Input() currentName: string | undefined;
+
+  @Output() clickEvent = new EventEmitter();
+
+  onClick() {
+    this.clickEvent.emit();
+  }
 }
