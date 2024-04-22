@@ -87,6 +87,21 @@
     "directories": {
       "buildResources": "src/assets/images/icons",
       "output": "out"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
