@@ -1,12 +1,5 @@
-const logger = require("electron-log");
 const path = require("path");
 const { app, BrowserWindow } = require("electron");
-const { updateElectronApp } = require("update-electron-app");
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require("electron-squirrel-startup")) {
-  app.quit();
-}
 
 const createWindow = () => {
   // Create the browser window.
@@ -43,7 +36,7 @@ app.whenReady().then(() => {
   createWindow();
 
   // On OS X it's common to re-create a window in the app when the
-  // dock icons is clicked and there are no other windows open.
+  // dock icon is clicked and there are no other windows open.
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -59,13 +52,6 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
-// Update electron app
-if (process.env.NODE_ENV !== "development") {
-  updateElectronApp({
-    logger,
-  });
-}
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

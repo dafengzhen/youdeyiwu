@@ -6,7 +6,5 @@ README.md
 .next
 .git
 editor
-.eslintrc.json
 .gitignore
 update.sh
-.prettierrc.json
