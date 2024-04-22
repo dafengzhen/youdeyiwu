@@ -9,7 +9,6 @@ import {
   getUserAlias,
   isHttpOrHttps,
 } from '@/app/[locale]/common/client';
-import Nodata from '@/app/[locale]/common/nodata';
 import Content from '@/app/[locale]/components/content/content';
 import { useTranslations } from 'next-intl';
 
@@ -82,46 +81,49 @@ export default function Navbar({ details }: { details: IPostDetails }) {
             </div>
           </div>
         </div>
-        <div className="card-body d-flex flex-column gap-3 py-2">
-          <div
-            className="mt-2 overflow-hidden position-relative"
-            style={{
-              height:
-                continueReading || content.length < 600 ? 'auto' : '12rem',
-            }}
-          >
-            {content ? <Content html={content} /> : <Nodata />}
 
-            {content.length >= 600 && (
-              <>
-                <div style={{ height: '3.75rem' }}></div>
-                <div
-                  onClick={onClickContinueReading}
-                  className={clsx(
-                    'w-100 position-absolute bottom-0 start-0 cursor-pointer',
-                    continueReading
-                      ? 'animate__animated animate__faster animate__fadeOut'
-                      : 'animate__animated animate__faster animate__fadeInUp',
-                  )}
-                  style={{
-                    height: '8rem',
-                    background:
-                      'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--bs-body-bg) 95%)',
-                  }}
-                ></div>
-                <button
-                  onClick={onClickContinueReading}
-                  type="button"
-                  className="btn rounded-pill btn-outline-secondary position-absolute bottom-0"
-                >
-                  {continueReading
-                    ? t('common.collapse')
-                    : t('common.expandTheArticle')}
-                </button>
-              </>
-            )}
+        {content && (
+          <div className="card-body d-flex flex-column gap-3 py-2">
+            <div
+              className="mt-2 overflow-hidden position-relative"
+              style={{
+                height:
+                  continueReading || content.length < 600 ? 'auto' : '12rem',
+              }}
+            >
+              <Content html={content} />
+
+              {content.length >= 600 && (
+                <>
+                  <div style={{ height: '3.75rem' }}></div>
+                  <div
+                    onClick={onClickContinueReading}
+                    className={clsx(
+                      'w-100 position-absolute bottom-0 start-0 cursor-pointer',
+                      continueReading
+                        ? 'animate__animated animate__faster animate__fadeOut'
+                        : 'animate__animated animate__faster animate__fadeInUp',
+                    )}
+                    style={{
+                      height: '8rem',
+                      background:
+                        'linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--bs-body-bg) 95%)',
+                    }}
+                  ></div>
+                  <button
+                    onClick={onClickContinueReading}
+                    type="button"
+                    className="btn rounded-pill btn-outline-secondary position-absolute bottom-0"
+                  >
+                    {continueReading
+                      ? t('common.collapse')
+                      : t('common.expandTheArticle')}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
