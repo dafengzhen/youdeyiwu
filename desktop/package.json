@@ -14,9 +14,9 @@
     "dev": "concurrently npm:start npm:electron --kill-others",
     "build": "npm run ng:build && npm run package",
     "electron": "wait-on tcp:4200 && cross-env NODE_ENV=development ELECTRON_DISABLE_SECURITY_WARNINGS=true electron-forge start",
-    "publish": "electron-forge publish",
+    "publish": "cross-env NODE_ENV=production electron-forge publish",
     "package": "cross-env NODE_ENV=production electron-forge package",
-    "make": "cross-env NODE_ENV=production  electron-forge make",
+    "make": "cross-env NODE_ENV=production electron-forge make",
     "lint": "ng lint"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "date-fns": "^3.6.0",
+    "electron-log": "^5.1.2",
     "electron-squirrel-startup": "^1.0.0",
     "highlight.js": "^11.9.0",
     "ngx-cookie-service": "^17.1.0",
@@ -39,6 +40,7 @@
     "query-string": "^9.0.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
+    "update-electron-app": "^3.0.0",
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
