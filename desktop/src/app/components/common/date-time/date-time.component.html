@@ -1,1 +1,3 @@
-<time [attr.datetime]="time">{{ time | fromNow }}</time>
+<time [class.text-danger]="time | isToday" [attr.datetime]="time">{{
+  time | fromNow
+}}</time>

@@ -1,32 +1,40 @@
-const { FusesPlugin } = require('@electron-forge/plugin-fuses');
-const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+const { FusesPlugin } = require("@electron-forge/plugin-fuses");
+const { FuseV1Options, FuseVersion } = require("@electron/fuses");
 
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: "src/assets/images/icons/icon",
   },
   rebuildConfig: {},
   makers: [
     {
-      name: '@electron-forge/maker-squirrel',
-      config: {},
+      name: "@electron-forge/maker-squirrel",
+      config: {
+        iconUrl: "https://www.youdeyiwu.com/assets/icons/icon.ico",
+        setupIcon: "src/assets/images/icons/icon.ico",
+      },
     },
     {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      name: "@electron-forge/maker-zip",
+      platforms: ["darwin"],
     },
     {
-      name: '@electron-forge/maker-deb',
-      config: {},
+      name: "@electron-forge/maker-deb",
+      config: {
+        options: {
+          icon: "src/assets/images/icons/icon.png",
+        },
+      },
     },
     {
-      name: '@electron-forge/maker-rpm',
+      name: "@electron-forge/maker-rpm",
       config: {},
     },
   ],
   plugins: [
     {
-      name: '@electron-forge/plugin-auto-unpack-natives',
+      name: "@electron-forge/plugin-auto-unpack-natives",
       config: {},
     },
     // Fuses are used to enable/disable various Electron functionality

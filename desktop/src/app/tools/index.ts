@@ -1,5 +1,5 @@
 import { IUser, IUserDetails } from '@/src/types';
-import { formatDistanceStrict } from 'date-fns';
+import { formatDistanceStrict, isToday } from 'date-fns';
 
 export const getUserAlias = (user?: IUser | IUserDetails | null) => {
   if (!user) {
@@ -9,6 +9,10 @@ export const getUserAlias = (user?: IUser | IUserDetails | null) => {
   return user.alias ?? user.username ?? 'Unknown';
 };
 
-export const fromNow = (datetime: string): string => {
-  return formatDistanceStrict(new Date(), new Date(datetime));
+export const fromNow = (value: string): string => {
+  return formatDistanceStrict(new Date(), new Date(value));
+};
+
+export const isNew = (value: string): boolean => {
+  return isToday(value);
 };

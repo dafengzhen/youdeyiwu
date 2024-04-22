@@ -1,10 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { IPost } from '@/src/types';
+import { NgIf } from '@angular/common';
+import { IsTodayPipe } from '@/src/app/pipes/is-today.pipe';
 
 @Component({
   selector: 'app-post-link',
   standalone: true,
-  imports: [],
+  imports: [NgIf, IsTodayPipe],
   templateUrl: './post-link.component.html',
   styleUrl: './post-link.component.scss',
 })

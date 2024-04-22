@@ -36,7 +36,8 @@
           </li>
           <li class="page-item">
             <a
-              class="page-link rounded-end-pill border-start-0"
+              class="page-link border-start-0"
+              [class.rounded-end-pill]="!showXBtn"
               [class.disabled]="!pageable.next"
               href=""
               (click)="onClickNextPage($event)"
@@ -44,6 +45,18 @@
               <i class="bi bi-chevron-right"></i>
             </a>
           </li>
+
+          @if (showXBtn) {
+            <li class="page-item">
+              <a
+                class="page-link rounded-end-pill border-end-0"
+                href=""
+                (click)="onClickXBtn($event)"
+              >
+                <i class="bi bi-x-lg"></i>
+              </a>
+            </li>
+          }
         </ul>
       </nav>
     } @else {

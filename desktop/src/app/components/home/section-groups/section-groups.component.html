@@ -1,0 +1,68 @@
+@if (sectionGroupsQuery.isSuccess()) {
+  @for (item of sectionGroupsQuery.data(); track item.id) {
+    <div class="row">
+      <div class="col">
+        <div class="card border-0 shadow-sm-hover">
+          <div
+            class="card-body cursor-pointer"
+            tabindex="0"
+            (click)="onClickItem(item)"
+            (keyup)="onKeyup($event, item)"
+          >
+            <div class="row align-items-center">
+              <div class="col">
+                {{ item.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <div class="row">
+      <div class="col">
+        <div class="card border-0 shadow-sm-hover">
+          <div class="card-body">
+            <div
+              class="alert alert-info d-flex align-items-center fade show"
+              role="alert"
+            >
+              <i class="bi bi-info-circle-fill me-2"></i>
+              <div>No Data</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+} @else if (sectionGroupsQuery.isPending()) {
+  <div class="row">
+    <div class="col">
+      <div class="card border-0 shadow-sm-hover">
+        <div class="card-body">
+          <div class="row align-items-center placeholder-wave">
+            <div class="col">
+              <span class="placeholder col rounded"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else if (sectionGroupsQuery.isError()) {
+  <div class="row">
+    <div class="col">
+      <div class="card border-0 shadow-sm-hover">
+        <div class="card-body">
+          <div
+            class="alert alert-danger d-flex align-items-center fade show"
+            role="alert"
+          >
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>{{ sectionGroupsQuery.error().error.message }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,7 +1,10 @@
 <div data-bs-theme="light" class="w-100 vh-100 bg-body-tertiary">
   <router-outlet />
-  <angular-query-devtools
-    [initialIsOpen]="false"
-    [buttonPosition]="'top-right'"
-  />
+
+  @if (!environment.production) {
+    <angular-query-devtools
+      [initialIsOpen]="false"
+      [buttonPosition]="'top-right'"
+    />
+  }
 </div>

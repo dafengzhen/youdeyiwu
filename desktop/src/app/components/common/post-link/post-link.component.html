@@ -4,3 +4,7 @@
 >
   {{ post?.name }}
 </a>
+
+@if (post && (post!.createdOn | isToday)) {
+  <i class="text-danger small user-select-none">New</i>
+}

@@ -17,8 +17,8 @@ export class TagsComponent {
 
   tagsQuery = injectQuery<ITag[], IError>(() => ({
     queryKey: ['/tags/select-all'],
-    queryFn: async () => {
-      return await lastValueFrom(this.tagService.selectAll());
+    queryFn: () => {
+      return lastValueFrom(this.tagService.selectAll());
     },
   }));
 

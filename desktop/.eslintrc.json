@@ -1,7 +1,10 @@
 {
   "root": true,
   "ignorePatterns": [
-    "projects/**/*"
+    "projects/**/*",
+    "main.js",
+    "preload.js",
+    "forge.config.js"
   ],
   "overrides": [
     {

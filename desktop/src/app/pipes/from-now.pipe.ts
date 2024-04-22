@@ -6,7 +6,7 @@ import { fromNow } from '@/src/app/tools';
   standalone: true,
 })
 export class FromNowPipe implements PipeTransform {
-  transform(value: string, ...args: unknown[]): unknown {
+  transform(value: string): string {
     return fromNow(value);
   }
 }

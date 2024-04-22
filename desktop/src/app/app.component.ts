@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AngularQueryDevtools } from '@tanstack/angular-query-devtools-experimental';
+import { environment } from '@/src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +12,5 @@ import { AngularQueryDevtools } from '@tanstack/angular-query-devtools-experimen
 })
 export class AppComponent {
   title = 'youdeyiwu';
+  protected readonly environment = environment;
 }

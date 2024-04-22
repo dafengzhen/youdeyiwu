@@ -12,7 +12,9 @@ export class FooterComponent {
   @Input() pageable?: IPageable;
   @Input() showPageable!: boolean;
   @Input() showBackBtn!: boolean;
+  @Input() showXBtn!: boolean;
 
+  @Output() xBtnEvent = new EventEmitter();
   @Output() backBtnEvent = new EventEmitter();
   @Output() previousPageEvent = new EventEmitter<number>();
   @Output() nextPageEvent = new EventEmitter<number>();
@@ -54,5 +56,12 @@ export class FooterComponent {
     e.stopPropagation();
 
     this.backBtnEvent.emit();
+  }
+
+  onClickXBtn(e: MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.xBtnEvent.emit();
   }
 }

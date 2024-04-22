@@ -7,7 +7,7 @@ import { getUserAlias } from '@/src/app/tools';
   standalone: true,
 })
 export class UserAliasPipe implements PipeTransform {
-  transform(value?: IUser | IUserDetails | null, ...args: unknown[]): unknown {
+  transform(value?: IUser | IUserDetails | null): string {
     return getUserAlias(value);
   }
 }

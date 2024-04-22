@@ -40,6 +40,15 @@
     <div class="row">
       <div class="col">
         @switch (currentNavName) {
+          @case ("Content Groups") {
+            <app-section-groups-header></app-section-groups-header>
+          }
+          @case ("Contents") {
+            <app-home-sections-header></app-home-sections-header>
+          }
+          @case ("Tag Groups") {
+            <app-home-tag-groups-header></app-home-tag-groups-header>
+          }
           @case ("Tags") {
             <app-home-tags-header></app-home-tags-header>
           }
@@ -52,6 +61,21 @@
     <div class="row overflow-y-auto yw-home" style="max-height: 60vh" #myDiv>
       <div class="col">
         @switch (currentNavName) {
+          @case ("Content Groups") {
+            <app-home-section-groups
+              (itemEvent)="onClickSectionGroups($event)"
+            ></app-home-section-groups>
+          }
+          @case ("Contents") {
+            <app-home-sections
+              (itemEvent)="onClickSections($event)"
+            ></app-home-sections>
+          }
+          @case ("Tag Groups") {
+            <app-home-tag-groups
+              (itemEvent)="onClickTagGroups($event)"
+            ></app-home-tag-groups>
+          }
           @case ("Tags") {
             <app-home-tags (itemEvent)="onClickTags($event)"></app-home-tags>
           }
@@ -70,9 +94,11 @@
         <app-home-footer
           [showPageable]="showPageable"
           [showBackBtn]="showBackBtn"
+          [showXBtn]="showXBtn"
           [pageable]="pageable"
           (pageEvent)="onPage($event)"
           (backBtnEvent)="onBackBtn()"
+          (xBtnEvent)="onXBtn()"
         ></app-home-footer>
       </div>
     </div>

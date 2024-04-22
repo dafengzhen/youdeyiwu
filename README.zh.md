@@ -21,7 +21,7 @@ Youdeyiwu 是一个开源的轻量级论坛
 
 感谢 [Jetbrains](https://jb.gg/OpenSourceSupport) 对本项目的支持，提供开发工具许可证
 
-<img src="https://www.jetbrains.com/company/brand/img/logo1.svg" alt="jetbrains" width="64" />
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" alt="jetbrains" width="138" />
 
 ## License
 
