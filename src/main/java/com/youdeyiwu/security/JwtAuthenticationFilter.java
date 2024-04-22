@@ -5,6 +5,7 @@ import static com.youdeyiwu.tool.JwtTool.verifyJwt;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
+import com.youdeyiwu.exception.ConfigNotFoundException;
 import com.youdeyiwu.model.entity.user.UserEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.user.UserRepository;
@@ -127,7 +128,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private SecretKey getDecodedSecret() {
     return decodeSecret(
         configRepository
-            .findByTypeAndName(ConfigTypeEnum.JWT, JwtConfigConstant.SECRET)
+            .findOptionalByTypeAndName(ConfigTypeEnum.JWT, JwtConfigConstant.SECRET)
+            .orElseThrow(ConfigNotFoundException::new)
             .getValue()
     );
   }

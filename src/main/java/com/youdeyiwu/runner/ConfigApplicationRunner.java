@@ -4,13 +4,10 @@ import static com.youdeyiwu.tool.JwtTool.encodeSecret;
 import static com.youdeyiwu.tool.Tool.randomUuId;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
-import com.youdeyiwu.constant.PointConfigConstant;
-import com.youdeyiwu.constant.PostConfigConstant;
 import com.youdeyiwu.constant.RootConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.repository.config.ConfigRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.ApplicationArguments;
@@ -37,31 +34,7 @@ public class ConfigApplicationRunner implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
     initRootSecretConfig();
     initJwtSecretConfig();
-    initPointConfig();
-    initPostConfig();
     log.info("=== Config === Initial configuration completed");
-  }
-
-  /**
-   * init post config.
-   */
-  private void initPostConfig() {
-    if (
-        Optional.ofNullable(
-                configRepository.findByTypeAndName(
-                    ConfigTypeEnum.POST,
-                    PostConfigConstant.createGuide
-                )
-            )
-            .isEmpty()
-    ) {
-      ConfigEntity configEntity = new ConfigEntity();
-      configEntity.setType(ConfigTypeEnum.POST);
-      configEntity.setName(PostConfigConstant.createGuide);
-      configEntity.setValue("");
-      configRepository.save(configEntity);
-      log.info("=== Config === Create post.createGuide option");
-    }
   }
 
   /**
@@ -69,11 +42,9 @@ public class ConfigApplicationRunner implements ApplicationRunner {
    */
   private void initJwtSecretConfig() {
     if (
-        Optional.ofNullable(
-                configRepository.findByTypeAndName(
-                    ConfigTypeEnum.JWT,
-                    JwtConfigConstant.SECRET
-                )
+        configRepository.findOptionalByTypeAndName(
+                ConfigTypeEnum.JWT,
+                JwtConfigConstant.SECRET
             )
             .isEmpty()
     ) {
@@ -91,11 +62,9 @@ public class ConfigApplicationRunner implements ApplicationRunner {
    */
   private void initRootSecretConfig() {
     if (
-        Optional.ofNullable(
-                configRepository.findByTypeAndName(
-                    ConfigTypeEnum.ROOT,
-                    RootConfigConstant.SECRET
-                )
+        configRepository.findOptionalByTypeAndName(
+                ConfigTypeEnum.ROOT,
+                RootConfigConstant.SECRET
             )
             .isEmpty()
     ) {
@@ -114,45 +83,6 @@ public class ConfigApplicationRunner implements ApplicationRunner {
               """,
           configEntity.getValue()
       );
-    }
-  }
-
-  /**
-   * init point config.
-   */
-  private void initPointConfig() {
-    if (
-        Optional.ofNullable(
-                configRepository.findByTypeAndName(
-                    ConfigTypeEnum.POINT,
-                    PointConfigConstant.ENABLE
-                )
-            )
-            .isEmpty()
-    ) {
-      ConfigEntity configEntity = new ConfigEntity();
-      configEntity.setType(ConfigTypeEnum.POINT);
-      configEntity.setName(PointConfigConstant.ENABLE);
-      configEntity.setValue("false");
-      configRepository.save(configEntity);
-      log.info("=== Config === Create point.enable option");
-    }
-
-    if (
-        Optional.ofNullable(
-                configRepository.findByTypeAndName(
-                    ConfigTypeEnum.POINT,
-                    PointConfigConstant.INIT_POINTS
-                )
-            )
-            .isEmpty()
-    ) {
-      ConfigEntity configEntity = new ConfigEntity();
-      configEntity.setType(ConfigTypeEnum.POINT);
-      configEntity.setName(PointConfigConstant.INIT_POINTS);
-      configEntity.setValue("100");
-      configRepository.save(configEntity);
-      log.info("=== Config === Create point.initPoints option");
     }
   }
 }

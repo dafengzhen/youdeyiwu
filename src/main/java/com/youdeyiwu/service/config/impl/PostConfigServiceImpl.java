@@ -27,24 +27,23 @@ public class PostConfigServiceImpl implements PostConfigService {
 
   @Override
   public String queryCreateGuide() {
-    ConfigEntity configEntity = configRepository.findByTypeAndName(
-        ConfigTypeEnum.POST,
-        PostConfigConstant.createGuide
-    );
-
-    return configEntity.getValue();
+    return configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.POST,
+            PostConfigConstant.createGuide
+        )
+        .map(ConfigEntity::getValue)
+        .orElse(null);
   }
 
   @Transactional
   @Override
   public void updateCreateGuide(UpdateCreateGuidePostConfigDto dto) {
-    ConfigEntity configEntity = configRepository.findByTypeAndName(
-        ConfigTypeEnum.POST,
-        PostConfigConstant.createGuide
-    );
-
     if (Objects.nonNull(dto.createGuide())) {
-      configEntity.setValue(cleanHtmlContent(dto.createGuide().trim()));
+      configRepository.saveByTypeAndName(
+          ConfigTypeEnum.POST,
+          PostConfigConstant.createGuide,
+          cleanHtmlContent(dto.createGuide().trim())
+      );
     }
   }
 }

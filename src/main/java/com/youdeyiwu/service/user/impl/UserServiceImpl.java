@@ -8,6 +8,7 @@ import static com.youdeyiwu.tool.Tool.isLong;
 
 import com.youdeyiwu.constant.JwtConfigConstant;
 import com.youdeyiwu.enums.config.ConfigTypeEnum;
+import com.youdeyiwu.exception.ConfigNotFoundException;
 import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.RoleNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
@@ -489,7 +490,8 @@ public class UserServiceImpl implements UserService {
   private TokenVo createToken(UserEntity userEntity) {
     int expDays = 31;
     String secret = configRepository
-        .findByTypeAndName(ConfigTypeEnum.JWT, JwtConfigConstant.SECRET)
+        .findOptionalByTypeAndName(ConfigTypeEnum.JWT, JwtConfigConstant.SECRET)
+        .orElseThrow(ConfigNotFoundException::new)
         .getValue();
 
     String token = createJwt(decodeSecret(secret), userEntity.getId(), Duration.ofDays(expDays));

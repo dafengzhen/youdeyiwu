@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import useLocalStorageState from 'use-local-storage-state';
+import clsx from 'clsx';
 
 const openPostCreateGuideKey = '_youdeyiwu_post_create_guide_open';
 
@@ -35,7 +36,9 @@ export default function CreateGuide({ data }: { data?: string }) {
           </h2>
           <div
             id="yw-collapse-post-create-guide"
-            className="accordion-collapse collapse show"
+            className={clsx('accordion-collapse collapse', {
+              show: openPostCreateGuide,
+            })}
           >
             <div
               className="accordion-body"

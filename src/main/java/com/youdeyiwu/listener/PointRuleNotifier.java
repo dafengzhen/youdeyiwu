@@ -12,7 +12,6 @@ import com.youdeyiwu.event.PointRuleApplicationEvent;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.model.dto.point.PointRuleEventDto;
 import com.youdeyiwu.model.dto.point.UpdatePointDto;
-import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
@@ -67,12 +66,14 @@ public class PointRuleNotifier
 
   @Override
   public void onApplicationEvent(PointRuleApplicationEvent event) {
-    ConfigEntity enable = configRepository.findByTypeAndName(
-        ConfigTypeEnum.POINT,
-        PointConfigConstant.ENABLE
-    );
+    Boolean enable = configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.POINT,
+            PointConfigConstant.ENABLE
+        )
+        .map(configEntity -> Boolean.valueOf(configEntity.getValue()))
+        .orElse(false);
 
-    if (Boolean.FALSE.equals(Boolean.valueOf(enable.getValue()))) {
+    if (Boolean.FALSE.equals(enable)) {
       return;
     }
 

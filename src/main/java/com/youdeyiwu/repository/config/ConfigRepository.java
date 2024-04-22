@@ -13,15 +13,6 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
 public interface ConfigRepository extends JpaRepositoryImplementation<ConfigEntity, Long>, CustomizedConfigRepository {
 
   /**
-   * findByTypeAndName.
-   *
-   * @param type type
-   * @param name name
-   * @return ConfigEntity
-   */
-  ConfigEntity findByTypeAndName(ConfigTypeEnum type, String name);
-
-  /**
    * findOptionalByTypeAndName.
    *
    * @param type type

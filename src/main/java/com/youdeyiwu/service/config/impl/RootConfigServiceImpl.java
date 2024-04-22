@@ -46,20 +46,26 @@ public class RootConfigServiceImpl implements RootConfigService {
   @Override
   public void update(UpdateRootConfigDto dto) {
     if (StringUtils.hasText(dto.secret())) {
-      ConfigEntity configEntity = configRepository.findByTypeAndName(
-          ConfigTypeEnum.ROOT,
-          RootConfigConstant.SECRET
-      );
+      String secret = configRepository.findOptionalByTypeAndName(
+              ConfigTypeEnum.ROOT,
+              RootConfigConstant.SECRET
+          )
+          .map(ConfigEntity::getValue)
+          .orElse(null);
 
-      if (!Objects.equals(configEntity.getValue(), dto.secret())) {
+      if (Objects.nonNull(secret) && !secret.equals(dto.secret())) {
         throw new CustomException(i18nTool.getMessage("config.root.secret.invalid"));
       }
+
+      configRepository.saveByTypeAndName(
+          ConfigTypeEnum.ROOT,
+          RootConfigConstant.SECRET,
+          randomUuId()
+      );
 
       UserEntity userEntity = userRepository.findById(securityService.getUserId())
           .orElseThrow(UserNotFoundException::new);
       userEntity.setRoot(true);
-      configEntity.setValue(randomUuId());
-
       roleRepository.findById(1L)
           .ifPresent(roleEntity -> {
             roleEntity.getUsers().add(userEntity);

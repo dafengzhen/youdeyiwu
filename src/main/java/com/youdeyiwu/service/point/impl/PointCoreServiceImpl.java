@@ -8,7 +8,6 @@ import com.youdeyiwu.exception.PointNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.mapper.point.PointMapper;
 import com.youdeyiwu.model.dto.point.UpdatePointDto;
-import com.youdeyiwu.model.entity.config.ConfigEntity;
 import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.point.PointHistoryEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
@@ -42,13 +41,15 @@ public class PointCoreServiceImpl implements PointCoreService {
   @Transactional
   @Override
   public PointEntity create(UserEntity userEntity) {
-    ConfigEntity initPoints = configRepository.findByTypeAndName(
-        ConfigTypeEnum.POINT,
-        PointConfigConstant.INIT_POINTS
-    );
+    Integer initPoints = configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.POINT,
+            PointConfigConstant.INIT_POINTS
+        )
+        .map(configEntity -> Integer.valueOf(configEntity.getValue()))
+        .orElse(100);
 
     PointEntity entity = new PointEntity();
-    entity.setPoints(Integer.valueOf(initPoints.getValue()));
+    entity.setPoints(initPoints);
     entity.setUser(userEntity);
     userEntity.setPoint(pointRepository.save(entity));
     return userEntity.getPoint();

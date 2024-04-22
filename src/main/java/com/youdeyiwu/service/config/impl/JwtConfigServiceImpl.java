@@ -38,13 +38,15 @@ public class JwtConfigServiceImpl implements JwtConfigService {
 
   @Override
   public JwtConfigVo query() {
-    ConfigEntity configEntity = configRepository.findByTypeAndName(
-        ConfigTypeEnum.JWT,
-        JwtConfigConstant.SECRET
-    );
+    String secret = configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.JWT,
+            JwtConfigConstant.SECRET
+        )
+        .map(ConfigEntity::getValue)
+        .orElse(null);
 
     JwtConfigVo vo = new JwtConfigVo();
-    vo.setSecret(configEntity.getValue());
+    vo.setSecret(secret);
     return vo;
   }
 
@@ -52,17 +54,17 @@ public class JwtConfigServiceImpl implements JwtConfigService {
   @Override
   public void update(UpdateJwtConfigDto dto) {
     if (StringUtils.hasText(dto.secret())) {
-      ConfigEntity configEntity = configRepository.findByTypeAndName(
-          ConfigTypeEnum.JWT,
-          JwtConfigConstant.SECRET
-      );
-
       try {
         createJwt(decodeSecret(dto.secret()), 0L, Duration.ofDays(1));
-        configEntity.setValue(dto.secret());
       } catch (JwtException e) {
         throw new CustomException(e.getMessage());
       }
+
+      configRepository.saveByTypeAndName(
+          ConfigTypeEnum.JWT,
+          JwtConfigConstant.SECRET,
+          dto.secret()
+      );
     }
   }
 }
