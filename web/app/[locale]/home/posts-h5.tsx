@@ -16,6 +16,8 @@ import {
 } from '@/app/[locale]/common/client';
 import { useTranslations } from 'next-intl';
 import { BLUR_DATA_URL } from '@/app/[locale]/constants';
+import { isToday } from 'date-fns';
+import clsx from 'clsx';
 
 export default function PostsH5({
   data,
@@ -109,13 +111,19 @@ export default function PostsH5({
             <div key={item.id} className="card yw-card shadow-sm shadow-hover">
               <div className="card-header yw-card-header fw-bold">
                 <div className="d-flex align-items-center gap-4 justify-content-between">
-                  <Link
-                    className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
-                    href={`/posts/${item.id}`}
-                    scroll={false}
-                  >
-                    {item.name}
-                  </Link>
+                  <div className="d-flex align-items-center gap-2">
+                    <Link
+                      className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                      href={`/posts/${item.id}`}
+                      scroll={false}
+                    >
+                      {item.name}
+                    </Link>
+
+                    {isToday(item.createdOn) && (
+                      <i className="text-danger small user-select-none">New</i>
+                    )}
+                  </div>
 
                   {item.reviewState !== 'APPROVED' && (
                     <div className="badge rounded-pill text-bg-secondary text-capitalize">
@@ -181,7 +189,12 @@ export default function PostsH5({
                       </Link>
                       <time
                         dateTime={item.createdOn}
-                        className="fw-normal text-body-secondary"
+                        className={clsx(
+                          'fw-normal',
+                          isToday(item.createdOn)
+                            ? 'text-danger'
+                            : 'text-body-secondary',
+                        )}
                       >
                         {fromNow(item.createdOn)}
                       </time>
