@@ -8,6 +8,7 @@ import com.youdeyiwu.model.vo.forum.TagGroupEntityVo;
 import com.youdeyiwu.service.forum.TagGroupService;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -66,6 +67,11 @@ public class TagGroupController {
       Pageable pageable
   ) {
     return ResponseEntity.ok(tagGroupService.queryAll(pageable));
+  }
+
+  @GetMapping(value = "/select-all")
+  public ResponseEntity<List<TagGroupEntityVo>> selectAll() {
+    return ResponseEntity.ok(tagGroupService.selectAll());
   }
 
   @GetMapping(value = "/{id}")

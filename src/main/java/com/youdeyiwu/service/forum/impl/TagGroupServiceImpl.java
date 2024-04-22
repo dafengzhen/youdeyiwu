@@ -13,6 +13,7 @@ import com.youdeyiwu.model.vo.forum.TagGroupEntityVo;
 import com.youdeyiwu.repository.forum.TagGroupRepository;
 import com.youdeyiwu.repository.forum.TagRepository;
 import com.youdeyiwu.service.forum.TagGroupService;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,17 @@ public class TagGroupServiceImpl implements TagGroupService {
       setTags(tagGroupEntity, vo);
       return vo;
     }));
+  }
+
+  @Override
+  public List<TagGroupEntityVo> selectAll() {
+    return tagGroupRepository.findAll().stream()
+        .map(tagGroupEntity -> {
+          TagGroupEntityVo vo = tagGroupMapper.entityToVo(tagGroupEntity);
+          setTags(tagGroupEntity, vo);
+          return vo;
+        })
+        .toList();
   }
 
   @Override

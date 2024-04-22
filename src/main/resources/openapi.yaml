@@ -3313,6 +3313,21 @@ paths:
                 $ref: '#/components/schemas/Void'
       tags:
         - tag-groups
+  /tag-groups/select-all:
+    get:
+      summary: "GET tag-groups/select-all"
+      operationId: "selectAll"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TagGroupEntityVo"
+      tags:
+        - tag-groups
 
   # === postReviewQueue ===
   /posts/review-queues/receive:
