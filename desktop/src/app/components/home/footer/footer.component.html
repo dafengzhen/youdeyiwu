@@ -31,8 +31,17 @@
               class="page-link border-start-0 border-end-0"
               href=""
               (click)="onClickPage($event)"
-              >{{ pageable.page + 1 }}</a
             >
+              @if (
+                pageable.currentPageSize &&
+                pageable.currentPageSize > 0 &&
+                pageable.currentPageSize !== pageable.size
+              ) {
+                {{ pageable.page + 1 }}-{{ pageable.currentPageSize }}
+              } @else {
+                {{ pageable.page + 1 }}
+              }
+            </a>
           </li>
           <li class="page-item">
             <a
@@ -77,9 +86,9 @@
     </button>
 
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="">Action</a></li>
-      <li><a class="dropdown-item" href="">Action two</a></li>
-      <li><a class="dropdown-item" href="">Action three</a></li>
+      <li><a class="dropdown-item" href="">My Profile</a></li>
+      <li><a class="dropdown-item" href="">Login Now</a></li>
+      <li><a class="dropdown-item" href="">Quick Register</a></li>
     </ul>
   </div>
 </div>

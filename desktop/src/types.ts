@@ -66,6 +66,7 @@ export interface IPageable {
   previous: boolean;
   next: boolean;
   pages: number;
+  currentPageSize?: number;
 }
 
 export interface IPage<T> {

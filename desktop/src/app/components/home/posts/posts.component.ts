@@ -36,7 +36,10 @@ export class PostsComponent {
     queryFn: async (context) => {
       const _params = context.queryKey[1] as TQueryParams;
       const response = await lastValueFrom(this.postService.selectAll(_params));
-      this.pageableEvent.emit(response.pageable);
+      this.pageableEvent.emit({
+        ...response.pageable,
+        currentPageSize: response.content.length,
+      });
       return response.content;
     },
   }));

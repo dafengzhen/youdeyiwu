@@ -10,6 +10,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class NavComponent {
   @Input() name: string | undefined;
   @Input() currentName: string | undefined;
+  @Input() useCreateArticleIcon: boolean | undefined;
 
   @Output() clickEvent = new EventEmitter();
 

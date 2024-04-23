@@ -25,7 +25,8 @@ type TNavName =
   | 'Contents'
   | 'Tag Groups'
   | 'Tags'
-  | 'Articles';
+  | 'Articles'
+  | 'Create Article';
 
 @Component({
   selector: 'app-home',
@@ -88,6 +89,10 @@ export class HomeComponent implements AfterViewInit {
   }
 
   onClickNav(name: TNavName) {
+    if (name === 'Create Article') {
+      return;
+    }
+
     if (name === this.currentNavName) {
       this.onXBtn();
       return;

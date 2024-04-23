@@ -1,14 +1,22 @@
 <button
   type="button"
-  class="btn btn-secondary shadow shadow-hover d-flex align-items-center rounded-3 p-3 gap-4 text-truncate w-100"
+  class="btn shadow shadow-hover d-flex align-items-center rounded-3 p-3 gap-4 text-truncate w-100"
   [class.active]="name === currentName"
+  [class]="[useCreateArticleIcon ? 'btn-primary' : 'btn-secondary']"
   (click)="onClick()"
 >
   <div>
-    <i
-      class="bi fs-4"
-      [class]="[name === currentName ? 'bi-tags-fill' : 'bi-tags']"
-    ></i>
+    @if (useCreateArticleIcon) {
+      <i
+        class="bi fs-4"
+        [class]="[name === currentName ? 'bi-pen-fill' : 'bi-pen']"
+      ></i>
+    } @else {
+      <i
+        class="bi fs-4"
+        [class]="[name === currentName ? 'bi-tags-fill' : 'bi-tags']"
+      ></i>
+    }
   </div>
   <div>{{ name }}</div>
 </button>
