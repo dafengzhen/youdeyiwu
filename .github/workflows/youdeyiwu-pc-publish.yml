@@ -48,5 +48,5 @@ jobs:
           prerelease: false
           title: Developing Youdeyiwu Desktop Application
           files: |
-            ./out/*.exe
-            ./out/*.exe.blockmap
+            desktop/out/*.exe
+            desktop/out/*.exe.blockmap
