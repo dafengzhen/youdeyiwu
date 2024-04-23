@@ -1,0 +1,50 @@
+name: Building Youdeyiwu Desktop Application
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'desktop/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'desktop/**'
+  workflow_dispatch:
+
+concurrency:
+  group: desktop
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-latest ]
+    defaults:
+      run:
+        working-directory: ./desktop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./desktop/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Build with Youdeyiwu Desktop
+        run: npm run build
+      - name: Pre release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.YOUDEYIWU_PC_GITHUB_TOKEN }}"
+          automatic_release_tag: latest
+          draft: true
+          prerelease: false
+          title: Developing Youdeyiwu Desktop Application
+          files: |
+            ./out/*.exe
+            ./out/*.exe.blockmap
