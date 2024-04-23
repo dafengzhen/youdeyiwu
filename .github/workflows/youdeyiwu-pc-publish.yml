@@ -37,10 +37,12 @@ jobs:
         run: npm ci
       - name: Build with Youdeyiwu Desktop
         run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.YOUDEYIWU_PC_GITHUB_TOKEN }}
       - name: Pre release
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.YOUDEYIWU_PC_GITHUB_TOKEN }}"
+          repo_token: ${{ secrets.YOUDEYIWU_PC_GITHUB_TOKEN }}
           automatic_release_tag: latest
           draft: true
           prerelease: false
