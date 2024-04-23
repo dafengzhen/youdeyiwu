@@ -382,6 +382,7 @@
     "disableAnonymousReplies": "禁止创建匿名回复",
     "disableAnonymousPostsMessage": "抱歉，当前站点未开放匿名创建文章",
     "disableAnonymousCommentsMessage": "抱歉，当前站点未开放匿名创建评论",
-    "disableAnonymousRepliesMessage": "抱歉，当前站点未开放匿名创建回复"
+    "disableAnonymousRepliesMessage": "抱歉，当前站点未开放匿名创建回复",
+    "joiningDate": "加入时间"
   }
 }

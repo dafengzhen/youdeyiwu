@@ -384,6 +384,7 @@
     "disableAnonymousReplies": "Disable Anonymous Replies",
     "disableAnonymousPostsMessage": "Sorry, the current site does not allow anonymous article creation.",
     "disableAnonymousCommentsMessage": "Sorry, the current site does not allow anonymous comment creation.",
-    "disableAnonymousRepliesMessage": "Sorry, the current site does not allow anonymous reply creation."
+    "disableAnonymousRepliesMessage": "Sorry, the current site does not allow anonymous reply creation.",
+    "joiningDate": "Joining date"
   }
 }
