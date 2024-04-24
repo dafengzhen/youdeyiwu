@@ -109,9 +109,25 @@ export default function PostsH5({
 
           return (
             <div key={item.id} className="card yw-card shadow-sm shadow-hover">
-              <div className="card-header yw-card-header fw-bold">
+              <div className="card-header yw-card-header">
                 <div className="d-flex align-items-center gap-4 justify-content-between">
                   <div className="d-flex align-items-center gap-2">
+                    {item.tags.map((tag) => {
+                      return (
+                        <span key={tag.id} className="user-select-none">
+                          [ &nbsp;
+                          <Link
+                            className="link-underline-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                            href={`?tagId=${tag.id}`}
+                            scroll={false}
+                          >
+                            {tag.name}
+                          </Link>
+                          &nbsp; ]
+                        </span>
+                      );
+                    })}
+
                     <Link
                       className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                       href={`/posts/${item.id}`}

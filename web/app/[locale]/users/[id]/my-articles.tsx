@@ -43,7 +43,7 @@ export default function MyArticles({
               return (
                 <div key={item.id} className="col">
                   <div className="card yw-card text-center">
-                    <div className="card-header yw-card-header fw-bold">
+                    <div className="card-header yw-card-header">
                       <Link
                         className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
                         href={`/posts/${item.id}`}
