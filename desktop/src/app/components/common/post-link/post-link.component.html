@@ -1,6 +1,6 @@
 @if (post?.tags) {
   @for (tag of post?.tags; track tag.id) {
-    <span class="link-primary">
+    <span class="link-primary user-select-none">
       [
       <a
         (click)="onClickTag($event, tag)"

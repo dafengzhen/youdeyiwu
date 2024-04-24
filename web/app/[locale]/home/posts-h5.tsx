@@ -115,7 +115,10 @@ export default function PostsH5({
                   <div className="d-flex align-items-center gap-2">
                     {item.tags.map((tag) => {
                       return (
-                        <span key={tag.id} className="user-select-none">
+                        <span
+                          key={tag.id}
+                          className="link-primary user-select-none"
+                        >
                           [ &nbsp;
                           <Link
                             className="link-underline-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
