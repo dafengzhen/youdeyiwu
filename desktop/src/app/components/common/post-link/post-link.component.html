@@ -1,6 +1,24 @@
+@if (post?.tags) {
+  @for (tag of post?.tags; track tag.id) {
+    <span class="link-primary">
+      [
+      <a
+        (click)="onClickTag($event, tag)"
+        href=""
+        class="link-underline-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+      >
+        {{ tag.name }}
+      </a>
+      ]
+    </span>
+  }
+}
+
 <a
   [href]="post ? '/posts/' + post.id : '/posts'"
   class="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+  [class]="post?.classNames"
+  [style]="post?.styles"
 >
   {{ post?.name }}
 </a>

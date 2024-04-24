@@ -9,7 +9,7 @@ import { FromNowPipe } from '@/src/app/pipes/from-now.pipe';
 import { DateTimeComponent } from '@/src/app/components/common/date-time/date-time.component';
 import { UserLinkComponent } from '@/src/app/components/common/user-link/user-link.component';
 import { PostLinkComponent } from '@/src/app/components/common/post-link/post-link.component';
-import { IError, IPageable, IPost, TQueryParams } from '@/src/types';
+import { IError, IPageable, IPost, ITag, TQueryParams } from '@/src/types';
 
 @Component({
   selector: 'app-home-posts',
@@ -30,6 +30,7 @@ export class PostsComponent {
   params = input<TQueryParams>({ page: 0 });
 
   @Output() pageableEvent = new EventEmitter<IPageable>();
+  @Output() tagItemEvent = new EventEmitter<ITag>();
 
   postsQuery = injectQuery<IPost[], IError>(() => ({
     queryKey: ['/posts/select-all', this.params()],
@@ -45,4 +46,8 @@ export class PostsComponent {
   }));
 
   constructor(private postService: PostService) {}
+
+  onTagItemEvent(item: ITag) {
+    this.tagItemEvent.emit(item);
+  }
 }

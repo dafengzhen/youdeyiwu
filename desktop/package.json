@@ -32,6 +32,7 @@
     "bootstrap-icons": "^1.11.3",
     "date-fns": "^3.6.0",
     "highlight.js": "^11.9.0",
+    "nanoid": "^5.0.7",
     "ngx-cookie-service": "^17.1.0",
     "photoswipe": "^5.4.3",
     "query-string": "^9.0.0",

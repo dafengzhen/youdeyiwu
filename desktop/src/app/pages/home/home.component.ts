@@ -60,6 +60,7 @@ export class HomeComponent implements AfterViewInit {
   showPageable: boolean = true;
   showBackBtn: boolean = false;
   showXBtn: boolean = false;
+  selectedTagItem?: ITag;
 
   ngAfterViewInit(): void {
     this.checkScrollbar();
@@ -82,6 +83,7 @@ export class HomeComponent implements AfterViewInit {
 
   onPageablePosts(value: IPageable) {
     this.pageable = value;
+    this.checkScrollbar();
   }
 
   onPage(v: number) {
@@ -157,10 +159,25 @@ export class HomeComponent implements AfterViewInit {
   }
 
   onXBtn() {
+    if (this.selectedTagItem) {
+      this.postsParams = { page: 0 };
+      this.showPageable = true;
+      this.showBackBtn = false;
+      this.showXBtn = false;
+      this.selectedTagItem = undefined;
+      return;
+    }
+
     this.postsParams = { page: 0 };
     this.currentNavName = 'Articles';
     this.showPageable = true;
     this.showBackBtn = false;
     this.showXBtn = false;
+  }
+
+  onTagItemEvent(item: ITag) {
+    this.postsParams = { page: 0, tagId: item.id };
+    this.selectedTagItem = item;
+    this.showXBtn = true;
   }
 }

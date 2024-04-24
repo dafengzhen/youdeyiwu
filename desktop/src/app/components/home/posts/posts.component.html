@@ -6,7 +6,10 @@
           <div class="card-body">
             <div class="row align-items-center">
               <div class="col-6">
-                <app-post-link [post]="item"></app-post-link>
+                <app-post-link
+                  [post]="item"
+                  (tagItemEvent)="onTagItemEvent($event)"
+                ></app-post-link>
               </div>
               <div class="col-3 text-truncate">{{ item.overview }}</div>
               <div class="col-2">

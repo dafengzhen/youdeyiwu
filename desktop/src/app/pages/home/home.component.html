@@ -97,6 +97,7 @@
             <app-home-posts
               [params]="postsParams"
               (pageableEvent)="onPageablePosts($event)"
+              (tagItemEvent)="onTagItemEvent($event)"
               class="d-flex flex-column gap-2"
             ></app-home-posts>
           }

@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { IPost } from '@/src/types';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IPost, ITag } from '@/src/types';
 import { NgIf } from '@angular/common';
 import { IsTodayPipe } from '@/src/app/pipes/is-today.pipe';
 
@@ -12,4 +12,13 @@ import { IsTodayPipe } from '@/src/app/pipes/is-today.pipe';
 })
 export class PostLinkComponent {
   @Input() post?: IPost;
+
+  @Output() tagItemEvent = new EventEmitter<ITag>();
+
+  onClickTag(e: MouseEvent, item: ITag) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.tagItemEvent.emit(item);
+  }
 }

@@ -219,6 +219,8 @@ export interface IPost extends IBase {
   postReviewQueue?: IPostReviewQueue;
   disableComments?: boolean;
   disableReplies?: boolean;
+  styles?: string;
+  classNames?: string;
 }
 
 export interface IPostReviewQueue extends IBase {
