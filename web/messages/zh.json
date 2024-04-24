@@ -383,6 +383,14 @@
     "disableAnonymousPostsMessage": "抱歉，当前站点未开放匿名创建文章",
     "disableAnonymousCommentsMessage": "抱歉，当前站点未开放匿名创建评论",
     "disableAnonymousRepliesMessage": "抱歉，当前站点未开放匿名创建回复",
-    "joiningDate": "加入时间"
+    "joiningDate": "加入时间",
+    "styles": "样式",
+    "stylesFormText": "多个样式使用分号来分隔，如遇 '-' 则使用驼峰式命名",
+    "classNames": "类名",
+    "classNamesFormText": "多个类名使用空格来分隔",
+    "updateStyles": "更新样式",
+    "stylesPreview": "样式预览",
+    "stylesPreviewError": "样式编写存在错误，请重新检查输入",
+    "classNamesPreview": "类名预览"
   }
 }

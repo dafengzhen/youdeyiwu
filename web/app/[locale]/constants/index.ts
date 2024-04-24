@@ -44,6 +44,7 @@ export const ACTION_PAGES_DATA = {
     'Update States',
     'Update Tags',
     'Update Section',
+    'Update Styles',
     'Delete',
     'Disable Comment Reply',
     'Update User Relationship',

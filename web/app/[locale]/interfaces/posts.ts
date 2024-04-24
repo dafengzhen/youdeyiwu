@@ -47,6 +47,8 @@ export interface IPost extends IBase {
   postReviewQueue?: IPostReviewQueue;
   disableComments?: boolean;
   disableReplies?: boolean;
+  styles?: string;
+  classNames?: string;
 }
 
 export interface IPostDetails extends IBase {
@@ -76,6 +78,8 @@ export interface IPostDetails extends IBase {
   followed?: boolean;
   favorited?: boolean;
   comments: IPage<ICommentReply[]>;
+  styles?: string;
+  classNames?: string;
 }
 
 export interface IPostUser extends Omit<IBase, 'id'> {

@@ -24,3 +24,22 @@ export const getUserAlias = (user?: IUser | IUserDetails | null) => {
 export const formatTitleForURL = (title: string) => {
   return title.trim().replace(/\s+/g, '-').toLowerCase();
 };
+
+export const convertStyles = (styles: string) => {
+  const filteredStyles = styles
+    .split(';')
+    .map((style) => style.trim())
+    .filter((style) => style.length > 0);
+
+  return filteredStyles.reduce(
+    (acc, style) => {
+      const [property, value] = style.split(':').map((part) => part.trim());
+      const camelCasedProperty = property.replace(/-([a-z])/g, (g) =>
+        g[1].toUpperCase(),
+      );
+      acc[camelCasedProperty] = value;
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+};

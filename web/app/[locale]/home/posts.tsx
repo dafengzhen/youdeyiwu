@@ -18,6 +18,7 @@ import { useTranslations } from 'next-intl';
 import { BLUR_DATA_URL } from '@/app/[locale]/constants';
 import { isToday } from 'date-fns';
 import clsx from 'clsx';
+import { convertStyles } from '@/app/[locale]/common/tool';
 
 export default function Posts({
   data,
@@ -128,9 +129,13 @@ export default function Posts({
                   })}
 
                   <Link
-                    className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                    className={clsx(
+                      'link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover',
+                      item.classNames,
+                    )}
                     href={`/posts/${item.id}`}
                     scroll={false}
+                    style={item.styles ? convertStyles(item.styles) : {}}
                   >
                     {item.name}
                   </Link>

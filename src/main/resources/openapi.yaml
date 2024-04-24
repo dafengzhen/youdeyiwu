@@ -2814,6 +2814,32 @@ paths:
                 $ref: "#/components/schemas/PostUserEntityVo"
       tags:
         - posts
+  /posts/{id}/styles:
+    put:
+      summary: "PUT posts/{id}/styles"
+      operationId: "updateStyles"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStylesPostDto"
+        required: true
+      responses:
+        "204":
+          description: "No Content"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+      tags:
+        - posts
 
   # === comment ===
   /comments:
@@ -4251,6 +4277,10 @@ components:
             $ref: "#/components/schemas/UserEntityVo"
         accessKey:
           type: "string"
+        styles:
+          type: "string"
+        classNames:
+          type: "string"
         pageViews:
           type: "integer"
           format: "int64"
@@ -5631,6 +5661,13 @@ components:
           type: "boolean"
         disableAnonymousReplies:
           type: "boolean"
+    UpdateStylesPostDto:
+      type: "object"
+      properties:
+        styles:
+          type: "string"
+        classNames:
+          type: "string"
     PageableVo:
       type: "object"
       properties:

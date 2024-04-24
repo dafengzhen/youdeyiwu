@@ -10,6 +10,7 @@ import SelectAllSectionAction from '@/app/[locale]/actions/sections/select-all-s
 import ErrorPage from '@/app/[locale]/common/error-page';
 import DisableCommentReply from '@/app/[locale]/admin/posts/[id]/disable-comment-reply';
 import UserRelationship from '@/app/[locale]/admin/posts/[id]/user-relationship';
+import UpdateStyles from '@/app/[locale]/admin/posts/[id]/update-styles';
 
 export const metadata: Metadata = {
   title: 'Update Post',
@@ -29,7 +30,8 @@ export default async function Page({
       | 'tags'
       | 'section'
       | 'disableCommentReply'
-      | 'queryUserRelationship';
+      | 'queryUserRelationship'
+      | 'styles';
     sKey?: string;
     sectionKey?: string;
   };
@@ -74,6 +76,8 @@ export default async function Page({
           sections={sectionResponse.data}
         />
       );
+    case 'styles':
+      return <UpdateStyles post={postResponse.data} />;
     default:
       notFound();
   }

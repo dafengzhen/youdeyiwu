@@ -9,6 +9,7 @@ import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
+import com.youdeyiwu.model.dto.forum.UpdateStylesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.vo.CoverVo;
 import com.youdeyiwu.model.vo.PageVo;
@@ -102,6 +103,15 @@ public class PostController {
       @Valid @RequestBody DisableUserCommentReplyPostDto dto
   ) {
     postService.disableUserCommentReply(id, userId, dto);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping(value = "/{id}/styles")
+  public ResponseEntity<Void> updateStyles(
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateStylesPostDto dto
+  ) {
+    postService.updateStyles(id, dto);
     return ResponseEntity.noContent().build();
   }
 

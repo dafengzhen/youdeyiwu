@@ -385,6 +385,14 @@
     "disableAnonymousPostsMessage": "Sorry, the current site does not allow anonymous article creation.",
     "disableAnonymousCommentsMessage": "Sorry, the current site does not allow anonymous comment creation.",
     "disableAnonymousRepliesMessage": "Sorry, the current site does not allow anonymous reply creation.",
-    "joiningDate": "Joining date"
+    "joiningDate": "Joining date",
+    "styles": "Styles",
+    "stylesFormText": "Multiple styles are separated by semicolons. In case of a '-', use camel case for naming.",
+    "classNames": "Class Names",
+    "classNamesFormText": "Multiple class names are separated by spaces.",
+    "updateStyles": "Update Styles",
+    "stylesPreview": "Styles Preview",
+    "stylesPreviewError": "The style you have written contains errors. Please check your style input.",
+    "classNamesPreview": "Class Names Preview"
   }
 }

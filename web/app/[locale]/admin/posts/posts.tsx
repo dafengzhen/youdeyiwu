@@ -215,6 +215,20 @@ export default function Posts({ data }: { data: IPage<IPost[]> }) {
                           <Link
                             onClick={(event) =>
                               onClickLink(
+                                `/admin/posts/${item.id}?type=styles`,
+                                event,
+                              )
+                            }
+                            className="dropdown-item"
+                            href={`/admin/posts/${item.id}?type=styles`}
+                          >
+                            {t('common.updateStyles')}
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            onClick={(event) =>
+                              onClickLink(
                                 `/admin/posts/${item.id}?type=disableCommentReply`,
                                 event,
                               )

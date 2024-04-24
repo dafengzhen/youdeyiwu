@@ -7,6 +7,7 @@ import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
+import com.youdeyiwu.model.dto.forum.UpdateStylesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.vo.CoverVo;
@@ -84,6 +85,14 @@ public interface PostService {
    * @param dto    dto
    */
   void disableUserCommentReply(Long id, Long userId, DisableUserCommentReplyPostDto dto);
+
+  /**
+   * update styles.
+   *
+   * @param id  id
+   * @param dto dto
+   */
+  void updateStyles(Long id, UpdateStylesPostDto dto);
 
   /**
    * update section.

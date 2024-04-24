@@ -6,6 +6,7 @@ import Nodata from '@/app/[locale]/common/nodata';
 import { fromNow } from '@/app/[locale]/common/client';
 import { useEffect, useState } from 'react';
 import type { IPost } from '@/app/[locale]/interfaces/posts';
+import { convertStyles } from '@/app/[locale]/common/tool';
 
 export default function MyArticles({
   selectedTabIndex,
@@ -45,9 +46,13 @@ export default function MyArticles({
                   <div className="card yw-card text-center">
                     <div className="card-header yw-card-header">
                       <Link
-                        className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                        className={clsx(
+                          'link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover',
+                          item.classNames,
+                        )}
                         href={`/posts/${item.id}`}
                         scroll={false}
+                        style={item.styles ? convertStyles(item.styles) : {}}
                       >
                         {item.name}
                       </Link>

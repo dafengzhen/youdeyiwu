@@ -11,6 +11,7 @@ import {
 } from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
 import { useTranslations } from 'next-intl';
+import { convertStyles } from '@/app/[locale]/common/tool';
 
 export default function Navbar({ details }: { details: IPostDetails }) {
   const user = details.user;
@@ -49,8 +50,12 @@ export default function Navbar({ details }: { details: IPostDetails }) {
               <div className="d-flex align-items-center gap-4 justify-content-between">
                 <div>
                   <Link
-                    className="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
+                    className={clsx(
+                      'link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover',
+                      details.classNames,
+                    )}
                     href={`/posts/${details.id}`}
+                    style={details.styles ? convertStyles(details.styles) : {}}
                   >
                     {details.name}
                   </Link>

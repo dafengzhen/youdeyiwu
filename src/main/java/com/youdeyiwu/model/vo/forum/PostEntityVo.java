@@ -106,6 +106,16 @@ public class PostEntityVo extends AbstractEntityVo {
   private String accessKey;
 
   /**
+   * styles (To separate each item, use a semicolon).
+   */
+  private String styles;
+
+  /**
+   * class names (To separate each item, use a space).
+   */
+  private String classNames;
+
+  /**
    * page views.
    */
   private Long pageViews;

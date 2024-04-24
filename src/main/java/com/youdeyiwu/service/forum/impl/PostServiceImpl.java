@@ -33,6 +33,7 @@ import com.youdeyiwu.model.dto.forum.QueryParamsPostDto;
 import com.youdeyiwu.model.dto.forum.UpdatePostDto;
 import com.youdeyiwu.model.dto.forum.UpdateSectionPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
+import com.youdeyiwu.model.dto.forum.UpdateStylesPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateTagsPostDto;
 import com.youdeyiwu.model.entity.forum.CommentEntity;
 import com.youdeyiwu.model.entity.forum.CommentUserEntity;
@@ -341,6 +342,24 @@ public class PostServiceImpl implements PostService {
       postUserEntity.setOldDisableReplies(postUserEntity.getDisableReplies());
       postUserEntity.setDisableReplies(disableReplies);
       postUserEntity.setReplyDisableReason(dto.replyDisableReason());
+    }
+  }
+
+  @Transactional
+  @Override
+  public void updateStyles(Long id, UpdateStylesPostDto dto) {
+    PostEntity postEntity = findPost(id);
+
+    if (Objects.nonNull(dto.styles()) && !dto.styles().contains(".")) {
+      postEntity.setStyles(dto.styles().trim());
+    }
+
+    if (
+        Objects.nonNull(dto.classNames())
+            && !dto.classNames().contains(".")
+            && !dto.classNames().contains(";")
+    ) {
+      postEntity.setClassNames(dto.classNames().trim());
     }
   }
 
