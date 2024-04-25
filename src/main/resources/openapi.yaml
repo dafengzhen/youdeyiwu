@@ -3650,6 +3650,135 @@ paths:
                 $ref: "#/components/schemas/Void"
       tags:
         - files
+
+  # === imports ===
+  /imports/users:
+    post:
+      summary: "POST imports/users"
+      operationId: "createUsers"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserImportDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/UserImportVo"
+
+      tags:
+        - imports
+  /imports/sections:
+    post:
+      summary: "POST imports/sections"
+      operationId: "createSections"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSectionImportDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/SectionImportVo"
+      tags:
+        - imports
+  /imports/section-groups:
+    post:
+      summary: "POST imports/section-groups"
+      operationId: "createSectionGroups"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSectionGroupImportDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/SectionGroupImportVo"
+      tags:
+        - imports
+  /imports/tags:
+    post:
+      summary: "POST imports/tags"
+      operationId: "createTags"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTagImportDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TagImportVo"
+      tags:
+        - imports
+  /imports/tag-groups:
+    post:
+      summary: "POST imports/tag-groups"
+      operationId: "createTagGroups"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTagGroupImportDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TagGroupImportVo"
+      tags:
+        - imports
+  /imports/posts:
+    post:
+      summary: "POST imports/posts"
+      operationId: "createPosts"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostImportDto"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/PostImportVo"
+      tags:
+        - imports
 components:
   schemas:
     PostBadgeEntityVo:
@@ -5667,6 +5796,166 @@ components:
         styles:
           type: "string"
         classNames:
+          type: "string"
+    UserImportDto:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    CreateUserImportDto:
+      type: "object"
+      properties:
+        usernames:
+          type: "array"
+          items:
+            type: "string"
+        users:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/UserImportDto"
+        unifiedPassword:
+          type: "string"
+    UserImportVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        username:
+          type: "string"
+    TagImportDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+    CreateTagImportDto:
+      type: "object"
+      properties:
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagImportDto"
+    SectionGroupImportDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        sections:
+          $ref: "#/components/schemas/CreateSectionImportDto"
+    CreateSectionGroupImportDto:
+      type: "object"
+      properties:
+        sectionGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionGroupImportDto"
+    SectionImportDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        admins:
+          $ref: "#/components/schemas/CreateUserImportDto"
+        tags:
+          $ref: "#/components/schemas/CreateTagImportDto"
+        sectionGroups:
+          $ref: "#/components/schemas/CreateSectionGroupImportDto"
+    CreateSectionImportDto:
+      type: "object"
+      properties:
+        sections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SectionImportDto"
+    SectionImportVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+    SectionGroupImportVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+    TagImportVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+    TagGroupImportDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        tags:
+          $ref: "#/components/schemas/CreateTagImportDto"
+    CreateTagGroupImportDto:
+      type: "object"
+      properties:
+        tagGroups:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TagGroupImportDto"
+    TagGroupImportVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
+          type: "string"
+    PostImportDto:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        overview:
+          type: "string"
+        content:
+          type: "string"
+        contentLink:
+          type: "string"
+        styles:
+          type: "string"
+        classNames:
+          type: "string"
+        sections:
+          $ref: "#/components/schemas/CreateSectionImportDto"
+        tags:
+          $ref: "#/components/schemas/CreateTagImportDto"
+        createdOn:
+          type: "string"
+        createdBy:
+          type: "string"
+    CreatePostImportDto:
+      type: "object"
+      properties:
+        posts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/PostImportDto"
+    PostImportVo:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        name:
           type: "string"
     PageableVo:
       type: "object"
