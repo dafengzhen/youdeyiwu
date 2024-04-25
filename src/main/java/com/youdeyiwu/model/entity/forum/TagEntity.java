@@ -59,6 +59,6 @@ public class TagEntity extends AbstractEntity {
   @ManyToMany(mappedBy = "tags")
   @JsonIgnore
   @ToString.Exclude
-  private Set<SectionEntity> posts = new HashSet<>();
+  private Set<PostEntity> posts = new HashSet<>();
 
 }
