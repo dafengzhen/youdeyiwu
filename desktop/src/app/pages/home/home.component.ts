@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavComponent } from '@/src/app/components/home/nav/nav.component';
 import { FooterComponent } from '@/src/app/components/home/footer/footer.component';
 import { PostsComponent } from '@/src/app/components/home/posts/posts.component';
@@ -50,9 +50,7 @@ type TNavName =
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements AfterViewInit {
-  @ViewChild('myDiv') myDiv: ElementRef | undefined;
-
+export class HomeComponent {
   postsParams: TQueryParams = { page: 0 };
   pageable?: IPageable;
   currentNavName?: TNavName;
@@ -62,31 +60,19 @@ export class HomeComponent implements AfterViewInit {
   showXBtn: boolean = false;
   selectedTagItem?: ITag;
 
-  ngAfterViewInit(): void {
-    this.checkScrollbar();
-  }
-
-  checkScrollbar(): void {
-    if (!this.myDiv) {
-      return;
-    }
-
-    const hasScrollbar =
-      this.myDiv.nativeElement.scrollHeight >
-      this.myDiv.nativeElement.clientHeight;
-    if (hasScrollbar) {
-      this.myDiv.nativeElement.classList.add('yw-home-margin-right');
-    } else {
-      this.myDiv.nativeElement.classList.remove('yw-home-margin-right');
-    }
-  }
-
   onPageablePosts(value: IPageable) {
     this.pageable = value;
-    this.checkScrollbar();
+  }
+
+  onPreviousPageEvent(v: number) {
+    this.postsParams = { page: v };
   }
 
   onPage(v: number) {
+    this.postsParams = { page: v };
+  }
+
+  onNextPageEvent(v: number) {
     this.postsParams = { page: v };
   }
 

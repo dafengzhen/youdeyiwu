@@ -6,7 +6,7 @@
           @if (showBackBtn) {
             <li class="page-item">
               <a
-                class="page-link rounded-start-pill border-end-0"
+                class="page-link border-end-0"
                 href=""
                 (click)="onClickBackBtn($event)"
               >
@@ -18,7 +18,6 @@
           <li class="page-item">
             <a
               class="page-link border-end-0"
-              [class.rounded-start-pill]="!showBackBtn"
               [class.disabled]="!pageable.previous"
               href=""
               (click)="onClickPreviousPage($event)"
@@ -29,6 +28,7 @@
           <li class="page-item">
             <a
               class="page-link border-start-0 border-end-0"
+              [class.disabled]="showBackBtn"
               href=""
               (click)="onClickPage($event)"
             >
@@ -46,7 +46,6 @@
           <li class="page-item">
             <a
               class="page-link border-start-0"
-              [class.rounded-end-pill]="!showXBtn"
               [class.disabled]="!pageable.next"
               href=""
               (click)="onClickNextPage($event)"
@@ -58,7 +57,7 @@
           @if (showXBtn) {
             <li class="page-item">
               <a
-                class="page-link rounded-end-pill border-end-0"
+                class="page-link border-start-0"
                 href=""
                 (click)="onClickXBtn($event)"
               >
@@ -86,9 +85,13 @@
     </button>
 
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="">My Profile</a></li>
-      <li><a class="dropdown-item" href="">Login Now</a></li>
-      <li><a class="dropdown-item" href="">Quick Register</a></li>
+      <li>
+        <a class="dropdown-item" routerLink="/users">My Profile</a>
+      </li>
+      <li><a class="dropdown-item" routerLink="/login">Login Now</a></li>
+      <li>
+        <a class="dropdown-item" routerLink="/register">Quick Register</a>
+      </li>
     </ul>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { lastValueFrom } from 'rxjs';
@@ -10,6 +10,7 @@ import { DateTimeComponent } from '@/src/app/components/common/date-time/date-ti
 import { UserLinkComponent } from '@/src/app/components/common/user-link/user-link.component';
 import { PostLinkComponent } from '@/src/app/components/common/post-link/post-link.component';
 import { IError, IPageable, IPost, ITag, TQueryParams } from '@/src/types';
+import { createSequenceArray } from '@/src/app/tools';
 
 @Component({
   selector: 'app-home-posts',
@@ -28,6 +29,9 @@ import { IError, IPageable, IPost, ITag, TQueryParams } from '@/src/types';
 })
 export class PostsComponent {
   params = input<TQueryParams>({ page: 0 });
+  placeholders: number[] = createSequenceArray(7);
+
+  @Input() hideOverview: boolean = true;
 
   @Output() pageableEvent = new EventEmitter<IPageable>();
   @Output() tagItemEvent = new EventEmitter<ITag>();

@@ -5,13 +5,17 @@
         <div class="card card-hover border-0 shadow-sm-hover">
           <div class="card-body">
             <div class="row align-items-center">
-              <div class="col-6">
+              <div [class]="hideOverview ? 'col-9' : 'col-6'">
                 <app-post-link
                   [post]="item"
                   (tagItemEvent)="onTagItemEvent($event)"
                 ></app-post-link>
               </div>
-              <div class="col-3 text-truncate">{{ item.overview }}</div>
+
+              @if (!hideOverview) {
+                <div class="col-3 text-truncate">{{ item.overview }}</div>
+              }
+
               <div class="col-2">
                 <app-user-link [user]="item.user"></app-user-link>
                 <span>&nbsp;/&nbsp;</span>
@@ -49,28 +53,34 @@
     </div>
   }
 } @else if (postsQuery.isPending()) {
-  <div class="row">
-    <div class="col">
-      <div class="card border-0 shadow-sm-hover">
-        <div class="card-body">
-          <div class="row align-items-center placeholder-wave">
-            <div class="col-6">
-              <span class="placeholder col-6 rounded"></span>
-            </div>
-            <div class="col-3 text-truncate">
-              <span class="placeholder col-3 rounded"></span>
-            </div>
-            <div class="col-2">
-              <span class="placeholder col-2 rounded"></span>
-            </div>
-            <div class="col-1">
-              <span class="placeholder col-1 rounded"></span>
+  @for (index of placeholders; track index) {
+    <div class="row">
+      <div class="col">
+        <div class="card border-0 shadow-sm-hover">
+          <div class="card-body">
+            <div class="row align-items-center placeholder-wave">
+              <div [class]="hideOverview ? 'col-9' : 'col-6'">
+                <span class="placeholder col-6 rounded"></span>
+              </div>
+
+              @if (!hideOverview) {
+                <div class="col-3 text-truncate">
+                  <span class="placeholder col-3 rounded"></span>
+                </div>
+              }
+
+              <div class="col-2">
+                <span class="placeholder col-2 rounded"></span>
+              </div>
+              <div class="col-1">
+                <span class="placeholder col-1 rounded"></span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 } @else if (postsQuery.isError()) {
   <div class="row">
     <div class="col">

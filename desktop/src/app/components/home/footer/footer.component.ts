@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IPageable } from '@/src/types';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home-footer',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })

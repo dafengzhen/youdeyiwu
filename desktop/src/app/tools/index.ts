@@ -16,3 +16,7 @@ export const fromNow = (value: string): string => {
 export const isNew = (value: string): boolean => {
   return isToday(value);
 };
+
+export const createSequenceArray = (length: number) => {
+  return Array.from({ length }, (_, index) => index + 1);
+};
