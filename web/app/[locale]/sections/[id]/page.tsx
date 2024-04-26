@@ -88,7 +88,7 @@ export default async function Page({
     notFound();
   }
 
-  const _params = parseSearchParams(searchParams);
+  const _params = parseSearchParams(id, searchParams);
   const responses = await Promise.all([
     QueryDetailsSectionAction({ id }),
     LoginInfoUserAction(),
@@ -127,7 +127,10 @@ export default async function Page({
   );
 }
 
-const parseSearchParams = (searchParams: ISearchParamsSectionIdPage) => {
+const parseSearchParams = (
+  id: string,
+  searchParams: ISearchParamsSectionIdPage,
+) => {
   const {
     sgid,
     sectionGroupId = sgid,
@@ -140,6 +143,7 @@ const parseSearchParams = (searchParams: ISearchParamsSectionIdPage) => {
     sectionGroupId,
     tagId,
     tagGroupId,
+    sectionId: id,
   };
 
   const parse = queryString.parse(queryString.stringify(params), {

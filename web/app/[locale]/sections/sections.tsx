@@ -33,7 +33,7 @@ export default function Sections({
                     </div>
                   </div>
                   <div className="card-body">
-                    <div className="row row-cols-auto">
+                    <div className="row row-cols-auto row-gap-4">
                       <Items sections={item.sections} />
                     </div>
                   </div>
@@ -55,7 +55,7 @@ export default function Sections({
                 </div>
               )}
               <div className="card-body">
-                <div className="row row-cols-auto">
+                <div className="row row-cols-auto row-gap-4">
                   <Items sections={sections} />
                 </div>
               </div>

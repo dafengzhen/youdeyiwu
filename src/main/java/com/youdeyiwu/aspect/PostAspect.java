@@ -2,17 +2,24 @@ package com.youdeyiwu.aspect;
 
 import static com.youdeyiwu.tool.Tool.getCurrentDateTime;
 
+import com.youdeyiwu.constant.PointConfigConstant;
+import com.youdeyiwu.enums.config.ConfigTypeEnum;
 import com.youdeyiwu.event.MessageApplicationEvent;
 import com.youdeyiwu.event.PostReviewStateApplicationEvent;
+import com.youdeyiwu.exception.CustomException;
 import com.youdeyiwu.exception.PointNotFoundException;
+import com.youdeyiwu.exception.PostNotFoundException;
 import com.youdeyiwu.exception.UserNotFoundException;
 import com.youdeyiwu.model.dto.forum.DisableCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.DisableUserCommentReplyPostDto;
 import com.youdeyiwu.model.dto.forum.UpdateStatesPostDto;
 import com.youdeyiwu.model.entity.forum.PostEntity;
 import com.youdeyiwu.model.entity.forum.PostUserEntity;
+import com.youdeyiwu.model.entity.forum.SectionEntity;
 import com.youdeyiwu.model.entity.message.MessageEntity;
+import com.youdeyiwu.model.entity.point.PointEntity;
 import com.youdeyiwu.model.entity.user.UserEntity;
+import com.youdeyiwu.repository.config.ConfigRepository;
 import com.youdeyiwu.repository.forum.PostRepository;
 import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.SecurityService;
@@ -23,8 +30,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -46,6 +55,8 @@ public class PostAspect {
   private final SecurityService securityService;
 
   private final UserRepository userRepository;
+
+  private final ConfigRepository configRepository;
 
   /**
    * updateStates.
@@ -71,6 +82,71 @@ public class PostAspect {
   )
   public void disableUserCommentReplyPointcut(Long id, Long userId, DisableUserCommentReplyPostDto dto) {
     // Pointcut
+  }
+
+  /**
+   * queryDetails.
+   */
+  @Pointcut(value = "execution(* com.youdeyiwu.service.forum.impl.PostServiceImpl.queryDetails(..)) && args(pageable,id,postKey)", argNames = "pageable,id,postKey")
+  public void queryDetailsPointcut(Pageable pageable, Long id, String postKey) {
+    // Pointcut
+  }
+
+  /**
+   * before advice.
+   */
+  @Before(value = "queryDetailsPointcut(pageable,id,postKey)", argNames = "pageable,id,postKey")
+  public void queryDetailsBeforeAdvice(Pageable pageable, Long id, String postKey) {
+    Boolean enable = configRepository.findOptionalByTypeAndName(
+            ConfigTypeEnum.POINT,
+            PointConfigConstant.ENABLE
+        )
+        .map(configEntity -> Boolean.valueOf(configEntity.getValue()))
+        .orElse(false);
+
+    if (Boolean.FALSE.equals(enable)) {
+      return;
+    }
+
+    PostEntity postEntity = postRepository.findById(id)
+        .orElseThrow(PostNotFoundException::new);
+    SectionEntity sectionEntity = postEntity.getSection();
+
+    if (
+        Objects.isNull(sectionEntity)
+            || Objects.isNull(sectionEntity.getAccessPoints())
+            || sectionEntity.getAccessPoints() == 0
+    ) {
+      return;
+    }
+
+    Integer accessPoints = sectionEntity.getAccessPoints();
+    if (securityService.isAnonymous()) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "section.accessPoints.error",
+              Map.of(
+                  "point", accessPoints,
+                  "currentPoint", "0"
+              )
+          )
+      );
+    }
+
+    UserEntity userEntity = userRepository.findById(securityService.getUserId())
+        .orElseThrow(UserNotFoundException::new);
+    PointEntity pointEntity = userEntity.getPoint();
+    if (Objects.isNull(pointEntity) || pointEntity.getPoints() < accessPoints) {
+      throw new CustomException(
+          i18nTool.getMessage(
+              "section.accessPoints.error",
+              Map.of(
+                  "point", accessPoints,
+                  "currentPoint", "0"
+              )
+          )
+      );
+    }
   }
 
   /**

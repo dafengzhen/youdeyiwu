@@ -126,6 +126,11 @@ public class SectionEntity extends AbstractEntity {
   private String accessKey;
 
   /**
+   * access points.
+   */
+  private Integer accessPoints = 0;
+
+  /**
    * sectionGroups.
    */
   @ManyToMany(mappedBy = "sections")

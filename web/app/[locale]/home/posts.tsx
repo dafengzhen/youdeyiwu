@@ -111,7 +111,7 @@ export default function Posts({
           <div key={item.id} className="card yw-card shadow-sm shadow-hover">
             <div className="card-header yw-card-header">
               <div className="d-flex align-items-center gap-4 justify-content-between">
-                <div className="d-flex align-items-center gap-2">
+                <div className="d-flex align-items-center gap-2 flex-wrap">
                   {item.tags.map((tag) => {
                     return (
                       <span
@@ -220,20 +220,6 @@ export default function Posts({
                       {fromNow(item.createdOn)}
                     </time>
                   </div>
-                </div>
-                <div className="flex-shrink-0 flex-grow-1 gap-2 align-items-center justify-content-end d-flex">
-                  {item.commentsCount + item.repliesCount > 0 && (
-                    <Link
-                      className="link-body-emphasis link-underline-opacity-0 link-underline-opacity-100-hover"
-                      href={`/posts/${item.id}`}
-                      scroll={false}
-                    >
-                      <i
-                        className="bi bi-chat-text fs-4"
-                        title={t('common.takePartInTheComments')}
-                      ></i>
-                    </Link>
-                  )}
                 </div>
               </div>
             </div>

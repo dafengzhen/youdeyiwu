@@ -26,7 +26,10 @@ public record UpdateSectionDto(
     String content,
 
     @PositiveOrZero(message = "{section.sort.value}")
-    Integer sort
+    Integer sort,
+
+    @PositiveOrZero(message = "{section.accessPoints.value}")
+    Integer accessPoints
 ) implements Serializable {
 
 }

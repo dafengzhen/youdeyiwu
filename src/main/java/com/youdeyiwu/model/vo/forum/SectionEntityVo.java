@@ -83,6 +83,11 @@ public class SectionEntityVo extends AbstractEntityVo {
   private String accessKey;
 
   /**
+   * access points.
+   */
+  private Integer accessPoints = 0;
+
+  /**
    * tagGroups.
    */
   private Set<TagGroupEntityVo> tagGroups;

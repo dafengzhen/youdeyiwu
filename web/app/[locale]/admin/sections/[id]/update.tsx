@@ -34,12 +34,14 @@ export default function Update({ section }: { section: ISection }) {
     overview: string;
     content: string;
     sort: number;
+    accessPoints: number;
   }>({
     name: section.name ?? '',
     cover: section.cover ?? '',
     overview: section.overview ?? '',
     content: section.content ?? '',
     sort: section.sort ?? 0,
+    accessPoints: section.accessPoints ?? 0,
   });
   const editorElementRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
@@ -143,6 +145,20 @@ export default function Update({ section }: { section: ISection }) {
             value={form.sort}
             onChange={onChangeForm}
             aria-describedby="sort"
+            min={0}
+          />
+          <div className="form-text">{t('common.minimumValueIs0')}</div>
+        </div>
+
+        <div>
+          <label className="form-label">{t('common.accessPoints')}</label>
+          <input
+            type="number"
+            className="form-control"
+            name="accessPoints"
+            value={form.accessPoints}
+            onChange={onChangeForm}
+            aria-describedby="accessPoints"
             min={0}
           />
           <div className="form-text">{t('common.minimumValueIs0')}</div>

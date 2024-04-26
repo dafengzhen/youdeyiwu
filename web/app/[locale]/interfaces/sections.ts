@@ -27,6 +27,7 @@ export interface ISection extends IBase {
   tags: ITag[];
   tagGroups: ITagGroup[];
   sectionGroups: ISectionGroup[];
+  accessPoints?: number;
 }
 
 export interface ISectionDetails extends IBase {

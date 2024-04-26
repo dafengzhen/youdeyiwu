@@ -393,6 +393,7 @@
     "updateStyles": "Update Styles",
     "stylesPreview": "Styles Preview",
     "stylesPreviewError": "The style you have written contains errors. Please check your style input.",
-    "classNamesPreview": "Class Names Preview"
+    "classNamesPreview": "Class Names Preview",
+    "accessPoints": "Access Points"
   }
 }

@@ -391,6 +391,7 @@
     "updateStyles": "更新样式",
     "stylesPreview": "样式预览",
     "stylesPreviewError": "样式编写存在错误，请重新检查输入",
-    "classNamesPreview": "类名预览"
+    "classNamesPreview": "类名预览",
+    "accessPoints": "访问积分"
   }
 }

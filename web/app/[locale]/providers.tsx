@@ -31,12 +31,7 @@ export function Providers(props: {
 
   useEffect(() => {
     import('bootstrap')
-      .then((bootstrap) => {
-        bsRef.current = bootstrap;
-        [...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(
-          (element) => bootstrap.Tooltip.getOrCreateInstance(element),
-        );
-      })
+      .then((bootstrap) => (bsRef.current = bootstrap))
       .catch((reason) => {
         console.error(
           'Initialization of bootstrap script failed, please refresh the page and try again',
