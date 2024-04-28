@@ -2,35 +2,34 @@
 
 Youdeyiwu is an open-source lightweight forum.
 
+Although it may not have the powerful features of WordPress, it provides a new choice for users who want to build a simple forum.
+
 <div class="tip custom-block" style="padding-top: 8px">
 
-Just want to give it a try? Jump to the [quick start](./getting-started).
+Just want to give it a try? Jump to [Getting Started](./getting-started).
 
 </div>
 
 ## Features {#features}
 
-- Focused Content: Edit articles using a rich text editor, focusing on content creation.
-- Enhanced Search Engine Optimization: Improve SEO effectiveness through server-side rendering and metadata.
-- Front-End/Back-End Separation: Achieve greater freedom and flexibility with a front-end/back-end separation architecture.
-- Simplicity and Ease of Use: Provide a minimalist interface and intuitive operations, along with quick application deployment.
-- Anonymous Creation: Support anonymous article creation to protect user privacy.
-- Points Rewards: Enable the setting of point rewards to incentivize user participation and contributions.
-- Dark Mode: Offer both light and dark mode options for users to adapt to their environment.
-- Internationalization: Support a multi-language interface, allowing users to choose their preferred language display.
-- Content Organization: Provide tag groups and section groups to organize and categorize content.
-- Article Review: Support article review management to ensure compliance with specified requirements.
-- Dynamic Menu: Support dynamic menu management in the backend, allowing flexible creation.
-- Dynamic Permissions: Support dynamic permission management in the backend, allowing assignment based on specific needs.
+In addition to basic functionality and backend management, it also has the following features:
 
-# Use Cases {#use-cases}
-
-It can be used as a platform for communication or knowledge sharing, among other purposes.
+- Creating posts anonymously
+- Setting point-based permissions and rewards
+- Organizing content through tags and sections
+- Post moderation management
+- Dynamic permission management
 
 # Developer Technology {#developer-technology}
 
 Youdeyiwu consists of both frontend and backend components.
 
-The backend is developed using [Spring Boot](https://spring.io/projects/spring-boot), and the frontend is developed using [Next.js](https://nextjs.org).
+The backend is developed using [Spring Boot 3](https://spring.io/projects/spring-boot), the frontend is developed using [Next.js 14](https://nextjs.org), and the database used is [MySQL 8](https://www.mysql.com).
 
-Using the [Mysql](https://www.mysql.com) database.
+::: info Side Note
+
+If there is spare time in the future, desktop and app development may be considered. The idea is to expand on the backend API utilization and frontend browsing.
+
+However, developing other platforms is not the main focus. The main focus is still on frontend and backend development.
+
+:::
