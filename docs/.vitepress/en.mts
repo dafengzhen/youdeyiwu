@@ -32,19 +32,19 @@ function nav(): DefaultTheme.NavItem[] {
       link: '/reference/overview',
       activeMatch: '/reference/',
     },
-    {
-      text: pkg.version,
-      items: [
-        {
-          text: 'Changelog',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md',
-        },
-        {
-          text: 'Contributing',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md',
-        },
-      ],
-    },
+    // {
+    //   text: pkg.version,
+    //   items: [
+    //     {
+    //       text: 'Changelog',
+    //       link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md',
+    //     },
+    //     {
+    //       text: 'Contributing',
+    //       link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md',
+    //     },
+    //   ],
+    // },
   ];
 }
 

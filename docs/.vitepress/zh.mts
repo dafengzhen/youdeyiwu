@@ -46,19 +46,19 @@ function nav(): DefaultTheme.NavItem[] {
       link: '/zh/reference/overview',
       activeMatch: '/reference/',
     },
-    {
-      text: pkg.version,
-      items: [
-        {
-          text: '更新日志',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md',
-        },
-        {
-          text: '参与贡献',
-          link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md',
-        },
-      ],
-    },
+    // {
+    //   text: pkg.version,
+    //   items: [
+    //     {
+    //       text: '更新日志',
+    //       link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/CHANGELOG.md',
+    //     },
+    //     {
+    //       text: '参与贡献',
+    //       link: 'https://github.com/dafengzhen/youdeyiwu/blob/main/.github/contributing.md',
+    //     },
+    //   ],
+    // },
   ];
 }
 

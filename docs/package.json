@@ -15,8 +15,8 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "prettier": "^3.2.5",
-    "sass": "^1.74.1",
-    "vitepress": "^1.1.0"
+    "sass": "^1.75.0",
+    "vitepress": "^1.1.4"
   },
   "peerDependencies": {
     "vue": "^3.4.15"
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/dafengzhen/youdeyiwu#readme",
   "dependencies": {
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "swiper": "^11.1.1"
   }
 }
