@@ -1,7 +1,9 @@
 # Backend Development
 
 ::: info
+
 The following describes how to set up a development environment for backend development. It is assumed that you have the necessary programming foundation.
+
 :::
 
 The Youdeyiwu backend application is primarily developed using [Spring Boot 3 (JDK 17)](https://spring.io/projects/spring-boot), and the database used is [MySQL 8](https://www.mysql.com).

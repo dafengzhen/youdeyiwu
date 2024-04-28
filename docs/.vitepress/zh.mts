@@ -90,6 +90,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: '前端开发', link: 'frontend-development' },
         { text: '后端开发', link: 'backend-development' },
+        { text: '桌面端开发', link: 'desktop-development' },
       ],
     },
     {

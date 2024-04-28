@@ -1,7 +1,9 @@
 # 前端开发
 
 ::: info
+
 下面介绍如何搭建二次开发环境，默认你有相应编程基础
+
 :::
 
 Youdeyiwu 前端程序主要使用 [Next.js 14](https://nextjs.org) 开发，UI 使用 [Bootstrap 5](https://getbootstrap.com)

@@ -4,5 +4,5 @@
 
 你可以在支持该规范的 API 测试工具中导入该文件，例如：[Insomnia](https://insomnia.rest)、[Apifox](https://apifox.com) 等
 
-文档中也会列出 API 定义作为参考，可以结合来使用
+未来文档中也会列出 API 定义作为参考，可以结合来使用
 

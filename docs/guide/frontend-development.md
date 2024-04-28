@@ -1,7 +1,9 @@
 # Frontend Development
 
 ::: info
+
 Below is an explanation of how to set up the development environment for front-end development. It is assumed that you have the necessary programming knowledge.
+
 :::
 
 Youdeyiwu front-end development primarily uses [Next.js 14](https://nextjs.org) and the UI is built using [Bootstrap 5](https://getbootstrap.com).
