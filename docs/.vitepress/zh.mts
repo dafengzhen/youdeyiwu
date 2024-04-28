@@ -88,8 +88,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       text: '开发',
       collapsed: false,
       items: [
-        { text: '后端开发', link: 'backend-development' },
         { text: '前端开发', link: 'frontend-development' },
+        { text: '后端开发', link: 'backend-development' },
       ],
     },
     {

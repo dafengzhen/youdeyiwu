@@ -74,8 +74,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       text: 'Development',
       collapsed: false,
       items: [
-        { text: 'Backend', link: 'backend-development' },
         { text: 'Frontend', link: 'frontend-development' },
+        { text: 'Backend', link: 'backend-development' },
       ],
     },
     {
