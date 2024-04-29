@@ -56,6 +56,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'What is Youdeyiwu?', link: 'what-is-youdeyiwu' },
         { text: 'Getting Started', link: 'getting-started' },
+        { text: 'Vercel Deploy', link: 'vercel-deploy' },
         { text: 'Update Image', link: 'update-image' },
         { text: 'Config File', link: 'config-file' },
         { text: 'Icon File', link: 'icon-file' },

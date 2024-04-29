@@ -70,6 +70,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: '什么是尤得一物？', link: 'what-is-youdeyiwu' },
         { text: '快速开始', link: 'getting-started' },
+        { text: 'Vercel 部署', link: 'vercel-deploy' },
         { text: '更新镜像', link: 'update-image' },
         { text: '配置文件', link: 'config-file' },
         { text: '图标文件', link: 'icon-file' },
