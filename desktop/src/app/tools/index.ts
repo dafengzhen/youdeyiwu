@@ -20,3 +20,10 @@ export const isNew = (value: string): boolean => {
 export const createSequenceArray = (length: number) => {
   return Array.from({ length }, (_, index) => index + 1);
 };
+
+export const generateRandomNumber = (min: number, max: number) => {
+  if (min > max) {
+    [min, max] = [max, min];
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};

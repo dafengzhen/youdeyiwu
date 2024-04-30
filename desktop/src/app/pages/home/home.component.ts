@@ -19,6 +19,7 @@ import { SectionsComponent } from '@/src/app/components/home/sections/sections.c
 import { SectionsHeaderComponent } from '@/src/app/components/home/header/sections/sections.component';
 import { SectionGroupsComponent } from '@/src/app/components/home/section-groups/section-groups.component';
 import { SectionGroupsHeaderComponent } from '@/src/app/components/home/header/section-groups/section-groups.component';
+import { ModalComponent } from '@/src/app/components/common/modal/modal.component';
 
 type TNavName =
   | 'Content Groups'
@@ -46,6 +47,7 @@ type TNavName =
     SectionsHeaderComponent,
     SectionGroupsComponent,
     SectionGroupsHeaderComponent,
+    ModalComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

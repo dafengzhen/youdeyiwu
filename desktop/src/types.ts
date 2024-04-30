@@ -237,3 +237,28 @@ export interface IPostFavorite extends IBase {
   contentLink?: string;
   postId: number;
 }
+
+export interface IToken {
+  id: number;
+  username: string;
+  token: string;
+  expDays?: number;
+}
+
+export interface ILoginVariables {
+  username: string;
+  password: string;
+}
+
+export interface IRegisterVariables {
+  username: string;
+  password: string;
+}
+
+// ================================================================================================
+
+declare global {
+  interface Window {
+    bootstrap: never;
+  }
+}

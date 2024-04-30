@@ -1,15 +1,25 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { IPageable } from '@/src/types';
 import { RouterLink } from '@angular/router';
+import { ModalComponent } from '@/src/app/components/common/modal/modal.component';
+import { LoginComponent } from '@/src/app/components/common/login/login.component';
 
 @Component({
   selector: 'app-home-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ModalComponent, LoginComponent],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })
 export class FooterComponent {
+  @ViewChild(ModalComponent) modal?: ModalComponent;
+
   @Input() pageable?: IPageable;
   @Input() showPageable!: boolean;
   @Input() showBackBtn!: boolean;
@@ -20,6 +30,8 @@ export class FooterComponent {
   @Output() previousPageEvent = new EventEmitter<number>();
   @Output() nextPageEvent = new EventEmitter<number>();
   @Output() pageEvent = new EventEmitter<number>();
+
+  showLoginPage = true;
 
   onClickPreviousPage(e: MouseEvent) {
     e.preventDefault();
@@ -64,5 +76,21 @@ export class FooterComponent {
     e.stopPropagation();
 
     this.xBtnEvent.emit();
+  }
+
+  onClickLogin(showLoginPage: boolean, e: MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.showLoginPage = showLoginPage;
+    this.modal?.show();
+  }
+
+  onShownBsModalEvent() {
+    this.modal?.handleUpdate();
+  }
+
+  onCloseEventLogin() {
+    this.modal?.hide();
   }
 }

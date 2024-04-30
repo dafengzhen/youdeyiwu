@@ -2,7 +2,7 @@
   @for (item of sectionGroupsQuery.data(); track item.id) {
     <div class="row">
       <div class="col">
-        <div class="card card-hover border-0 shadow-sm-hover">
+        <div class="card border-0">
           <div
             class="card-body cursor-pointer"
             tabindex="0"
@@ -21,7 +21,7 @@
   } @empty {
     <div class="row">
       <div class="col">
-        <div class="card border-0 shadow-sm-hover">
+        <div class="card border-0">
           <div class="card-body">
             <div
               class="alert alert-info d-flex align-items-center fade show"
@@ -38,7 +38,7 @@
 } @else if (sectionGroupsQuery.isPending()) {
   <div class="row">
     <div class="col">
-      <div class="card border-0 shadow-sm-hover">
+      <div class="card border-0">
         <div class="card-body">
           <div class="row align-items-center placeholder-wave">
             <div class="col">
@@ -52,7 +52,7 @@
 } @else if (sectionGroupsQuery.isError()) {
   <div class="row">
     <div class="col">
-      <div class="card border-0 shadow-sm-hover">
+      <div class="card border-0">
         <div class="card-body">
           <div
             class="alert alert-danger d-flex align-items-center fade show"

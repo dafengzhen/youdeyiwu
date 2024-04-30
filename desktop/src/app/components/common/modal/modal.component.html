@@ -1,0 +1,26 @@
+<div class="modal fade" tabindex="-1" #modal>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    [class.modal-sm]="sm"
+  >
+    @if (customLayout) {
+      <div class="modal-content">
+        <ng-content class="modal-content" select="modal-content"></ng-content>
+      </div>
+    } @else if (defaultLayout) {
+      <div class="modal-content">
+        <div class="modal-header">
+          <ng-content select="modal-header"></ng-content>
+        </div>
+        <div class="modal-body">
+          <ng-content select="modal-body"></ng-content>
+        </div>
+        <div class="modal-footer">
+          <ng-content select="modal-footer"></ng-content>
+        </div>
+      </div>
+    } @else {
+      <ng-content></ng-content>
+    }
+  </div>
+</div>

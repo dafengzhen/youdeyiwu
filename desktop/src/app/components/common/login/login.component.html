@@ -1,0 +1,127 @@
+<div class="container p-2">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="handleSubmit()"
+    class="d-flex flex-column gap-4 position-relative"
+  >
+    <div>
+      <label for="username" class="form-label form-text">Username</label>
+      <input
+        id="username"
+        required
+        formControlName="username"
+        name="username"
+        type="text"
+        class="form-control"
+        placeholder="Please enter a username."
+        aria-describedby="username"
+      />
+
+      @if (
+        username && username.invalid && (username.dirty || username.touched)
+      ) {
+        @if (username.hasError("required")) {
+          <div class="form-text text-danger">
+            The username is required to be filled in.
+          </div>
+        }
+      }
+    </div>
+
+    <div>
+      <label for="password" class="form-label form-text">Password </label>
+      <input
+        id="password"
+        required
+        formControlName="password"
+        name="password"
+        type="password"
+        placeholder="Please enter a password."
+        class="form-control"
+        autoComplete="password"
+      />
+
+      @if (
+        password && password.invalid && (password.dirty || password.touched)
+      ) {
+        @if (password.hasError("required")) {
+          <div class="form-text text-danger">
+            The password is required to be filled in.
+          </div>
+        }
+      }
+    </div>
+
+    @if (progress > 0) {
+      <div
+        class="progress"
+        role="progressbar"
+        aria-label="Animated striped example"
+        [attr.aria-valuenow]="progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        <div
+          class="progress-bar progress-bar-striped"
+          [class.progress-bar-animated]="progress !== 100"
+          [class.bg-success]="progress === 100"
+          [style.width]="progress + '%'"
+        ></div>
+      </div>
+    }
+
+    @if (successful) {
+      <p class="text-center text-success display-5">Successful</p>
+    } @else {
+      <div>
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="!form.valid || isLoading"
+        >
+          @if (isLoading) {
+            <span
+              class="spinner-border spinner-border-sm"
+              aria-hidden="true"
+            ></span>
+            <span class="visually-hidden" role="status">Loading...</span>
+          }
+
+          @if (showLoginPage) {
+            Login
+          } @else {
+            Register
+          }
+        </button>
+      </div>
+      <div class="list-group">
+        <button
+          [disabled]="isLoading"
+          (click)="onClickToggle()"
+          type="button"
+          class="list-group-item list-group-item-action text-center"
+        >
+          <i
+            class="bi fs-5"
+            [class]="[showLoginPage ? 'bi-person-add' : 'bi-person']"
+          ></i>
+
+          @if (showLoginPage) {
+            Register
+          } @else {
+            Login
+          }
+        </button>
+      </div>
+    }
+
+    <div class="position-absolute top-0 start-100 translate-middle">
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="onClickClose()"
+      ></button>
+    </div>
+  </form>
+</div>

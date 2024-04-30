@@ -1,4 +1,6 @@
-<div class="mt-2 d-flex align-items-center justify-content-between">
+<div
+  class="mt-2 d-flex align-items-center justify-content-between user-select-none"
+>
   @if (showPageable) {
     @if (pageable) {
       <nav aria-label="Page navigation items">
@@ -88,10 +90,25 @@
       <li>
         <a class="dropdown-item" routerLink="/users">My Profile</a>
       </li>
-      <li><a class="dropdown-item" routerLink="/login">Login Now</a></li>
       <li>
-        <a class="dropdown-item" routerLink="/register">Quick Register</a>
+        <a class="dropdown-item" href="" (click)="onClickLogin(true, $event)"
+          >Login Now</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item" href="" (click)="onClickLogin(false, $event)"
+          >Quick Register</a
+        >
       </li>
     </ul>
   </div>
 </div>
+
+<app-modal #modal [customLayout]="true" [sm]="true">
+  <div class="modal-body" ngProjectAs="modal-content">
+    <app-login
+      [showLoginPage]="showLoginPage"
+      (closeEvent)="onCloseEventLogin()"
+    ></app-login>
+  </div>
+</app-modal>

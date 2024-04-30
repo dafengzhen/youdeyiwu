@@ -2,7 +2,7 @@
   @for (item of postsQuery.data(); track item.id) {
     <div class="row">
       <div class="col">
-        <div class="card card-hover border-0 shadow-sm-hover">
+        <div class="card border-0">
           <div class="card-body">
             <div class="row align-items-center">
               <div [class]="hideOverview ? 'col-9' : 'col-6'">
@@ -38,7 +38,7 @@
   } @empty {
     <div class="row">
       <div class="col">
-        <div class="card border-0 shadow-sm-hover">
+        <div class="card border-0">
           <div class="card-body">
             <div
               class="alert alert-info d-flex align-items-center fade show"
@@ -56,7 +56,7 @@
   @for (index of placeholders; track index) {
     <div class="row">
       <div class="col">
-        <div class="card border-0 shadow-sm-hover">
+        <div class="card border-0">
           <div class="card-body">
             <div class="row align-items-center placeholder-wave">
               <div [class]="hideOverview ? 'col-9' : 'col-6'">
@@ -84,7 +84,7 @@
 } @else if (postsQuery.isError()) {
   <div class="row">
     <div class="col">
-      <div class="card border-0 shadow-sm-hover">
+      <div class="card border-0">
         <div class="card-body">
           <div
             class="alert alert-danger d-flex align-items-center fade show"
