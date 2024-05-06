@@ -109,7 +109,7 @@ export default function PostsH5({
           const avatar = user?.avatar;
 
           return (
-            <div key={item.id} className="card yw-card shadow-sm shadow-hover">
+            <div key={item.id} className="card yw-card shadow-sm">
               <div className="card-header yw-card-header">
                 <div className="d-flex align-items-center gap-4 justify-content-between">
                   <div className="d-flex align-items-center gap-2 flex-wrap">

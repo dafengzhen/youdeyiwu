@@ -9,6 +9,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { Store } from '@ngrx/store';
+import { loadUserLoginInfo } from '@/src/app/actions/global.actions';
 
 export const fadeInOutAnimation = trigger('fadeInOut', [
   transition(':enter', [
@@ -86,5 +88,14 @@ export const fadeInOutAnimation = trigger('fadeInOut', [
 })
 export class AppComponent {
   title = 'youdeyiwu';
+
   protected readonly environment = environment;
+
+  constructor(private store: Store) {
+    this.loadUserInfo();
+  }
+
+  loadUserInfo() {
+    this.store.dispatch(loadUserLoginInfo());
+  }
 }

@@ -87,19 +87,33 @@
     </button>
 
     <ul class="dropdown-menu">
-      <li>
-        <a class="dropdown-item" routerLink="/users">My Profile</a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="" (click)="onClickLogin(true, $event)"
-          >Login Now</a
-        >
-      </li>
-      <li>
-        <a class="dropdown-item" href="" (click)="onClickLogin(false, $event)"
-          >Quick Register</a
-        >
-      </li>
+      @if (globalState().isLogin) {
+        <li>
+          <a class="dropdown-item" routerLink="/users"
+            ><i class="bi bi-person me-2"></i>My Profile</a
+          >
+        </li>
+        <li class="dropdown-divider"></li>
+        <li>
+          <a
+            class="dropdown-item link-danger"
+            href=""
+            (click)="onClickLogout($event)"
+            ><i class="bi bi-box-arrow-right me-2"></i><span>Logout</span></a
+          >
+        </li>
+      } @else {
+        <li>
+          <a class="dropdown-item" href="" (click)="onClickLogin(true, $event)"
+            ><i class="bi bi-person me-2"></i>Login Now</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="" (click)="onClickLogin(false, $event)"
+            ><i class="bi bi-person-add me-2"></i>Quick Register</a
+          >
+        </li>
+      }
     </ul>
   </div>
 </div>

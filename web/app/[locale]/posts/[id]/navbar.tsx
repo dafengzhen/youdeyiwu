@@ -34,7 +34,7 @@ export default function Navbar({ details }: { details: IPostDetails }) {
 
   return (
     <div className="d-flex flex-column gap-4">
-      <div className="card yw-card shadow-sm shadow-hover">
+      <div className="card yw-card shadow-sm">
         <div className="card-header yw-card-header">
           <div className="d-flex justify-content-around gap-3">
             <Link href={uid ? `/users/${uid}` : '/users'}>

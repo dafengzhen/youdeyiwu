@@ -132,7 +132,7 @@ export default function Reply({
   }
 
   return (
-    <div className="card yw-card shadow-sm shadow-hover">
+    <div className="card yw-card shadow-sm">
       <div className="card-header d-flex justify-content-between gap-2 yw-card-header">
         <div className="d-flex justify-content-around gap-3">
           <Link href={user ? `/users/${user.id}` : '/users'}>

@@ -10,6 +10,10 @@ import {
   QueryClient,
 } from '@tanstack/angular-query-experimental';
 import { TemplatePageTitleStrategy } from '@/src/app/configs/template-page-title-strategy';
+import { provideStore } from '@ngrx/store';
+import { reducers } from '@/src/app/reducers';
+import { provideEffects } from '@ngrx/effects';
+import { effects } from '@/src/app/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,5 +22,7 @@ export const appConfig: ApplicationConfig = {
     { provide: TitleStrategy, useClass: TemplatePageTitleStrategy },
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideAngularQuery(new QueryClient()),
+    provideStore(reducers),
+    provideEffects(effects),
   ],
 };

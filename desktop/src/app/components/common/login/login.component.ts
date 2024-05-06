@@ -14,11 +14,12 @@ import {
   IRegisterVariables,
   IToken,
 } from '@/src/types';
-import { delay, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { SECURE_TK, TK } from '@/src/app/constants';
 import { environment } from '@/src/environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { generateRandomNumber } from '@/src/app/tools';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-login',
@@ -39,13 +40,24 @@ export class LoginComponent {
   isLoading = false;
 
   form = new FormGroup({
-    username: new FormControl('', Validators.required),
-    password: new FormControl('', [Validators.required]),
+    username: new FormControl(
+      {
+        value: '',
+        disabled: false,
+      },
+      [Validators.required, Validators.minLength(3), Validators.maxLength(16)],
+    ),
+    password: new FormControl(
+      {
+        value: '',
+        disabled: false,
+      },
+      [Validators.required, Validators.minLength(6), Validators.maxLength(18)],
+    ),
   });
 
   loginMutation = injectMutation<IToken, IError, ILoginVariables>(() => ({
-    mutationFn: (variables) =>
-      lastValueFrom(this.userService.login(variables).pipe(delay(5000))),
+    mutationFn: (variables) => lastValueFrom(this.userService.login(variables)),
   }));
 
   registerMutation = injectMutation<IToken, IError, IRegisterVariables>(() => ({
@@ -54,8 +66,9 @@ export class LoginComponent {
   }));
 
   constructor(
-    private userService: UserService,
-    private cookieService: CookieService,
+    private readonly userService: UserService,
+    private readonly cookieService: CookieService,
+    private readonly store: Store,
   ) {}
 
   get username() {
@@ -75,6 +88,13 @@ export class LoginComponent {
         alert('The username or password is not filled in.');
         return;
       }
+
+      if (this.isLoading) {
+        return;
+      }
+
+      this.username?.disable();
+      this.password?.disable();
 
       this.isLoading = true;
       this.intervalId = setInterval(() => {
@@ -101,19 +121,21 @@ export class LoginComponent {
       this.setCredentials(data);
       this.successful = true;
       this.successfulEvent.emit();
-      const message = this.showLoginPage
-        ? 'Login successful.'
-        : 'Successful registration.';
 
       setTimeout(() => {
-        alert(message);
+        this.onClickClose();
       }, 1000);
     } catch (e) {
+      this.progress = 0;
+
       const message = (e as IError).error.message;
       alert(message);
     } finally {
       clearInterval(this.intervalId);
       this.isLoading = false;
+
+      this.username?.enable();
+      this.password?.enable();
     }
   }
 
@@ -135,6 +157,12 @@ export class LoginComponent {
   }
 
   onClickClose() {
+    setTimeout(() => {
+      this.progress = 0;
+      this.successful = false;
+      this.form.reset();
+      location.reload();
+    }, 500);
     this.closeEvent.emit();
   }
 }

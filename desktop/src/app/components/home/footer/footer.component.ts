@@ -3,12 +3,19 @@ import {
   EventEmitter,
   Input,
   Output,
+  Signal,
   ViewChild,
 } from '@angular/core';
-import { IPageable } from '@/src/types';
+import { IError, IPageable } from '@/src/types';
 import { RouterLink } from '@angular/router';
 import { ModalComponent } from '@/src/app/components/common/modal/modal.component';
 import { LoginComponent } from '@/src/app/components/common/login/login.component';
+import { Store } from '@ngrx/store';
+import { selectGlobalSelector } from '@/src/app/selectors/global.selector';
+import { IGlobalState } from '@/src/app/reducers/global.reducer';
+import { injectMutation } from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
+import { UserService } from '@/src/app/services/user.service';
 
 @Component({
   selector: 'app-home-footer',
@@ -32,6 +39,19 @@ export class FooterComponent {
   @Output() pageEvent = new EventEmitter<number>();
 
   showLoginPage = true;
+
+  globalState: Signal<IGlobalState>;
+
+  logoutMutation = injectMutation<void, IError, void>(() => ({
+    mutationFn: () => lastValueFrom(this.userService.logout()),
+  }));
+
+  constructor(
+    private readonly userService: UserService,
+    private readonly store: Store,
+  ) {
+    this.globalState = this.store.selectSignal(selectGlobalSelector);
+  }
 
   onClickPreviousPage(e: MouseEvent) {
     e.preventDefault();
@@ -92,5 +112,14 @@ export class FooterComponent {
 
   onCloseEventLogin() {
     this.modal?.hide();
+  }
+
+  onClickLogout(e: MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.logoutMutation.mutateAsync().then(() => {
+      location.reload();
+    });
   }
 }

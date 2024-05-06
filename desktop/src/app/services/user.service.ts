@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ILoginVariables, IRegisterVariables, IToken } from '@/src/types';
+import {
+  ILoginVariables,
+  IRegisterVariables,
+  IToken,
+  IUser,
+} from '@/src/types';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +17,15 @@ export class UserService {
     return this.httpClient.post<IToken>('/users/login', variables);
   }
 
+  loginInfo() {
+    return this.httpClient.get<IUser | null>('/users/login-info');
+  }
+
   register(variables: IRegisterVariables) {
     return this.httpClient.post<IToken>('/users/register', variables);
+  }
+
+  logout() {
+    return this.httpClient.post<void>('/users/logout', null);
   }
 }

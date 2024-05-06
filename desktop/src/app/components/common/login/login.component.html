@@ -25,6 +25,18 @@
             The username is required to be filled in.
           </div>
         }
+
+        @if (username.hasError("minlength")) {
+          <div class="form-text text-danger">
+            The minimum length of the username is 3.
+          </div>
+        }
+
+        @if (username.hasError("maxlength")) {
+          <div class="form-text text-danger">
+            The maximum length of the username is 16.
+          </div>
+        }
       }
     </div>
 
@@ -49,6 +61,18 @@
             The password is required to be filled in.
           </div>
         }
+
+        @if (password.hasError("minlength")) {
+          <div class="form-text text-danger">
+            The minimum length of the password is 6.
+          </div>
+        }
+
+        @if (password.hasError("maxlength")) {
+          <div class="form-text text-danger">
+            The maximum length of the password is 18.
+          </div>
+        }
       }
     </div>
 
@@ -64,14 +88,20 @@
         <div
           class="progress-bar progress-bar-striped"
           [class.progress-bar-animated]="progress !== 100"
-          [class.bg-success]="progress === 100"
+          [class.bg-success]="progress === 100 && showLoginPage"
+          [class.bg-primary]="progress === 100 && !showLoginPage"
           [style.width]="progress + '%'"
         ></div>
       </div>
     }
 
     @if (successful) {
-      <p class="text-center text-success display-5">Successful</p>
+      <p
+        class="text-center display-5"
+        [class]="[showLoginPage ? 'text-success' : 'text-primary']"
+      >
+        Successful
+      </p>
     } @else {
       <div>
         <button
@@ -79,14 +109,6 @@
           class="btn btn-primary w-100"
           [disabled]="!form.valid || isLoading"
         >
-          @if (isLoading) {
-            <span
-              class="spinner-border spinner-border-sm"
-              aria-hidden="true"
-            ></span>
-            <span class="visually-hidden" role="status">Loading...</span>
-          }
-
           @if (showLoginPage) {
             Login
           } @else {

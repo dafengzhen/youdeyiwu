@@ -1,6 +1,6 @@
-export const TK = '_youdeyiwu_tk';
+export const TK = '_youdeyiwu_pc_tk';
 
-export const SECURE_TK = '__Secure_youdeyiwu_tk';
+export const SECURE_TK = '__Secure_youdeyiwu_pc_tk';
 
 export const AUTHORIZATION = 'Authorization';
 
