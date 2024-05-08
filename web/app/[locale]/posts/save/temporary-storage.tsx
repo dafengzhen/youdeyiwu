@@ -30,6 +30,7 @@ export default function TemporaryStorage({
 
       return response.data;
     },
+    enabled: !!currentUser,
   });
 
   const updateTemporaryStorageUserActionMutation = useMutation({
