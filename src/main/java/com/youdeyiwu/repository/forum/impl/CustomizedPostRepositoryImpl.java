@@ -1,5 +1,7 @@
 package com.youdeyiwu.repository.forum.impl;
 
+import static com.youdeyiwu.tool.PostSorterTool.TOTAL_TIME_SECONDS;
+
 import com.youdeyiwu.enums.forum.PostStateEnum;
 import com.youdeyiwu.model.dto.PaginationPositionDto;
 import com.youdeyiwu.model.dto.forum.QueryParamsPost;
@@ -317,10 +319,12 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
    * @param accessKey accessKey
    * @return TypedQueryPostPage
    */
+  @SuppressWarnings("JpaQlInspection")
   private TypedQueryPostPage queryAnonymousUserPosts(
       QueryParamsPost dto,
       String accessKey
   ) {
+    final int totalTimeSeconds = TOTAL_TIME_SECONDS;
     SectionGroupEntity sectionGroupEntity = dto.sectionGroup();
     SectionEntity sectionEntity = dto.section();
     TagGroupEntity tagGroupEntity = dto.tagGroup();
@@ -336,14 +340,18 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   and p.reviewState = 0
                   and (:show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey))
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
           .setParameter("sectionGroup", sectionGroupEntity)
           .setParameter("show", PostStateEnum.SHOW)
           .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey);
+          .setParameter("accessKey", accessKey)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -367,14 +375,18 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   and p.reviewState = 0
                   and (:show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey))
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
           .setParameter("section", sectionEntity)
           .setParameter("show", PostStateEnum.SHOW)
           .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey);
+          .setParameter("accessKey", accessKey)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -398,14 +410,18 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   and p.reviewState = 0
                   and (:show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey))
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
           .setParameter("tagGroup", tagGroupEntity)
           .setParameter("show", PostStateEnum.SHOW)
           .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey);
+          .setParameter("accessKey", accessKey)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -429,14 +445,18 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   and p.reviewState = 0
                   and (:show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey))
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
           .setParameter("tag", tagEntity)
           .setParameter("show", PostStateEnum.SHOW)
           .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey);
+          .setParameter("accessKey", accessKey)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -459,13 +479,17 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   where p.reviewState = 0
                   and (:show member of p.states
                   or (:lock member of p.states and p.accessKey = :accessKey))
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
           .setParameter("show", PostStateEnum.SHOW)
           .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey);
+          .setParameter("accessKey", accessKey)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -490,7 +514,9 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
    * @param dto dto
    * @return TypedQueryPostPage
    */
+  @SuppressWarnings("JpaQlInspection")
   private TypedQueryPostPage queryRootUserPosts(QueryParamsPost dto) {
+    final int totalTimeSeconds = TOTAL_TIME_SECONDS;
     SectionGroupEntity sectionGroupEntity = dto.sectionGroup();
     SectionEntity sectionEntity = dto.section();
     TagGroupEntity tagGroupEntity = dto.tagGroup();
@@ -503,11 +529,15 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :sectionGroup member of p.section.sectionGroups
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
-          .setParameter("sectionGroup", sectionGroupEntity);
+          .setParameter("sectionGroup", sectionGroupEntity)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -522,11 +552,15 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where p.section = :section
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
-          .setParameter("section", sectionEntity);
+          .setParameter("section", sectionEntity)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -541,11 +575,15 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p, TagEntity t
                   where t member of p.tags and :tagGroup member of t.tagGroups
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
-          .setParameter("tagGroup", tagGroupEntity);
+          .setParameter("tagGroup", tagGroupEntity)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -560,11 +598,15 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :tag member of p.tags
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
-          .setParameter("tag", tagEntity);
+          .setParameter("tag", tagEntity)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -579,11 +621,15 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
               """
                   select p from PostEntity p
                   where :show member of p.states
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
-          .setParameter("show", PostStateEnum.SHOW);
+          .setParameter("show", PostStateEnum.SHOW)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -605,11 +651,13 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
    * @param accessKey accessKey
    * @return TypedQueryPostPage
    */
+  @SuppressWarnings("JpaQlInspection")
   private TypedQueryPostPage queryUserPosts(
       QueryParamsPost dto,
       String accessKey,
       UserEntity user
   ) {
+    final int totalTimeSeconds = TOTAL_TIME_SECONDS;
     SectionGroupEntity sectionGroupEntity = dto.sectionGroup();
     SectionEntity sectionEntity = dto.section();
     TagGroupEntity tagGroupEntity = dto.tagGroup();
@@ -628,7 +676,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user)
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
@@ -638,7 +689,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("lock", PostStateEnum.LOCK)
           .setParameter("accessKey", accessKey)
           .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user);
+          .setParameter("user", user)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -671,7 +723,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user)
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
@@ -681,7 +736,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("lock", PostStateEnum.LOCK)
           .setParameter("accessKey", accessKey)
           .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user);
+          .setParameter("user", user)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -714,7 +770,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user)
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
@@ -724,7 +783,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("lock", PostStateEnum.LOCK)
           .setParameter("accessKey", accessKey)
           .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user);
+          .setParameter("user", user)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -757,7 +817,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user)
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
@@ -767,7 +830,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("lock", PostStateEnum.LOCK)
           .setParameter("accessKey", accessKey)
           .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user);
+          .setParameter("user", user)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
@@ -799,7 +863,10 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
                   or (:block member of p.states and not (:user member of p.blocks))
                   or p.user = :user)
-                  order by p.initialScore desc, p.sortState desc, p.id desc
+                  order by p.sortState desc, p.initialScore desc,
+                    (p.pageViews + p.commentsCount + p.repliesCount) *
+                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    p.createdOn desc
                   """,
               PostEntity.class
           )
@@ -808,7 +875,8 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("lock", PostStateEnum.LOCK)
           .setParameter("accessKey", accessKey)
           .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user);
+          .setParameter("user", user)
+          .setParameter("totalTimeSeconds", totalTimeSeconds);
 
       totalSizeQuery = entityManager.createQuery(
               """
