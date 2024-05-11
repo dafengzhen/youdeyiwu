@@ -1,13 +1,16 @@
 const path = require("path");
 const { app, BrowserWindow } = require("electron");
 
+const width = 1600;
+const height = 900;
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 768,
-    minWidth: 1280,
-    minHeight: 768,
+    width,
+    height,
+    minWidth: width,
+    minHeight: height,
     autoHideMenuBar: true,
     icon: path.join(__dirname, "/src/assets/images/icons/icon.png"),
     webPreferences: {

@@ -29,7 +29,7 @@ import { createSequenceArray } from '@/src/app/tools';
 })
 export class PostsComponent {
   params = input<TQueryParams>({ page: 0 });
-  placeholders: number[] = createSequenceArray(7);
+  placeholders: number[] = createSequenceArray(1);
 
   @Input() hideOverview: boolean = true;
 
@@ -41,9 +41,11 @@ export class PostsComponent {
     queryFn: async (context) => {
       const _params = context.queryKey[1] as TQueryParams;
       const response = await lastValueFrom(this.postService.selectAll(_params));
+      const pageSize = response.content.length;
+      this.placeholders = createSequenceArray(pageSize);
       this.pageableEvent.emit({
         ...response.pageable,
-        currentPageSize: response.content.length,
+        currentPageSize: pageSize,
       });
       return response.content;
     },

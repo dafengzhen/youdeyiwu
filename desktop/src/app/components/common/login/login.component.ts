@@ -159,10 +159,15 @@ export class LoginComponent {
   onClickClose() {
     setTimeout(() => {
       this.progress = 0;
-      this.successful = false;
       this.form.reset();
-      location.reload();
+
+      if (this.successful) {
+        location.reload();
+      }
+
+      this.successful = false;
     }, 500);
+
     this.closeEvent.emit();
   }
 }
