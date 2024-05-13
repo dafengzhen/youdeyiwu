@@ -1,0 +1,28 @@
+<div class="row mt-2">
+  <div class="col">
+    <app-post-id-head></app-post-id-head>
+  </div>
+</div>
+
+<div
+  class="row overflow-y-scroll yw-scrollbar me-0 mt-4"
+  style="height: calc(100vh - 8rem)"
+>
+  <div class="col">
+    <app-post-id-body
+      (shortcutBtnClickEvent)="onShortcutBtnClickEvent($event)"
+    ></app-post-id-body>
+  </div>
+
+  @if (expand) {
+    <div class="col text-center position-sticky top-0 h-100 overflow-hidden">
+      <app-post-id-body-cover></app-post-id-body-cover>
+    </div>
+  }
+</div>
+
+<div class="row w-100 py-2 mx-0 bg-body-tertiary">
+  <div class="col px-0">
+    <app-post-id-nav></app-post-id-nav>
+  </div>
+</div>

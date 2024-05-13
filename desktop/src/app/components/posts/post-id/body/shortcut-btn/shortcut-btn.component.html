@@ -1,0 +1,22 @@
+<div class="d-flex flex-wrap gap-3">
+  <button
+    (click)="onClickReadMore()"
+    type="button"
+    class="btn rounded-pill"
+    [class]="[readMore ? 'btn-outline-primary' : 'btn-primary']"
+  >
+    Read More
+  </button>
+
+  <button
+    (click)="onClickCollapseOrExpandCover()"
+    type="button"
+    class="btn btn-outline-secondary rounded-pill"
+  >
+    @if (expand) {
+      Collapse Cover
+    } @else {
+      Expand Cover
+    }
+  </button>
+</div>

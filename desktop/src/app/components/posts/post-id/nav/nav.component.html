@@ -1,0 +1,25 @@
+<div class="d-flex align-items-center justify-content-between user-select-none">
+  <nav>
+    <ul class="pagination mb-0">
+      <li class="page-item">
+        <span
+          tabindex="0"
+          (click)="onClickBack()"
+          (keyup)="onClickBackKeyup($event)"
+          class="page-link border-0 cursor-pointer"
+        >
+          <i class="bi bi-arrow-left"></i>
+        </span>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="d-flex gap-4">
+    <button type="button" class="btn btn-secondary">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <button type="button" class="btn btn-secondary">
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<div class="row row-gap-4">
+<div class="row row-gap-4 mt-2">
   <div class="col">
     <app-home-nav
       name="Create Article"
@@ -7,13 +7,13 @@
       (clickEvent)="onClickNav('Create Article')"
     ></app-home-nav>
   </div>
-  <div class="col">
-    <app-home-nav
-      name="Articles"
-      [currentName]="currentNavName"
-      (clickEvent)="onClickNav('Articles')"
-    ></app-home-nav>
-  </div>
+  <!--  <div class="col">-->
+  <!--    <app-home-nav-->
+  <!--      name="Articles"-->
+  <!--      [currentName]="currentNavName"-->
+  <!--      (clickEvent)="onClickNav('Articles')"-->
+  <!--    ></app-home-nav>-->
+  <!--  </div>-->
   <div class="col">
     <app-home-nav
       name="Tags"
@@ -68,7 +68,7 @@
 
 <div
   class="row overflow-y-scroll yw-scrollbar me-0"
-  style="height: calc(100vh - 12rem)"
+  style="height: calc(100vh - 12.5rem)"
 >
   <div class="col">
     @switch (currentNavName) {
@@ -108,8 +108,8 @@
   </div>
 </div>
 
-<div class="row w-100 pb-2 pt-2 bg-body-tertiary">
-  <div class="col">
+<div class="row w-100 py-2 mx-0 bg-body-tertiary">
+  <div class="col px-0">
     <app-home-footer
       [showPageable]="showPageable"
       [showBackBtn]="showBackBtn"

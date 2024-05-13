@@ -1,0 +1,8 @@
+.rotating-cover {
+  transform: rotateZ(-5deg);
+  transition: transform 0.5s ease-in-out;
+}
+
+//.rotating-cover:hover {
+//  transform: rotateZ(5deg);
+//}
