@@ -1,57 +1,57 @@
-@import 'bootstrap/scss/mixins/banner';
+@import "bootstrap/scss/mixins/banner";
 
-@include bsBanner('');
+@include bsBanner("");
 
 // scss-docs-start import-stack
 // Configuration
-@import 'bootstrap/scss/functions';
-@import 'bootstrap/scss/variables';
-@import 'bootstrap/scss/variables-dark';
-@import 'bootstrap/scss/maps';
-@import 'bootstrap/scss/mixins';
-@import 'bootstrap/scss/utilities';
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
 
 // Layout & components
-@import 'bootstrap/scss/root';
-@import 'bootstrap/scss/reboot';
-@import 'bootstrap/scss/type';
-@import 'bootstrap/scss/images';
-@import 'bootstrap/scss/containers';
-@import 'bootstrap/scss/grid';
-@import 'bootstrap/scss/tables';
-@import 'bootstrap/scss/forms';
-@import 'bootstrap/scss/buttons';
-@import 'bootstrap/scss/transitions';
-@import 'bootstrap/scss/dropdown';
-@import 'bootstrap/scss/button-group';
-@import 'bootstrap/scss/nav';
-@import 'bootstrap/scss/navbar';
-@import 'bootstrap/scss/card';
-@import 'bootstrap/scss/accordion';
-@import 'bootstrap/scss/breadcrumb';
-@import 'bootstrap/scss/pagination';
-@import 'bootstrap/scss/badge';
-@import 'bootstrap/scss/alert';
-@import 'bootstrap/scss/progress';
-@import 'bootstrap/scss/list-group';
-@import 'bootstrap/scss/close';
-@import 'bootstrap/scss/toasts';
-@import 'bootstrap/scss/modal';
-@import 'bootstrap/scss/tooltip';
-@import 'bootstrap/scss/popover';
-@import 'bootstrap/scss/carousel';
-@import 'bootstrap/scss/spinners';
-@import 'bootstrap/scss/offcanvas';
-@import 'bootstrap/scss/placeholders';
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/breadcrumb";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/tooltip";
+@import "bootstrap/scss/popover";
+@import "bootstrap/scss/carousel";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/offcanvas";
+@import "bootstrap/scss/placeholders";
 
 // Helpers
-@import 'bootstrap/scss/helpers';
+@import "bootstrap/scss/helpers";
 
 // Customs
 $utilities: map-merge(
   $utilities,
   (
-    'cursor': (
+    "cursor": (
       property: cursor,
       class: cursor,
       values: auto default pointer zoom-in not-allowed copy wait help,
@@ -62,9 +62,9 @@ $utilities: map-merge(
 $utilities: map-merge(
   $utilities,
   (
-    'shadow':
+    "shadow":
       map-merge(
-        map-get($utilities, 'shadow'),
+        map-get($utilities, "shadow"),
         (
           state: hover,
         )
@@ -75,9 +75,9 @@ $utilities: map-merge(
 $utilities: map-merge(
   $utilities,
   (
-    'border':
+    "border":
       map-merge(
-        map-get($utilities, 'border'),
+        map-get($utilities, "border"),
         (
           state: hover,
         )
@@ -88,13 +88,13 @@ $utilities: map-merge(
 $utilities: map-merge(
   $utilities,
   (
-    'width':
+    "width":
       map-merge(
-        map-get($utilities, 'width'),
+        map-get($utilities, "width"),
         (
           values:
             map-merge(
-              map-get(map-get($utilities, 'width'), 'values'),
+              map-get(map-get($utilities, "width"), "values"),
               (
                 2: 2%,
                 5: 5%,
@@ -111,6 +111,29 @@ $utilities: map-merge(
   )
 );
 
+$utilities: map-merge(
+  $utilities,
+  (
+    "height":
+      map-merge(
+        map-get($utilities, "height"),
+        (
+          values:
+            map-merge(
+              map-get(map-get($utilities, "height"), "values"),
+              (
+                5: 5%,
+                7: 7%,
+                9: 9%,
+                10: 10%,
+                15: 15%,
+              )
+            ),
+        )
+      ),
+  )
+);
+
 // Utilities
-@import 'bootstrap/scss/utilities/api';
+@import "bootstrap/scss/utilities/api";
 // scss-docs-end import-stack

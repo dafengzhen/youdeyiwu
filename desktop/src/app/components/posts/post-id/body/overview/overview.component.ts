@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { IPostDetails } from '@/src/types';
 
 @Component({
   selector: 'app-post-id-body-overview',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss',
 })
-export class OverviewComponent {}
+export class OverviewComponent {
+  @Input() details!: IPostDetails;
+}

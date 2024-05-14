@@ -2,19 +2,32 @@
   <div></div>
   <div class="d-flex align-items-center gap-2">
     <div>
-      <button type="button" class="btn btn-primary rounded-pill">
-        Homepage
-      </button>
+      <a
+        [routerLink]="details.user ? '/users/' + details.user.id : '/users'"
+        class="btn btn-primary rounded-pill"
+      >
+        About Me
+      </a>
     </div>
     <div class="vr mx-3 h-75 my-auto"></div>
     <div>
-      <img
-        class="rounded-circle w-40-px h-40-px"
-        ngSrc="assets/images/avatar.png"
-        alt="avatar"
-        width="460"
-        height="460"
-      />
+      @if (details.user?.avatar; as avatar) {
+        <img
+          class="rounded-circle w-40-px h-40-px"
+          [ngSrc]="avatar"
+          alt="avatar"
+          width="40"
+          height="40"
+        />
+      } @else {
+        <img
+          class="rounded-circle w-40-px h-40-px"
+          ngSrc="assets/images/avatar.png"
+          alt="avatar"
+          width="460"
+          height="460"
+        />
+      }
     </div>
   </div>
 </div>

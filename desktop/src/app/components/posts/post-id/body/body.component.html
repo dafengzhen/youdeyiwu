@@ -1,21 +1,22 @@
 <div class="mt-4">
-  <app-post-id-body-name></app-post-id-body-name>
+  <app-post-id-body-name [details]="details"></app-post-id-body-name>
 </div>
 
 <div class="mt-3">
   @if (readMore) {
-    <app-post-id-body-content></app-post-id-body-content>
+    <app-post-id-body-content [details]="details"></app-post-id-body-content>
   } @else {
-    <app-post-id-body-overview></app-post-id-body-overview>
+    <app-post-id-body-overview [details]="details"></app-post-id-body-overview>
   }
 </div>
 
 <div class="mt-4">
   <app-post-id-body-shortcut-btn
+    [details]="details"
     (clickEvent)="onShortcutBtnClickEvent($event)"
   ></app-post-id-body-shortcut-btn>
 </div>
 
 <div class="mt-4">
-  <app-post-id-body-comments></app-post-id-body-comments>
+  <app-post-id-body-comments [details]="details"></app-post-id-body-comments>
 </div>

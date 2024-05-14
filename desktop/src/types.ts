@@ -46,6 +46,10 @@ export type TQueryParams =
         | ReadonlyArray<string | number | boolean>;
     };
 
+export type TCommentReviewState = 'APPROVED' | 'REJECTED' | 'PENDING_REVIEW';
+
+export type TReplyReviewState = 'APPROVED' | 'REJECTED' | 'PENDING_REVIEW';
+
 // ================================================================================================
 
 export interface IApiError {
@@ -221,6 +225,39 @@ export interface IPost extends IBase {
   disableReplies?: boolean;
   styles?: string;
   classNames?: string;
+  previousPageId?: number;
+  nextPageId?: number;
+}
+
+export interface IPostDetails extends IBase {
+  name: string;
+  cover?: string;
+  overview?: string;
+  content?: string;
+  contentLink?: string;
+  states: TPostState[];
+  badges?: [];
+  images?: [];
+  reviewState: TPostReviewState;
+  sortState: TPostSortState;
+  allows?: IUser[];
+  blocks?: IUser[];
+  pageViews: number;
+  commentsCount: number;
+  repliesCount: number;
+  likesCount: number;
+  followersCount: number;
+  favoritesCount: number;
+  section?: ISection;
+  tags: ITag[];
+  accessKey?: string;
+  user?: IUser;
+  liked?: boolean;
+  followed?: boolean;
+  favorited?: boolean;
+  comments: IPage<ICommentReply[]>;
+  styles?: string;
+  classNames?: string;
 }
 
 export interface IPostReviewQueue extends IBase {
@@ -253,6 +290,31 @@ export interface ILoginVariables {
 export interface IRegisterVariables {
   username: string;
   password: string;
+}
+
+export interface ICommentReply {
+  comment?: IComment;
+  reply?: IReply;
+}
+
+export interface IComment extends IBase {
+  content: string;
+  likesCount: number;
+  reviewState: TCommentReviewState;
+  user?: IUser;
+  uniqueIdentifier?: string;
+  liked?: boolean;
+}
+
+export interface IReply extends IBase {
+  content: string;
+  likesCount: number;
+  reviewState: TReplyReviewState;
+  comment?: IComment;
+  quoteReply?: IReply;
+  user?: IUser;
+  uniqueIdentifier?: string;
+  liked?: boolean;
 }
 
 // ================================================================================================

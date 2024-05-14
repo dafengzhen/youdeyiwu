@@ -8,15 +8,17 @@
     Read More
   </button>
 
-  <button
-    (click)="onClickCollapseOrExpandCover()"
-    type="button"
-    class="btn btn-outline-secondary rounded-pill"
-  >
-    @if (expand) {
-      Collapse Cover
-    } @else {
-      Expand Cover
-    }
-  </button>
+  @if (details.cover) {
+    <button
+      (click)="onClickCollapseOrExpandCover()"
+      type="button"
+      class="btn btn-outline-secondary rounded-pill"
+    >
+      @if (expand) {
+        Collapse Cover
+      } @else {
+        Expand Cover
+      }
+    </button>
+  }
 </div>

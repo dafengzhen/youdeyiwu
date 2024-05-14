@@ -1,28 +1,46 @@
-<div class="row mt-2">
-  <div class="col">
-    <app-post-id-head></app-post-id-head>
-  </div>
-</div>
+@if (postDetailsQuery.isPending()) {
+  <app-page-loading></app-page-loading>
+} @else if (postDetailsQuery.isError()) {
+  <app-page-error
+    [status]="postDetailsQuery.error().error.status"
+    [message]="postDetailsQuery.error().error.message"
+  ></app-page-error>
+} @else if (postDetailsQuery.isSuccess()) {
+  @if (postDetailsQuery.data(); as details) {
+    <div class="row mt-2">
+      <div class="col">
+        <app-post-id-head [details]="details"></app-post-id-head>
+      </div>
+    </div>
 
-<div
-  class="row overflow-y-scroll yw-scrollbar me-0 mt-4"
-  style="height: calc(100vh - 8rem)"
->
-  <div class="col">
-    <app-post-id-body
-      (shortcutBtnClickEvent)="onShortcutBtnClickEvent($event)"
-    ></app-post-id-body>
-  </div>
+    <div
+      class="row overflow-y-scroll yw-scrollbar me-0 mt-4"
+      style="height: calc(100vh - 8rem)"
+    >
+      <div class="col">
+        <app-post-id-body
+          [details]="details"
+          (shortcutBtnClickEvent)="onShortcutBtnClickEvent($event)"
+        ></app-post-id-body>
+      </div>
 
-  @if (expand) {
-    <div class="col text-center position-sticky top-0 h-100 overflow-hidden">
-      <app-post-id-body-cover></app-post-id-body-cover>
+      @if (expand && details.cover) {
+        <div
+          class="col text-center position-sticky top-0 h-100 overflow-hidden"
+        >
+          <app-post-id-body-cover [details]="details"></app-post-id-body-cover>
+        </div>
+      }
+    </div>
+
+    <div class="row w-100 py-2 mx-0 bg-body-tertiary">
+      <div class="col px-0">
+        <app-post-id-nav
+          [previousPageId]="previousPageId"
+          [nextPageId]="nextPageId"
+          [details]="details"
+        ></app-post-id-nav>
+      </div>
     </div>
   }
-</div>
-
-<div class="row w-100 py-2 mx-0 bg-body-tertiary">
-  <div class="col px-0">
-    <app-post-id-nav></app-post-id-nav>
-  </div>
-</div>
+}

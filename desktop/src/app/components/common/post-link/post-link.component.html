@@ -16,6 +16,7 @@
 
 <a
   [routerLink]="post ? '/posts/' + post.id : '/posts'"
+  [queryParams]="{ previousPageId, nextPageId }"
   class="link-body-emphasis link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover"
   [class]="post?.classNames"
   [style]="post?.styles"

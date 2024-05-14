@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IPost, ITag } from '@/src/types';
 import { NgIf } from '@angular/common';
 import { IsTodayPipe } from '@/src/app/pipes/is-today.pipe';
-import {RouterLink} from "@angular/router";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-post-link',
@@ -13,6 +13,8 @@ import {RouterLink} from "@angular/router";
 })
 export class PostLinkComponent {
   @Input() post?: IPost;
+  @Input() previousPageId?: number;
+  @Input() nextPageId?: number;
 
   @Output() tagItemEvent = new EventEmitter<ITag>();
 

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { IPostDetails } from '@/src/types';
 
 @Component({
   selector: 'app-post-id-body-comments',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss',
 })
-export class CommentsComponent {}
+export class CommentsComponent {
+  @Input() details!: IPostDetails;
+}

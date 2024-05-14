@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IPostDetails } from '@/src/types';
 
 type TShortcutBtnComponentClickEventType = 'read' | 'cover';
 
@@ -17,6 +18,9 @@ export type IShortcutBtnComponentClickEvent = {
 export class ShortcutBtnComponent {
   readMore = false;
   expand = true;
+
+  @Input() pending: boolean = false;
+  @Input() details!: IPostDetails;
 
   @Output() clickEvent = new EventEmitter<IShortcutBtnComponentClickEvent>();
 

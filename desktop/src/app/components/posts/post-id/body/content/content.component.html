@@ -1,1 +1,5 @@
-<div class="lh-lg" [innerHTML]="content"></div>
+@if (details.content) {
+  <div class="lh-lg" [innerHTML]="details.content"></div>
+} @else {
+  <div class="lh-lg text-secondary user-select-none"><i>No Content</i></div>
+}
