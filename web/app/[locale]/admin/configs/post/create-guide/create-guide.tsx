@@ -4,7 +4,6 @@ import {
   type ChangeEvent,
   type FormEvent,
   useContext,
-  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -18,19 +17,22 @@ import { useTranslations } from 'next-intl';
 import UpdateCreateGuidePostConfigAction, {
   type IUpdateCreateGuidePostConfigActionVariables,
 } from '@/app/[locale]/actions/configs/post/update-create-guide-post-config-action';
-import {
-  getContent,
-  onErrorEditor,
-  onLoadEditor,
-  setContent,
-} from '@/app/[locale]/common/editor';
+import { getContent } from '@/app/[locale]/common/editor';
+import dynamic from 'next/dynamic';
+import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+const CustomEditor = dynamic(
+  () => import('../../../../components/editor/editor'),
+  {
+    ssr: false,
+  },
+);
 
 export default function CreateGuidePostConfig({
   config,
 }: {
   config: IPostConfig;
 }) {
-  const editorElementRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
   const [editorInitializing, setEditorInitializing] = useState(true);
   const { toast } = useContext(GlobalContext);
@@ -44,14 +46,6 @@ export default function CreateGuidePostConfig({
     'PostConfigs#Update Create Guide',
   );
   const t = useTranslations();
-
-  useEffect(() => {
-    const current = editorRef.current;
-    const content = config.createGuide?.trim() ?? '';
-    if (current && content) {
-      setContent(content, editorRef);
-    }
-  }, [config.createGuide, editorRef.current]);
 
   const updateCreateGuidePostConfigActionMutation = useMutation({
     mutationFn: async (
@@ -96,14 +90,7 @@ export default function CreateGuidePostConfig({
   }
 
   return (
-    <Box
-      onLoadEditor={() =>
-        onLoadEditor(editorElementRef, editorRef, () =>
-          setEditorInitializing(false),
-        )
-      }
-      onErrorEditor={(e) => onErrorEditor(e, toast)}
-    >
+    <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
           <label className="form-label">{t('common.createGuide')}</label>
@@ -113,7 +100,21 @@ export default function CreateGuidePostConfig({
           {editorInitializing && (
             <div className="form-text mb-2">{t('common.editorLoading')}</div>
           )}
-          <div ref={editorElementRef}></div>
+
+          <CustomEditor
+            initialData={config.createGuide?.trim() ?? ''}
+            onReady={(editor: ClassicEditor) => {
+              editorRef.current = editor;
+              setEditorInitializing(false);
+            }}
+            onError={(e: Error) => {
+              setEditorInitializing(false);
+              toast.current.show({
+                type: 'danger',
+                message: e.message ?? 'Failed to load the editorRef',
+              });
+            }}
+          />
         </div>
 
         <div>

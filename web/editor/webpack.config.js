@@ -25,7 +25,7 @@ module.exports = {
         // The name under which the editor will be exported.
         library: 'CKSource',
 
-        path: path.join(__dirname, '..', 'public', 'editor'),
+        path: path.join(__dirname, 'build'),
         filename: 'ckeditor.js',
         libraryTarget: 'umd',
         libraryExport: 'default',

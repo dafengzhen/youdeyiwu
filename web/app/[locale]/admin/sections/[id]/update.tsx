@@ -5,7 +5,6 @@ import {
   type ChangeEvent,
   type FormEvent,
   useContext,
-  useEffect,
   useRef,
   useState,
 } from 'react';
@@ -16,15 +15,19 @@ import UpdateSectionAction, {
 } from '@/app/[locale]/actions/sections/update-section-action';
 import type { ISection } from '@/app/[locale]/interfaces/sections';
 import { isHttpOrHttps, trimObjectStrings } from '@/app/[locale]/common/client';
-import {
-  getContent,
-  onErrorEditor,
-  onLoadEditor,
-  setContent,
-} from '@/app/[locale]/common/editor';
+import { getContent } from '@/app/[locale]/common/editor';
 import UploadCover from '@/app/[locale]/admin/sections/[id]/upload-cover';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 import { useTranslations } from 'next-intl';
+import dynamic from 'next/dynamic';
+import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+const CustomEditor = dynamic(
+  () => import('../../../components/editor/editor'),
+  {
+    ssr: false,
+  },
+);
 
 export default function Update({ section }: { section: ISection }) {
   const { toast } = useContext(GlobalContext);
@@ -43,7 +46,6 @@ export default function Update({ section }: { section: ISection }) {
     sort: section.sort ?? 0,
     accessPoints: section.accessPoints ?? 0,
   });
-  const editorElementRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
   const [editorInitializing, setEditorInitializing] = useState(true);
   const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
@@ -63,14 +65,6 @@ export default function Update({ section }: { section: ISection }) {
       }
     },
   });
-
-  useEffect(() => {
-    const current = editorRef.current;
-    const content = section.content?.trim() ?? '';
-    if (current && content) {
-      setContent(content, editorRef);
-    }
-  }, [section.content, editorRef.current]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     try {
@@ -113,14 +107,7 @@ export default function Update({ section }: { section: ISection }) {
   }
 
   return (
-    <Box
-      onLoadEditor={() =>
-        onLoadEditor(editorElementRef, editorRef, () =>
-          setEditorInitializing(false),
-        )
-      }
-      onErrorEditor={(e) => onErrorEditor(e, toast)}
-    >
+    <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
           <label className="form-label">{t('common.name')}</label>
@@ -215,7 +202,21 @@ export default function Update({ section }: { section: ISection }) {
           {editorInitializing && (
             <div className="form-text mb-2">{t('common.editorLoading')}</div>
           )}
-          <div ref={editorElementRef}></div>
+
+          <CustomEditor
+            initialData={section.content?.trim() ?? ''}
+            onReady={(editor: ClassicEditor) => {
+              editorRef.current = editor;
+              setEditorInitializing(false);
+            }}
+            onError={(e: Error) => {
+              setEditorInitializing(false);
+              toast.current.show({
+                type: 'danger',
+                message: e.message ?? 'Failed to load the editorRef',
+              });
+            }}
+          />
         </div>
 
         <div>

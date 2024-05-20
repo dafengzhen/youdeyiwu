@@ -1,22 +1,26 @@
 'use client';
 
 import Box from '@/app/[locale]/admin/common/box';
-import { type FormEvent, useContext, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useContext, useRef, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
 import { useMutation } from '@tanstack/react-query';
 import type { ISection } from '@/app/[locale]/interfaces/sections';
 import { trimObjectStrings } from '@/app/[locale]/common/client';
-import {
-  getContent,
-  onErrorEditor,
-  onLoadEditor,
-  setContent,
-} from '@/app/[locale]/common/editor';
+import { getContent } from '@/app/[locale]/common/editor';
 import useMenuActionPermission from '@/app/[locale]/hooks/use-menu-action-permission';
 import { useTranslations } from 'next-intl';
 import UpdateCreatePostGuideSectionAction, {
   type IUpdateCreatePostGuideSectionActionVariables,
 } from '@/app/[locale]/actions/sections/update-create-post-guide-section-action';
+import dynamic from 'next/dynamic';
+import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+
+const CustomEditor = dynamic(
+  () => import('../../../components/editor/editor'),
+  {
+    ssr: false,
+  },
+);
 
 export default function UpdateCreatePostGuide({
   section,
@@ -29,7 +33,6 @@ export default function UpdateCreatePostGuide({
   }>({
     createPostGuide: section.createPostGuide ?? '',
   });
-  const editorElementRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
   const [editorInitializing, setEditorInitializing] = useState(true);
   const { isActionDisabled, AccessDeniedAlert } = useMenuActionPermission(
@@ -49,14 +52,6 @@ export default function UpdateCreatePostGuide({
       }
     },
   });
-
-  useEffect(() => {
-    const current = editorRef.current;
-    const content = section.createPostGuide?.trim() ?? '';
-    if (current && content) {
-      setContent(content, editorRef);
-    }
-  }, [section.content, editorRef.current]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     try {
@@ -87,14 +82,7 @@ export default function UpdateCreatePostGuide({
   }
 
   return (
-    <Box
-      onLoadEditor={() =>
-        onLoadEditor(editorElementRef, editorRef, () =>
-          setEditorInitializing(false),
-        )
-      }
-      onErrorEditor={(e) => onErrorEditor(e, toast)}
-    >
+    <Box>
       <form className="vstack gap-4" onSubmit={onSubmit}>
         <div>
           <label className="form-label">{t('common.createPostGuide')}</label>
@@ -104,7 +92,21 @@ export default function UpdateCreatePostGuide({
           {editorInitializing && (
             <div className="form-text mb-2">{t('common.editorLoading')}</div>
           )}
-          <div ref={editorElementRef}></div>
+
+          <CustomEditor
+            initialData={section.createPostGuide?.trim() ?? ''}
+            onReady={(editor: ClassicEditor) => {
+              editorRef.current = editor;
+              setEditorInitializing(false);
+            }}
+            onError={(e: Error) => {
+              setEditorInitializing(false);
+              toast.current.show({
+                type: 'danger',
+                message: e.message ?? 'Failed to load the editorRef',
+              });
+            }}
+          />
         </div>
 
         <div>

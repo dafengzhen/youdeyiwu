@@ -2,7 +2,6 @@
 
 import type { IPost } from '@/app/[locale]/interfaces/posts';
 import { useRouter } from 'next/navigation';
-import Script from 'next/script';
 import {
   type ChangeEvent,
   useContext,
@@ -18,13 +17,7 @@ import PublishPostAction, {
 import clsx from 'clsx';
 import SimpleDynamicInput from '@/app/[locale]/common/simple-dynamic-input';
 import { isHttpOrHttps, trimObjectStrings } from '@/app/[locale]/common/client';
-import {
-  getContent,
-  getFocus,
-  onErrorEditor,
-  onLoadEditor,
-  setContent,
-} from '@/app/[locale]/common/editor';
+import { getContent, getFocus, setContent } from '@/app/[locale]/common/editor';
 import type { ISection } from '@/app/[locale]/interfaces/sections';
 import RefreshAction from '@/app/[locale]/actions/refresh-action';
 import UploadCover from '@/app/[locale]/posts/save/upload-cover';
@@ -35,10 +28,16 @@ import CreateGuide from '@/app/[locale]/posts/save/create-guide';
 import type { IUser } from '@/app/[locale]/interfaces/users';
 import TemporaryStorage from '@/app/[locale]/posts/save/temporary-storage';
 import QueryRootConfigAction from '@/app/[locale]/actions/configs/root/query-root-config-action';
+import dynamic from 'next/dynamic';
+import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 
 const POST_EDITOR_COLLAPSE = 'post-editor-collapse';
 const POST_EDITOR_SPLIT = 'post-editor-split';
 const POST_EDITOR_CENTER = 'post-editor-center';
+
+const CustomEditor = dynamic(() => import('../../components/editor/editor'), {
+  ssr: false,
+});
 
 export default function Save({
   post,
@@ -80,8 +79,7 @@ export default function Save({
         },
   );
   const router = useRouter();
-  const editorElementRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<ClassicEditor | null>(null);
   const [editorInitializing, setEditorInitializing] = useState(true);
   const [expand, setExpand] = useState(true);
   const [center, setCenter] = useState(false);
@@ -168,13 +166,6 @@ export default function Save({
       setCenter(false);
     }
   }, []);
-  useEffect(() => {
-    const current = editorRef.current;
-    const content = isEdit ? post.content ?? '' : '';
-    if (current && content) {
-      setContent(content, editorRef);
-    }
-  }, [isEdit, editorRef.current]);
 
   function onClickPreview() {
     setIsPreview(!isPreview);
@@ -313,348 +304,349 @@ export default function Save({
   }
 
   return (
-    <>
-      <div className="row mx-0">
-        <div className="col">
-          <div className={clsx({ container: center })}>
-            <CreateGuide data={createGuideData} />
+    <div className="row mx-0">
+      <div className="col">
+        <div className={clsx({ container: center })}>
+          <CreateGuide data={createGuideData} />
 
-            <div className="card rounded-2">
-              <div className="card-header">
-                <div className="d-flex align-items-center flex-wrap justify-content-between gap-4">
-                  <div className="d-flex align-items-center flex-wrap gap-2 user-select-none">
-                    <div
-                      className={clsx(
-                        'cursor-pointer',
-                        expand ? 'text-secondary' : 'text-primary',
-                      )}
-                      aria-expanded="true"
-                      aria-controls="collapse form"
-                      onClick={onClickCollapseForm}
-                    >
-                      {expand ? (
-                        <>
-                          {t('common.collapseForm')}
-                          <i className="bi bi-arrows-collapse ms-1"></i>
-                        </>
-                      ) : (
-                        <>
-                          {t('common.ExpandForm')}
-                          <i className="bi bi-arrows-expand ms-1"></i>
-                        </>
-                      )}
-                    </div>
-                    <div className="vr text-secondary"></div>
-                    <div
-                      className={clsx(
-                        'cursor-pointer',
-                        split ? 'text-primary' : 'text-secondary',
-                      )}
-                      onClick={onClickSplitLayout}
-                    >
-                      {split ? (
-                        <>
-                          {t('common.splitLayout')}
-                          <i className="bi bi-arrows-expand-vertical ms-1"></i>
-                        </>
-                      ) : (
-                        <>
-                          {t('common.verticalLayout')}
-                          <i className="bi bi-arrows-collapse-vertical ms-1"></i>
-                        </>
-                      )}
-                    </div>
-                    <div className="vr text-secondary"></div>
-                    <div
-                      className={clsx(
-                        'cursor-pointer',
-                        center ? 'text-primary' : 'text-secondary',
-                      )}
-                      onClick={onClickCenterBox}
-                    >
-                      {center ? (
-                        <>
-                          {t('common.centeredLayout')}
-                          <i className="bi bi-arrows-vertical ms-1"></i>
-                        </>
-                      ) : (
-                        <>
-                          {t('common.wideLayout')}
-                          <i className="bi bi-arrows ms-1"></i>
-                        </>
-                      )}
-                    </div>
-                    <div className="vr text-secondary"></div>
-                    <div
-                      className={clsx(
-                        'cursor-pointer',
-                        isPreview ? 'text-primary' : 'text-secondary',
-                      )}
-                      onClick={onClickPreview}
-                    >
-                      {t('common.preview')}
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center flex-wrap gap-2">
-                    {queryRootConfigActionQuery.data?.disableAnonymousPosts &&
-                    !currentUser ? (
-                      <div className="d-flex align-items-center gap-2">
-                        <div className="form-text text-danger">
-                          {t('common.disableAnonymousPostsMessage')}
-                        </div>
-
-                        <button
-                          disabled
-                          type="button"
-                          className="btn btn-success"
-                        >
-                          {t('common.publish')}
-                        </button>
-                      </div>
+          <div className="card rounded-2">
+            <div className="card-header">
+              <div className="d-flex align-items-center flex-wrap justify-content-between gap-4">
+                <div className="d-flex align-items-center flex-wrap gap-2 user-select-none">
+                  <div
+                    className={clsx(
+                      'cursor-pointer',
+                      expand ? 'text-secondary' : 'text-primary',
+                    )}
+                    aria-expanded="true"
+                    aria-controls="collapse form"
+                    onClick={onClickCollapseForm}
+                  >
+                    {expand ? (
+                      <>
+                        {t('common.collapseForm')}
+                        <i className="bi bi-arrows-collapse ms-1"></i>
+                      </>
                     ) : (
+                      <>
+                        {t('common.ExpandForm')}
+                        <i className="bi bi-arrows-expand ms-1"></i>
+                      </>
+                    )}
+                  </div>
+                  <div className="vr text-secondary"></div>
+                  <div
+                    className={clsx(
+                      'cursor-pointer',
+                      split ? 'text-primary' : 'text-secondary',
+                    )}
+                    onClick={onClickSplitLayout}
+                  >
+                    {split ? (
+                      <>
+                        {t('common.splitLayout')}
+                        <i className="bi bi-arrows-expand-vertical ms-1"></i>
+                      </>
+                    ) : (
+                      <>
+                        {t('common.verticalLayout')}
+                        <i className="bi bi-arrows-collapse-vertical ms-1"></i>
+                      </>
+                    )}
+                  </div>
+                  <div className="vr text-secondary"></div>
+                  <div
+                    className={clsx(
+                      'cursor-pointer',
+                      center ? 'text-primary' : 'text-secondary',
+                    )}
+                    onClick={onClickCenterBox}
+                  >
+                    {center ? (
+                      <>
+                        {t('common.centeredLayout')}
+                        <i className="bi bi-arrows-vertical ms-1"></i>
+                      </>
+                    ) : (
+                      <>
+                        {t('common.wideLayout')}
+                        <i className="bi bi-arrows ms-1"></i>
+                      </>
+                    )}
+                  </div>
+                  <div className="vr text-secondary"></div>
+                  <div
+                    className={clsx(
+                      'cursor-pointer',
+                      isPreview ? 'text-primary' : 'text-secondary',
+                    )}
+                    onClick={onClickPreview}
+                  >
+                    {t('common.preview')}
+                  </div>
+                </div>
+                <div className="d-flex align-items-center flex-wrap gap-2">
+                  {queryRootConfigActionQuery.data?.disableAnonymousPosts &&
+                  !currentUser ? (
+                    <div className="d-flex align-items-center gap-2">
+                      <div className="form-text text-danger">
+                        {t('common.disableAnonymousPostsMessage')}
+                      </div>
+
                       <button
-                        disabled={first || publishPostActionMutation.isPending}
-                        onClick={onSubmit}
+                        disabled
                         type="button"
                         className="btn btn-success"
                       >
-                        {isEdit ? (
-                          <>
-                            {publishPostActionMutation.isPending
-                              ? t('common.updating')
-                              : t('common.update')}
-                          </>
-                        ) : (
-                          <>
-                            {publishPostActionMutation.isPending
-                              ? t('common.publishing')
-                              : t('common.publish')}
-                          </>
-                        )}
+                        {t('common.publish')}
                       </button>
-                    )}
-
+                    </div>
+                  ) : (
                     <button
-                      disabled={publishPostActionMutation.isPending}
-                      onClick={onClickReturn}
+                      disabled={first || publishPostActionMutation.isPending}
+                      onClick={onSubmit}
                       type="button"
-                      className="btn btn-secondary"
+                      className="btn btn-success"
                     >
-                      {t('common.return')}
+                      {isEdit ? (
+                        <>
+                          {publishPostActionMutation.isPending
+                            ? t('common.updating')
+                            : t('common.update')}
+                        </>
+                      ) : (
+                        <>
+                          {publishPostActionMutation.isPending
+                            ? t('common.publishing')
+                            : t('common.publish')}
+                        </>
+                      )}
                     </button>
-                  </div>
+                  )}
+
+                  <button
+                    disabled={publishPostActionMutation.isPending}
+                    onClick={onClickReturn}
+                    type="button"
+                    className="btn btn-secondary"
+                  >
+                    {t('common.return')}
+                  </button>
                 </div>
               </div>
-              <div className="card-body">
-                <form
-                  className={clsx(split ? 'row' : 'vstack gap-4', {
-                    'd-none': isPreview,
-                  })}
-                >
-                  <div className={clsx(split ? 'col-6' : '')}>
-                    <div
-                      className={clsx('vstack gap-4', {
-                        'd-none': !expand,
-                      })}
-                    >
-                      <div>
-                        <label className="form-label">
-                          <span className="fw-bold text-danger">*</span>
-                          {t('common.name')}
-                        </label>
-                        <textarea
-                          required
-                          rows={1}
-                          className="form-control"
-                          name="name"
-                          value={form.name}
-                          onChange={onChangeForm}
-                          aria-describedby="name"
-                          minLength={1}
-                        />
-                        <div className="form-text">
-                          {t('common.postNameFormText')}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="form-label">
-                          {t('common.contentLink')}
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="contentLink"
-                          value={form.contentLink}
-                          onChange={onChangeForm}
-                          aria-describedby="contentLink"
-                        />
-                        <div className="form-text">
-                          {t('common.contentLinkFormText')}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="form-label">
-                          {t('common.coverLink')}
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="cover"
-                          value={form.cover}
-                          onChange={onChangeForm}
-                          aria-describedby="cover"
-                        />
-                        <div className="form-text">
-                          {t('common.coverLinkFormText')}
-                        </div>
-                      </div>
-
-                      {post?.id && (
-                        <UploadCover
-                          id={isEdit && post.createdBy ? post.id : undefined}
-                          callback={() => {
-                            setForm({
-                              ...form,
-                              cover: `${location.origin}/api/posts/${post.id}/cover`,
-                            });
-                          }}
-                        />
-                      )}
-
-                      <div>
-                        <label className="form-label">
-                          {t('common.selectContent')}
-                        </label>
-                        <select
-                          className="form-select"
-                          aria-label="Select Content"
-                          value={form.sectionId}
-                          onChange={onChangeForm}
-                          name="sectionId"
-                        >
-                          <option value="none" defaultValue="none">
-                            {t('common.none')}
-                          </option>
-                          {sectionOptions.map((item) => {
-                            return (
-                              <option key={item.id} value={item.id}>
-                                {item.name}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <div className="form-text">
-                          {t('common.postSelectContentFormText')}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="form-label">
-                          {t('common.addTags')}
-                        </label>
-                        <div className="card rounded-2">
-                          <div className="card-body">
-                            <SimpleDynamicInput
-                              items={tags}
-                              setItems={setTags}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-text">
-                          {t('common.postAddTagsFormText')}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="form-label">
-                          {t('common.overview')}
-                          {!!form.overview.length && (
-                            <span>&nbsp;({form.overview.length})</span>
-                          )}
-                        </label>
-                        <textarea
-                          rows={3}
-                          className="form-control"
-                          name="overview"
-                          value={form.overview}
-                          onChange={onChangeForm}
-                          aria-describedby="overview"
-                        />
-                        <div className="form-text">
-                          {t('common.overviewFormText')}
-                        </div>
+            </div>
+            <div className="card-body">
+              <form
+                className={clsx(split ? 'row' : 'vstack gap-4', {
+                  'd-none': isPreview,
+                })}
+              >
+                <div className={clsx(split ? 'col-6' : '')}>
+                  <div
+                    className={clsx('vstack gap-4', {
+                      'd-none': !expand,
+                    })}
+                  >
+                    <div>
+                      <label className="form-label">
+                        <span className="fw-bold text-danger">*</span>
+                        {t('common.name')}
+                      </label>
+                      <textarea
+                        required
+                        rows={1}
+                        className="form-control"
+                        name="name"
+                        value={form.name}
+                        onChange={onChangeForm}
+                        aria-describedby="name"
+                        minLength={1}
+                      />
+                      <div className="form-text">
+                        {t('common.postNameFormText')}
                       </div>
                     </div>
-                  </div>
-                  <div className={clsx(split ? 'col-6' : '')}>
-                    {!expand && (
-                      <div className="mb-4">
-                        <label className="form-label">
-                          <span className="fw-bold text-danger">*</span>
-                          {t('common.name')}
-                        </label>
-                        <textarea
-                          required
-                          rows={1}
-                          className="form-control"
-                          name="name"
-                          value={form.name}
-                          onChange={onChangeForm}
-                          aria-describedby="name"
-                          minLength={1}
-                        />
-                        <div className="form-text">
-                          {t('common.postNameFormText')}
-                        </div>
+
+                    <div>
+                      <label className="form-label">
+                        {t('common.contentLink')}
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="contentLink"
+                        value={form.contentLink}
+                        onChange={onChangeForm}
+                        aria-describedby="contentLink"
+                      />
+                      <div className="form-text">
+                        {t('common.contentLinkFormText')}
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="form-label">
+                        {t('common.coverLink')}
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="cover"
+                        value={form.cover}
+                        onChange={onChangeForm}
+                        aria-describedby="cover"
+                      />
+                      <div className="form-text">
+                        {t('common.coverLinkFormText')}
+                      </div>
+                    </div>
+
+                    {post?.id && (
+                      <UploadCover
+                        id={isEdit && post.createdBy ? post.id : undefined}
+                        callback={() => {
+                          setForm({
+                            ...form,
+                            cover: `${location.origin}/api/posts/${post.id}/cover`,
+                          });
+                        }}
+                      />
                     )}
 
                     <div>
                       <label className="form-label">
-                        <span>{t('common.content')}</span>
-                        <TemporaryStorage
-                          currentUser={currentUser}
-                          saveFn={temporaryStorageSaveFn}
-                          restoreFn={temporaryStorageRestoreFn}
-                        />
+                        {t('common.selectContent')}
                       </label>
-
-                      <div className="form-text mb-2">
-                        {t('common.contentFormText')}
+                      <select
+                        className="form-select"
+                        aria-label="Select Content"
+                        value={form.sectionId}
+                        onChange={onChangeForm}
+                        name="sectionId"
+                      >
+                        <option value="none" defaultValue="none">
+                          {t('common.none')}
+                        </option>
+                        {sectionOptions.map((item) => {
+                          return (
+                            <option key={item.id} value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div className="form-text">
+                        {t('common.postSelectContentFormText')}
                       </div>
-                      {editorInitializing && (
-                        <div className="form-text mb-2">
-                          {t('common.editorLoading')}
+                    </div>
+
+                    <div>
+                      <label className="form-label">
+                        {t('common.addTags')}
+                      </label>
+                      <div className="card rounded-2">
+                        <div className="card-body">
+                          <SimpleDynamicInput items={tags} setItems={setTags} />
                         </div>
-                      )}
-                      <div ref={editorElementRef}></div>
+                      </div>
+                      <div className="form-text">
+                        {t('common.postAddTagsFormText')}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="form-label">
+                        {t('common.overview')}
+                        {!!form.overview.length && (
+                          <span>&nbsp;({form.overview.length})</span>
+                        )}
+                      </label>
+                      <textarea
+                        rows={3}
+                        className="form-control"
+                        name="overview"
+                        value={form.overview}
+                        onChange={onChangeForm}
+                        aria-describedby="overview"
+                      />
+                      <div className="form-text">
+                        {t('common.overviewFormText')}
+                      </div>
                     </div>
                   </div>
-                </form>
+                </div>
+                <div className={clsx(split ? 'col-6' : '')}>
+                  {!expand && (
+                    <div className="mb-4">
+                      <label className="form-label">
+                        <span className="fw-bold text-danger">*</span>
+                        {t('common.name')}
+                      </label>
+                      <textarea
+                        required
+                        rows={1}
+                        className="form-control"
+                        name="name"
+                        value={form.name}
+                        onChange={onChangeForm}
+                        aria-describedby="name"
+                        minLength={1}
+                      />
+                      <div className="form-text">
+                        {t('common.postNameFormText')}
+                      </div>
+                    </div>
+                  )}
 
-                <div
-                  className={clsx({
-                    'd-none': !isPreview,
-                    'd-block': isPreview,
-                  })}
-                  dangerouslySetInnerHTML={{ __html: form.content }}
-                ></div>
-              </div>
+                  <div>
+                    <label className="form-label">
+                      <span>{t('common.content')}</span>
+                      <TemporaryStorage
+                        currentUser={currentUser}
+                        saveFn={temporaryStorageSaveFn}
+                        restoreFn={temporaryStorageRestoreFn}
+                      />
+                    </label>
+
+                    <div className="form-text mb-2">
+                      {t('common.contentFormText')}
+                    </div>
+
+                    {editorInitializing && (
+                      <div className="form-text mb-2">
+                        {t('common.editorLoading')}
+                      </div>
+                    )}
+
+                    <CustomEditor
+                      initialData={isEdit ? post.content ?? '' : ''}
+                      onReady={(editor: ClassicEditor) => {
+                        editorRef.current = editor;
+                        setEditorInitializing(false);
+                      }}
+                      onError={(e: Error) => {
+                        setEditorInitializing(false);
+                        toast.current.show({
+                          type: 'danger',
+                          message: e.message ?? 'Failed to load the editorRef',
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+              </form>
+
+              <div
+                className={clsx({
+                  'd-none': !isPreview,
+                  'd-block': isPreview,
+                })}
+                dangerouslySetInnerHTML={{ __html: form.content }}
+              ></div>
             </div>
           </div>
         </div>
       </div>
-      <Script
-        onReady={() =>
-          onLoadEditor(editorElementRef, editorRef, () =>
-            setEditorInitializing(false),
-          )
-        }
-        onError={(e) => onErrorEditor(e, toast)}
-        src="/editor/ckeditor.js"
-      />
-    </>
+    </div>
   );
 }
