@@ -16,18 +16,20 @@
 
   <div class="d-flex gap-4">
     <a
+      (click)="onClickPreviousPage(previousPageId)"
       [routerLink]="previousPageId ? '/posts/' + previousPageId : '/posts'"
       queryParamsHandling="merge"
       class="btn btn-secondary"
-      [class.disabled]="!previousPageId"
+      [class.disabled]="!previousPageId || currentId === previousPageId"
     >
       <i class="bi bi-arrow-left"></i>
     </a>
     <a
+      (click)="onClickNextPage(nextPageId)"
       [routerLink]="nextPageId ? '/posts/' + nextPageId : '/posts'"
       queryParamsHandling="merge"
       class="btn btn-secondary"
-      [class.disabled]="!nextPageId || isDestroy"
+      [class.disabled]="!nextPageId || currentId === nextPageId"
     >
       <i class="bi bi-arrow-right"></i>
     </a>

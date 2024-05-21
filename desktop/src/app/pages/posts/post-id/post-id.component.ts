@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { NavComponent } from '@/src/app/components/posts/post-id/nav/nav.component';
 import { BodyComponent } from '@/src/app/components/posts/post-id/body/body.component';
 import { CoverComponent } from '@/src/app/components/posts/post-id/body/cover/cover.component';
@@ -6,11 +6,12 @@ import { HeadComponent } from '@/src/app/components/posts/post-id/head/head.comp
 import { IShortcutBtnComponentClickEvent } from '@/src/app/components/posts/post-id/body/shortcut-btn/shortcut-btn.component';
 import { injectQuery } from '@tanstack/angular-query-experimental';
 import { IError, IPostDetails } from '@/src/types';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { PostService } from '@/src/app/services/post.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { PageErrorComponent } from '@/src/app/components/common/page-error/page-error.component';
 import { PageLoadingComponent } from '@/src/app/components/common/page-loading/page-loading.component';
+import { parseURL } from '@/src/app/tools';
 
 @Component({
   selector: 'app-post-id',
@@ -26,10 +27,11 @@ import { PageLoadingComponent } from '@/src/app/components/common/page-loading/p
   templateUrl: './post-id.component.html',
   styleUrl: './post-id.component.scss',
 })
-export class PostIdComponent implements OnInit {
+export class PostIdComponent implements OnInit, OnDestroy {
   expand = true;
   previousPageId?: string | null;
   nextPageId?: string | null;
+  routerEventsSubscribe?: Subscription;
 
   id = signal<string | null>(null);
 
@@ -43,8 +45,9 @@ export class PostIdComponent implements OnInit {
   }));
 
   constructor(
-    private route: ActivatedRoute,
     private postService: PostService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   onShortcutBtnClickEvent(e: IShortcutBtnComponentClickEvent) {
@@ -61,5 +64,23 @@ export class PostIdComponent implements OnInit {
     this.id.set(id);
     this.previousPageId = previousPageId;
     this.nextPageId = nextPageId;
+
+    this.routerEventsSubscribe = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const result = parseURL(event.url);
+        const array = result.pathname.split('/');
+        const value = array[array.length - 1];
+        if (
+          value === result.queryParams['nextPageId'] ||
+          value === result.queryParams['previousPageId']
+        ) {
+          this.id.set(value);
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routerEventsSubscribe?.unsubscribe();
   }
 }

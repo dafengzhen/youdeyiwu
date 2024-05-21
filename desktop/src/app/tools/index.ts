@@ -27,3 +27,17 @@ export const generateRandomNumber = (min: number, max: number) => {
   }
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+export const parseURL = (url: string, baseURL?: string) => {
+  const parsedUrl = new URL(url, baseURL ?? location.origin);
+  const searchParams = new URLSearchParams(parsedUrl.search);
+
+  const queryParams: Record<string, string> = {};
+  searchParams.forEach((value, key) => (queryParams[key] = value));
+
+  return {
+    pathname: parsedUrl.pathname,
+    search: parsedUrl.search,
+    queryParams,
+  };
+};

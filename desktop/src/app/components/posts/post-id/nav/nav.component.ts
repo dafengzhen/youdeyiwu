@@ -1,11 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterLink,
-} from '@angular/router';
-import { Location } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IPostDetails } from '@/src/types';
 
 @Component({
@@ -15,22 +9,23 @@ import { IPostDetails } from '@/src/types';
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss',
 })
-export class NavComponent implements OnInit {
-  isDestroy = false;
-
+export class NavComponent {
   @Input() pending: boolean = false;
   @Input() details!: IPostDetails;
   @Input() previousPageId?: string | null;
   @Input() nextPageId?: string | null;
 
+  currentId?: string | null;
+
   constructor(
-    private location: Location,
-    private route: ActivatedRoute,
     private router: Router,
-  ) {}
+    private route: ActivatedRoute,
+  ) {
+    this.currentId = this.route.snapshot.paramMap.get('id');
+  }
 
   onClickBack() {
-    this.location.back();
+    this.router.navigate(['/']);
   }
 
   onClickBackKeyup(e: KeyboardEvent) {
@@ -39,17 +34,11 @@ export class NavComponent implements OnInit {
     }
   }
 
-  onClickPreviousPage(e: MouseEvent) {
-    e.stopPropagation();
-    e.preventDefault();
+  onClickPreviousPage(previousPageId?: string | null) {
+    this.currentId = previousPageId;
   }
 
-  ngOnInit(): void {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        console.log('end');
-        console.log(event);
-      }
-    });
+  onClickNextPage(nextPageId?: string | null) {
+    this.currentId = nextPageId;
   }
 }
