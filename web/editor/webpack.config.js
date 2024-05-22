@@ -9,98 +9,104 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const {bundler, styles} = require('@ckeditor/ckeditor5-dev-utils');
+const { bundler, styles } = require('@ckeditor/ckeditor5-dev-utils');
 const {
-    CKEditorTranslationsPlugin,
+  CKEditorTranslationsPlugin,
 } = require('@ckeditor/ckeditor5-dev-translations');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 
+/** @type {import('webpack').Configuration} */
 module.exports = {
-    // devtool: 'source-map',
-    performance: {hints: false},
+  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+  performance: { hints: false },
 
-    entry: path.resolve(__dirname, 'src', 'ckeditor.ts'),
+  entry: path.resolve(
+    __dirname,
+    'src',
+    process.env.NODE_ENV === 'production' ? 'ckeditor.ts' : 'ckeditor.dev.ts',
+  ),
 
-    output: {
-        // The name under which the editor will be exported.
-        library: 'CKSource',
+  output: {
+    // The name under which the editor will be exported.
+    library: 'CKSource',
 
-        path: path.join(__dirname, 'build'),
-        filename: 'ckeditor.js',
-        libraryTarget: 'umd',
-        libraryExport: 'default',
-    },
+    path: path.join(__dirname, 'build'),
+    filename:
+      process.env.NODE_ENV === 'production' ? 'ckeditor.js' : 'ckeditor.dev.js',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+  },
 
-    optimization: {
-        minimizer: [
-            new TerserWebpackPlugin({
-                // sourceMap: true,
-                terserOptions: {
-                    output: {
-                        // Preserve CKEditor 5 license comments.
-                        comments: /^!/,
-                    },
-                },
-                extractComments: false,
-            }),
-        ],
-    },
-
-    plugins: [
-        new CKEditorTranslationsPlugin({
-            // UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-            // When changing the built-in language, remember to also change it in the editor's configuration (src/ckeditor.ts).
-            language: 'en',
-            // additionalLanguages: 'all',
-        }),
-        new webpack.BannerPlugin({
-            banner: bundler.getLicenseBanner(),
-            raw: true,
-        }),
+  optimization: {
+    minimizer: [
+      new TerserWebpackPlugin({
+        // sourceMap: true,
+        terserOptions: {
+          output: {
+            // Preserve CKEditor 5 license comments.
+            comments: /^!/,
+          },
+        },
+        extractComments: false,
+      }),
     ],
+  },
 
-    resolve: {
-        extensions: ['.ts', '.js', '.json'],
-    },
+  plugins: [
+    new CKEditorTranslationsPlugin({
+      // UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+      // When changing the built-in language, remember to also change it in the editor's configuration (src/ckeditor.ts).
+      language: 'en',
+      // additionalLanguages: 'all',
+    }),
+    new webpack.BannerPlugin({
+      banner: bundler.getLicenseBanner(),
+      raw: true,
+    }),
+  ],
 
-    module: {
-        rules: [
-            {
-                test: /\.svg$/,
-                use: ['raw-loader'],
+  resolve: {
+    extensions: ['.ts', '.js', '.json'],
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.svg$/,
+        use: ['raw-loader'],
+      },
+      {
+        test: /\.ts$/,
+        use: 'ts-loader',
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              injectType: 'singletonStyleTag',
+              attributes: {
+                'data-cke': true,
+              },
             },
-            {
-                test: /\.ts$/,
-                use: 'ts-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: styles.getPostCssConfig({
+                themeImporter: {
+                  themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
+                },
+                minify: true,
+              }),
             },
-            {
-                test: /\.css$/,
-                use: [
-                    {
-                        loader: 'style-loader',
-                        options: {
-                            injectType: 'singletonStyleTag',
-                            attributes: {
-                                'data-cke': true,
-                            },
-                        },
-                    },
-                    {
-                        loader: 'css-loader',
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            postcssOptions: styles.getPostCssConfig({
-                                themeImporter: {
-                                    themePath: require.resolve('@ckeditor/ckeditor5-theme-lark'),
-                                },
-                                minify: true,
-                            }),
-                        },
-                    },
-                ],
-            },
+          },
         ],
-    },
+      },
+    ],
+  },
 };

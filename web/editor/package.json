@@ -43,7 +43,9 @@
     "@ckeditor/ckeditor5-core": "^41.4.2",
     "@ckeditor/ckeditor5-dev-translations": "^40.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
+    "@ckeditor/ckeditor5-inspector": "^4.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^41.4.2",
+    "cross-env": "^7.0.3",
     "css-loader": "^7.1.1",
     "postcss": "^8.4.38",
     "postcss-loader": "^8.1.1",
@@ -56,8 +58,8 @@
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "dev": "webpack",
-    "build": "webpack --mode production",
+    "dev": "cross-env NODE_ENV=development webpack --mode development --watch",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
     "postbuild": "tsc --declaration --declarationDir build --stripInternal --emitDeclarationOnly"
   },
   "repository": {
