@@ -342,7 +342,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and p.accessKey = :accessKey))
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -377,7 +377,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and p.accessKey = :accessKey))
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -412,7 +412,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and p.accessKey = :accessKey))
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -447,7 +447,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and p.accessKey = :accessKey))
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -481,7 +481,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or (:lock member of p.states and p.accessKey = :accessKey))
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -531,7 +531,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   where :sectionGroup member of p.section.sectionGroups
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -554,7 +554,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   where p.section = :section
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -577,7 +577,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   where t member of p.tags and :tagGroup member of t.tagGroups
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -600,7 +600,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   where :tag member of p.tags
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -623,7 +623,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   where :show member of p.states
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -678,7 +678,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or p.user = :user)
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -725,7 +725,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or p.user = :user)
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -772,7 +772,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or p.user = :user)
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -819,7 +819,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or p.user = :user)
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class
@@ -865,7 +865,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
                   or p.user = :user)
                   order by p.sortState desc, p.initialScore desc,
                     (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - function('timestampdiff', second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
                     p.createdOn desc
                   """,
               PostEntity.class

@@ -2,17 +2,19 @@ package com.youdeyiwu.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import com.youdeyiwu.repository.user.UserRepository;
 import com.youdeyiwu.security.AccessDecisionAuthorizationManager;
-import com.youdeyiwu.security.AuthenticationProvider;
 import com.youdeyiwu.security.DefaultRateLimitFilter;
 import com.youdeyiwu.security.JwtAuthenticationFilter;
+import com.youdeyiwu.service.user.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-  private final AuthenticationProvider authenticationProvider;
-
-  private final UserDetailsService userDetailsService;
+  private final UserCache userCache;
 
   private final DefaultRateLimitFilter defaultRateLimitFilter;
 
@@ -41,6 +41,20 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  /**
+   * daoAuthenticationProvider.
+   *
+   * @return DaoAuthenticationProvider
+   */
+  @Bean
+  public DaoAuthenticationProvider daoAuthenticationProvider(UserRepository userRepository) {
+    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
+    UserDetailsService userDetailsService = new UserDetailsServiceImpl(userRepository);
+    daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+    daoAuthenticationProvider.setUserCache(userCache);
+    return daoAuthenticationProvider;
   }
 
   /**
@@ -68,11 +82,6 @@ public class SecurityConfig {
         httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     );
-
-    authenticationProvider.setPasswordEncoder(passwordEncoder());
-    http.getSharedObject(AuthenticationManagerBuilder.class)
-        .authenticationProvider(authenticationProvider).userDetailsService(userDetailsService)
-        .passwordEncoder(passwordEncoder());
 
     http.addFilterBefore(defaultRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

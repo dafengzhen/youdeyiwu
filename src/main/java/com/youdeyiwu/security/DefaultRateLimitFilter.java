@@ -6,8 +6,8 @@ import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.ConsumptionProbe;
+import io.github.bucket4j.caffeine.Bucket4jCaffeine;
 import io.github.bucket4j.caffeine.CaffeineProxyManager;
-import io.github.bucket4j.distributed.proxy.ProxyManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,14 +45,11 @@ public class DefaultRateLimitFilter extends OncePerRequestFilter {
       )
       .build();
   private final SecurityService securityService;
-  private ProxyManager<String> buckets;
+  private CaffeineProxyManager<Object> buckets;
 
   @Override
   protected void initFilterBean() {
-    buckets = new CaffeineProxyManager<>(
-        Caffeine.newBuilder().maximumSize(100),
-        Duration.ofMinutes(1)
-    );
+    buckets = Bucket4jCaffeine.builderFor(Caffeine.newBuilder().maximumSize(100)).build();
   }
 
   @Override

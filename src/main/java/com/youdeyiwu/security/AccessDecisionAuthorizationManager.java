@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @RequiredArgsConstructor
 @Component
-public class AccessDecisionAuthorizationManager
-    implements AuthorizationManager<RequestAuthorizationContext> {
+public class AccessDecisionAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
   private final SecurityMetadataSource securityMetadataSource;
 
