@@ -20,7 +20,8 @@ export const GlobalContext = createContext<{
   },
   modal: {
     current: {
-      show: () => {},
+      show: () => '',
+      hide: () => {},
     },
   },
   pointsAlert: {

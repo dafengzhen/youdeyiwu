@@ -22,7 +22,8 @@ export function Providers(props: {
     show: () => {},
   });
   const modalRef = useRef<IModalRef>({
-    show: () => {},
+    show: () => '',
+    hide: () => {},
   });
   const pointsAlertRef = useRef<IPointsAlertRef>({
     add: () => {},

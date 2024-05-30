@@ -1,5 +1,5 @@
 import { HighlightCommand } from './highlightCommand';
-import { ButtonView } from 'ckeditor5/src/ui';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 export function Highlight(editor: any) {
   console.log('Highlight plugin has been registered');
