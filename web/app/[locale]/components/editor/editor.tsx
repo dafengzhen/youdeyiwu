@@ -3,13 +3,29 @@ import Editor from 'youdeyiwu-editor';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import type { EventInfo } from '@ckeditor/ckeditor5-utils';
+import type { IYwCodeBlockConfig } from '@/editor/build/plugins/code-block/code-block';
+import { useContext } from 'react';
+import { GlobalContext } from '@/app/[locale]/contexts';
+import CodeBlock from '@/app/[locale]/components/editor/code-block';
+import CodeBlockPreview from '@/app/[locale]/components/editor/code-block-preview';
+import { renderToString } from 'react-dom/server';
 
 export interface EditorErrorDetails {
   phase: 'initialization' | 'runtime';
   willEditorRestart?: boolean;
 }
 
-const editorConfiguration: EditorConfig = {
+export type TEditorConfiguration = EditorConfig & {
+  ywCodeBlock: IYwCodeBlockConfig;
+};
+
+export interface ICodeBlockData {
+  language: string;
+  code: string;
+  value: string;
+}
+
+const editorConfiguration = {
   heading: {
     options: [
       { model: 'paragraph', title: 'Paragraph', class: '' },
@@ -357,7 +373,7 @@ const editorConfiguration: EditorConfig = {
   simpleUpload: {
     uploadUrl: location.origin + '/api/files/images',
   },
-};
+} as TEditorConfiguration;
 
 export default function CustomEditor(props: {
   initialData?: string | null | undefined;
@@ -373,10 +389,55 @@ export default function CustomEditor(props: {
     | ((event: EventInfo<string, unknown>, editor: ClassicEditor) => void)
     | undefined;
 }) {
+  const { modal } = useContext(GlobalContext);
+  const codeBlockData = new Map<string, ICodeBlockData>();
+
   return (
     <CKEditor
       editor={Editor}
-      config={editorConfiguration}
+      config={
+        {
+          ...editorConfiguration,
+          ywCodeBlock: {
+            open: (args) => {
+              const modalId = modal.current.show({
+                content: (
+                  <CodeBlock
+                    args={args}
+                    data={codeBlockData}
+                    closeModal={() => {
+                      modal.current.hide(modalId);
+                    }}
+                  />
+                ),
+                centered: true,
+              });
+            },
+            renderer: ({ id, language, el, value }) => {
+              if (value) {
+                codeBlockData.set(id, {
+                  language,
+                  code: '',
+                  value,
+                });
+
+                el.innerHTML = value;
+              } else {
+                const item = codeBlockData.get(id);
+                const _value = item?.value ?? '';
+                const _language = item?.language ?? '';
+                el.innerHTML = renderToString(
+                  <CodeBlockPreview
+                    key={id}
+                    value={_value}
+                    language={_language}
+                  />,
+                );
+              }
+            },
+          },
+        } as TEditorConfiguration
+      }
       data={props.initialData}
       onChange={props.onChange}
       onReady={props.onReady}

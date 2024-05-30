@@ -56,7 +56,7 @@ public class Tool {
         .addAttributes("a", "data-fid", "target", "rel", "id")
         .addProtocols("a", "href", "#")
         .addAttributes("iframe", "src", "width", "height", "title", "allow", "allowfullscreen")
-        .addAttributes("div", "data-oembed-url");
+        .addAttributes("div", "data-oembed-url", "data-id", "data-language", "data-value");
   }
 
   /**

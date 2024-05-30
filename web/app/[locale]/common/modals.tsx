@@ -8,13 +8,17 @@ import {
 } from 'react';
 import { nanoid } from 'nanoid';
 import { GlobalContext } from '@/app/[locale]/contexts';
+import clsx from 'clsx';
 
 interface IModalProps {
-  body: string | ReactNode;
+  content?: string | ReactNode;
+  body?: string | ReactNode;
   footer?: string | ReactNode;
   title?: string;
   backdrop?: boolean | 'static';
   keyboard?: boolean;
+  centered?: boolean;
+  btnClose?: boolean;
 }
 
 interface IModalPropsSuper extends IModalProps {
@@ -24,7 +28,8 @@ interface IModalPropsSuper extends IModalProps {
 }
 
 export interface IModalRef {
-  show: (options: IModalProps) => void;
+  show: (options: IModalProps) => string;
+  hide: (id: string) => void;
 }
 
 export default forwardRef(function Modals(props, ref) {
@@ -33,6 +38,7 @@ export default forwardRef(function Modals(props, ref) {
 
   useImperativeHandle(ref, () => ({
     show,
+    hide,
   }));
 
   useEffect(() => {
@@ -53,17 +59,32 @@ export default forwardRef(function Modals(props, ref) {
   }, [bs, items]);
 
   function show(options: IModalProps) {
+    const id = nanoid();
     setItems([
       {
         ...options,
         title: options.title ?? 'Message',
         backdrop: options.backdrop ?? true,
-        id: nanoid(),
+        id,
         ref: null,
         displayed: true,
       },
       ...items,
     ]);
+    return id;
+  }
+
+  function hide(id: string) {
+    const bootstrap = bs.current;
+    const item = items.find((item) => item.id === id);
+    if (!bootstrap || !item) {
+      return;
+    }
+
+    const instance = bootstrap.Modal.getOrCreateInstance(item.ref!, {
+      backdrop: item.backdrop,
+    });
+    instance.hide();
   }
 
   return (
@@ -80,20 +101,35 @@ export default forwardRef(function Modals(props, ref) {
             data-bs-keyboard={item.keyboard === true ? 'true' : 'false'}
             tabIndex={-1}
           >
-            <div className="modal-dialog modal-dialog-scrollable">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{item.title}</h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    aria-label="Close"
-                    data-bs-dismiss="modal"
-                  ></button>
+            <div
+              className={clsx('modal-dialog modal-dialog-scrollable', {
+                'modal-dialog-centered': item.centered,
+              })}
+            >
+              {item.content ? (
+                item.content
+              ) : (
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">{item.title}</h5>
+
+                    {item.btnClose && (
+                      <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        data-bs-dismiss="modal"
+                      ></button>
+                    )}
+                  </div>
+
+                  <div className="modal-body">{item.body}</div>
+
+                  {item.footer && (
+                    <div className="modal-footer">{item.footer}</div>
+                  )}
                 </div>
-                <div className="modal-body">{item.body}</div>
-                <div className="modal-footer">{item.footer}</div>
-              </div>
+              )}
             </div>
           </div>
         );

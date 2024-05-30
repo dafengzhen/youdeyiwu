@@ -1,9 +1,12 @@
-import hljs from '@/app/[locale]/common/highlight';
 import clsx from 'clsx';
 
-export default function Code({ value }: { value: HTMLElement }) {
-  const code = hljs.highlightAuto(value.textContent ?? '').value;
-
+export default function Code({
+  classs,
+  value,
+}: {
+  classs?: string;
+  value: string;
+}) {
   function handleLineHighlight(code: string) {
     const nums = rangeParser(code, extractCodeRange(code));
     return code
@@ -80,11 +83,13 @@ export default function Code({ value }: { value: HTMLElement }) {
   }
 
   return (
-    <code
-      className={clsx(value.className, 'hljs')}
-      dangerouslySetInnerHTML={{
-        __html: handleLineHighlight(handleLines(code)),
-      }}
-    />
+    <pre>
+      <code
+        className={clsx(classs, 'hljs')}
+        dangerouslySetInnerHTML={{
+          __html: handleLineHighlight(handleLines(value)),
+        }}
+      ></code>
+    </pre>
   );
 }

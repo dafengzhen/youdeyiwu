@@ -18,7 +18,7 @@ import {
   Underline,
 } from '@ckeditor/ckeditor5-basic-styles';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+// import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
@@ -78,6 +78,8 @@ import { Undo } from '@ckeditor/ckeditor5-undo';
 import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload';
 import { Highlight } from './plugins/highlight';
 // import {EditorWatchdog} from '@ckeditor/ckeditor5-watchdog';
+// import FileBox from './plugins/file-box/file-box';
+import CodeBlock from './plugins/code-block/code-block';
 
 // You can read more about extending the build with additional plugins in the "Installing plugins" guide.
 // See https://ckeditor.com/docs/ckeditor5/latest/installation/plugins/installing-plugins.html for details.
@@ -208,6 +210,9 @@ class Editor extends ClassicEditor {
         'tableProperties',
       ],
     },
+    highlight: {
+      keystroke: 'Ctrl+Alt+9',
+    } as any,
   };
 }
 
