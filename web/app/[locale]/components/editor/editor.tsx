@@ -708,12 +708,7 @@ export default function CustomEditor(props: {
           onChange={props.onChange}
           onReady={props.onReady}
           onError={props.onError}
-          onBlur={(event, editor) => {
-            setIsFocus(false);
-            if (typeof props.onBlur === 'function') {
-              props.onBlur(event, editor);
-            }
-          }}
+          onBlur={props.onBlur}
           onFocus={(event, editor) => {
             setIsFocus(true);
             if (typeof props.onFocus === 'function') {
