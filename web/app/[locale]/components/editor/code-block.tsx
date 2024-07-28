@@ -1,8 +1,8 @@
-import type { IOpenArgs } from '@/editor/build/plugins/code-block/code-block';
 import { type ChangeEvent, useState } from 'react';
 import hljs from 'highlight.js';
 import { nanoid } from 'nanoid';
 import type { ICodeBlockData } from '@/app/[locale]/components/editor/editor';
+import type { IOpenArgs } from '@/app/[locale]/components/editor/plugins/code-block/code-block';
 
 const languages = [
   'C',
