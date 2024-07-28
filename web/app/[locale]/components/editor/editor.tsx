@@ -1,14 +1,78 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import Editor from 'youdeyiwu-editor';
 import type { EditorConfig } from '@ckeditor/ckeditor5-core';
-import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import type { EventInfo } from '@ckeditor/ckeditor5-utils';
-import type { IYwCodeBlockConfig } from '@/editor/build/plugins/code-block/code-block';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/app/[locale]/contexts';
-import CodeBlock from '@/app/[locale]/components/editor/code-block';
+import CodeBlockCard from '@/app/[locale]/components/editor/code-block';
 import CodeBlockPreview from '@/app/[locale]/components/editor/code-block-preview';
 import { renderToString } from 'react-dom/server';
+import CodeBlock, {
+  type IYwCodeBlockConfig,
+} from '@/app/[locale]/components/editor/plugins/code-block/code-block';
+import {
+  Alignment,
+  Autoformat,
+  AutoImage,
+  AutoLink,
+  Autosave,
+  BlockQuote,
+  BlockToolbar,
+  Bold,
+  ClassicEditor,
+  Code,
+  DataFilter,
+  DataSchema,
+  Essentials,
+  FindAndReplace,
+  FontBackgroundColor,
+  FontColor,
+  FontSize,
+  GeneralHtmlSupport,
+  Heading,
+  Highlight,
+  HorizontalLine,
+  HtmlComment,
+  HtmlEmbed,
+  ImageBlock,
+  ImageCaption,
+  ImageInline,
+  ImageInsert,
+  ImageInsertViaUrl,
+  ImageResize,
+  ImageStyle,
+  ImageTextAlternative,
+  ImageToolbar,
+  ImageUpload,
+  Indent,
+  IndentBlock,
+  Italic,
+  Link,
+  LinkImage,
+  List,
+  ListProperties,
+  MediaEmbed,
+  PageBreak,
+  Paragraph,
+  PasteFromMarkdownExperimental,
+  PasteFromOffice,
+  RemoveFormat,
+  SelectAll,
+  SimpleUploadAdapter,
+  Strikethrough,
+  Style,
+  Subscript,
+  Superscript,
+  Table,
+  TableCaption,
+  TableCellProperties,
+  TableColumnResize,
+  TableProperties,
+  TableToolbar,
+  TextTransformation,
+  Underline,
+  Undo,
+} from 'ckeditor5';
+import clsx from 'clsx';
 
 export interface EditorErrorDetails {
   phase: 'initialization' | 'runtime';
@@ -26,6 +90,185 @@ export interface ICodeBlockData {
 }
 
 const editorConfiguration = {
+  toolbar: {
+    items: [
+      'heading',
+      'style',
+      '|',
+      'fontBackgroundColor',
+      'fontColor',
+      'fontSize',
+      '|',
+      'bold',
+      'italic',
+      'underline',
+      'strikethrough',
+      '|',
+      'alignment',
+      'bulletedList',
+      'numberedList',
+      'outdent',
+      'indent',
+      '|',
+      'horizontalLine',
+      'highlight',
+      'code',
+      'codeBlock',
+      'blockQuote',
+      '|',
+      'link',
+      'insertImage',
+      'mediaEmbed',
+      'insertTable',
+      'htmlEmbed',
+      '|',
+      'findAndReplace',
+      'removeFormat',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+  plugins: [
+    // AccessibilityHelp,
+    // Markdown,
+    Alignment,
+    AutoImage,
+    AutoLink,
+    Autoformat,
+    Autosave,
+    BlockQuote,
+    BlockToolbar,
+    Bold,
+    Code,
+    CodeBlock,
+    DataFilter,
+    DataSchema,
+    Essentials,
+    FindAndReplace,
+    FontBackgroundColor,
+    FontColor,
+    FontSize,
+    GeneralHtmlSupport,
+    Heading,
+    Highlight,
+    HorizontalLine,
+    HtmlComment,
+    HtmlEmbed,
+    ImageBlock,
+    ImageCaption,
+    ImageInline,
+    ImageInsert,
+    ImageInsertViaUrl,
+    ImageResize,
+    ImageStyle,
+    ImageTextAlternative,
+    ImageToolbar,
+    ImageUpload,
+    Indent,
+    IndentBlock,
+    Italic,
+    Link,
+    LinkImage,
+    List,
+    ListProperties,
+    MediaEmbed,
+    // Mention,
+    PageBreak,
+    Paragraph,
+    PasteFromMarkdownExperimental,
+    PasteFromOffice,
+    RemoveFormat,
+    SelectAll,
+    SimpleUploadAdapter,
+    Strikethrough,
+    Style,
+    Subscript,
+    Superscript,
+    Table,
+    TableCaption,
+    TableCellProperties,
+    TableColumnResize,
+    TableProperties,
+    TableToolbar,
+    TextTransformation,
+    Underline,
+    Undo,
+  ],
+  blockToolbar: [
+    'bold',
+    'italic',
+    '|',
+    'link',
+    'insertImage',
+    'insertTable',
+    '|',
+    'bulletedList',
+    'numberedList',
+    'outdent',
+    'indent',
+  ],
+  htmlSupport: {
+    allow: [
+      {
+        name: /^.*$/,
+        styles: true,
+        attributes: true,
+        classes: true,
+      },
+    ],
+  },
+  link: {
+    addTargetToExternalLinks: true,
+    defaultProtocol: 'https://',
+    decorators: {
+      toggleDownloadable: {
+        mode: 'manual',
+        label: 'Downloadable',
+        attributes: {
+          download: 'file',
+        },
+      },
+    },
+  },
+  list: {
+    properties: {
+      styles: true,
+      startIndex: true,
+      reversed: true,
+    },
+  },
+  mention: {
+    feeds: [
+      {
+        marker: '@',
+        feed: [
+          /* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
+        ],
+      },
+    ],
+  },
+  style: {
+    definitions: [
+      {
+        name: 'Marker',
+        element: 'span',
+        classes: ['marker'],
+      },
+      {
+        name: 'Spoiler',
+        element: 'span',
+        classes: ['spoiler'],
+      },
+    ],
+  },
+  table: {
+    contentToolbar: [
+      'tableColumn',
+      'tableRow',
+      'mergeTableCells',
+      'tableProperties',
+      'tableCellProperties',
+    ],
+  },
   heading: {
     options: [
       { model: 'paragraph', title: 'Paragraph', class: '' },
@@ -366,6 +609,16 @@ const editorConfiguration = {
     ],
   },
   image: {
+    toolbar: [
+      'toggleImageCaption',
+      'imageTextAlternative',
+      '|',
+      'imageStyle:inline',
+      'imageStyle:wrapText',
+      'imageStyle:breakText',
+      '|',
+      'resizeImage',
+    ],
     upload: {
       types: ['jpeg', 'png', 'gif'],
     },
@@ -373,7 +626,7 @@ const editorConfiguration = {
   simpleUpload: {
     uploadUrl: location.origin + '/api/files/images',
   },
-} as TEditorConfiguration;
+};
 
 export default function CustomEditor(props: {
   initialData?: string | null | undefined;
@@ -391,59 +644,84 @@ export default function CustomEditor(props: {
 }) {
   const { modal } = useContext(GlobalContext);
   const codeBlockData = new Map<string, ICodeBlockData>();
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
+
+  useEffect(() => {
+    setIsLayoutReady(true);
+    return () => setIsLayoutReady(false);
+  }, []);
 
   return (
-    <CKEditor
-      editor={Editor}
-      config={
-        {
-          ...editorConfiguration,
-          ywCodeBlock: {
-            open: (args) => {
-              const modalId = modal.current.show({
-                content: (
-                  <CodeBlock
-                    args={args}
-                    data={codeBlockData}
-                    closeModal={() => {
-                      modal.current.hide(modalId);
-                    }}
-                  />
-                ),
-                centered: true,
-              });
-            },
-            renderer: ({ id, language, el, value }) => {
-              if (value) {
-                codeBlockData.set(id, {
-                  language,
-                  code: '',
-                  value,
-                });
+    <div
+      className={clsx('editor-container__editor', {
+        'ms-4': isFocus,
+      })}
+    >
+      {isLayoutReady && (
+        <CKEditor
+          editor={ClassicEditor}
+          config={
+            {
+              ...editorConfiguration,
+              ywCodeBlock: {
+                open: (args) => {
+                  const modalId = modal.current.show({
+                    content: (
+                      <CodeBlockCard
+                        args={args}
+                        data={codeBlockData}
+                        closeModal={() => {
+                          modal.current.hide(modalId);
+                        }}
+                      />
+                    ),
+                    centered: true,
+                  });
+                },
+                renderer: ({ id, language, el, value }) => {
+                  if (value) {
+                    codeBlockData.set(id, {
+                      language,
+                      code: '',
+                      value,
+                    });
 
-                el.innerHTML = value;
-              } else {
-                const item = codeBlockData.get(id);
-                const _value = item?.value ?? '';
-                const _language = item?.language ?? '';
-                el.innerHTML = renderToString(
-                  <CodeBlockPreview
-                    key={id}
-                    value={_value}
-                    language={_language}
-                  />,
-                );
-              }
-            },
-          },
-        } as TEditorConfiguration
-      }
-      data={props.initialData}
-      onChange={props.onChange}
-      onReady={props.onReady}
-      onError={props.onError}
-      onBlur={props.onBlur}
-      onFocus={props.onFocus}
-    />
+                    el.innerHTML = value;
+                  } else {
+                    const item = codeBlockData.get(id);
+                    const _value = item?.value ?? '';
+                    const _language = item?.language ?? '';
+                    el.innerHTML = renderToString(
+                      <CodeBlockPreview
+                        key={id}
+                        value={_value}
+                        language={_language}
+                      />,
+                    );
+                  }
+                },
+              },
+            } as TEditorConfiguration
+          }
+          data={props.initialData}
+          onChange={props.onChange}
+          onReady={props.onReady}
+          onError={props.onError}
+          onBlur={(event, editor) => {
+            setIsFocus(false);
+            if (typeof props.onBlur === 'function') {
+              props.onBlur(event, editor);
+            }
+          }}
+          onFocus={(event, editor) => {
+            setIsFocus(true);
+            if (typeof props.onFocus === 'function') {
+              props.onFocus(event, editor);
+            }
+          }}
+        />
+      )}
+    </div>
   );
 }

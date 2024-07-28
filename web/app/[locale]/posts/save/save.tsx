@@ -619,7 +619,7 @@ export default function Save({
                     )}
 
                     <CustomEditor
-                      initialData={isEdit ? post.content ?? '' : ''}
+                      initialData={isEdit ? (post.content ?? '') : ''}
                       onReady={(editor: ClassicEditor) => {
                         editorRef.current = editor;
                         setEditorInitializing(false);
@@ -628,7 +628,7 @@ export default function Save({
                         setEditorInitializing(false);
                         toast.current.show({
                           type: 'danger',
-                          message: e.message ?? 'Failed to load the editorRef',
+                          message: e.message,
                         });
                       }}
                     />
