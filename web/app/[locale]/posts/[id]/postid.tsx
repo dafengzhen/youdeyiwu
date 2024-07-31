@@ -59,7 +59,7 @@ export default function PostId({
     <PostIdContext.Provider
       value={{ details, currentUser, openReplyBox, setOpenReplyBox }}
     >
-      <div className={clsx('row mx-0 position-sticky', styles.box)}>
+      <div className={clsx('row mx-0', styles.box)}>
         {(!!sectionGroups.length || !!sections.length || !!tags.length) && (
           <div
             className={clsx(
@@ -83,6 +83,7 @@ export default function PostId({
             <EmptyBox />
           </div>
         </div>
+
         <div
           className={clsx(
             'd-none d-lg-block col-2 position-sticky overflow-y-auto',

@@ -35,7 +35,7 @@ export default function SectionId({
 
   return (
     <SectionIdContext.Provider value={{ details, currentUser }}>
-      <div className={clsx('row mx-0 position-sticky', styles.box)}>
+      <div className={clsx('row mx-0', styles.box)}>
         {(!!sectionGroups.length || !!tagGroups.length || !!tags.length) && (
           <div
             className={clsx(
@@ -58,6 +58,7 @@ export default function SectionId({
             <EmptyBox />
           </div>
         </div>
+
         <div
           className={clsx(
             'd-none d-lg-block col-2 position-sticky overflow-y-auto',
