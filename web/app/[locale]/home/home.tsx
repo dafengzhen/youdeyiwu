@@ -37,7 +37,9 @@ export default function Home({
   currentUser?: IUser | null;
 }) {
   return (
-    <div className={clsx('row mx-0 position-sticky', styles.box)}>
+    <div
+      className={clsx('row mx-0 position-sticky no-pointer-events', styles.box)}
+    >
       {(!!sectionGroups.length || !!sections.length || !!tags.length) && (
         <div
           className={clsx(
