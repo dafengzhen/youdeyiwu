@@ -8,6 +8,7 @@ import '../enums/load_data_type_enum.dart';
 import '../models/section.dart';
 import '../models/section_group.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
@@ -99,6 +100,8 @@ class _ContentPageState extends State<ContentPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+    final bool isLoggedIn =
+        context.select((LoginInfo value) => value.isLoggedIn);
 
     final keys = _map.keys;
 
@@ -130,7 +133,7 @@ class _ContentPageState extends State<ContentPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      appTitle,
+                      isLoggedIn ? "Welcome" : appTitle,
                       style: TextStyle(
                         color: isDarkMode
                             ? AppThemeColors.baseColorDark

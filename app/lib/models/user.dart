@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'base.dart';
 import 'role.dart';
+import 'section.dart';
 
 part 'user.g.dart';
 
@@ -68,6 +69,9 @@ class User extends Base {
   /// roles
   final Set<Role>? roles;
 
+  /// sections
+  final Set<Section>? sections;
+
   const User({
     required super.id,
     required super.deleted,
@@ -94,6 +98,7 @@ class User extends Base {
     this.commentDisableReason,
     this.replyDisableReason,
     this.roles,
+    this.sections,
   });
 
   factory User.withResponse(Response response) {
@@ -108,6 +113,6 @@ class User extends Base {
 
   @override
   String toString() {
-    return 'User{alias: $alias, avatar: $avatar, oneSentence: $oneSentence, username: $username, email: $email, temporaryStorage: $temporaryStorage, lastLoginTime: $lastLoginTime, root: $root, noPostingAllowed: $noPostingAllowed, disableComments: $disableComments, disableReplies: $disableReplies, noPostingReason: $noPostingReason, commentDisableReason: $commentDisableReason, replyDisableReason: $replyDisableReason, accountNonExpired: $accountNonExpired, credentialsNonExpired: $credentialsNonExpired, accountNonLocked: $accountNonLocked, enabled: $enabled, roles: $roles}';
+    return 'User{alias: $alias, avatar: $avatar, oneSentence: $oneSentence, username: $username, email: $email, temporaryStorage: $temporaryStorage, lastLoginTime: $lastLoginTime, root: $root, noPostingAllowed: $noPostingAllowed, disableComments: $disableComments, disableReplies: $disableReplies, noPostingReason: $noPostingReason, commentDisableReason: $commentDisableReason, replyDisableReason: $replyDisableReason, accountNonExpired: $accountNonExpired, credentialsNonExpired: $credentialsNonExpired, accountNonLocked: $accountNonLocked, enabled: $enabled, roles: $roles, sections: $sections}';
   }
 }

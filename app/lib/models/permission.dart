@@ -44,7 +44,7 @@ class Permission extends Base {
   final Role? role;
 
   /// roles
-  final Set<Role> roles;
+  final Set<Role>? roles;
 
   const Permission({
     required super.id,
@@ -59,11 +59,11 @@ class Permission extends Base {
     required this.caseInsensitive,
     required this.sort,
     required this.matchers,
-    required this.roles,
     this.alias,
     this.overview,
     this.matcher,
     this.role,
+    this.roles,
   });
 
   factory Permission.withResponse(Response response) {

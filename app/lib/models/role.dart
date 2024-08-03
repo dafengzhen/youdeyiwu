@@ -24,7 +24,7 @@ class Role extends Base {
   final bool display;
 
   /// permissions
-  final Set<Permission> permissions;
+  final Set<Permission>? permissions;
 
   const Role({
     required super.id,
@@ -36,8 +36,8 @@ class Role extends Base {
     required this.name,
     required this.sort,
     required this.display,
-    required this.permissions,
     this.overview,
+    this.permissions,
   });
 
   factory Role.withResponse(Response response) {

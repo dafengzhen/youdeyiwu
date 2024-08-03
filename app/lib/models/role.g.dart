@@ -16,10 +16,10 @@ Role _$RoleFromJson(Map<String, dynamic> json) => Role(
       name: json['name'] as String,
       sort: (json['sort'] as num).toInt(),
       display: json['display'] as bool,
-      permissions: (json['permissions'] as List<dynamic>)
-          .map((e) => Permission.fromJson(e as Map<String, dynamic>))
-          .toSet(),
       overview: json['overview'] as String?,
+      permissions: (json['permissions'] as List<dynamic>?)
+          ?.map((e) => Permission.fromJson(e as Map<String, dynamic>))
+          .toSet(),
     );
 
 Map<String, dynamic> _$RoleToJson(Role instance) {
@@ -42,6 +42,6 @@ Map<String, dynamic> _$RoleToJson(Role instance) {
   writeNotNull('overview', instance.overview);
   val['sort'] = instance.sort;
   val['display'] = instance.display;
-  val['permissions'] = instance.permissions.toList();
+  writeNotNull('permissions', instance.permissions?.toList());
   return val;
 }

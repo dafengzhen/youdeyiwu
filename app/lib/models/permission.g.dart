@@ -21,9 +21,6 @@ Permission _$PermissionFromJson(Map<String, dynamic> json) => Permission(
       matchers: (json['matchers'] as List<dynamic>)
           .map((e) => Permission.fromJson(e as Map<String, dynamic>))
           .toSet(),
-      roles: (json['roles'] as List<dynamic>)
-          .map((e) => Role.fromJson(e as Map<String, dynamic>))
-          .toSet(),
       alias: json['alias'] as String?,
       overview: json['overview'] as String?,
       matcher: json['matcher'] == null
@@ -32,6 +29,9 @@ Permission _$PermissionFromJson(Map<String, dynamic> json) => Permission(
       role: json['role'] == null
           ? null
           : Role.fromJson(json['role'] as Map<String, dynamic>),
+      roles: (json['roles'] as List<dynamic>?)
+          ?.map((e) => Role.fromJson(e as Map<String, dynamic>))
+          .toSet(),
     );
 
 Map<String, dynamic> _$PermissionToJson(Permission instance) {
@@ -60,7 +60,7 @@ Map<String, dynamic> _$PermissionToJson(Permission instance) {
   writeNotNull('matcher', instance.matcher);
   val['matchers'] = instance.matchers.toList();
   writeNotNull('role', instance.role);
-  val['roles'] = instance.roles.toList();
+  writeNotNull('roles', instance.roles?.toList());
   return val;
 }
 

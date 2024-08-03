@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'apis/message_api.dart';
 import 'apis/post_api.dart';
 import 'apis/section_api.dart';
 import 'apis/user_api.dart';
@@ -65,6 +66,9 @@ void main() async {
         ),
         Provider<SectionApi>(
           create: (_) => SectionApi(apiClient: apiClient),
+        ),
+        Provider<MessageApi>(
+          create: (_) => MessageApi(apiClient: apiClient),
         ),
       ],
       child: const MyApp(),

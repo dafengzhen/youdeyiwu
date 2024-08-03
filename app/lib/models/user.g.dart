@@ -34,6 +34,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       roles: (json['roles'] as List<dynamic>?)
           ?.map((e) => Role.fromJson(e as Map<String, dynamic>))
           .toSet(),
+      sections: (json['sections'] as List<dynamic>?)
+          ?.map((e) => Section.fromJson(e as Map<String, dynamic>))
+          .toSet(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) {
@@ -71,5 +74,6 @@ Map<String, dynamic> _$UserToJson(User instance) {
   val['accountNonLocked'] = instance.accountNonLocked;
   val['enabled'] = instance.enabled;
   writeNotNull('roles', instance.roles?.toList());
+  writeNotNull('sections', instance.sections?.toList());
   return val;
 }
