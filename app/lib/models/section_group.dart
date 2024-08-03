@@ -18,7 +18,7 @@ class SectionGroup extends Base {
   final int sort;
 
   /// sections
-  final Set<Section> sections;
+  final Set<Section>? sections;
 
   const SectionGroup({
     required super.id,
@@ -29,16 +29,18 @@ class SectionGroup extends Base {
     super.updatedOn,
     required this.name,
     required this.sort,
-    required this.sections,
+    this.sections,
   });
 
   factory SectionGroup.withResponse(Response response) {
     return SectionGroup.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   }
 
-  factory SectionGroup.fromJsonString(String json) => SectionGroup.fromJson(jsonDecode(json));
+  factory SectionGroup.fromJsonString(String json) =>
+      SectionGroup.fromJson(jsonDecode(json));
 
-  factory SectionGroup.fromJson(Map<String, dynamic> json) => _$SectionGroupFromJson(json);
+  factory SectionGroup.fromJson(Map<String, dynamic> json) =>
+      _$SectionGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$SectionGroupToJson(this);
 

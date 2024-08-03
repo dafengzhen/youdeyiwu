@@ -6,10 +6,12 @@ import '../apis/section_api.dart';
 import '../configs/configs.dart';
 import '../enums/load_data_type_enum.dart';
 import '../models/section.dart';
+import '../models/section_group.dart';
 import '../providers/app_theme_mode.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
+import '../utils/tools.dart';
 
 class ContentPage extends StatefulWidget {
   const ContentPage({super.key});
@@ -19,7 +21,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  List<Section> _list = [];
+  Map<SectionGroup, List<Section>> _map = {};
   bool _isLoadingInit = true;
   bool _isLoading = false;
 
@@ -52,11 +54,7 @@ class _ContentPageState extends State<ContentPage> {
     });
 
     try {
-      var list = await context.read<SectionApi>().querySections();
-
-      setState(() {
-        _list.addAll(list);
-      });
+      _fetchAndGroupSections();
     } catch (e) {
       if (mounted) {
         _showErrorPrompt(e);
@@ -69,6 +67,21 @@ class _ContentPageState extends State<ContentPage> {
         }
       });
     }
+  }
+
+  void _fetchAndGroupSections() async {
+    var list = await context.read<SectionApi>().querySections();
+    var map = <SectionGroup, List<Section>>{};
+
+    for (var element in list) {
+      for (var sectionGroupElement in element.sectionGroups) {
+        map.putIfAbsent(sectionGroupElement, () => []).add(element);
+      }
+    }
+
+    setState(() {
+      _map = map;
+    });
   }
 
   void _showErrorPrompt(dynamic e) {
@@ -86,6 +99,8 @@ class _ContentPageState extends State<ContentPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+
+    final keys = _map.keys;
 
     return Stack(
       children: [
@@ -128,23 +143,26 @@ class _ContentPageState extends State<ContentPage> {
                         Provider.of<AppThemeMode>(context, listen: false)
                             .toggleTheme();
                       },
-                    )
+                    ),
                   ],
                 ),
                 floating: true,
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(15),
-                sliver: SliverList.separated(
-                  itemCount: _list.length,
-                  itemBuilder: (context, index) {
-                    return _createSectionGroupCard(isDarkMode, context);
-                  },
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 13,
-                  ),
-                ),
+              const SliverToBoxAdapter(child: SizedBox(height: 15)),
+              if (_isLoadingInit) _buildLoadingIndicator(),
+              SliverList.separated(
+                itemCount: keys.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: _createSectionGroupCard(isDarkMode, context,
+                        item: keys.elementAt(index)),
+                  );
+                },
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 13),
               ),
+              const SliverToBoxAdapter(child: SizedBox(height: 35)),
             ],
           ),
         ),
@@ -152,9 +170,21 @@ class _ContentPageState extends State<ContentPage> {
     );
   }
 
-  Widget _createSectionGroupCard(bool isDarkMode, BuildContext context) {
+  SliverToBoxAdapter _buildLoadingIndicator() {
+    return const SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
+  Widget _createSectionGroupCard(bool isDarkMode, BuildContext context,
+      {required SectionGroup item}) {
+    final sections = _map[item] ?? [];
+
     return Container(
-      padding: const EdgeInsets.only(top: 17, bottom: 15, left: 15, right: 15),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: isDarkMode
             ? AppThemeColors.tertiaryBgDark
@@ -165,7 +195,7 @@ class _ContentPageState extends State<ContentPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Programming language",
+            item.name,
             style: TextStyle(
               color: isDarkMode
                   ? AppThemeColors.baseColorDark
@@ -174,73 +204,58 @@ class _ContentPageState extends State<ContentPage> {
               fontSize: 17,
             ),
           ),
-          const SizedBox(
-            height: 19,
-          ),
-          for (int index = 0; index < 3; index++)
-            Column(
-              children: [
-                _createSectionCard(isDarkMode, context),
-                if (index < 2) // 如果不是最后一个元素，添加分隔线
-                  const SizedBox(
-                    height: 9,
-                  ),
-              ],
-            ),
+          const SizedBox(height: 19),
+          for (int index = 0; index < sections.length; index++) ...[
+            _createSectionCard(isDarkMode, context, item: sections[index]),
+            if (index < sections.length - 1) const SizedBox(height: 9),
+          ],
         ],
       ),
     );
   }
 
-  Widget _createSectionCard(bool isDarkMode, BuildContext context) {
+  Widget _createSectionCard(bool isDarkMode, BuildContext context,
+      {required Section item}) {
+    final cover = isHttpOrHttps(item.cover) ? item.cover : null;
+
     return GestureDetector(
       onTap: () {
-        context.pushNamed(
-          "contentDetails",
-          pathParameters: {'id': "1"},
-        );
+        context.pushNamed("contentDetails",
+            pathParameters: {'id': item.id.toString()});
       },
       child: Container(
-        // height: 100,
-        padding: const EdgeInsets.symmetric(
-          vertical: 19,
-          horizontal: 19,
-        ),
+        padding: const EdgeInsets.all(19),
         decoration: BoxDecoration(
           color: isDarkMode
-              ? AppThemeColors.secondaryBgDark
-              : AppThemeColors.secondaryBgLight,
+              ? AppThemeColors.secondaryBgDark.withOpacity(0.5)
+              : AppThemeColors.secondaryBgLight.withOpacity(0.5),
           borderRadius: BorderRadius.circular(23),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: item.overview == null
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
           children: [
             Container(
               width: 65,
               height: 65,
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(70)),
-                // image: DecorationImage(
-                //   image: AssetImage('assets/images/avatar.png'),
-                // ),
+                borderRadius: BorderRadius.circular(70),
+                image: cover != null
+                    ? DecorationImage(image: NetworkImage(cover))
+                    : null,
                 color: isDarkMode
-                    ? AppThemeColors.secondaryColor[700]!
-                    : AppThemeColors.secondaryColor[150]!,
+                    ? AppThemeColors.secondaryColor[700]!.withOpacity(0.3)
+                    : AppThemeColors.secondaryColor[150]!.withOpacity(0.3),
               ),
             ),
-            // CircleAvatar(
-            //   backgroundImage: AssetImage('assets/images/avatar.png'),
-            //   radius: 31,
-            // ),
-            const SizedBox(
-              width: 11,
-            ),
+            const SizedBox(width: 11),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "JavaScript",
+                    item.name,
                     style: TextStyle(
                       color: isDarkMode
                           ? AppThemeColors.baseColorDark
@@ -249,68 +264,45 @@ class _ContentPageState extends State<ContentPage> {
                       fontSize: 17,
                     ),
                   ),
-                  const SizedBox(
-                    height: 9,
-                  ),
-                  Text(
-                    "JavaScript (JS) is a lightweight interpreted (or just-in-time compiled) programming language with first-class functions",
-                    maxLines: 1,
-                    style: TextStyle(
-                      color: isDarkMode
-                          ? AppThemeColors.baseColorDark
-                          : AppThemeColors.baseColorLight,
-                      overflow: TextOverflow.ellipsis,
+                  if (item.overview != null && item.overview!.isNotEmpty) ...[
+                    const SizedBox(height: 9),
+                    Text(
+                      item.overview!,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? AppThemeColors.baseColorDark
+                            : AppThemeColors.baseColorLight,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                    const SizedBox(height: 5),
+                  ],
                   Row(
                     children: [
-                      Container(
-                        width: 31,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? AppThemeColors.secondaryColor[700]!
-                              : AppThemeColors.secondaryColor[150]!,
-                          borderRadius: const BorderRadius.horizontal(
+                      for (int index = 0;
+                          index < item.tags.length;
+                          index++) ...[
+                        Container(
+                          width: 31,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: isDarkMode
+                                ? AppThemeColors.secondaryColor[700]!
+                                    .withOpacity(0.3)
+                                : AppThemeColors.secondaryColor[150]!
+                                    .withOpacity(0.3),
+                            borderRadius: const BorderRadius.horizontal(
                               left: Radius.circular(10),
-                              right: Radius.circular(10)),
+                              right: Radius.circular(10),
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 3,
-                      ),
-                      Container(
-                        width: 31,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? AppThemeColors.secondaryColor[700]!
-                              : AppThemeColors.secondaryColor[150]!,
-                          borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(10),
-                              right: Radius.circular(10)),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 3,
-                      ),
-                      Container(
-                        width: 31,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: isDarkMode
-                              ? AppThemeColors.secondaryColor[700]!
-                              : AppThemeColors.secondaryColor[150]!,
-                          borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(10),
-                              right: Radius.circular(10)),
-                        ),
-                      ),
+                        if (index < item.tags.length - 1)
+                          const SizedBox(width: 3),
+                      ],
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

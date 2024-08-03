@@ -15,8 +15,8 @@ SectionGroup _$SectionGroupFromJson(Map<String, dynamic> json) => SectionGroup(
       updatedOn: json['updatedOn'] as String?,
       name: json['name'] as String,
       sort: (json['sort'] as num).toInt(),
-      sections: (json['sections'] as List<dynamic>)
-          .map((e) => Section.fromJson(e as Map<String, dynamic>))
+      sections: (json['sections'] as List<dynamic>?)
+          ?.map((e) => Section.fromJson(e as Map<String, dynamic>))
           .toSet(),
     );
 
@@ -38,6 +38,6 @@ Map<String, dynamic> _$SectionGroupToJson(SectionGroup instance) {
   val['deleted'] = instance.deleted;
   val['name'] = instance.name;
   val['sort'] = instance.sort;
-  val['sections'] = instance.sections.toList();
+  writeNotNull('sections', instance.sections?.toList());
   return val;
 }

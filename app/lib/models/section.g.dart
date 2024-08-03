@@ -21,12 +21,6 @@ Section _$SectionFromJson(Map<String, dynamic> json) => Section(
       admins: (json['admins'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toSet(),
-      allows: (json['allows'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toSet(),
-      blocks: (json['blocks'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toSet(),
       accessKey: json['accessKey'] as String?,
       accessPoints: (json['accessPoints'] as num).toInt(),
       tagGroups: (json['tagGroups'] as List<dynamic>)
@@ -46,6 +40,12 @@ Section _$SectionFromJson(Map<String, dynamic> json) => Section(
           $enumDecodeNullable(_$FileTypeEnumEnumMap, json['coverImageType']),
       overview: json['overview'] as String?,
       content: json['content'] as String?,
+      allows: (json['allows'] as List<dynamic>?)
+          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      blocks: (json['blocks'] as List<dynamic>?)
+          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toSet(),
       createPostGuide: json['createPostGuide'] as String?,
       user: json['user'] == null
           ? null
@@ -80,8 +80,8 @@ Map<String, dynamic> _$SectionToJson(Section instance) {
   val['states'] =
       instance.states.map((e) => _$SectionStateEnumEnumMap[e]!).toList();
   val['admins'] = instance.admins.toList();
-  val['allows'] = instance.allows.toList();
-  val['blocks'] = instance.blocks.toList();
+  writeNotNull('allows', instance.allows?.toList());
+  writeNotNull('blocks', instance.blocks?.toList());
   writeNotNull('accessKey', instance.accessKey);
   val['accessPoints'] = instance.accessPoints;
   val['tagGroups'] = instance.tagGroups.toList();

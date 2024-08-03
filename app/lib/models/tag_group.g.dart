@@ -15,8 +15,8 @@ TagGroup _$TagGroupFromJson(Map<String, dynamic> json) => TagGroup(
       updatedOn: json['updatedOn'] as String?,
       name: json['name'] as String,
       sort: (json['sort'] as num).toInt(),
-      tags: (json['tags'] as List<dynamic>)
-          .map((e) => Tag.fromJson(e as Map<String, dynamic>))
+      tags: (json['tags'] as List<dynamic>?)
+          ?.map((e) => Tag.fromJson(e as Map<String, dynamic>))
           .toSet(),
     );
 
@@ -38,6 +38,6 @@ Map<String, dynamic> _$TagGroupToJson(TagGroup instance) {
   val['deleted'] = instance.deleted;
   val['name'] = instance.name;
   val['sort'] = instance.sort;
-  val['tags'] = instance.tags.toList();
+  writeNotNull('tags', instance.tags?.toList());
   return val;
 }

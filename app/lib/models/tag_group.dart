@@ -18,7 +18,7 @@ class TagGroup extends Base {
   final int sort;
 
   /// tags
-  final Set<Tag> tags;
+  final Set<Tag>? tags;
 
   const TagGroup({
     required super.id,
@@ -29,16 +29,18 @@ class TagGroup extends Base {
     super.updatedOn,
     required this.name,
     required this.sort,
-    required this.tags,
+    this.tags,
   });
 
   factory TagGroup.withResponse(Response response) {
     return TagGroup.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   }
 
-  factory TagGroup.fromJsonString(String json) => TagGroup.fromJson(jsonDecode(json));
+  factory TagGroup.fromJsonString(String json) =>
+      TagGroup.fromJson(jsonDecode(json));
 
-  factory TagGroup.fromJson(Map<String, dynamic> json) => _$TagGroupFromJson(json);
+  factory TagGroup.fromJson(Map<String, dynamic> json) =>
+      _$TagGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$TagGroupToJson(this);
 

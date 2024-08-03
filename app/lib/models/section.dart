@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:youdeyiwu_app/utils/tools.dart';
 
 import '../enums/file_type_enum.dart';
 import '../enums/section_state_enum.dart';
@@ -47,10 +48,10 @@ class Section extends Base {
   final Set<User> admins;
 
   /// allows
-  final Set<User> allows;
+  final Set<User>? allows;
 
   /// blocks
-  final Set<User> blocks;
+  final Set<User>? blocks;
 
   /// accessKey
   final String? accessKey;
@@ -81,8 +82,6 @@ class Section extends Base {
     required this.sort,
     required this.states,
     required this.admins,
-    required this.allows,
-    required this.blocks,
     required this.accessKey,
     required this.accessPoints,
     required this.tagGroups,
@@ -93,6 +92,8 @@ class Section extends Base {
     this.coverImageType,
     this.overview,
     this.content,
+    this.allows,
+    this.blocks,
     this.createPostGuide,
     this.user,
   });
@@ -106,9 +107,8 @@ class Section extends Base {
   Map<String, dynamic> toJson() => _$SectionToJson(this);
 
   static List<Section> fromList(Response response) {
-    List<Map<String, dynamic>> list =
-    jsonDecode(utf8.decode(response.bodyBytes));
-    return list.map(Section.fromJson).toList();
+    List<dynamic> list = jsonDecode(utf8.decode(response.bodyBytes));
+    return list.map((json) => Section.fromJson(json)).toList();
   }
 
   @override

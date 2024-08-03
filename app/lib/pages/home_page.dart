@@ -118,14 +118,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _showNoMoreDataPrompt() {
-    showSystemPromptBottomSheet(
-      context.read<AppThemeMode>().isDarkMode,
-      context,
-      description: "No more data available",
-    );
-  }
-
   void _showErrorPrompt(dynamic e) {
     showSystemPromptBottomSheet(
       context.read<AppThemeMode>().isDarkMode,
