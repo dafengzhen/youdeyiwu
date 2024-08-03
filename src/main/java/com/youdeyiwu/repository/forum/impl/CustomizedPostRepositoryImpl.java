@@ -191,7 +191,7 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
         .getResultList();
 
     Tuple result = totalSizeQuery.getSingleResult();
-    long totalSize = (long) result.get(0) + (long) result.get(1);
+    long totalSize = (long) result.get(0);
 
     List<CommentReplyEntityVo> commentReplyEntityVos = tuples.stream()
         .flatMap(tuple -> Stream.of(tuple.get(0), tuple.get(1)))

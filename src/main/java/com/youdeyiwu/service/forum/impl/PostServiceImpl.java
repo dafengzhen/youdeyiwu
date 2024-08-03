@@ -76,6 +76,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -491,6 +492,7 @@ public class PostServiceImpl implements PostService {
               PostEntityVo vo = postMapper.entityToVo(postEntity);
               setAdditionalData(vo, postEntity);
               setUser(vo, postEntity);
+              setComments(vo, postEntity);
               return vo;
             }
         )
@@ -719,6 +721,16 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(UserNotFoundException::new)
         )
     );
+  }
+
+  /**
+   * set comments.
+   *
+   * @param vo         vo
+   * @param postEntity postEntity
+   */
+  private void setComments(PostEntityVo vo, PostEntity postEntity) {
+    vo.setComments(queryCommentReply(PageRequest.of(0, 1), postEntity.getId()));
   }
 
   /**

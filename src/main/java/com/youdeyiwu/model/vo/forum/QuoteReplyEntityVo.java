@@ -1,6 +1,6 @@
 package com.youdeyiwu.model.vo.forum;
 
-import com.youdeyiwu.enums.forum.CommentReviewStateEnum;
+import com.youdeyiwu.enums.forum.QuoteReplyReviewStateEnum;
 import com.youdeyiwu.model.vo.AbstractEntityVo;
 import com.youdeyiwu.model.vo.user.UserEntityVo;
 import lombok.Data;
@@ -33,7 +33,7 @@ public class QuoteReplyEntityVo extends AbstractEntityVo {
   /**
    * reviewState.
    */
-  private CommentReviewStateEnum reviewState;
+  private QuoteReplyReviewStateEnum reviewState;
 
   /**
    * comment.

@@ -8,6 +8,7 @@ on:
       - 'hosting/**'
       - 'web/**'
       - 'desktop/**'
+      - 'app/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - 'hosting/**'
       - 'web/**'
       - 'desktop/**'
+      - 'app/**'
   workflow_dispatch:
 
 concurrency:
