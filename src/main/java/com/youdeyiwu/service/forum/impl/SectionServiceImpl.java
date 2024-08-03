@@ -291,6 +291,7 @@ public class SectionServiceImpl implements SectionService {
         .map(sectionEntity -> {
           SectionEntityVo vo = sectionMapper.entityToVo(sectionEntity);
           setAdmins(vo, sectionEntity);
+          setTagGroup(vo, sectionEntity);
           setTags(vo, sectionEntity);
           setSectionGroups(vo, sectionEntity);
           setCreatePostGuide(vo, sectionEntity);
