@@ -4,8 +4,11 @@ import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'base.dart';
+import 'post.dart';
+import 'related_statistics.dart';
 import 'role.dart';
 import 'section.dart';
+import 'tag.dart';
 
 part 'user.g.dart';
 
@@ -72,6 +75,18 @@ class User extends Base {
   /// sections
   final Set<Section>? sections;
 
+  /// posts
+  final Set<Post>? posts;
+
+  /// relatedSections
+  final Set<Section>? relatedSections;
+
+  /// relatedTags
+  final Set<Tag>? relatedTags;
+
+  /// relatedStatistics
+  final RelatedStatistics? relatedStatistics;
+
   const User({
     required super.id,
     required super.deleted,
@@ -99,6 +114,10 @@ class User extends Base {
     this.replyDisableReason,
     this.roles,
     this.sections,
+    this.posts,
+    this.relatedSections,
+    this.relatedTags,
+    this.relatedStatistics,
   });
 
   factory User.withResponse(Response response) {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:youdeyiwu_app/utils/api_exception.dart';
 
 import '../dtos/login_dto.dart';
 import '../models/token.dart';
@@ -37,7 +38,31 @@ class UserApi {
     }
 
     final response = await _apiClient.get(Uri.parse('/users/login-info'));
+    if (response.bodyBytes.isEmpty) {
+      await removeToken(_sharedPreferences);
+      return null;
+    }
+
     final user = User.withResponse(response);
+    return user;
+  }
+
+  Future<User> queryDetails({String? id}) async {
+    String id0;
+    if (id != null && id.isNotEmpty) {
+      id0 = id;
+    } else {
+      var credentials = hasToken(_sharedPreferences);
+      if (credentials != null) {
+        id0 = credentials.id.toString();
+      } else {
+        throw ApiException.invalidParameter()
+            .copyWith(message: "userId does not exist");
+      }
+    }
+
+    final response = await _apiClient.get(Uri.parse('/users/$id0/details'));
+    User user = User.withResponse(response);
     return user;
   }
 

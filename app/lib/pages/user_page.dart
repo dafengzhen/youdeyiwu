@@ -3,10 +3,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../apis/user_api.dart';
 import '../configs/configs.dart';
+import '../enums/load_data_type_enum.dart';
+import '../models/related_statistics.dart';
+import '../models/user.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
+import '../utils/bottom_sheet_utils.dart';
+import '../utils/tools.dart';
 
 class UserPage extends StatefulWidget {
   final String? id;
@@ -17,81 +24,59 @@ class UserPage extends StatefulWidget {
   State<UserPage> createState() => _UserPageState();
 }
 
-class Article {
-  final String title;
-  final String subtitle;
-
-  Article(this.title, this.subtitle);
-}
-
 class _UserPageState extends State<UserPage> {
-  List<Article> articles = List.generate(
-    5,
-    (index) => Article(
-      'Article Title $index',
-      'Subtitle for Article $index',
-    ),
-  );
-
-  ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  int _page = 1;
-  bool _hasMore = true;
+  User? _user;
+  bool _isLoadingInit = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _loadMore();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      articles = List.generate(
-          10, (index) => Article('Title $index', 'Subtitle $index'));
-      _page = 1;
-      _hasMore = true;
-    });
   }
 
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 2));
+    if (_isLoading == false) {
+      await _loadData(
+        type: LoadDataTypeEnum.refresh,
+      );
+    }
   }
 
-  void _loadMore() async {
-    if (_isLoadingMore || !_hasMore) return;
-
+  Future<void> _loadData(
+      {LoadDataTypeEnum type = LoadDataTypeEnum.initialize}) async {
     setState(() {
-      _isLoadingMore = true;
-    });
-
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      _page++;
-      final newArticles = List.generate(
-          10,
-          (index) => Article(
-              'Title ${index + _page * 10}', 'Subtitle ${index + _page * 10}'));
-      articles.addAll(newArticles);
-
-      if (newArticles.length < 10) {
-        _hasMore = false;
+      _isLoading = true;
+      if (type == LoadDataTypeEnum.initialize) {
+        _isLoadingInit = true;
       }
-
-      _isLoadingMore = false;
     });
+
+    try {
+      var user = await context.read<UserApi>().queryDetails(id: widget.id);
+      setState(() {
+        _user = user;
+      });
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+        if (type == LoadDataTypeEnum.initialize) {
+          _isLoadingInit = false;
+        }
+      });
+    }
+  }
+
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
+    );
   }
 
   @override
@@ -101,6 +86,27 @@ class _UserPageState extends State<UserPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+    final bool isLoggedIn =
+        context.select((LoginInfo value) => value.isLoggedIn);
+
+    final username = getUsernameOrAnonymous(_user?.username);
+    final userId = _user?.id;
+    final avatar = getAvatarOrDefault(_user?.avatar);
+    final oneSentence =
+        _user?.oneSentence ?? "He didn't leave behind a single word";
+    final relatedStatistics =
+        _user?.relatedStatistics ?? RelatedStatistics.empty();
+
+    void onClickMenuItem(String source) {
+      if (userId != null) {
+        context.pushNamed(
+          "userArticles",
+          queryParameters: {'id': userId, "source": source},
+        );
+      }
+    }
+
+    void onClickLogout() {}
 
     return Scaffold(
       body: Stack(
@@ -114,16 +120,14 @@ class _UserPageState extends State<UserPage> {
                 color: isDarkMode
                     ? AppThemeColors.baseBgDark
                     : AppThemeColors.baseBgLight,
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(17),
-                ),
+                borderRadius:
+                    const BorderRadius.vertical(bottom: Radius.circular(17)),
               ),
             ),
           ),
           RefreshIndicator(
             onRefresh: _refresh,
             child: CustomScrollView(
-              controller: _scrollController,
               slivers: [
                 SliverAppBar(
                   backgroundColor: barBackgroundColor,
@@ -132,7 +136,7 @@ class _UserPageState extends State<UserPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        appTitle,
+                        isLoggedIn ? "Welcome" : appTitle,
                         style: TextStyle(
                           color: isDarkMode
                               ? AppThemeColors.baseColorDark
@@ -150,265 +154,31 @@ class _UserPageState extends State<UserPage> {
                   ),
                   floating: true,
                 ),
+                const SliverToBoxAdapter(child: SizedBox(height: 15)),
+                if (_isLoadingInit) _buildLoadingIndicator(),
                 SliverPadding(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            height: 130,
-                            padding: const EdgeInsets.only(left: 12, right: 0),
-                            decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                  "https://images.unsplash.com/photo-1696733585001-868eb49cbfa6?w=640",
-                                ),
-                              ),
-                              color: isDarkMode
-                                  ? AppThemeColors.tertiaryBgDark
-                                  : AppThemeColors.tertiaryBgLight,
-                              borderRadius: BorderRadius.circular(17),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: -23,
-                            child: CircleAvatar(
-                              radius: 35,
-                              backgroundColor: isDarkMode
-                                  ? AppThemeColors.baseBgDark
-                                  : AppThemeColors.baseBgLight,
-                              child: const CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/avatar.png'),
-                                radius: 29,
-                              ),
-                            ),
-                          ),
-                        ],
+                      _buildUserInfoSection(
+                        isDarkMode,
+                        avatar,
+                        username,
+                        userId,
+                        oneSentence,
                       ),
-                      const SizedBox(
-                        height: 39,
-                      ),
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "dafengzhen",
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? AppThemeColors.baseColorDark
-                                      : AppThemeColors.baseColorLight,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 7,
-                              ),
-                              Text(
-                                "⌈ ID.1 ⌋",
-                                style: TextStyle(
-                                  color: isDarkMode
-                                      ? AppThemeColors.secondaryColorDark
-                                      : AppThemeColors.secondaryColorLight,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "He didn't leave behind a single word",
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: isDarkMode
-                                  ? AppThemeColors.baseColorDark
-                                  : AppThemeColors.baseColorLight,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 21,
-                      ),
-                      IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '56',
-                                    style: TextStyle(
-                                      color: isDarkMode
-                                          ? AppThemeColors.baseColorDark
-                                          : AppThemeColors.baseColorLight,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Articles',
-                                    style: TextStyle(
-                                      color: isDarkMode
-                                          ? AppThemeColors.baseColorDark
-                                          : AppThemeColors.baseColorLight,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 5,
-                              ),
-                              child: VerticalDivider(
-                                color: isDarkMode
-                                    ? AppThemeColors.secondaryColor[700]!
-                                    : AppThemeColors.secondaryColor[150]!,
-                                thickness: 1,
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '47',
-                                    style: TextStyle(
-                                      color: isDarkMode
-                                          ? AppThemeColors.baseColorDark
-                                          : AppThemeColors.baseColorLight,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Comments',
-                                    style: TextStyle(
-                                      color: isDarkMode
-                                          ? AppThemeColors.baseColorDark
-                                          : AppThemeColors.baseColorLight,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 5,
-                              ),
-                              child: VerticalDivider(
-                                color: isDarkMode
-                                    ? AppThemeColors.secondaryColor[700]!
-                                    : AppThemeColors.secondaryColor[150]!,
-                                thickness: 1,
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '91',
-                                    style: TextStyle(
-                                      color: isDarkMode
-                                          ? AppThemeColors.baseColorDark
-                                          : AppThemeColors.baseColorLight,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Replies',
-                                    style: TextStyle(
-                                      color: isDarkMode
-                                          ? AppThemeColors.baseColorDark
-                                          : AppThemeColors.baseColorLight,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 39,
-                      ),
-                      Column(
-                        children: [
-                          _createMenuItem(
-                            isDarkMode,
-                            icon: FontAwesomeIcons.newspaper,
-                            text: "Articles",
-                            onTap: () {
-                              // showSystemPromptBottomSheet(isDarkMode, context);
-                              context.pushNamed(
-                                "userArticles",
-                                queryParameters: {'id': "4"},
-                              );
-                            },
-                          ),
-                          _createMenuItem(
-                            isDarkMode,
-                            icon: FontAwesomeIcons.tableColumns,
-                            text: "Contents",
-                            onTap: () {
-                              context.pushNamed(
-                                "userContents",
-                                queryParameters: {'id': "4"},
-                              );
-                            },
-                          ),
-                          _createMenuItem(
-                            isDarkMode,
-                            icon: FontAwesomeIcons.tags,
-                            text: "Tags",
-                            onTap: () {
-                              context.pushNamed(
-                                "userTags",
-                                queryParameters: {'id': "4"},
-                              );
-                            },
-                          ),
-                          _createMenuItem(
-                            isDarkMode,
-                            icon: FontAwesomeIcons.chartSimple,
-                            text: "Statistics",
-                            onTap: () {
-                              context.pushNamed(
-                                "userStatistics",
-                                queryParameters: {'id': "4"},
-                              );
-                            },
-                          ),
-                          _createMenuItem(
-                            isDarkMode,
-                            icon: FontAwesomeIcons.rightFromBracket,
-                            text: "Logout",
-                            onTap: () {},
-                          ),
-                          const SizedBox(
-                            height: 19,
-                          ),
-                        ],
+                      const SizedBox(height: 27),
+                      _buildStatisticsSection(isDarkMode, relatedStatistics),
+                      const SizedBox(height: 27),
+                      _buildMenuSection(
+                        isDarkMode,
+                        onClickMenuItem,
+                        onClickLogout,
                       ),
                     ]),
                   ),
                 ),
+                const SliverToBoxAdapter(child: SizedBox(height: 35)),
               ],
             ),
           ),
@@ -417,12 +187,211 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget _createMenuItem(
-    bool isDarkMode, {
-    required IconData icon,
-    required String text,
-    required Function() onTap,
-  }) {
+  Widget _buildLoadingIndicator() {
+    return const SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
+  Widget _buildUserInfoSection(
+    bool isDarkMode,
+    ImageProvider avatar,
+    String username,
+    int? userId,
+    String oneSentence,
+  ) {
+    return Column(
+      children: [
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              height: 130,
+              padding: const EdgeInsets.only(left: 12, right: 0),
+              decoration: BoxDecoration(
+                image: const DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage("assets/images/user-bg.jpg"),
+                ),
+                color: isDarkMode
+                    ? AppThemeColors.tertiaryBgDark
+                    : AppThemeColors.tertiaryBgLight,
+                borderRadius: BorderRadius.circular(17),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: -23,
+              child: CircleAvatar(
+                radius: 35,
+                backgroundColor: isDarkMode
+                    ? AppThemeColors.baseBgDark
+                    : AppThemeColors.baseBgLight,
+                child: CircleAvatar(
+                  backgroundImage: avatar,
+                  radius: 29,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 39),
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  username,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: isDarkMode
+                        ? AppThemeColors.baseColorDark
+                        : AppThemeColors.baseColorLight,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (userId != null) ...[
+                  const SizedBox(width: 7),
+                  Text(
+                    "⌈ ID.$userId ⌋",
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? AppThemeColors.secondaryColorDark
+                          : AppThemeColors.secondaryColorLight,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 5),
+            Text(
+              oneSentence,
+              maxLines: 2,
+              style: TextStyle(
+                color: isDarkMode
+                    ? AppThemeColors.baseColorDark
+                    : AppThemeColors.baseColorLight,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatisticsSection(
+    bool isDarkMode,
+    RelatedStatistics relatedStatistics,
+  ) {
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          _buildStatisticItem(
+              isDarkMode, relatedStatistics.posts.toString(), 'Articles'),
+          _buildDivider(isDarkMode),
+          _buildStatisticItem(
+              isDarkMode, relatedStatistics.comments.toString(), 'Comments'),
+          _buildDivider(isDarkMode),
+          _buildStatisticItem(
+              isDarkMode, relatedStatistics.replies.toString(), 'Replies'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatisticItem(bool isDarkMode, String value, String label) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              color: isDarkMode
+                  ? AppThemeColors.baseColorDark
+                  : AppThemeColors.baseColorLight,
+              fontWeight: FontWeight.bold,
+              fontSize: 19,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            label,
+            style: TextStyle(
+              color: isDarkMode
+                  ? AppThemeColors.baseColorDark
+                  : AppThemeColors.baseColorLight,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider(bool isDarkMode) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: VerticalDivider(
+        color: isDarkMode
+            ? AppThemeColors.secondaryColor[700]!
+            : AppThemeColors.secondaryColor[150]!,
+        thickness: 1,
+      ),
+    );
+  }
+
+  Widget _buildMenuSection(
+    bool isDarkMode,
+    Function(String) onClickMenuItem,
+    VoidCallback onClickLogout,
+  ) {
+    return Column(
+      children: [
+        _createMenuItem(
+          isDarkMode,
+          icon: FontAwesomeIcons.newspaper,
+          text: "Articles",
+          onTap: () => onClickMenuItem("Articles"),
+        ),
+        _createMenuItem(
+          isDarkMode,
+          icon: FontAwesomeIcons.tableColumns,
+          text: "Contents",
+          onTap: () => onClickMenuItem("Contents"),
+        ),
+        _createMenuItem(
+          isDarkMode,
+          icon: FontAwesomeIcons.tags,
+          text: "Tags",
+          onTap: () => onClickMenuItem("Tags"),
+        ),
+        _createMenuItem(
+          isDarkMode,
+          icon: FontAwesomeIcons.chartSimple,
+          text: "Statistics",
+          onTap: () => onClickMenuItem("Statistics"),
+        ),
+        _createMenuItem(
+          isDarkMode,
+          icon: FontAwesomeIcons.rightFromBracket,
+          text: "Logout",
+          onTap: onClickLogout,
+        ),
+      ],
+    );
+  }
+
+  Widget _createMenuItem(bool isDarkMode,
+      {required IconData icon,
+      required String text,
+      required Function() onTap}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7),
       decoration: BoxDecoration(

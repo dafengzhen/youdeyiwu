@@ -37,6 +37,19 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       sections: (json['sections'] as List<dynamic>?)
           ?.map((e) => Section.fromJson(e as Map<String, dynamic>))
           .toSet(),
+      posts: (json['posts'] as List<dynamic>?)
+          ?.map((e) => Post.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      relatedSections: (json['relatedSections'] as List<dynamic>?)
+          ?.map((e) => Section.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      relatedTags: (json['relatedTags'] as List<dynamic>?)
+          ?.map((e) => Tag.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      relatedStatistics: json['relatedStatistics'] == null
+          ? null
+          : RelatedStatistics.fromJson(
+              json['relatedStatistics'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) {
@@ -75,5 +88,9 @@ Map<String, dynamic> _$UserToJson(User instance) {
   val['enabled'] = instance.enabled;
   writeNotNull('roles', instance.roles?.toList());
   writeNotNull('sections', instance.sections?.toList());
+  writeNotNull('posts', instance.posts?.toList());
+  writeNotNull('relatedSections', instance.relatedSections?.toList());
+  writeNotNull('relatedTags', instance.relatedTags?.toList());
+  writeNotNull('relatedStatistics', instance.relatedStatistics);
   return val;
 }

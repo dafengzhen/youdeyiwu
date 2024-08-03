@@ -32,11 +32,6 @@ class _ContentPageState extends State<ContentPage> {
     _loadData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<void> _refresh() async {
     if (_isLoading == false) {
       await _loadData(

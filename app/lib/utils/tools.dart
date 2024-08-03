@@ -57,6 +57,11 @@ Token? hasToken(SharedPreferences sharedPreferences) {
   return null;
 }
 
+/// removeToken
+Future<bool> removeToken(SharedPreferences sharedPreferences) {
+  return sharedPreferences.remove(tk);
+}
+
 /// navigateIfMounted
 void navigateIfMounted(BuildContext context, String name) {
   if (context.mounted) {

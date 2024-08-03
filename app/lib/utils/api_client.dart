@@ -42,7 +42,7 @@ class ApiClient extends http.BaseClient {
           final data = Data.fromJsonString(responseBody);
           if (data.status == 401 ||
               (data.code != null && (data.code == 4010 || data.code == 4011))) {
-            await _removeToken();
+            await removeToken(_sharedPreferences);
           }
           throw ApiException.withData(data);
         }
@@ -134,9 +134,5 @@ class ApiClient extends http.BaseClient {
 
   Uri _resolveUri(Uri url) {
     return _baseUri.resolve(_baseUri.path + Uri.encodeFull(url.toString()));
-  }
-
-  Future<bool> _removeToken() {
-    return _sharedPreferences.remove(tk);
   }
 }
