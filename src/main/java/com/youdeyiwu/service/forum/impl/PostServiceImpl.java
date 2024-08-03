@@ -530,10 +530,8 @@ public class PostServiceImpl implements PostService {
         userContext.root()
     );
     PostEntityVo vo = postMapper.entityToVo(postEntity);
-    setBadges(vo, postEntity);
-    setSection(vo, postEntity);
+    setAdditionalData(vo, postEntity);
     setUser(vo, postEntity);
-    setTags(vo, postEntity);
     setSocialInteraction(vo, postEntity);
     vo.setComments(getCommentReply(
         pageable,

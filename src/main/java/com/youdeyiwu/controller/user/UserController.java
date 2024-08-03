@@ -18,15 +18,19 @@ import com.youdeyiwu.model.vo.user.UserEntityVo;
 import com.youdeyiwu.model.vo.user.UserRolesPermissionsVo;
 import com.youdeyiwu.model.vo.user.UsersCountByDateVo;
 import com.youdeyiwu.service.config.RootConfigService;
+import com.youdeyiwu.service.forum.PostService;
 import com.youdeyiwu.service.user.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +53,8 @@ public class UserController {
   private final UserService userService;
 
   private final RootConfigService rootConfigService;
+
+  private final PostService postService;
 
   @PostMapping(value = "/register")
   public ResponseEntity<TokenVo> register(@Valid @RequestBody RegisterDto dto) {
@@ -193,7 +199,21 @@ public class UserController {
       return ResponseEntity.badRequest().build();
     }
 
-    return ResponseEntity.ok(userService.queryDetails(id));
+    UserEntityVo vo = userService.queryDetails(id);
+    if (!CollectionUtils.isEmpty(vo.getPosts())) {
+      vo.setPosts(
+          vo.getPosts()
+              .stream()
+              .map(postEntityVo -> postService.queryDetails(
+                  PageRequest.of(0, 1),
+                  postEntityVo.getId(),
+                  null)
+              )
+              .collect(Collectors.toSet())
+      );
+    }
+
+    return ResponseEntity.ok(vo);
   }
 
   @GetMapping(value = "/{id}")
