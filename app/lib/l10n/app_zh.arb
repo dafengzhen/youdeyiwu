@@ -1,0 +1,6 @@
+{
+  "helloWorld": "你好世界",
+    "@helloWorld": {
+      "description": "这是一个描述"
+    }
+}
