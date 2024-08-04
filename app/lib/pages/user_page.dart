@@ -15,6 +15,15 @@ import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
 import '../utils/tools.dart';
 
+enum MenuLabel { articles, contents, tags, statistics, logout }
+
+const Map<MenuLabel, String> menuLabelToRoute = {
+  MenuLabel.articles: "userArticles",
+  MenuLabel.contents: "userContents",
+  MenuLabel.tags: "userTags",
+  MenuLabel.statistics: "userStatistics",
+};
+
 class UserPage extends StatefulWidget {
   final String? id;
 
@@ -54,9 +63,11 @@ class _UserPageState extends State<UserPage> {
 
     try {
       var user = await context.read<UserApi>().queryDetails(id: widget.id);
-      setState(() {
-        _user = user;
-      });
+      if (user != null) {
+        setState(() {
+          _user = user;
+        });
+      }
     } catch (e) {
       if (mounted) {
         _showErrorPrompt(e);
@@ -97,16 +108,27 @@ class _UserPageState extends State<UserPage> {
     final relatedStatistics =
         _user?.relatedStatistics ?? RelatedStatistics.empty();
 
-    void onClickMenuItem(String source) {
+    void onClickLogout() {}
+
+    void onClickMenuItem(MenuLabel label) {
       if (userId != null) {
-        context.pushNamed(
-          "userArticles",
-          queryParameters: {'id': userId, "source": source},
+        var userId0 = userId.toString();
+        if (label == MenuLabel.logout) {
+          onClickLogout();
+        } else if (menuLabelToRoute.containsKey(label)) {
+          context.pushNamed(
+            menuLabelToRoute[label]!,
+            queryParameters: {'id': userId0},
+          );
+        }
+      } else {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          description: "User does not exist",
         );
       }
     }
-
-    void onClickLogout() {}
 
     return Scaffold(
       body: Stack(
@@ -173,7 +195,6 @@ class _UserPageState extends State<UserPage> {
                       _buildMenuSection(
                         isDarkMode,
                         onClickMenuItem,
-                        onClickLogout,
                       ),
                     ]),
                   ),
@@ -349,8 +370,7 @@ class _UserPageState extends State<UserPage> {
 
   Widget _buildMenuSection(
     bool isDarkMode,
-    Function(String) onClickMenuItem,
-    VoidCallback onClickLogout,
+    Function(MenuLabel) onClickMenuItem,
   ) {
     return Column(
       children: [
@@ -358,31 +378,31 @@ class _UserPageState extends State<UserPage> {
           isDarkMode,
           icon: FontAwesomeIcons.newspaper,
           text: "Articles",
-          onTap: () => onClickMenuItem("Articles"),
+          onTap: () => onClickMenuItem(MenuLabel.articles),
         ),
         _createMenuItem(
           isDarkMode,
           icon: FontAwesomeIcons.tableColumns,
           text: "Contents",
-          onTap: () => onClickMenuItem("Contents"),
+          onTap: () => onClickMenuItem(MenuLabel.contents),
         ),
         _createMenuItem(
           isDarkMode,
           icon: FontAwesomeIcons.tags,
           text: "Tags",
-          onTap: () => onClickMenuItem("Tags"),
+          onTap: () => onClickMenuItem(MenuLabel.tags),
         ),
         _createMenuItem(
           isDarkMode,
           icon: FontAwesomeIcons.chartSimple,
           text: "Statistics",
-          onTap: () => onClickMenuItem("Statistics"),
+          onTap: () => onClickMenuItem(MenuLabel.statistics),
         ),
         _createMenuItem(
           isDarkMode,
           icon: FontAwesomeIcons.rightFromBracket,
           text: "Logout",
-          onTap: onClickLogout,
+          onTap: () => onClickMenuItem(MenuLabel.logout),
         ),
       ],
     );

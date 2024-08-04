@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:youdeyiwu_app/utils/api_exception.dart';
 
 import '../dtos/login_dto.dart';
 import '../models/token.dart';
@@ -47,7 +46,7 @@ class UserApi {
     return user;
   }
 
-  Future<User> queryDetails({String? id}) async {
+  Future<User?> queryDetails({String? id}) async {
     String id0;
     if (id != null && id.isNotEmpty) {
       id0 = id;
@@ -56,8 +55,7 @@ class UserApi {
       if (credentials != null) {
         id0 = credentials.id.toString();
       } else {
-        throw ApiException.invalidParameter()
-            .copyWith(message: "userId does not exist");
+        return null;
       }
     }
 

@@ -1,15 +1,17 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../configs/configs.dart';
+import '../apis/user_api.dart';
+import '../enums/load_data_type_enum.dart';
+import '../models/tag.dart';
+import '../models/user.dart';
 import '../providers/app_theme_mode.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
+import '../utils/bottom_sheet_utils.dart';
+import '../widgets/common.dart';
 
 class UserTagsPage extends StatefulWidget {
   final String id;
@@ -20,87 +22,53 @@ class UserTagsPage extends StatefulWidget {
   State<UserTagsPage> createState() => _UserTagsPageState();
 }
 
-class Article {
-  final String title;
-  final String subtitle;
-
-  Article(this.title, this.subtitle);
-}
-
 class _UserTagsPageState extends State<UserTagsPage> {
-  List<Article> articles = List.generate(
-    20,
-    (index) => Article(
-      'Article Title $index',
-      'Subtitle for Article $index',
-    ),
-  );
-
-  final TextEditingController _controller = TextEditingController();
-  ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  int _page = 1;
-  bool _hasMore = true;
+  User? _user;
+  bool _isLoadingInit = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _loadMore();
+  }
+
+  Future<void> _loadData(
+      {LoadDataTypeEnum type = LoadDataTypeEnum.initialize}) async {
+    setState(() {
+      _isLoading = true;
+      if (type == LoadDataTypeEnum.initialize) {
+        _isLoadingInit = true;
       }
     });
-  }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      articles = List.generate(
-          10, (index) => Article('Title $index', 'Subtitle $index'));
-      _page = 1;
-      _hasMore = true;
-    });
-  }
-
-  Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 2));
-  }
-
-  void _loadMore() async {
-    if (_isLoadingMore || !_hasMore) return;
-
-    setState(() {
-      _isLoadingMore = true;
-    });
-
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      _page++;
-      final newArticles = List.generate(
-          10,
-          (index) => Article(
-              'Title ${index + _page * 10}', 'Subtitle ${index + _page * 10}'));
-      articles.addAll(newArticles);
-
-      if (newArticles.length < 10) {
-        _hasMore = false;
+    try {
+      var user = await context.read<UserApi>().queryDetails(id: widget.id);
+      if (user != null) {
+        setState(() {
+          _user = user;
+        });
       }
-
-      _isLoadingMore = false;
-    });
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+        if (type == LoadDataTypeEnum.initialize) {
+          _isLoadingInit = false;
+        }
+      });
+    }
   }
 
-  void _sendMessage() {
-    print('发送的消息: ${_controller.text}');
-    _controller.clear();
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
+    );
   }
 
   @override
@@ -110,6 +78,8 @@ class _UserTagsPageState extends State<UserTagsPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+
+    var list = (_user?.relatedTags ?? {}).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -139,45 +109,44 @@ class _UserTagsPageState extends State<UserTagsPage> {
       body: Container(
         color: barBackgroundColor,
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
+          padding: const EdgeInsets.only(
+            left: 15,
+            right: 15,
+            top: 15,
+            bottom: 45,
           ),
           color: isDarkMode
               ? AppThemeColors.baseBgDark
               : AppThemeColors.baseBgLight,
-          child: ListView.separated(
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    top: 15,
-                  ),
-                  child: _buildTagItem(isDarkMode),
-                );
-              } else if (index == 11 - 1) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 41,
-                  ),
-                  child: _buildTagItem(isDarkMode),
-                );
-              } else {
-                return _buildTagItem(isDarkMode);
-              }
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 15,
-              );
-            },
-            itemCount: 11,
-          ),
+          child: _isLoadingInit
+              ? buildCenteredLoadingIndicator()
+              : _buildList(isDarkMode, list: list),
         ),
       ),
     );
   }
 
-  Widget _buildTagItem(bool isDarkMode) {
+  Widget _buildList(bool isDarkMode, {required List<Tag> list}) {
+    if (list.isEmpty) {
+      return buildCenteredNoMoreDataMessage(isDarkMode);
+    }
+
+    return ListView.separated(
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        return _buildTagItem(isDarkMode, item: list[index]);
+      },
+      separatorBuilder: (context, index) {
+        return const SizedBox(
+          height: 15,
+        );
+      },
+    );
+  }
+
+  Widget _buildTagItem(bool isDarkMode, {required Tag item}) {
+    var name = item.name;
+
     return Card(
       margin: const EdgeInsets.all(0),
       color: isDarkMode
@@ -189,7 +158,7 @@ class _UserTagsPageState extends State<UserTagsPage> {
         ),
         onTap: () {},
         title: Text(
-          'Two-line ListTile',
+          name,
           style: TextStyle(
             fontSize: 17,
             color: isDarkMode
