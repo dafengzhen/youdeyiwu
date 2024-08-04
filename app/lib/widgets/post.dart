@@ -8,8 +8,11 @@ import '../utils/app_theme_colors.dart';
 import '../utils/tools.dart';
 
 /// buildArticleCard
-Widget buildArticleCard(bool isDarkMode, BuildContext context,
-    {required Post item}) {
+Widget buildArticleCard(
+  bool isDarkMode,
+  BuildContext context, {
+  required Post item,
+}) {
   final baseColor =
       isDarkMode ? AppThemeColors.baseColorDark : AppThemeColors.baseColorLight;
   final secondaryColor = isDarkMode

@@ -68,10 +68,16 @@ class _ContentPageState extends State<ContentPage> {
   void _fetchAndGroupSections() async {
     var list = await context.read<SectionApi>().querySections();
     var map = <SectionGroup, List<Section>>{};
+    var otherSectionGroup = SectionGroup.others();
 
     for (var element in list) {
-      for (var sectionGroupElement in element.sectionGroups) {
-        map.putIfAbsent(sectionGroupElement, () => []).add(element);
+      var sectionGroups = element.sectionGroups;
+      if (sectionGroups == null || sectionGroups.isEmpty) {
+        map.putIfAbsent(otherSectionGroup, () => []).add(element);
+      } else {
+        for (var sectionGroupElement in sectionGroups) {
+          map.putIfAbsent(sectionGroupElement, () => []).add(element);
+        }
       }
     }
 
@@ -215,6 +221,7 @@ class _ContentPageState extends State<ContentPage> {
   Widget _createSectionCard(bool isDarkMode, BuildContext context,
       {required Section item}) {
     final cover = isHttpOrHttps(item.cover) ? item.cover : null;
+    final tags = item.tags ?? {};
 
     return GestureDetector(
       onTap: () {
@@ -278,9 +285,7 @@ class _ContentPageState extends State<ContentPage> {
                   ],
                   Row(
                     children: [
-                      for (int index = 0;
-                          index < item.tags.length;
-                          index++) ...[
+                      for (int index = 0; index < tags.length; index++) ...[
                         Container(
                           width: 31,
                           height: 5,
@@ -296,8 +301,7 @@ class _ContentPageState extends State<ContentPage> {
                             ),
                           ),
                         ),
-                        if (index < item.tags.length - 1)
-                          const SizedBox(width: 3),
+                        if (index < tags.length - 1) const SizedBox(width: 3),
                       ],
                     ],
                   ),

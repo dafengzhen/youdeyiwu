@@ -52,6 +52,7 @@ dependencies:
   image_cropper: ^7.1.0
   copy_with_extension: ^5.0.4
   timeago: ^3.7.0
+  flutter_widget_from_html: ^0.15.1
 
 dev_dependencies:
   flutter_test:

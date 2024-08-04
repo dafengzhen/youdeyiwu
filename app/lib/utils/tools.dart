@@ -117,7 +117,7 @@ bool isHttpOrHttps(String? url) {
     return false;
   }
 
-  final RegExp urlPattern = RegExp(r'^(http|https):\/\/');
+  final RegExp urlPattern = RegExp(r'^(http|https)://');
   return urlPattern.hasMatch(url);
 }
 

@@ -45,7 +45,7 @@ class Section extends Base {
   final Set<SectionStateEnum> states;
 
   /// admins
-  final Set<User> admins;
+  final Set<User>? admins;
 
   /// allows
   final Set<User>? allows;
@@ -60,13 +60,13 @@ class Section extends Base {
   final int accessPoints;
 
   /// tagGroups
-  final Set<TagGroup> tagGroups;
+  final Set<TagGroup>? tagGroups;
 
   /// tags
-  final Set<Tag> tags;
+  final Set<Tag>? tags;
 
   /// sectionGroups
-  final Set<SectionGroup> sectionGroups;
+  final Set<SectionGroup>? sectionGroups;
 
   /// user
   final User? user;
@@ -81,12 +81,12 @@ class Section extends Base {
     required this.name,
     required this.sort,
     required this.states,
-    required this.admins,
     required this.accessKey,
     required this.accessPoints,
-    required this.tagGroups,
-    required this.tags,
-    required this.sectionGroups,
+    this.admins,
+    this.tagGroups,
+    this.tags,
+    this.sectionGroups,
     this.cover,
     this.coverImage,
     this.coverImageType,
@@ -98,6 +98,15 @@ class Section extends Base {
     this.user,
   });
 
+  factory Section.withResponse(Response response) {
+    return Section.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+  }
+
+  static List<Section> fromList(Response response) {
+    List<dynamic> list = jsonDecode(utf8.decode(response.bodyBytes));
+    return list.map((json) => Section.fromJson(json)).toList();
+  }
+
   factory Section.fromJsonString(String json) =>
       Section.fromJson(jsonDecode(json));
 
@@ -105,11 +114,6 @@ class Section extends Base {
       _$SectionFromJson(json);
 
   Map<String, dynamic> toJson() => _$SectionToJson(this);
-
-  static List<Section> fromList(Response response) {
-    List<dynamic> list = jsonDecode(utf8.decode(response.bodyBytes));
-    return list.map((json) => Section.fromJson(json)).toList();
-  }
 
   @override
   String toString() {

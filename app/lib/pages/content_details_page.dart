@@ -1,15 +1,27 @@
-import 'dart:developer';
+import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../configs/configs.dart';
+import '../apis/post_api.dart';
+import '../apis/section_api.dart';
+import '../dtos/query_parameters_dto.dart';
+import '../enums/load_data_type_enum.dart';
+import '../models/pageable.dart';
+import '../models/post.dart';
+import '../models/section.dart';
+import '../models/tag.dart';
+import '../models/user.dart';
 import '../providers/app_theme_mode.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
+import '../utils/bottom_sheet_utils.dart';
+import '../utils/tools.dart';
+import '../widgets/common.dart';
+import '../widgets/post.dart';
 
 class ContentDetailsPage extends StatefulWidget {
   final String id;
@@ -20,55 +32,54 @@ class ContentDetailsPage extends StatefulWidget {
   State<ContentDetailsPage> createState() => _ContentDetailsPageState();
 }
 
-class Article {
-  final String title;
-  final String subtitle;
+class TagPost {
+  List<Post> list;
+  Pageable? pageable;
+  bool isLoadingInit;
+  bool isLoadingMore;
+  bool isLoading;
+  bool hasMore;
+  Tag? tag;
 
-  Article(this.title, this.subtitle);
+  TagPost({
+    this.list = const [],
+    this.pageable,
+    this.isLoadingInit = true,
+    this.isLoadingMore = false,
+    this.isLoading = false,
+    this.hasMore = false,
+    this.tag,
+  });
 }
 
 class _ContentDetailsPageState extends State<ContentDetailsPage>
     with SingleTickerProviderStateMixin {
-  List<Article> articles = List.generate(
-    20,
-    (index) => Article(
-      'Article Title $index',
-      'Subtitle for Article $index',
-    ),
-  );
-
   late TabController _tabController;
-  PageStorageBucket _bucket = PageStorageBucket();
-  ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  int _page = 1;
-  bool _hasMore = true;
+  final ScrollController _scrollController = ScrollController();
 
-  void _handleTabChange() {
-    print(_tabController.index);
-    print(_tabController.offset);
-
-    if (_tabController.index == _tabController.length - 1 &&
-        _tabController.offset > 0.5) {
-      _tabController.animateTo(0);
-    } else if (_tabController.index == 0 && _tabController.offset < -0.5) {
-      _tabController.animateTo(_tabController.length - 1);
-    }
-  }
+  final ValueNotifier<Map<Tag, TagPost>> _map = ValueNotifier({});
+  final ValueNotifier<TagPost> _all = ValueNotifier(TagPost());
+  Section? _section;
+  bool _isLoading = false;
+  bool _isLoadingInit = true;
+  int _tabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _loadMore();
+    _loadSectionData(completedCallback: (Section section) {
+      var tags = _section?.tags ?? {};
+      var content = _section?.content;
+      var length = tags.isEmpty ? 0 : tags.length + (content != null ? 2 : 1);
+      _tabController = TabController(length: length, vsync: this);
+      _tabController.addListener(_handleTabChange);
+
+      if (length - tags.length == 1) {
+        print('_loadAllTagData');
+        _loadAllTagData();
       }
     });
-
-    _tabController = TabController(length: 8, vsync: this);
-    _tabController.addListener(_handleTabChange);
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -79,42 +90,203 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
     super.dispose();
   }
 
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      articles = List.generate(
-          10, (index) => Article('Title $index', 'Subtitle $index'));
-      _page = 1;
-      _hasMore = true;
-    });
-  }
-
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 2));
+    onClickTab(_tabIndex, type: LoadDataTypeEnum.refresh);
   }
 
-  void _loadMore() async {
-    if (_isLoadingMore || !_hasMore) return;
-
+  Future<void> _loadSectionData(
+      {LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+      void Function(Section section)? completedCallback}) async {
     setState(() {
-      _isLoadingMore = true;
+      _isLoading = true;
+      if (type == LoadDataTypeEnum.initialize) {
+        _isLoadingInit = true;
+      }
     });
 
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      _page++;
-      final newArticles = List.generate(
-          10,
-          (index) => Article(
-              'Title ${index + _page * 10}', 'Subtitle ${index + _page * 10}'));
-      articles.addAll(newArticles);
+    try {
+      Section section =
+          await context.read<SectionApi>().queryDetails(widget.id);
+      setState(() {
+        _section = section;
+      });
 
-      if (newArticles.length < 10) {
-        _hasMore = false;
+      if (completedCallback != null) {
+        completedCallback(section);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+        if (type == LoadDataTypeEnum.initialize) {
+          _isLoadingInit = false;
+        }
+      });
+    }
+  }
+
+  Future<void> _loadData({
+    required TagPost currentItem,
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+    QueryParametersDto? dto,
+    String? tagId,
+  }) async {
+    if (type == LoadDataTypeEnum.initialize &&
+        currentItem.isLoadingInit == false) {
+      return;
+    }
+
+    _updateLoadingState(currentItem, type, isLoading: true);
+
+    try {
+      final Map<String, String> parameters = {"sectionId": widget.id};
+      if (tagId != null) {
+        parameters['tagId'] = tagId;
       }
 
-      _isLoadingMore = false;
+      if (type == LoadDataTypeEnum.loadMore &&
+          currentItem.pageable?.next == true) {
+        parameters['page'] =
+            min(currentItem.pageable!.page + 1, currentItem.pageable!.pages)
+                .toString();
+      } else if (type == LoadDataTypeEnum.loadMore) {
+        return;
+      }
+
+      var base = QueryParametersDto.fromJson(parameters);
+      var dto0 =
+          QueryParametersDto.merge(base, dto ?? const QueryParametersDto());
+      var page = await context.read<PostApi>().queryPosts(dto: dto0);
+
+      if (type == LoadDataTypeEnum.loadMore) {
+        currentItem.list.addAll(page.content);
+      } else {
+        currentItem.list = page.content;
+      }
+      currentItem.pageable = page.pageable;
+      currentItem.hasMore = page.pageable.next;
+
+      var tag = currentItem.tag;
+      if (tag != null) {
+        _map.value[tag] = currentItem;
+      } else {
+        _all.value = currentItem;
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      _updateLoadingState(currentItem, type, isLoading: false);
+      setState(() {});
+    }
+  }
+
+  Future<void> _loadTagData({
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+    int tagIndex = 0,
+    QueryParametersDto? dto,
+  }) async {
+    var tags = _section?.tags ?? {};
+    var tag = tags.isEmpty ? null : tags.elementAt(tagIndex);
+    if (tag == null) {
+      return;
+    }
+
+    await _loadData(
+      currentItem: _map.value.putIfAbsent(tag, () => TagPost(tag: tag)),
+      type: type,
+      dto: dto,
+      tagId: tag.id.toString(),
+    );
+  }
+
+  Future<void> _loadAllTagData({
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+    QueryParametersDto? dto,
+  }) async {
+    await _loadData(
+      currentItem: _all.value,
+      type: type,
+      dto: dto,
+    );
+  }
+
+  void _updateLoadingState(
+    TagPost currentItem,
+    LoadDataTypeEnum type, {
+    required bool isLoading,
+  }) {
+    currentItem.isLoading = isLoading;
+    if (type == LoadDataTypeEnum.initialize) {
+      currentItem.isLoadingInit = isLoading;
+    } else if (type == LoadDataTypeEnum.loadMore) {
+      currentItem.isLoadingMore = isLoading;
+    }
+
+    var tag = currentItem.tag;
+    if (tag != null) {
+      _map.value[tag] = currentItem;
+    } else {
+      _all.value = currentItem;
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      onClickTab(_tabIndex, type: LoadDataTypeEnum.loadMore);
+    }
+  }
+
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
+    );
+  }
+
+  void _handleTabChange() {
+    var index = _tabController.index;
+
+    setState(() {
+      _tabIndex = index;
     });
+
+    if (!_tabController.indexIsChanging) {
+      onClickTab(index);
+    }
+  }
+
+  void onClickTab(
+    int index, {
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+  }) {
+    var tags = _section?.tags ?? {};
+    var content = _section?.content;
+    var tabLength = tags.isEmpty ? 0 : tags.length + (content != null ? 2 : 1);
+
+    if (index == 0 && content != null) {
+      // start
+    } else if ((index == 0 && content == null) ||
+        (index == 1 && content != null)) {
+      // all
+      _loadAllTagData(
+        type: type,
+      );
+    } else {
+      // tag
+      var value = tabLength - tags.length;
+      var tagIndex = index - value;
+      _loadTagData(
+        tagIndex: tagIndex,
+        type: type,
+      );
+    }
   }
 
   @override
@@ -125,8 +297,14 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
 
+    var name = _section?.name;
+    var overview = _section?.overview;
+    var content = _section?.content;
+    var tags = _section?.tags ?? {};
+    var admins = _section?.admins ?? {};
+
     return DefaultTabController(
-      length: 8,
+      length: tags.isEmpty ? 0 : tags.length + (content != null ? 2 : 1),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: barBackgroundColor,
@@ -164,522 +342,261 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
             color: isDarkMode
                 ? AppThemeColors.baseBgDark
                 : AppThemeColors.baseBgLight,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Javascript",
-                  style: TextStyle(
-                    color: isDarkMode
-                        ? AppThemeColors.baseColorDark
-                        : AppThemeColors.baseColorLight,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 21,
-                  ),
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                Text(
-                  "JavaScript (JS) is a lightweight interpreted (or just-in-time compiled) programming language with first-class functions",
-                  style: TextStyle(
-                    color: isDarkMode
-                        ? AppThemeColors.baseColorDark
-                        : AppThemeColors.baseColorLight,
-                  ),
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                Wrap(
-                  spacing: 13,
-                  runSpacing: 1,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('dafengzhen'),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: isDarkMode
-                              ? AppThemeColors.secondaryColorDark
-                              : AppThemeColors.secondaryColorLight,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: FaIcon(
-                        FontAwesomeIcons.circleInfo,
-                        size: 13,
-                        color: isDarkMode
-                            ? AppThemeColors.secondaryColorDark
-                            : AppThemeColors.secondaryColorLight,
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: isDarkMode
-                              ? AppThemeColors.secondaryColorDark
-                                  .withOpacity(0.5)
-                              : AppThemeColors.secondaryColorLight
-                                  .withOpacity(0.5),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                Expanded(
-                  child: Column(
+            child: _isLoadingInit
+                ? buildCenteredLoadingIndicator()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TabBar(
-                        controller: _tabController,
-                        tabs: const [
-                          Tab(
-                            text: "Function",
+                      if (name != null) ...[
+                        Text(
+                          name,
+                          style: TextStyle(
+                            color: isDarkMode
+                                ? AppThemeColors.baseColorDark
+                                : AppThemeColors.baseColorLight,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 21,
                           ),
-                          Tab(
-                            text: "Class",
+                        ),
+                        const SizedBox(
+                          height: 17,
+                        ),
+                      ],
+                      if (overview != null && content == null) ...[
+                        Text(
+                          overview,
+                          style: TextStyle(
+                            color: isDarkMode
+                                ? AppThemeColors.baseColorDark
+                                : AppThemeColors.baseColorLight,
                           ),
-                          Tab(
-                            text: "Const",
-                          ),
-                          Tab(
-                            text: "Var",
-                          ),
-                          Tab(
-                            text: "Function",
-                          ),
-                          Tab(
-                            text: "Class",
-                          ),
-                          Tab(
-                            text: "Const",
-                          ),
-                          Tab(
-                            text: "Var",
-                          ),
-                        ],
-                        isScrollable: true,
-                        tabAlignment: TabAlignment.start,
-                      ),
-                      Expanded(
-                        child: PageStorage(
-                          bucket: _bucket,
-                          child: TabBarView(
-                            controller: _tabController,
-                            children: [
-                              // MyTabPage(PageStorageKey('page1')),
-                              Container(
+                        ),
+                        const SizedBox(
+                          height: 17,
+                        ),
+                      ],
+                      if (admins.isNotEmpty)
+                        Wrap(
+                          spacing: 13,
+                          runSpacing: 1,
+                          children: [
+                            ..._buildAdmins(isDarkMode, admins: admins),
+                            IconButton(
+                              onPressed: () {},
+                              icon: FaIcon(
+                                FontAwesomeIcons.circleInfo,
+                                size: 13,
                                 color: isDarkMode
-                                    ? AppThemeColors.baseBgDark
-                                    : AppThemeColors.baseBgLight,
-                                child: RefreshIndicator(
-                                  onRefresh: _refresh,
-                                  child: ListView.separated(
-                                    itemCount: articles.length +
-                                        (_isLoadingMore ? 1 : 0),
-                                    itemBuilder: (context, index) {
-                                      if (index == articles.length) {
-                                        return const Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()),
-                                        );
-                                      }
-
-                                      if (index == 0) {
-                                        return Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 15,
-                                            ),
-                                            child:
-                                                _createArticleCard(isDarkMode));
-                                      }
-
-                                      return _createArticleCard(isDarkMode);
-                                    },
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                      height: 13,
-                                    ),
-                                  ),
+                                    ? AppThemeColors.secondaryColorDark
+                                    : AppThemeColors.secondaryColorLight,
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: isDarkMode
+                                      ? AppThemeColors.secondaryColorDark
+                                          .withOpacity(0.5)
+                                      : AppThemeColors.secondaryColorLight
+                                          .withOpacity(0.5),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9),
                                 ),
                               ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                              const SizedBox(
-                                child: Icon(Icons.flight),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                      const SizedBox(
+                        height: 17,
                       ),
+                      tags.isEmpty && content == null
+                          ? Expanded(
+                              child: buildCenteredNoMoreDataMessage(isDarkMode))
+                          : Expanded(
+                              child: Column(
+                                children: [
+                                  TabBar(
+                                    controller: _tabController,
+                                    tabs: _buildTags(
+                                      isDarkMode,
+                                      tags: tags,
+                                      content: content,
+                                    ),
+                                    isScrollable: true,
+                                    tabAlignment: TabAlignment.start,
+                                  ),
+                                  Expanded(
+                                    child: TabBarView(
+                                      controller: _tabController,
+                                      children: _buildTagViews(
+                                        isDarkMode,
+                                        tags: tags,
+                                        content: content,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                     ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _createArticleCard(bool isDarkMode) {
-    return Container(
-      padding: const EdgeInsets.only(top: 17, bottom: 7, right: 12),
-      decoration: BoxDecoration(
-        color: isDarkMode
-            ? AppThemeColors.tertiaryBgDark
-            : AppThemeColors.tertiaryBgLight,
-        borderRadius: BorderRadius.circular(17),
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Text(
-                      "890",
-                      style: TextStyle(
-                        color: isDarkMode
-                            ? AppThemeColors.baseColorDark
-                            : AppThemeColors.baseColorLight,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: FaIcon(
-                        FontAwesomeIcons.thumbsUp,
-                        size: 20,
-                        color: isDarkMode
-                            ? AppThemeColors.baseColorDark
-                            : AppThemeColors.baseColorLight,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 6,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Do it, and the difficult thing becomes easy; do not do it, and the easy thing becomes difficult",
-                        softWrap: true,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: isDarkMode
-                              ? AppThemeColors.baseColorDark
-                              : AppThemeColors.baseColorLight,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "2 hours ago",
-                      style: TextStyle(
-                        color: isDarkMode
-                            ? AppThemeColors.secondaryColorDark
-                            : AppThemeColors.secondaryColorLight,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 9,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Expanded(child: SizedBox()),
-              Expanded(
-                flex: 6,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(9),
-                  child: CachedNetworkImage(
-                    imageUrl: "http://via.placeholder.com/330x130",
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 9),
-                      child: Center(
-                        child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) {
-                      return Row(
-                        children: [
-                          Icon(
-                            Icons.error,
-                            color: isDarkMode
-                                ? AppThemeColors.tertiaryBgDangerColorDark
-                                : AppThemeColors.tertiaryBgDangerColorLight,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          Text(
-                            "Failed to load image",
-                            style: TextStyle(
-                              color: isDarkMode
-                                  ? AppThemeColors.tertiaryBgDangerColorDark
-                                  : AppThemeColors.tertiaryBgDangerColorLight,
-                            ),
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 9,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Expanded(child: SizedBox()),
-              Expanded(
-                flex: 6,
-                child: Text(
-                  """The Night Stay at a Mountain Temple:
-      A towering temple stands a hundred feet high;
-      I can almost touch the stars with my hand.
-      I dare not speak loudly;
-      I fear to startle the heavenly beings above.""",
-                  style: TextStyle(
-                    color: isDarkMode
-                        ? AppThemeColors.baseColorDark
-                        : AppThemeColors.baseColorLight,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Expanded(child: SizedBox()),
-              Expanded(
-                flex: 6,
-                child: _showFirstCommentCard(isDarkMode),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: FaIcon(
-                        FontAwesomeIcons.comment,
-                        size: 20,
-                        color: isDarkMode
-                            ? AppThemeColors.baseColorDark.withOpacity(0.5)
-                            : AppThemeColors.baseColorLight.withOpacity(0.5),
-                      ),
-                    ),
-                    // Text(
-                    //   "Comm",
-                    //   style: TextStyle(
-                    //     color: isDarkMode
-                    //         ? AppThemeColors.defaultBgColor2Dark
-                    //         .withOpacity(0.5)
-                    //         : AppThemeColors.defaultBg2Color2Light
-                    //         .withOpacity(0.5),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 6,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "by",
-                      style: TextStyle(
-                        color: isDarkMode
-                            ? AppThemeColors.secondaryColorDark
-                            : AppThemeColors.secondaryColorLight,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      "dafengzhen",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isDarkMode
-                            ? AppThemeColors.baseColorDark
-                            : AppThemeColors.baseColorLight,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 9,
-                    ),
+  List<Widget> _buildTags(
+    bool isDarkMode, {
+    required Set<Tag> tags,
+    required String? content,
+  }) {
+    List<Widget> list = [];
 
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(11),
-                      child: Material(
-                        child: InkWell(
-                          onTap: () {},
-                          child: Ink.image(
-                            image: const AssetImage("assets/images/avatar.png"),
-                            width: 35,
-                            height: 35,
-                          ),
-                        ),
-                      ),
-                    ),
+    if (content != null) {
+      list.add(const Tab(
+        text: "Start",
+      ));
+    }
 
-                    // CircleAvatar(
-                    //   backgroundImage:
-                    //       AssetImage("assets/images/avatar.png"),
-                    // ),
+    if (tags.isNotEmpty) {
+      list.add(const Tab(
+        text: "All",
+      ));
+    }
 
-                    // Container(
-                    //   width: 35,
-                    //   height: 35,
-                    //   decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(11),
-                    //     image: const DecorationImage(
-                    //       image: AssetImage("assets/images/avatar.png"),
-                    //     ),
-                    //   ),
-                    // )
-                  ],
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+    for (var tag in tags) {
+      list.add(Tab(
+        text: tag.name,
+      ));
+    }
+
+    return list;
   }
 
-  Widget _showFirstCommentCard(bool isDarkMode) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            width: 1.5,
+  List<Widget> _buildTagViews(
+    bool isDarkMode, {
+    required Set<Tag> tags,
+    required String? content,
+  }) {
+    List<Widget> list = [];
+
+    if (content != null) {
+      list.add(Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 15,
+        ),
+        child: HtmlWidget(
+          key: const PageStorageKey("start"),
+          content,
+          renderMode: RenderMode.listView,
+          textStyle: TextStyle(
             color: isDarkMode
-                ? AppThemeColors.secondaryColor[700]!
-                : AppThemeColors.secondaryColor[150]!,
+                ? AppThemeColors.baseColorDark
+                : AppThemeColors.baseColorLight,
           ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 9),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/avatar.png'),
-                  radius: 17,
+      ));
+    }
+
+    if (tags.isNotEmpty) {
+      list.add(Container(
+        color:
+            isDarkMode ? AppThemeColors.baseBgDark : AppThemeColors.baseBgLight,
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: ValueListenableBuilder(
+            valueListenable: _all,
+            builder: (context, value, child) {
+              return ListView.separated(
+                controller: _scrollController,
+                key: const PageStorageKey("all"),
+                padding: const EdgeInsets.only(
+                  top: 15,
+                  bottom: 15,
                 ),
-                const SizedBox(width: 9),
-                Text(
-                  "@dafengzhen",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isDarkMode
-                        ? AppThemeColors.baseColorDark
-                        : AppThemeColors.baseColorLight,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 9),
-            Text(
-              "Show the first comment. What do you say, it's a great day",
-              style: TextStyle(
-                color: isDarkMode
-                    ? AppThemeColors.baseColorDark
-                    : AppThemeColors.baseColorLight,
-              ),
-            ),
-            const SizedBox(height: 9),
-            _showReplyForFirstCommentCard(isDarkMode),
-          ],
+                itemBuilder: (context, index) {
+                  return buildArticleCard(isDarkMode, context,
+                      item: value.list[index]);
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(
+                    height: 13,
+                  );
+                },
+                itemCount: value.list.length,
+              );
+            },
+          ),
         ),
-      ),
-    );
+      ));
+    }
+
+    for (var tag in tags) {
+      list.add(Container(
+        color:
+            isDarkMode ? AppThemeColors.baseBgDark : AppThemeColors.baseBgLight,
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: ValueListenableBuilder(
+            valueListenable: _map,
+            builder: (context, value, child) {
+              var item = value[tag];
+
+              return ListView.separated(
+                controller: _scrollController,
+                key: PageStorageKey(tag.name + tag.id.toString()),
+                padding: const EdgeInsets.only(
+                  top: 15,
+                  bottom: 15,
+                ),
+                itemBuilder: (context, index) {
+                  return buildArticleCard(
+                    isDarkMode,
+                    context,
+                    item: item!.list[index],
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(
+                    height: 13,
+                  );
+                },
+                itemCount: item?.list.length ?? 0,
+              );
+            },
+          ),
+        ),
+      ));
+    }
+
+    return list;
   }
 
-  Widget _showReplyForFirstCommentCard(bool isDarkMode) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          right: BorderSide(
-            width: 1.5,
+  List<Widget> _buildAdmins(
+    bool isDarkMode, {
+    required Set<User> admins,
+  }) {
+    List<Widget> list = [];
+
+    for (var admin in admins) {
+      var username = getUsernameOrAnonymous(admin.username);
+
+      list.add(TextButton(
+        onPressed: () {},
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
             color: isDarkMode
-                ? AppThemeColors.secondaryColor[700]!
-                : AppThemeColors.secondaryColor[150]!,
+                ? AppThemeColors.secondaryColorDark
+                : AppThemeColors.secondaryColorLight,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9),
           ),
         ),
-      ),
-      padding: const EdgeInsets.only(
-        left: 9,
-        right: 9,
-      ),
-      child: Text(
-        "Show the first comment. What do you say, it's a great day",
-        style: TextStyle(
-          fontSize: 13,
-          color: isDarkMode
-              ? AppThemeColors.baseColorDark
-              : AppThemeColors.baseColorLight,
-        ),
-      ),
-    );
+        child: Text(username),
+      ));
+    }
+
+    return list;
   }
 }

@@ -50,10 +50,10 @@ class Post extends Base {
   final bool disableReplies;
 
   /// badges
-  final Set<PostBadge> badges;
+  final Set<PostBadge>? badges;
 
   /// images
-  final Set<PostImage> images;
+  final Set<PostImage>? images;
 
   /// states
   final Set<PostStateEnum> states;
@@ -65,10 +65,10 @@ class Post extends Base {
   final PostSortStateEnum sortState;
 
   /// allows
-  final Set<User> allows;
+  final Set<User>? allows;
 
   /// blocks
-  final Set<User> blocks;
+  final Set<User>? blocks;
 
   /// accessKey
   final String? accessKey;
@@ -131,13 +131,9 @@ class Post extends Base {
     required this.name,
     required this.disableComments,
     required this.disableReplies,
-    required this.badges,
-    required this.images,
     required this.states,
     required this.reviewState,
     required this.sortState,
-    required this.allows,
-    required this.blocks,
     required this.pageViews,
     required this.commentsCount,
     required this.repliesCount,
@@ -161,6 +157,10 @@ class Post extends Base {
     this.favorited,
     this.comments,
     this.postReviewQueue,
+    this.badges,
+    this.images,
+    this.allows,
+    this.blocks,
   });
 
   factory Post.withResponse(Response response) {

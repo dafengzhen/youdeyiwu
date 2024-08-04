@@ -18,19 +18,19 @@ Section _$SectionFromJson(Map<String, dynamic> json) => Section(
       states: (json['states'] as List<dynamic>)
           .map((e) => $enumDecode(_$SectionStateEnumEnumMap, e))
           .toSet(),
-      admins: (json['admins'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toSet(),
       accessKey: json['accessKey'] as String?,
       accessPoints: (json['accessPoints'] as num).toInt(),
-      tagGroups: (json['tagGroups'] as List<dynamic>)
-          .map((e) => TagGroup.fromJson(e as Map<String, dynamic>))
+      admins: (json['admins'] as List<dynamic>?)
+          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
           .toSet(),
-      tags: (json['tags'] as List<dynamic>)
-          .map((e) => Tag.fromJson(e as Map<String, dynamic>))
+      tagGroups: (json['tagGroups'] as List<dynamic>?)
+          ?.map((e) => TagGroup.fromJson(e as Map<String, dynamic>))
           .toSet(),
-      sectionGroups: (json['sectionGroups'] as List<dynamic>)
-          .map((e) => SectionGroup.fromJson(e as Map<String, dynamic>))
+      tags: (json['tags'] as List<dynamic>?)
+          ?.map((e) => Tag.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      sectionGroups: (json['sectionGroups'] as List<dynamic>?)
+          ?.map((e) => SectionGroup.fromJson(e as Map<String, dynamic>))
           .toSet(),
       cover: json['cover'] as String?,
       coverImage: (json['coverImage'] as List<dynamic>?)
@@ -79,14 +79,14 @@ Map<String, dynamic> _$SectionToJson(Section instance) {
   val['sort'] = instance.sort;
   val['states'] =
       instance.states.map((e) => _$SectionStateEnumEnumMap[e]!).toList();
-  val['admins'] = instance.admins.toList();
+  writeNotNull('admins', instance.admins?.toList());
   writeNotNull('allows', instance.allows?.toList());
   writeNotNull('blocks', instance.blocks?.toList());
   writeNotNull('accessKey', instance.accessKey);
   val['accessPoints'] = instance.accessPoints;
-  val['tagGroups'] = instance.tagGroups.toList();
-  val['tags'] = instance.tags.toList();
-  val['sectionGroups'] = instance.sectionGroups.toList();
+  writeNotNull('tagGroups', instance.tagGroups?.toList());
+  writeNotNull('tags', instance.tags?.toList());
+  writeNotNull('sectionGroups', instance.sectionGroups?.toList());
   writeNotNull('user', instance.user);
   return val;
 }

@@ -16,24 +16,12 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       name: json['name'] as String,
       disableComments: json['disableComments'] as bool,
       disableReplies: json['disableReplies'] as bool,
-      badges: (json['badges'] as List<dynamic>)
-          .map((e) => PostBadge.fromJson(e as Map<String, dynamic>))
-          .toSet(),
-      images: (json['images'] as List<dynamic>)
-          .map((e) => PostImage.fromJson(e as Map<String, dynamic>))
-          .toSet(),
       states: (json['states'] as List<dynamic>)
           .map((e) => $enumDecode(_$PostStateEnumEnumMap, e))
           .toSet(),
       reviewState:
           $enumDecode(_$PostReviewStateEnumEnumMap, json['reviewState']),
       sortState: $enumDecode(_$PostSortStateEnumEnumMap, json['sortState']),
-      allows: (json['allows'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toSet(),
-      blocks: (json['blocks'] as List<dynamic>)
-          .map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toSet(),
       pageViews: (json['pageViews'] as num).toInt(),
       commentsCount: (json['commentsCount'] as num).toInt(),
       repliesCount: (json['repliesCount'] as num).toInt(),
@@ -73,6 +61,18 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           ? null
           : PostReviewQueue.fromJson(
               json['postReviewQueue'] as Map<String, dynamic>),
+      badges: (json['badges'] as List<dynamic>?)
+          ?.map((e) => PostBadge.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      images: (json['images'] as List<dynamic>?)
+          ?.map((e) => PostImage.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      allows: (json['allows'] as List<dynamic>?)
+          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toSet(),
+      blocks: (json['blocks'] as List<dynamic>?)
+          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+          .toSet(),
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) {
@@ -101,14 +101,14 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   writeNotNull('contentLink', instance.contentLink);
   val['disableComments'] = instance.disableComments;
   val['disableReplies'] = instance.disableReplies;
-  val['badges'] = instance.badges.toList();
-  val['images'] = instance.images.toList();
+  writeNotNull('badges', instance.badges?.toList());
+  writeNotNull('images', instance.images?.toList());
   val['states'] =
       instance.states.map((e) => _$PostStateEnumEnumMap[e]!).toList();
   val['reviewState'] = _$PostReviewStateEnumEnumMap[instance.reviewState]!;
   val['sortState'] = _$PostSortStateEnumEnumMap[instance.sortState]!;
-  val['allows'] = instance.allows.toList();
-  val['blocks'] = instance.blocks.toList();
+  writeNotNull('allows', instance.allows?.toList());
+  writeNotNull('blocks', instance.blocks?.toList());
   writeNotNull('accessKey', instance.accessKey);
   writeNotNull('styles', instance.styles);
   writeNotNull('classNames', instance.classNames);

@@ -32,6 +32,13 @@ class SectionGroup extends Base {
     this.sections,
   });
 
+  factory SectionGroup.others() => const SectionGroup(
+        id: -1,
+        deleted: false,
+        name: "Others",
+        sort: 0,
+      );
+
   factory SectionGroup.withResponse(Response response) {
     return SectionGroup.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   }
