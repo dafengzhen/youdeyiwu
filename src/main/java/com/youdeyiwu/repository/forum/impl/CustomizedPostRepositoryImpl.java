@@ -368,40 +368,83 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("lock", PostStateEnum.LOCK)
           .setParameter("accessKey", accessKey);
     } else if (Objects.nonNull(sectionEntity)) {
-      query = entityManager.createQuery(
-              """
-                  select p from PostEntity p
-                  where p.section = :section
-                  and p.reviewState = 0
-                  and (:show member of p.states
-                  or (:lock member of p.states and p.accessKey = :accessKey))
-                  order by p.sortState desc, p.initialScore desc,
-                    (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
-                    p.createdOn desc
-                  """,
-              PostEntity.class
-          )
-          .setParameter("section", sectionEntity)
-          .setParameter("show", PostStateEnum.SHOW)
-          .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey)
-          .setParameter("totalTimeSeconds", totalTimeSeconds);
+      if (Objects.nonNull(tagEntity)) {
+        query = entityManager.createQuery(
+                """
+                    select p from PostEntity p
+                    where p.section = :section
+                    and :tag member of p.tags
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:lock member of p.states and p.accessKey = :accessKey))
+                    order by p.sortState desc, p.initialScore desc,
+                      (p.pageViews + p.commentsCount + p.repliesCount) *
+                      (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                      p.createdOn desc
+                    """,
+                PostEntity.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("tag", tagEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey)
+            .setParameter("totalTimeSeconds", totalTimeSeconds);
 
-      totalSizeQuery = entityManager.createQuery(
-              """
-                  select count(p.id) from PostEntity p
-                  where p.section = :section
-                  and p.reviewState = 0
-                  and (:show member of p.states
-                  or (:lock member of p.states and p.accessKey = :accessKey))
-                  """,
-              Long.class
-          )
-          .setParameter("section", sectionEntity)
-          .setParameter("show", PostStateEnum.SHOW)
-          .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey);
+        totalSizeQuery = entityManager.createQuery(
+                """
+                    select count(p.id) from PostEntity p
+                    where p.section = :section
+                    and :tag member of p.tags
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:lock member of p.states and p.accessKey = :accessKey))
+                    """,
+                Long.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("tag", tagEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey);
+      } else {
+        query = entityManager.createQuery(
+                """
+                    select p from PostEntity p
+                    where p.section = :section
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:lock member of p.states and p.accessKey = :accessKey))
+                    order by p.sortState desc, p.initialScore desc,
+                      (p.pageViews + p.commentsCount + p.repliesCount) *
+                      (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                      p.createdOn desc
+                    """,
+                PostEntity.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey)
+            .setParameter("totalTimeSeconds", totalTimeSeconds);
+
+        totalSizeQuery = entityManager.createQuery(
+                """
+                    select count(p.id) from PostEntity p
+                    where p.section = :section
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:lock member of p.states and p.accessKey = :accessKey))
+                    """,
+                Long.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey);
+      }
+
+
     } else if (Objects.nonNull(tagGroupEntity)) {
       query = entityManager.createQuery(
               """
@@ -548,28 +591,59 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           )
           .setParameter("sectionGroup", sectionGroupEntity);
     } else if (Objects.nonNull(sectionEntity)) {
-      query = entityManager.createQuery(
-              """
-                  select p from PostEntity p
-                  where p.section = :section
-                  order by p.sortState desc, p.initialScore desc,
-                    (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
-                    p.createdOn desc
-                  """,
-              PostEntity.class
-          )
-          .setParameter("section", sectionEntity)
-          .setParameter("totalTimeSeconds", totalTimeSeconds);
+      if (Objects.nonNull(tagEntity)) {
+        query = entityManager.createQuery(
+                """
+                    select p from PostEntity p
+                    where p.section = :section
+                    and :tag member of p.tags
+                    order by p.sortState desc, p.initialScore desc,
+                      (p.pageViews + p.commentsCount + p.repliesCount) *
+                      (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                      p.createdOn desc
+                    """,
+                PostEntity.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("tag", tagEntity)
+            .setParameter("totalTimeSeconds", totalTimeSeconds);
 
-      totalSizeQuery = entityManager.createQuery(
-              """
-                  select count(p.id) from PostEntity p
-                  where p.section = :section
-                  """,
-              Long.class
-          )
-          .setParameter("section", sectionEntity);
+        totalSizeQuery = entityManager.createQuery(
+                """
+                    select count(p.id) from PostEntity p
+                    where p.section = :section
+                    and :tag member of p.tags
+                    """,
+                Long.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("tag", tagEntity);
+      } else {
+        query = entityManager.createQuery(
+                """
+                    select p from PostEntity p
+                    where p.section = :section
+                    order by p.sortState desc, p.initialScore desc,
+                      (p.pageViews + p.commentsCount + p.repliesCount) *
+                      (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                      p.createdOn desc
+                    """,
+                PostEntity.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("totalTimeSeconds", totalTimeSeconds);
+
+        totalSizeQuery = entityManager.createQuery(
+                """
+                    select count(p.id) from PostEntity p
+                    where p.section = :section
+                    """,
+                Long.class
+            )
+            .setParameter("section", sectionEntity);
+      }
+
+
     } else if (Objects.nonNull(tagGroupEntity)) {
       query = entityManager.createQuery(
               """
@@ -713,52 +787,105 @@ public class CustomizedPostRepositoryImpl implements CustomizedPostRepository {
           .setParameter("block", PostStateEnum.BLOCK)
           .setParameter("user", user);
     } else if (Objects.nonNull(sectionEntity)) {
-      query = entityManager.createQuery(
-              """
-                  select p from PostEntity p left join fetch p.section ps
-                  where ps = :section
-                  and p.reviewState = 0
-                  and (:show member of p.states
-                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
-                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
-                  or (:block member of p.states and not (:user member of p.blocks))
-                  or p.user = :user)
-                  order by p.sortState desc, p.initialScore desc,
-                    (p.pageViews + p.commentsCount + p.repliesCount) *
-                    (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
-                    p.createdOn desc
-                  """,
-              PostEntity.class
-          )
-          .setParameter("section", sectionEntity)
-          .setParameter("show", PostStateEnum.SHOW)
-          .setParameter("hide", PostStateEnum.HIDE)
-          .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey)
-          .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user)
-          .setParameter("totalTimeSeconds", totalTimeSeconds);
+      if (Objects.nonNull(tagEntity)) {
+        query = entityManager.createQuery(
+                """
+                    select p from PostEntity p left join fetch p.section ps
+                    where ps = :section
+                    and :tag member of p.tags
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
+                    or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                    or (:block member of p.states and not (:user member of p.blocks))
+                    or p.user = :user)
+                    order by p.sortState desc, p.initialScore desc,
+                      (p.pageViews + p.commentsCount + p.repliesCount) *
+                      (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                      p.createdOn desc
+                    """,
+                PostEntity.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("tag", tagEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("hide", PostStateEnum.HIDE)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey)
+            .setParameter("block", PostStateEnum.BLOCK)
+            .setParameter("user", user)
+            .setParameter("totalTimeSeconds", totalTimeSeconds);
 
-      totalSizeQuery = entityManager.createQuery(
-              """
-                  select count(p.id) from PostEntity p left join p.section ps
-                  where ps = :section
-                  and p.reviewState = 0
-                  and (:show member of p.states
-                  or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
-                  or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
-                  or (:block member of p.states and not (:user member of p.blocks))
-                  or p.user = :user)
-                  """,
-              Long.class
-          )
-          .setParameter("section", sectionEntity)
-          .setParameter("show", PostStateEnum.SHOW)
-          .setParameter("hide", PostStateEnum.HIDE)
-          .setParameter("lock", PostStateEnum.LOCK)
-          .setParameter("accessKey", accessKey)
-          .setParameter("block", PostStateEnum.BLOCK)
-          .setParameter("user", user);
+        totalSizeQuery = entityManager.createQuery(
+                """
+                    select count(p.id) from PostEntity p left join p.section ps
+                    where ps = :section
+                    and :tag member of p.tags
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
+                    or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                    or (:block member of p.states and not (:user member of p.blocks))
+                    or p.user = :user)
+                    """,
+                Long.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("tag", tagEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("hide", PostStateEnum.HIDE)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey)
+            .setParameter("block", PostStateEnum.BLOCK)
+            .setParameter("user", user);
+      } else {
+        query = entityManager.createQuery(
+                """
+                    select p from PostEntity p left join fetch p.section ps
+                    where ps = :section
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
+                    or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                    or (:block member of p.states and not (:user member of p.blocks))
+                    or p.user = :user)
+                    order by p.sortState desc, p.initialScore desc,
+                      (p.pageViews + p.commentsCount + p.repliesCount) *
+                      (1 - timestampdiff(second, p.createdOn, now()) / :totalTimeSeconds) desc,
+                      p.createdOn desc
+                    """,
+                PostEntity.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("hide", PostStateEnum.HIDE)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey)
+            .setParameter("block", PostStateEnum.BLOCK)
+            .setParameter("user", user)
+            .setParameter("totalTimeSeconds", totalTimeSeconds);
+
+        totalSizeQuery = entityManager.createQuery(
+                """
+                    select count(p.id) from PostEntity p left join p.section ps
+                    where ps = :section
+                    and p.reviewState = 0
+                    and (:show member of p.states
+                    or (:hide member of p.states and (:user member of ps.admins or :user member of p.allows))
+                    or (:lock member of p.states and (p.accessKey = :accessKey or :user member of p.allows))
+                    or (:block member of p.states and not (:user member of p.blocks))
+                    or p.user = :user)
+                    """,
+                Long.class
+            )
+            .setParameter("section", sectionEntity)
+            .setParameter("show", PostStateEnum.SHOW)
+            .setParameter("hide", PostStateEnum.HIDE)
+            .setParameter("lock", PostStateEnum.LOCK)
+            .setParameter("accessKey", accessKey)
+            .setParameter("block", PostStateEnum.BLOCK)
+            .setParameter("user", user);
+      }
     } else if (Objects.nonNull(tagGroupEntity)) {
       query = entityManager.createQuery(
               """
