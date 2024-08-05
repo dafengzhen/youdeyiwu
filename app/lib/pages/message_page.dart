@@ -18,6 +18,7 @@ import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
 import '../utils/tools.dart';
+import '../widgets/common.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key});
@@ -184,10 +185,13 @@ class _MessagePageState extends State<MessagePage> {
               const SliverToBoxAdapter(child: SizedBox(height: 15)),
               if (_isLoadingInit) _buildLoadingIndicator(),
               _buildList(isDarkMode),
-              if (!_isLoadingInit && _isLoadingMore && _hasMore)
-                _buildLoadingIndicator(),
-              if (!_isLoadingInit && !_isLoadingMore && !_hasMore)
+              if (_isLoadingMore) _buildLoadingIndicator(),
+              if (_list.isNotEmpty && !_hasMore)
                 _buildNoMoreDataMessage(isDarkMode),
+              if (_list.isEmpty)
+                SliverFillRemaining(
+                  child: buildCenteredNoMoreDataMessage(isDarkMode),
+                ),
               const SliverToBoxAdapter(child: SizedBox(height: 35)),
             ],
           ),

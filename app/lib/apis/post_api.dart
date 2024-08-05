@@ -19,6 +19,14 @@ class PostApi {
     return page;
   }
 
+  Future<Post> queryDetails(String id, {QueryParametersDto? dto}) async {
+    final response = await _apiClient.get(
+      Uri.parse('/posts/$id/details').replace(queryParameters: dto?.toJson()),
+    );
+    var post = Post.withResponse(response);
+    return post;
+  }
+
   PostApi({
     required ApiClient apiClient,
   }) : _apiClient = apiClient;

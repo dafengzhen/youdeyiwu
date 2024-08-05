@@ -28,8 +28,8 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       likesCount: (json['likesCount'] as num).toInt(),
       followersCount: (json['followersCount'] as num).toInt(),
       favoritesCount: (json['favoritesCount'] as num).toInt(),
-      tags: (json['tags'] as List<dynamic>)
-          .map((e) => Tag.fromJson(e as Map<String, dynamic>))
+      tags: (json['tags'] as List<dynamic>?)
+          ?.map((e) => Tag.fromJson(e as Map<String, dynamic>))
           .toSet(),
       cover: json['cover'] as String?,
       coverImage: (json['coverImage'] as List<dynamic>?)
@@ -119,7 +119,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   val['followersCount'] = instance.followersCount;
   val['favoritesCount'] = instance.favoritesCount;
   writeNotNull('section', instance.section);
-  val['tags'] = instance.tags.toList();
+  writeNotNull('tags', instance.tags?.toList());
   writeNotNull('user', instance.user);
   writeNotNull('liked', instance.liked);
   writeNotNull('followed', instance.followed);

@@ -1,15 +1,21 @@
-import 'dart:developer';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:youdeyiwu_app/models/comment_reply.dart';
 
-import '../configs/configs.dart';
+import '../apis/post_api.dart';
+import '../enums/load_data_type_enum.dart';
+import '../models/post.dart';
+import '../models/page.dart' as page_model;
+import '../models/tag.dart';
 import '../providers/app_theme_mode.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
+import '../utils/bottom_sheet_utils.dart';
+import '../utils/tools.dart';
+import '../widgets/common.dart';
 
 class ArticleDetailsPage extends StatefulWidget {
   final String id;
@@ -20,87 +26,69 @@ class ArticleDetailsPage extends StatefulWidget {
   State<ArticleDetailsPage> createState() => _ArticleDetailsPageState();
 }
 
-class Article {
-  final String title;
-  final String subtitle;
-
-  Article(this.title, this.subtitle);
-}
-
 class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
-  List<Article> articles = List.generate(
-    20,
-    (index) => Article(
-      'Article Title $index',
-      'Subtitle for Article $index',
-    ),
-  );
-
   final TextEditingController _controller = TextEditingController();
-  ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  int _page = 1;
-  bool _hasMore = true;
+
+  Post? _post;
+  bool _isLoadingInit = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadData();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _loadMore();
-      }
-    });
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      articles = List.generate(
-          10, (index) => Article('Title $index', 'Subtitle $index'));
-      _page = 1;
-      _hasMore = true;
-    });
-  }
-
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 2));
+    if (_isLoading == false) {
+      await _loadData(
+        type: LoadDataTypeEnum.refresh,
+      );
+    }
   }
 
-  void _loadMore() async {
-    if (_isLoadingMore || !_hasMore) return;
-
+  Future<void> _loadData({
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+  }) async {
     setState(() {
-      _isLoadingMore = true;
-    });
-
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {
-      _page++;
-      final newArticles = List.generate(
-          10,
-          (index) => Article(
-              'Title ${index + _page * 10}', 'Subtitle ${index + _page * 10}'));
-      articles.addAll(newArticles);
-
-      if (newArticles.length < 10) {
-        _hasMore = false;
+      _isLoading = true;
+      if (type == LoadDataTypeEnum.initialize) {
+        _isLoadingInit = true;
       }
-
-      _isLoadingMore = false;
     });
+
+    try {
+      var post = await context.read<PostApi>().queryDetails(widget.id);
+
+      setState(() {
+        _post = post;
+      });
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+        if (type == LoadDataTypeEnum.initialize) {
+          _isLoadingInit = false;
+        }
+      });
+    }
   }
 
-  void _sendMessage() {
-    print('发送的消息: ${_controller.text}');
-    _controller.clear();
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
+    );
   }
 
   @override
@@ -110,6 +98,23 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+
+    final item = _post;
+    String? cover;
+    String? declaration;
+    Set<Tag> tags = {};
+    String? content;
+    page_model.Page<CommentReply>? comments;
+    String? id;
+
+    if (item != null) {
+      id = item.id.toString();
+      cover = isHttpOrHttps(item.cover) ? item.cover : null;
+      declaration = null;
+      tags = item.tags ?? {};
+      content = item.content;
+      comments = item.comments;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -144,8 +149,11 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
               : AppThemeColors.baseBgLight,
           child: Stack(
             children: [
-              SingleChildScrollView(
-                child: Padding(
+              if (_isLoadingInit) buildCenteredLoadingIndicator(),
+              if (!_isLoadingInit && item == null)
+                buildCenteredNoMoreDataMessage(isDarkMode),
+              if (item != null) ...[
+                SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 15,
                     vertical: 15,
@@ -153,30 +161,38 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildArticleHeader(isDarkMode),
+                      _buildArticleHeader(isDarkMode, item: item),
                       const SizedBox(
                         height: 15,
                       ),
-                      _buildArticleTitle(isDarkMode),
+                      _buildArticleTitle(isDarkMode, item: item),
                       const SizedBox(
                         height: 15,
                       ),
-                      _buildArticleImages(),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      _buildArticleTags(isDarkMode),
-                      const SizedBox(
-                        height: 19,
-                      ),
-                      _buildArticleDeclaration(isDarkMode),
-                      const SizedBox(
-                        height: 25,
-                      ),
-                      _buildArticleContent(isDarkMode),
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      if (cover != null) ...[
+                        _buildArticleImages(cover: cover),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                      if (tags.isNotEmpty) ...[
+                        _buildArticleTags(isDarkMode, item: item),
+                        const SizedBox(
+                          height: 19,
+                        ),
+                      ],
+                      if (declaration != null) ...[
+                        _buildArticleDeclaration(isDarkMode),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                      ],
+                      if (content != null && content.isNotEmpty) ...[
+                        _buildArticleContent(isDarkMode, content: content),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
                       SizedBox(
                         height: 27,
                         child: Center(
@@ -241,109 +257,118 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                       const SizedBox(
                         height: 15,
                       ),
-                      _buildArticleCommentItem(isDarkMode),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      _buildArticleCommentItem(isDarkMode),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      _createMenuItem(
-                        isDarkMode,
-                        icon: FontAwesomeIcons.solidCommentDots,
-                        text: "View more comments",
-                        onTap: () {
-                          context.pushNamed(
-                            "articleComment",
-                            pathParameters: {'id': "3"},
-                          );
-                        },
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      if (comments != null && comments.content.isNotEmpty) ...[
+                        if (comments.content.length > 1) ...[
+                          _buildArticleCommentItem(
+                            isDarkMode,
+                            post: item,
+                            item: comments.content[0],
+                            index: 0,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                        if (comments.content.length >= 2) ...[
+                          _buildArticleCommentItem(
+                            isDarkMode,
+                            post: item,
+                            item: comments.content[1],
+                            index: 1,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                        if (comments.content.length >= 3) ...[
+                          _createMenuItem(
+                            isDarkMode,
+                            icon: FontAwesomeIcons.solidCommentDots,
+                            text: "View more comments",
+                            onTap: () {
+                              context.pushNamed(
+                                "articleComment",
+                                pathParameters: {'id': item.id.toString()},
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                      ],
                       const SizedBox(
                         height: 90,
                       ),
                     ],
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDarkMode
-                        ? AppThemeColors.baseBgDark
-                        : AppThemeColors.baseBgLight,
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(17),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 15,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDarkMode
+                          ? AppThemeColors.baseBgDark
+                          : AppThemeColors.baseBgLight,
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(17),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _controller,
+                            minLines: 1,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                                hintText: 'Enter a comment',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 11,
+                                ),
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.solidPaperPlane,
+                                        size: 19,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        context.pushNamed(
+                                          "articleComment",
+                                          pathParameters: {
+                                            'id': item.id.toString()
+                                          },
+                                        );
+                                      },
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.solidCommentDots,
+                                        size: 19,
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          minLines: 1,
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                              hintText: 'Enter a comment',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 11,
-                              ),
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: const FaIcon(
-                                      FontAwesomeIcons.solidPaperPlane,
-                                      size: 19,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: const FaIcon(
-                                      FontAwesomeIcons.solidCommentDots,
-                                      size: 19,
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        ),
-                      ),
-                      // const SizedBox(width: 9),
-                      // Row(
-                      //   mainAxisSize: MainAxisSize.min,
-                      //   children: [
-                      //     IconButton(
-                      //       onPressed: () {},
-                      //       icon: FaIcon(
-                      //         FontAwesomeIcons.solidCommentDots,
-                      //         size: 19,
-                      //         color: isDarkMode
-                      //             ? AppThemeColors.defaultBgColorDark
-                      //             : AppThemeColors.defaultBgColorLight,
-                      //       ),
-                      //     )
-                      //   ],
-                      // ),
-                    ],
-                  ),
                 ),
-              ),
+              ]
             ],
           ),
         ),
@@ -351,16 +376,29 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     );
   }
 
-  Widget _buildArticleHeader(bool isDarkMode) {
+  Widget _buildArticleHeader(bool isDarkMode, {required Post item}) {
+    final createdOn =
+        item.createdOn != null ? formatRelativeTime(item.createdOn) : null;
+    final username = getUsernameOrAnonymous(item.user?.username);
+    final userId = item.user?.id;
+    final avatar = getAvatarOrDefault(item.user?.avatar);
+
+    void onClickUsername() {
+      if (userId != null) {
+        context.pushNamed("userDetails",
+            pathParameters: {'id': userId.toString()});
+      }
+    }
+
     return Row(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(11),
           child: Material(
             child: InkWell(
-              onTap: () {},
+              onTap: onClickUsername,
               child: Ink.image(
-                image: const AssetImage("assets/images/avatar.png"),
+                image: avatar,
                 width: 40,
                 height: 40,
               ),
@@ -368,56 +406,63 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
           ),
         ),
         const SizedBox(width: 19),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Authored by',
-              style: TextStyle(
-                color: isDarkMode
-                    ? AppThemeColors.secondaryColorDark
-                    : AppThemeColors.secondaryColorLight,
+        GestureDetector(
+          onTap: onClickUsername,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Authored by',
+                style: TextStyle(
+                  color: isDarkMode
+                      ? AppThemeColors.secondaryColorDark
+                      : AppThemeColors.secondaryColorLight,
+                ),
               ),
-            ),
-            Text(
-              'dafengzhen',
-              style: TextStyle(
-                color: isDarkMode
-                    ? AppThemeColors.baseColorDark
-                    : AppThemeColors.baseColorLight,
+              Text(
+                username,
+                style: TextStyle(
+                  color: isDarkMode
+                      ? AppThemeColors.baseColorDark
+                      : AppThemeColors.baseColorLight,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        const SizedBox(width: 19),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Published on',
-              style: TextStyle(
-                color: isDarkMode
-                    ? AppThemeColors.secondaryColorDark
-                    : AppThemeColors.secondaryColorLight,
+        if (createdOn != null) ...[
+          const SizedBox(width: 19),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Published on',
+                style: TextStyle(
+                  color: isDarkMode
+                      ? AppThemeColors.secondaryColorDark
+                      : AppThemeColors.secondaryColorLight,
+                ),
               ),
-            ),
-            Text(
-              '2024-07-09',
-              style: TextStyle(
-                color: isDarkMode
-                    ? AppThemeColors.baseColorDark
-                    : AppThemeColors.baseColorLight,
+              Text(
+                createdOn,
+                style: TextStyle(
+                  color: isDarkMode
+                      ? AppThemeColors.baseColorDark
+                      : AppThemeColors.baseColorLight,
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildArticleTitle(bool isDarkMode) {
+  Widget _buildArticleTitle(bool isDarkMode, {required Post item}) {
+    var name = item.name;
+
     return Text(
-      'Get started with Bootstrap',
+      name,
       softWrap: true,
       style: TextStyle(
         fontSize: 22,
@@ -429,7 +474,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     );
   }
 
-  Widget _buildArticleImages() {
+  Widget _buildArticleImages({required String cover}) {
     return SizedBox(
       height: 260,
       child: ListView.separated(
@@ -444,7 +489,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
           return ClipRRect(
             borderRadius: BorderRadius.circular(11),
             child: Image.network(
-              'https://images.unsplash.com/photo-1696733585001-868eb49cbfa6?h=260',
+              cover,
               fit: BoxFit.cover,
             ),
           );
@@ -453,18 +498,20 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     );
   }
 
-  Widget _buildArticleTags(bool isDarkMode) {
+  Widget _buildArticleTags(bool isDarkMode, {required Post item}) {
+    var tags = item.tags ?? {};
+
     return Wrap(
       spacing: 11,
       runSpacing: 3,
       children: List.generate(
-        7,
+        tags.length,
         (index) => ChoiceChip(
           backgroundColor: isDarkMode
               ? AppThemeColors.tertiaryBgDark
               : AppThemeColors.tertiaryBgLight,
           label: Text(
-            '#Tag $index',
+            '#${tags.elementAt(index).name}',
             style: TextStyle(
               color: isDarkMode
                   ? AppThemeColors.baseColorDark
@@ -506,10 +553,10 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     );
   }
 
-  Widget _buildArticleContent(bool isDarkMode) {
-    return Text(
-      'Bootstrap is a powerful, feature-packed frontend toolkit. Build anything—from prototype to production—in minutes.Get started by including Bootstrap’s production-ready CSS and JavaScript via CDN without the need for any build steps. See it in practice with this Bootstrap CodePen demo.',
-      style: TextStyle(
+  Widget _buildArticleContent(bool isDarkMode, {required String content}) {
+    return HtmlWidget(
+      content,
+      textStyle: TextStyle(
         fontSize: 17,
         color: isDarkMode
             ? AppThemeColors.baseColorDark
@@ -518,7 +565,28 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     );
   }
 
-  Widget _buildArticleCommentItem(bool isDarkMode) {
+  Widget _buildArticleCommentItem(
+    bool isDarkMode, {
+    required Post post,
+    required CommentReply item,
+    required int index,
+  }) {
+    final item0 = (item.comment ?? item.reply) as dynamic;
+    final createdOn =
+        item0.createdOn != null ? formatRelativeTime(item0.createdOn) : null;
+    final username = getUsernameOrAnonymous(item0.user?.username);
+    final userId = item0.user?.id;
+    final avatar = getAvatarOrDefault(item0.user?.avatar);
+    final content = item0.content;
+    final index0 = index + 1;
+
+    void onClickUsername() {
+      if (userId != null) {
+        context.pushNamed("userDetails",
+            pathParameters: {'id': userId.toString()});
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.only(top: 17, bottom: 5, left: 12, right: 12),
       decoration: BoxDecoration(
@@ -526,55 +594,77 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
             ? AppThemeColors.tertiaryBgDark
             : AppThemeColors.tertiaryBgLight,
         borderRadius: BorderRadius.circular(17),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: isDarkMode
-        //         ? AppThemeColors.defaultBg3Dark
-        //         : AppThemeColors.defaultBg2Light.withOpacity(0.5),
-        //     spreadRadius: 5,
-        //     blurRadius: 7,
-        //     offset: Offset(0, 3), // changes position of shadow
-        //   ),
-        // ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/avatar.png'),
-                radius: 19,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(11),
+                child: Material(
+                  child: InkWell(
+                    onTap: onClickUsername,
+                    child: Ink.image(
+                      image: avatar,
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(width: 9),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "dafengzhen",
+                    username,
                     style: TextStyle(
                       color: isDarkMode
                           ? AppThemeColors.baseColorDark
                           : AppThemeColors.baseColorLight,
                     ),
                   ),
+                  if (createdOn != null)
+                    Text(
+                      createdOn,
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? AppThemeColors.secondaryColorDark
+                            : AppThemeColors.secondaryColorLight,
+                      ),
+                    ),
+                ],
+              ),
+              const Spacer(),
+              Column(
+                children: [
                   Text(
-                    "2024-07-09",
+                    "$index0#",
                     style: TextStyle(
                       color: isDarkMode
-                          ? AppThemeColors.secondaryColorDark
-                          : AppThemeColors.secondaryColorLight,
+                          ? AppThemeColors.secondaryColorDark.withOpacity(0.5)
+                          : AppThemeColors.secondaryColorLight.withOpacity(0.5),
                     ),
+                  ),
+                  const Text(
+                    "",
                   ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 15),
-          _buildArticleCommentReply(isDarkMode),
-          const SizedBox(height: 15),
+          if (item.comment == null && item.reply != null) ...[
+            _buildArticleCommentReply(
+              isDarkMode,
+              post: post,
+              item: item,
+            ),
+            const SizedBox(height: 15),
+          ],
           Text(
-            """Give textual form controls like <input>s and <textarea>s an upgrade with custom styles, sizing, focus states, and more.""",
+            content,
             style: TextStyle(
               color: isDarkMode
                   ? AppThemeColors.baseColorDark
@@ -605,7 +695,25 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     );
   }
 
-  Widget _buildArticleCommentReply(bool isDarkMode) {
+  Widget _buildArticleCommentReply(
+    bool isDarkMode, {
+    required Post post,
+    required CommentReply item,
+  }) {
+    final reply = (item.reply!.comment ?? item.reply!.quoteReply) as dynamic;
+    final createdOn =
+        reply.createdOn != null ? formatRelativeTime(reply.createdOn) : null;
+    final username = getUsernameOrAnonymous(reply.user?.username);
+    final userId = reply.user?.id;
+    final content = reply.content;
+
+    void onClickUsername() {
+      if (userId != null) {
+        context.pushNamed("userDetails",
+            pathParameters: {'id': userId.toString()});
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
       decoration: BoxDecoration(
@@ -627,53 +735,61 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
         children: [
           Row(
             children: [
-              // const CircleAvatar(
-              //   backgroundImage: AssetImage('assets/images/avatar.png'),
-              //   radius: 19,
-              // ),
-              // const SizedBox(width: 9),
-              Row(
-                children: [
-                  Icon(
-                    Icons.reply,
-                    color: isDarkMode
-                        ? AppThemeColors.secondaryColorDark.withOpacity(0.7)
-                        : AppThemeColors.secondaryColorLight.withOpacity(0.7),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  Text(
-                    "@dafengzhen",
-                    style: TextStyle(
+              GestureDetector(
+                onTap: onClickUsername,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.reply,
                       color: isDarkMode
-                          ? AppThemeColors.secondaryColorDark
-                          : AppThemeColors.secondaryColorLight,
+                          ? AppThemeColors.secondaryColorDark.withOpacity(0.7)
+                          : AppThemeColors.secondaryColorLight.withOpacity(0.7),
                     ),
-                  ),
-                  Text(
-                    " / ",
-                    style: TextStyle(
-                      color: isDarkMode
-                          ? AppThemeColors.secondaryColorDark
-                          : AppThemeColors.secondaryColorLight,
+                    const SizedBox(
+                      width: 7,
                     ),
-                  ),
-                  Text(
-                    "2024-07-09",
-                    style: TextStyle(
-                      color: isDarkMode
-                          ? AppThemeColors.secondaryColorDark
-                          : AppThemeColors.secondaryColorLight,
+                    Text(
+                      "#",
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? AppThemeColors.secondaryColorDark
+                            : AppThemeColors.secondaryColorLight,
+                      ),
                     ),
-                  ),
-                ],
+                    Text(
+                      username,
+                      style: TextStyle(
+                        color: isDarkMode
+                            ? AppThemeColors.secondaryColorDark
+                            : AppThemeColors.secondaryColorLight,
+                      ),
+                    ),
+                    if (createdOn != null) ...[
+                      Text(
+                        " / ",
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? AppThemeColors.secondaryColorDark
+                              : AppThemeColors.secondaryColorLight,
+                        ),
+                      ),
+                      Text(
+                        createdOn,
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? AppThemeColors.secondaryColorDark
+                              : AppThemeColors.secondaryColorLight,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ],
           ),
           const SizedBox(height: 15),
           Text(
-            """Give textual form controls like <input>s and <textarea>s an upgrade with custom styles, sizing, focus states, and more.""",
+            content,
             style: TextStyle(
               color: isDarkMode
                   ? AppThemeColors.baseColorDark

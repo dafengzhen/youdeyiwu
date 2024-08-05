@@ -101,7 +101,7 @@ class Post extends Base {
   final Section? section;
 
   /// tags
-  final Set<Tag> tags;
+  final Set<Tag>? tags;
 
   /// user
   final User? user;
@@ -140,7 +140,7 @@ class Post extends Base {
     required this.likesCount,
     required this.followersCount,
     required this.favoritesCount,
-    required this.tags,
+    this.tags,
     this.cover,
     this.coverImage,
     this.coverImageType,

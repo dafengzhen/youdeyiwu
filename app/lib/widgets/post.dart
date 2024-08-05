@@ -281,8 +281,11 @@ Widget buildArticleCard(
   );
 }
 
-Widget _buildFirstCommentCard(bool isDarkMode, BuildContext context,
-    {required Post item}) {
+Widget _buildFirstCommentCard(
+  bool isDarkMode,
+  BuildContext context, {
+  required Post item,
+}) {
   final baseColor =
       isDarkMode ? AppThemeColors.baseColorDark : AppThemeColors.baseColorLight;
   final secondaryColor = isDarkMode

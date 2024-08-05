@@ -13,6 +13,7 @@ import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
 import '../utils/tools.dart';
+import '../widgets/common.dart';
 
 class ContentPage extends StatefulWidget {
   const ContentPage({super.key});
@@ -166,6 +167,10 @@ class _ContentPageState extends State<ContentPage> {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 13),
               ),
+              if (keys.isEmpty)
+                SliverFillRemaining(
+                  child: buildCenteredNoMoreDataMessage(isDarkMode),
+                ),
               const SliverToBoxAdapter(child: SizedBox(height: 35)),
             ],
           ),
