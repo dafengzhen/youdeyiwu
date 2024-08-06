@@ -81,6 +81,24 @@ public class PostEntity extends AbstractEntity {
   private String content;
 
   /**
+   * plain text content.
+   */
+  @Column(columnDefinition = "text")
+  private String plainTextContent;
+
+  /**
+   * markdown content.
+   */
+  @Column(columnDefinition = "text")
+  private String markdownContent;
+
+  /**
+   * delta content (quill editor).
+   */
+  @Column(columnDefinition = "text")
+  private String deltaContent;
+
+  /**
    * content link.
    */
   private String contentLink;

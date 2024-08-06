@@ -51,6 +51,21 @@ public class PostEntityVo extends AbstractEntityVo {
   private String content;
 
   /**
+   * plain text content.
+   */
+  private String plainTextContent;
+
+  /**
+   * markdown content.
+   */
+  private String markdownContent;
+
+  /**
+   * delta content (quill editor).
+   */
+  private String deltaContent;
+
+  /**
    * content link.
    */
   private String contentLink;

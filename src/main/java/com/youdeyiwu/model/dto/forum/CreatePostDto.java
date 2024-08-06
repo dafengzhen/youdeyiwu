@@ -9,13 +9,16 @@ import org.hibernate.validator.constraints.Length;
 /**
  * create post.
  *
- * @param name        name
- * @param cover       cover
- * @param overview    overview
- * @param content     content
- * @param contentLink contentLink
- * @param tags        tags
- * @param sectionId   sectionId
+ * @param name             name
+ * @param cover            cover
+ * @param overview         overview
+ * @param content          content
+ * @param plainTextContent plainTextContent
+ * @param markdownContent  markdownContent
+ * @param deltaContent     deltaContent
+ * @param contentLink      contentLink
+ * @param tags             tags
+ * @param sectionId        sectionId
  */
 public record CreatePostDto(
     @Length(min = 1, max = 120, message = "{post.name.size}")
@@ -28,6 +31,12 @@ public record CreatePostDto(
     String overview,
 
     String content,
+
+    String plainTextContent,
+
+    String markdownContent,
+
+    String deltaContent,
 
     @UrlIfNotEmpty(message = "{post.contentLink.url}")
     String contentLink,

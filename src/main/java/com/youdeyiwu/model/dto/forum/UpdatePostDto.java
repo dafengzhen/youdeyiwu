@@ -9,14 +9,17 @@ import org.hibernate.validator.constraints.Length;
 /**
  * update post.
  *
- * @param name          name
- * @param cover         cover
- * @param overview      overview
- * @param content       content
- * @param contentLink   contentLink
- * @param tags          tags
- * @param sectionId     sectionId
- * @param removeSection removeSection
+ * @param name             name
+ * @param cover            cover
+ * @param overview         overview
+ * @param content          content
+ * @param plainTextContent plainTextContent
+ * @param markdownContent  markdownContent
+ * @param deltaContent     deltaContent
+ * @param contentLink      contentLink
+ * @param tags             tags
+ * @param sectionId        sectionId
+ * @param removeSection    removeSection
  */
 public record UpdatePostDto(
     @Length(min = 1, max = 120, message = "{post.name.size}")
@@ -29,6 +32,12 @@ public record UpdatePostDto(
     String overview,
 
     String content,
+
+    String plainTextContent,
+
+    String markdownContent,
+
+    String deltaContent,
 
     @UrlIfNotEmpty(message = "{post.contentLink.url}")
     String contentLink,
