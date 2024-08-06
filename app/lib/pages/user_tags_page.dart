@@ -156,7 +156,11 @@ class _UserTagsPageState extends State<UserTagsPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(11),
         ),
-        onTap: () {},
+        onTap: () {
+          context.pushNamed("userViewArticles", queryParameters: {
+            'tagId': item.id.toString(),
+          });
+        },
         title: Text(
           name,
           style: TextStyle(

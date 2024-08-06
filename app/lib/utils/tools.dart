@@ -132,3 +132,16 @@ ImageProvider getAvatarOrDefault(String? avatar) {
       ? NetworkImage(avatar!)
       : const AssetImage("assets/images/avatar.png");
 }
+
+/// extractIdFromUrl
+String? extractIdFromUrl(String url, String pathSegment) {
+  String pattern = '/$pathSegment/(\\d+)';
+  RegExp regExp = RegExp(pattern);
+  RegExpMatch? match = regExp.firstMatch(url);
+
+  if (match != null) {
+    return match.group(1);
+  } else {
+    return null;
+  }
+}

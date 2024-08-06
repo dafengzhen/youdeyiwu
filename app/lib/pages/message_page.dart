@@ -41,13 +41,29 @@ class _MessagePageState extends State<MessagePage> {
   void initState() {
     super.initState();
     _loadData();
+    _setupLoginInfoListener();
     _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _removeLoginInfoListener();
     super.dispose();
+  }
+
+  void _setupLoginInfoListener() {
+    var loginInfo = context.read<LoginInfo>();
+    loginInfo.addListener(_handleInitStateChange);
+  }
+
+  void _removeLoginInfoListener() {
+    var loginInfo = context.read<LoginInfo>();
+    loginInfo.removeListener(_handleInitStateChange);
+  }
+
+  void _handleInitStateChange() {
+    _loadData();
   }
 
   Future<void> _refresh() async {
@@ -183,12 +199,13 @@ class _MessagePageState extends State<MessagePage> {
                 floating: true,
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 15)),
-              if (_isLoadingInit) _buildLoadingIndicator(),
+              if (_isLoadingInit)
+                SliverFillRemaining(child: buildCenteredLoadingIndicator()),
               _buildList(isDarkMode),
               if (_isLoadingMore) _buildLoadingIndicator(),
               if (_list.isNotEmpty && !_hasMore)
                 _buildNoMoreDataMessage(isDarkMode),
-              if (_list.isEmpty)
+              if (!_isLoadingInit && _list.isEmpty)
                 SliverFillRemaining(
                   child: buildCenteredNoMoreDataMessage(isDarkMode),
                 ),
@@ -322,11 +339,11 @@ class _MessagePageState extends State<MessagePage> {
           spacing: 11,
           runSpacing: 1,
           children: [
-            if (link != null)
+            if (link != null && link.contains("/posts/"))
               ElevatedButton.icon(
                 icon: const FaIcon(FontAwesomeIcons.circleInfo, size: 17),
                 label: const Text("Details"),
-                onPressed: () => _handleDetailsClick(item),
+                onPressed: () => _handleDetailsClick(isDarkMode, item: item),
               ),
             if (state == MessageStateEnum.unread)
               ElevatedButton.icon(
@@ -358,8 +375,18 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  void _handleDetailsClick(Message item) {
-    // Add your details click handling logic here
+  void _handleDetailsClick(bool isDarkMode, {required Message item}) {
+    var id = extractIdFromUrl(item.link!, "posts");
+    if (id != null) {
+      context.pushNamed("articleDetails", pathParameters: {'id': id});
+    } else {
+      showSystemPromptBottomSheet(
+        isDarkMode,
+        context,
+        promptType: PromptType.warning,
+        description: "The request could not be processed and data was lost.",
+      );
+    }
   }
 
   void _handleReadClick(Message item) {

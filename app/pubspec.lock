@@ -197,10 +197,10 @@ packages:
     dependency: transitive
     description:
       name: chewie
-      sha256: d4983f05f28f63ed05c1a741ac7327f6d72dff73f27484953478179fe70e762b
+      sha256: "2243e41e79e865d426d9dd9c1a9624aa33c4ad11de2d0cd680f826e2cd30e879"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.8.2"
+    version: "1.8.3"
   cli_util:
     dependency: transitive
     description:
@@ -293,10 +293,10 @@ packages:
     dependency: transitive
     description:
       name: dart_quill_delta
-      sha256: d3d095052b9bed718cbc5b9ae68fd1d58a7645f7ad1cb3e67ab1075186a78394
+      sha256: "8cde757a1f09061c52bf3cbab2a5a9c5877ca2eddd6356f44a6229aecbf567fc"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "10.1.7"
+    version: "10.1.9"
   dart_style:
     dependency: transitive
     description:
@@ -567,10 +567,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_quill
-      sha256: d048b8cf92eec89f120067e509a8b8e9df619a01f47ba8cf3a9e003f6092758d
+      sha256: a3ad192d7a126f3662b541e8d695b40e0853abdd9d8c288655df8dcb4ffe79e8
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "10.1.7"
+    version: "10.1.9"
   flutter_quill_delta_from_html:
     dependency: transitive
     description:
@@ -583,10 +583,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_quill_extensions
-      sha256: ebf389d8dac74ef1ffd90c760fd556e5025e2ac0fc9a32d7d46ce89d812bc3b9
+      sha256: "077b810d43dfa1aadcffccf22c378cfcd50778f0171bf82c90109fa470348086"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "10.1.7"
+    version: "10.1.9"
   flutter_svg:
     dependency: transitive
     description:
@@ -721,10 +721,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: d380de0355788c5c784fe9f81b43fc833b903991c25ecc4e2a416a67faefa722
+      sha256: ddc16d34b0d74cb313986918c0f0885a7ba2fc24d8fb8419de75f0015144ccfe
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "14.2.2"
+    version: "14.2.3"
   google_fonts:
     dependency: "direct main"
     description:
@@ -785,26 +785,26 @@ packages:
     dependency: "direct main"
     description:
       name: image_cropper
-      sha256: d31be025c744ac1bf52d1f49cfdd92fd421e7e45ddadaaac0b39901f67c2a7e3
+      sha256: "7c3a85e54ec591738ee68f3cc9b8849bab0ec8e908bf8970645be959a079e17f"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "7.1.0"
+    version: "8.0.1"
   image_cropper_for_web:
     dependency: transitive
     description:
       name: image_cropper_for_web
-      sha256: "6386e64908ce5d5df404e01c750a99b633dfcea88da69b3efcd3b3811d639760"
+      sha256: "65f3f23fb82ff153601f22864e07e2ec14a7859db9e6ee5f643f0cde5243e9f2"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.1.0"
+    version: "6.0.1"
   image_cropper_platform_interface:
     dependency: transitive
     description:
       name: image_cropper_platform_interface
-      sha256: "39c6539571bda7ce666e0a2f450246a5d42187406eef8f486a3d64f1d9381637"
+      sha256: e8e9d2ca36360387aee39295ce49029362ae4df3071f23e8e71f2b81e40b7531
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "6.1.0"
+    version: "7.0.0"
   image_picker:
     dependency: "direct main"
     description:
@@ -817,10 +817,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_android
-      sha256: "3fe99e3a459b969f657565a853353bdea7e3d3cae34f7dd124836267d426ec87"
+      sha256: c0e72ecd170b00a5590bb71238d57dc8ad22ee14c60c6b0d1a4e05cafbc5db4b
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.8.12+10"
+    version: "0.8.12+11"
   image_picker_for_web:
     dependency: transitive
     description:

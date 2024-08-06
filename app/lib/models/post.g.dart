@@ -39,6 +39,9 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           $enumDecodeNullable(_$FileTypeEnumEnumMap, json['coverImageType']),
       overview: json['overview'] as String?,
       content: json['content'] as String?,
+      plainTextContent: json['plainTextContent'] as String?,
+      markdownContent: json['markdownContent'] as String?,
+      deltaContent: json['deltaContent'] as String?,
       contentLink: json['contentLink'] as String?,
       accessKey: json['accessKey'] as String?,
       styles: json['styles'] as String?,
@@ -98,6 +101,9 @@ Map<String, dynamic> _$PostToJson(Post instance) {
       'coverImageType', _$FileTypeEnumEnumMap[instance.coverImageType]);
   writeNotNull('overview', instance.overview);
   writeNotNull('content', instance.content);
+  writeNotNull('plainTextContent', instance.plainTextContent);
+  writeNotNull('markdownContent', instance.markdownContent);
+  writeNotNull('deltaContent', instance.deltaContent);
   writeNotNull('contentLink', instance.contentLink);
   val['disableComments'] = instance.disableComments;
   val['disableReplies'] = instance.disableReplies;

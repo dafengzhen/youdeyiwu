@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_extensions/models/config/shared_configurations.dart';
@@ -5,9 +7,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../apis/post_api.dart';
+import '../enums/load_data_type_enum.dart';
+import '../models/post.dart';
 import '../providers/app_theme_mode.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
+import '../utils/bottom_sheet_utils.dart';
 import '../utils/my_quill_editor.dart';
 import '../utils/my_quill_toolbar.dart';
 
@@ -21,14 +27,22 @@ class ArticleEditorPage extends StatefulWidget {
 }
 
 class _ArticleEditorPageState extends State<ArticleEditorPage> {
-  final QuillController _controller = QuillController.basic();
-  final _editorFocusNode = FocusNode();
-  final _editorScrollController = ScrollController();
-  var _isReadOnly = false;
+  late final QuillController _controller;
+  late final FocusNode _editorFocusNode;
+  late final ScrollController _editorScrollController;
+  bool _isReadOnly = false;
+
+  Post? _post;
+  bool _isLoadingInit = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _controller = QuillController.basic();
+    _editorFocusNode = FocusNode();
+    _editorScrollController = ScrollController();
+    _loadData();
   }
 
   @override
@@ -39,23 +53,72 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
     super.dispose();
   }
 
-  QuillSharedConfigurations get _sharedConfigurations {
-    return const QuillSharedConfigurations(
-      // locale: Locale('en'),
-      extraConfigurations: {
-        QuillSharedExtensionsConfigurations.key:
-            QuillSharedExtensionsConfigurations(
-          assetsPrefix: 'assets', // Defaults to assets
-        ),
-      },
+  Future<void> _loadData({
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+  }) async {
+    setState(() {
+      _isLoading = true;
+      if (type == LoadDataTypeEnum.initialize) {
+        _isLoadingInit = true;
+      }
+    });
+
+    try {
+      var id = widget.id;
+      if (id != null) {
+        var post = await context.read<PostApi>().queryDetails(id);
+        var deltaContent = post.deltaContent;
+        if (deltaContent != null && deltaContent.isNotEmpty) {
+          /// plainTextContent
+          // _controller.replaceText(
+          //   0,
+          //   0,
+          //   content,
+          //   TextSelection.collapsed(offset: content.length),
+          // );
+          _controller.document = Document.fromDelta(jsonDecode(deltaContent));
+        }
+
+        setState(() {
+          _post = post;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+        if (type == LoadDataTypeEnum.initialize) {
+          _isLoadingInit = false;
+        }
+      });
+    }
+  }
+
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
     );
   }
 
+  QuillSharedConfigurations get _sharedConfigurations =>
+      const QuillSharedConfigurations(
+        extraConfigurations: {
+          QuillSharedExtensionsConfigurations.key:
+              QuillSharedExtensionsConfigurations(
+            assetsPrefix: 'assets', // Defaults to assets
+          ),
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode =
-        context.select((AppThemeMode value) => value.isDarkMode);
-    final Color barBackgroundColor = isDarkMode
+    final isDarkMode = context.select((AppThemeMode value) => value.isDarkMode);
+    final barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
 
@@ -68,13 +131,8 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
         backgroundColor: barBackgroundColor,
         surfaceTintColor: barBackgroundColor,
         leading: IconButton(
-          icon: const FaIcon(
-            FontAwesomeIcons.arrowLeft,
-            size: 20,
-          ),
-          onPressed: () {
-            context.pop();
-          },
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, size: 20),
+          onPressed: () => context.pop(),
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -84,21 +142,30 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
               onChanged: (bool value) {
                 Provider.of<AppThemeMode>(context, listen: false).toggleTheme();
               },
-            )
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.small(
-        child: _isReadOnly
-            ? const FaIcon(
-                FontAwesomeIcons.lock,
-                size: 17,
-              )
-            : const FaIcon(
-                FontAwesomeIcons.solidPenToSquare,
-                size: 17,
-              ),
-        onPressed: () => setState(() => _isReadOnly = !_isReadOnly),
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton.small(
+            child: FaIcon(
+              _isReadOnly
+                  ? FontAwesomeIcons.lock
+                  : FontAwesomeIcons.solidPenToSquare,
+              size: 17,
+            ),
+            onPressed: () => setState(() => _isReadOnly = !_isReadOnly),
+          ),
+          FloatingActionButton.small(
+            child: const FaIcon(
+              FontAwesomeIcons.solidFloppyDisk,
+              size: 17,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -107,14 +174,10 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
               controller: _controller,
               focusNode: _editorFocusNode,
             ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: MyQuillEditor(
                 configurations: QuillEditorConfigurations(
                   sharedConfigurations: _sharedConfigurations,

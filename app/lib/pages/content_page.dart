@@ -31,6 +31,27 @@ class _ContentPageState extends State<ContentPage> {
   void initState() {
     super.initState();
     _loadData();
+    _setupLoginInfoListener();
+  }
+
+  @override
+  void dispose() {
+    _removeLoginInfoListener();
+    super.dispose();
+  }
+
+  void _setupLoginInfoListener() {
+    var loginInfo = context.read<LoginInfo>();
+    loginInfo.addListener(_handleInitStateChange);
+  }
+
+  void _removeLoginInfoListener() {
+    var loginInfo = context.read<LoginInfo>();
+    loginInfo.removeListener(_handleInitStateChange);
+  }
+
+  void _handleInitStateChange() {
+    _loadData();
   }
 
   Future<void> _refresh() async {
@@ -167,7 +188,7 @@ class _ContentPageState extends State<ContentPage> {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 13),
               ),
-              if (keys.isEmpty)
+              if (!_isLoadingInit && keys.isEmpty)
                 SliverFillRemaining(
                   child: buildCenteredNoMoreDataMessage(isDarkMode),
                 ),
@@ -223,8 +244,11 @@ class _ContentPageState extends State<ContentPage> {
     );
   }
 
-  Widget _createSectionCard(bool isDarkMode, BuildContext context,
-      {required Section item}) {
+  Widget _createSectionCard(
+    bool isDarkMode,
+    BuildContext context, {
+    required Section item,
+  }) {
     final cover = isHttpOrHttps(item.cover) ? item.cover : null;
     final tags = item.tags ?? {};
 

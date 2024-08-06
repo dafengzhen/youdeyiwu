@@ -11,6 +11,7 @@ import '../models/post.dart';
 import '../models/page.dart' as page_model;
 import '../models/tag.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
@@ -28,6 +29,7 @@ class ArticleDetailsPage extends StatefulWidget {
 
 class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   Post? _post;
   bool _isLoadingInit = true;
@@ -42,6 +44,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -98,6 +101,9 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+    final bool isLoggedIn =
+        context.select((LoginInfo value) => value.isLoggedIn);
+    final int? loginId = context.select((LoginInfo value) => value.loginId);
 
     final item = _post;
     String? cover;
@@ -106,6 +112,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     String? content;
     page_model.Page<CommentReply>? comments;
     String? id;
+    bool yourself = false;
 
     if (item != null) {
       id = item.id.toString();
@@ -114,7 +121,22 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
       tags = item.tags ?? {};
       content = item.content;
       comments = item.comments;
+      yourself = isLoggedIn && loginId == item.user?.id;
     }
+
+    void onClickLike() {}
+
+    void onClickShare() {}
+
+    void onClickReply() {
+      if (_focusNode.hasFocus) {
+        _focusNode.unfocus();
+      } else {
+        _focusNode.requestFocus();
+      }
+    }
+
+    void onClickSend() {}
 
     return Scaffold(
       appBar: AppBar(
@@ -132,12 +154,25 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Switch(
-              value: isDarkMode,
-              onChanged: (bool value) {
-                Provider.of<AppThemeMode>(context, listen: false).toggleTheme();
-              },
-            )
+            yourself
+                ? IconButton(
+                    icon: const FaIcon(
+                      FontAwesomeIcons.solidPenToSquare,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      context.pushNamed("articleEdit", queryParameters: {
+                        'id': id.toString(),
+                      });
+                    },
+                  )
+                : Switch(
+                    value: isDarkMode,
+                    onChanged: (bool value) {
+                      Provider.of<AppThemeMode>(context, listen: false)
+                          .toggleTheme();
+                    },
+                  )
           ],
         ),
       ),
@@ -152,155 +187,159 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
               if (_isLoadingInit) buildCenteredLoadingIndicator(),
               if (!_isLoadingInit && item == null)
                 buildCenteredNoMoreDataMessage(isDarkMode),
-              if (item != null) ...[
+              if (!_isLoadingInit && item != null) ...[
                 SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 15,
                     vertical: 15,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildArticleHeader(isDarkMode, item: item),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      _buildArticleTitle(isDarkMode, item: item),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      if (cover != null) ...[
-                        _buildArticleImages(cover: cover),
+                  child: GestureDetector(
+                    onTap: onClickReply,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildArticleHeader(isDarkMode, item: item),
                         const SizedBox(
                           height: 15,
                         ),
-                      ],
-                      if (tags.isNotEmpty) ...[
-                        _buildArticleTags(isDarkMode, item: item),
-                        const SizedBox(
-                          height: 19,
-                        ),
-                      ],
-                      if (declaration != null) ...[
-                        _buildArticleDeclaration(isDarkMode),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                      ],
-                      if (content != null && content.isNotEmpty) ...[
-                        _buildArticleContent(isDarkMode, content: content),
+                        _buildArticleTitle(isDarkMode, item: item),
                         const SizedBox(
                           height: 15,
                         ),
-                      ],
-                      SizedBox(
-                        height: 27,
-                        child: Center(
-                          child: Container(
-                            width: 50,
-                            height: 1,
-                            color: isDarkMode
-                                ? AppThemeColors.secondaryColor[700]!
-                                : AppThemeColors.secondaryColor[150]!,
+                        if (cover != null) ...[
+                          _buildArticleImages(cover: cover),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                        if (tags.isNotEmpty) ...[
+                          _buildArticleTags(isDarkMode, item: item),
+                          const SizedBox(
+                            height: 19,
+                          ),
+                        ],
+                        if (declaration != null) ...[
+                          _buildArticleDeclaration(isDarkMode),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                        ],
+                        if (content != null && content.isNotEmpty) ...[
+                          _buildArticleContent(isDarkMode, content: content),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                        SizedBox(
+                          height: 27,
+                          child: Center(
+                            child: Container(
+                              width: 50,
+                              height: 1,
+                              color: isDarkMode
+                                  ? AppThemeColors.secondaryColor[700]!
+                                  : AppThemeColors.secondaryColor[150]!,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton.icon(
-                            icon: const FaIcon(
-                              FontAwesomeIcons.thumbsUp,
-                              size: 17,
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton.icon(
+                              icon: const FaIcon(
+                                FontAwesomeIcons.thumbsUp,
+                                size: 17,
+                              ),
+                              label: const Text(
+                                "Like",
+                              ),
+                              onPressed: onClickLike,
                             ),
-                            label: const Text(
-                              "Like",
+                            ElevatedButton.icon(
+                              icon: const FaIcon(
+                                FontAwesomeIcons.shareNodes,
+                                size: 17,
+                              ),
+                              label: const Text("Share"),
+                              onPressed: onClickShare,
                             ),
-                            onPressed: () {},
-                          ),
-                          ElevatedButton.icon(
-                            icon: const FaIcon(
-                              FontAwesomeIcons.shareNodes,
-                              size: 17,
+                            ElevatedButton.icon(
+                              icon: const FaIcon(
+                                FontAwesomeIcons.reply,
+                                size: 17,
+                              ),
+                              label: const Text("Reply"),
+                              onPressed: onClickReply,
                             ),
-                            label: const Text("Share"),
-                            onPressed: () {},
-                          ),
-                          ElevatedButton.icon(
-                            icon: const FaIcon(
-                              FontAwesomeIcons.reply,
-                              size: 17,
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        SizedBox(
+                          height: 27,
+                          child: Center(
+                            child: Container(
+                              width: 50,
+                              height: 1,
+                              color: isDarkMode
+                                  ? AppThemeColors.secondaryColor[700]!
+                                  : AppThemeColors.secondaryColor[150]!,
                             ),
-                            label: const Text("Reply"),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      SizedBox(
-                        height: 27,
-                        child: Center(
-                          child: Container(
-                            width: 50,
-                            height: 1,
-                            color: isDarkMode
-                                ? AppThemeColors.secondaryColor[700]!
-                                : AppThemeColors.secondaryColor[150]!,
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      if (comments != null && comments.content.isNotEmpty) ...[
-                        if (comments.content.length > 1) ...[
-                          _buildArticleCommentItem(
-                            isDarkMode,
-                            post: item,
-                            item: comments.content[0],
-                            index: 0,
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        if (comments != null &&
+                            comments.content.isNotEmpty) ...[
+                          if (comments.content.length > 1) ...[
+                            _buildArticleCommentItem(
+                              isDarkMode,
+                              post: item,
+                              item: comments.content[0],
+                              index: 0,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                          if (comments.content.length >= 2) ...[
+                            _buildArticleCommentItem(
+                              isDarkMode,
+                              post: item,
+                              item: comments.content[1],
+                              index: 1,
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                          if (comments.content.length >= 3) ...[
+                            _createMenuItem(
+                              isDarkMode,
+                              icon: FontAwesomeIcons.solidCommentDots,
+                              text: "View more comments",
+                              onTap: () {
+                                context.pushNamed(
+                                  "articleComment",
+                                  pathParameters: {'id': item.id.toString()},
+                                );
+                              },
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                          ],
                         ],
-                        if (comments.content.length >= 2) ...[
-                          _buildArticleCommentItem(
-                            isDarkMode,
-                            post: item,
-                            item: comments.content[1],
-                            index: 1,
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                        ],
-                        if (comments.content.length >= 3) ...[
-                          _createMenuItem(
-                            isDarkMode,
-                            icon: FontAwesomeIcons.solidCommentDots,
-                            text: "View more comments",
-                            onTap: () {
-                              context.pushNamed(
-                                "articleComment",
-                                pathParameters: {'id': item.id.toString()},
-                              );
-                            },
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                        ],
+                        const SizedBox(
+                          height: 90,
+                        ),
                       ],
-                      const SizedBox(
-                        height: 90,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 Positioned(
@@ -325,6 +364,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                         Expanded(
                           child: TextField(
                             controller: _controller,
+                            focusNode: _focusNode,
                             minLines: 1,
                             maxLines: 5,
                             decoration: InputDecoration(
@@ -340,26 +380,28 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: onClickSend,
                                       icon: const FaIcon(
                                         FontAwesomeIcons.solidPaperPlane,
                                         size: 19,
                                       ),
                                     ),
-                                    IconButton(
-                                      onPressed: () {
-                                        context.pushNamed(
-                                          "articleComment",
-                                          pathParameters: {
-                                            'id': item.id.toString()
-                                          },
-                                        );
-                                      },
-                                      icon: const FaIcon(
-                                        FontAwesomeIcons.solidCommentDots,
-                                        size: 19,
+                                    if (comments != null &&
+                                        comments.content.isNotEmpty)
+                                      IconButton(
+                                        onPressed: () {
+                                          context.pushNamed(
+                                            "articleComment",
+                                            pathParameters: {
+                                              'id': item.id.toString()
+                                            },
+                                          );
+                                        },
+                                        icon: const FaIcon(
+                                          FontAwesomeIcons.solidCommentDots,
+                                          size: 19,
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 )),
                           ),

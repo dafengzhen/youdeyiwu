@@ -156,7 +156,11 @@ class _UserContentsPageState extends State<UserContentsPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(11),
         ),
-        onTap: () {},
+        onTap: () {
+          context.pushNamed("userViewArticles", queryParameters: {
+            'sectionId': item.id.toString(),
+          });
+        },
         title: Text(
           name,
           style: TextStyle(

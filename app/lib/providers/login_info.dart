@@ -9,13 +9,19 @@ class LoginInfo extends ChangeNotifier {
 
   bool get isLoggedIn => _id != null;
 
+  int? get loginId => _id;
+
   void setUser(User? user) {
-    if ((_id == null && user == null) ||
-        (_id != null && user != null && _id == user.id)) {
+    setUserId(user?.id);
+  }
+
+  void setUserId(int? userId) {
+    if ((_id == null && userId == null) ||
+        (_id != null && userId != null && _id == userId)) {
       return;
     }
 
-    _id = user?.id;
+    _id = userId;
     notifyListeners();
   }
 }

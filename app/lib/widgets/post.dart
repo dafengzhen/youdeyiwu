@@ -43,10 +43,13 @@ Widget buildArticleCard(
 
   void onClickUsername() {
     if (userId != null) {
-      context
-          .pushNamed("userDetails", pathParameters: {'id': userId.toString()});
+      context.pushNamed("userDetails", pathParameters: {
+        'id': userId.toString(),
+      });
     }
   }
+
+  void onClickLike() {}
 
   return Container(
     padding: EdgeInsets.only(
@@ -111,7 +114,7 @@ Widget buildArticleCard(
               Expanded(
                 child: Center(
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: onClickLike,
                     icon: FaIcon(
                       isLike
                           ? FontAwesomeIcons.solidThumbsUp
@@ -161,7 +164,7 @@ Widget buildArticleCard(
                 Expanded(
                   child: Center(
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: onClickLike,
                       icon: FaIcon(
                         isLike
                             ? FontAwesomeIcons.solidThumbsUp
@@ -226,7 +229,7 @@ Widget buildArticleCard(
                 child: Column(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: onClickName,
                       icon: FaIcon(
                         FontAwesomeIcons.comment,
                         size: 20,

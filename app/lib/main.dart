@@ -27,6 +27,7 @@ import 'pages/user_contents_page.dart';
 import 'pages/user_page.dart';
 import 'pages/user_statistics_page.dart';
 import 'pages/user_tags_page.dart';
+import 'pages/user_view_articles_page.dart';
 import 'providers/app_theme_mode.dart';
 import 'providers/login_info.dart';
 import 'utils/api_client.dart';
@@ -141,6 +142,7 @@ class _MyAppState extends State<MyApp> {
                   GoRoute(
                     path: 'articles',
                     name: 'userArticles',
+                    parentNavigatorKey: rootNavigatorKey,
                     builder: (BuildContext context, GoRouterState state) =>
                         UserArticlesPage(id: state.uri.queryParameters['id']!),
                     routes: const <RouteBase>[],
@@ -148,6 +150,7 @@ class _MyAppState extends State<MyApp> {
                   GoRoute(
                     path: 'contents',
                     name: 'userContents',
+                    parentNavigatorKey: rootNavigatorKey,
                     builder: (BuildContext context, GoRouterState state) =>
                         UserContentsPage(id: state.uri.queryParameters['id']!),
                     routes: const <RouteBase>[],
@@ -155,6 +158,7 @@ class _MyAppState extends State<MyApp> {
                   GoRoute(
                     path: 'tags',
                     name: 'userTags',
+                    parentNavigatorKey: rootNavigatorKey,
                     builder: (BuildContext context, GoRouterState state) =>
                         UserTagsPage(id: state.uri.queryParameters['id']!),
                     routes: const <RouteBase>[],
@@ -162,6 +166,7 @@ class _MyAppState extends State<MyApp> {
                   GoRoute(
                     path: 'statistics',
                     name: 'userStatistics',
+                    parentNavigatorKey: rootNavigatorKey,
                     builder: (BuildContext context, GoRouterState state) =>
                         UserStatisticsPage(
                             id: state.uri.queryParameters['id']!),
@@ -178,6 +183,16 @@ class _MyAppState extends State<MyApp> {
         name: 'userDetails',
         builder: (BuildContext context, GoRouterState state) =>
             UserPage(id: state.pathParameters['id']!),
+        routes: const <RouteBase>[],
+      ),
+      GoRoute(
+        path: '/user/view/articles',
+        name: 'userViewArticles',
+        builder: (BuildContext context, GoRouterState state) =>
+            UserViewArticlesPage(
+          sectionId: state.uri.queryParameters['sectionId'],
+          tagId: state.uri.queryParameters['tagId'],
+        ),
         routes: const <RouteBase>[],
       ),
       GoRoute(
@@ -231,16 +246,25 @@ class _MyAppState extends State<MyApp> {
     _fetchLoginInfo();
   }
 
-  void _fetchLoginInfo() {
-    context.read<UserApi>().loginInfo().then((value) {
-      context.read<LoginInfo>().setUser(value);
-    }).catchError((e) {
-      showSystemPromptBottomSheet(
-        context.read<AppThemeMode>().isDarkMode,
-        context,
-        exception: e,
-      );
-    });
+  void _fetchLoginInfo() async {
+    try {
+      var userApi = context.read<UserApi>();
+      var loginInfo = context.read<LoginInfo>();
+      var value = await userApi.loginInfo();
+      loginInfo.setUser(value);
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    }
+  }
+
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
+    );
   }
 
   @override
@@ -299,11 +323,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
                 size: 20,
               ),
               onPressed: () {
-                context.push('/signIn');
-                // context.pushNamed(
-                //   "articleEdit",
-                //   pathParameters: {'id': "4"},
-                // );
+                context.pushNamed("articleEdit");
               },
             ),
           ),

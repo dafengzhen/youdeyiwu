@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../apis/user_api.dart';
 import '../dtos/login_dto.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
@@ -252,6 +253,7 @@ class _SignInPageState extends State<SignInPage> {
                           'Registration successful, welcome, $username';
                     }
 
+                    context.read<LoginInfo>().setUserId(value.id);
                     onPressed() {
                       navigateIfMounted(context, "home");
                     }

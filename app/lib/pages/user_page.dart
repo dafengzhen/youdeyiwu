@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../apis/user_api.dart';
 import '../configs/configs.dart';
@@ -14,8 +15,9 @@ import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
 import '../utils/tools.dart';
+import '../widgets/common.dart';
 
-enum MenuLabel { articles, contents, tags, statistics, logout }
+enum MenuLabel { articles, contents, tags, statistics, logout, login }
 
 const Map<MenuLabel, String> menuLabelToRoute = {
   MenuLabel.articles: "userArticles",
@@ -41,6 +43,27 @@ class _UserPageState extends State<UserPage> {
   @override
   void initState() {
     super.initState();
+    _loadData();
+    _setupLoginInfoListener();
+  }
+
+  @override
+  void dispose() {
+    _removeLoginInfoListener();
+    super.dispose();
+  }
+
+  void _setupLoginInfoListener() {
+    var loginInfo = context.read<LoginInfo>();
+    loginInfo.addListener(_handleInitStateChange);
+  }
+
+  void _removeLoginInfoListener() {
+    var loginInfo = context.read<LoginInfo>();
+    loginInfo.removeListener(_handleInitStateChange);
+  }
+
+  void _handleInitStateChange() {
     _loadData();
   }
 
@@ -108,7 +131,31 @@ class _UserPageState extends State<UserPage> {
     final relatedStatistics =
         _user?.relatedStatistics ?? RelatedStatistics.empty();
 
-    void onClickLogout() {}
+    void onClickLogout() async {
+      var sharedPreferences = context.read<SharedPreferences>();
+      var loginInfo = context.read<LoginInfo>();
+      var value = await removeToken(sharedPreferences);
+
+      if (value) {
+        loginInfo.setUser(null);
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            description: "Logout Successful",
+          );
+        }
+      } else {
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            promptType: PromptType.failure,
+            description: "Logout Failure",
+          );
+        }
+      }
+    }
 
     void onClickMenuItem(MenuLabel label) {
       if (userId != null) {
@@ -122,11 +169,22 @@ class _UserPageState extends State<UserPage> {
           );
         }
       } else {
-        showSystemPromptBottomSheet(
-          isDarkMode,
-          context,
-          description: "User does not exist",
-        );
+        if (label == MenuLabel.login) {
+          context.pushNamed('signIn');
+        } else {
+          String description;
+          if (!isLoggedIn) {
+            description = "You are not logged in, please log in first";
+          } else {
+            description = "User does not exist";
+          }
+
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            description: description,
+          );
+        }
       }
     }
 
@@ -177,42 +235,37 @@ class _UserPageState extends State<UserPage> {
                   floating: true,
                 ),
                 const SliverToBoxAdapter(child: SizedBox(height: 15)),
-                if (_isLoadingInit) _buildLoadingIndicator(),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      _buildUserInfoSection(
-                        isDarkMode,
-                        avatar,
-                        username,
-                        userId,
-                        oneSentence,
+                _isLoadingInit
+                    ? SliverFillRemaining(
+                        child: buildCenteredLoadingIndicator())
+                    : SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            _buildUserInfoSection(
+                              isDarkMode,
+                              avatar,
+                              username,
+                              userId,
+                              oneSentence,
+                            ),
+                            const SizedBox(height: 27),
+                            _buildStatisticsSection(
+                                isDarkMode, relatedStatistics),
+                            const SizedBox(height: 27),
+                            _buildMenuSection(
+                              isDarkMode,
+                              isLoggedIn,
+                              onClickMenuItem,
+                            ),
+                          ]),
+                        ),
                       ),
-                      const SizedBox(height: 27),
-                      _buildStatisticsSection(isDarkMode, relatedStatistics),
-                      const SizedBox(height: 27),
-                      _buildMenuSection(
-                        isDarkMode,
-                        onClickMenuItem,
-                      ),
-                    ]),
-                  ),
-                ),
                 const SliverToBoxAdapter(child: SizedBox(height: 35)),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return const SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 15),
-        child: Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -370,8 +423,11 @@ class _UserPageState extends State<UserPage> {
 
   Widget _buildMenuSection(
     bool isDarkMode,
+    bool isLoggedIn,
     Function(MenuLabel) onClickMenuItem,
   ) {
+    final id = widget.id;
+
     return Column(
       children: [
         _createMenuItem(
@@ -398,12 +454,20 @@ class _UserPageState extends State<UserPage> {
           text: "Statistics",
           onTap: () => onClickMenuItem(MenuLabel.statistics),
         ),
-        _createMenuItem(
-          isDarkMode,
-          icon: FontAwesomeIcons.rightFromBracket,
-          text: "Logout",
-          onTap: () => onClickMenuItem(MenuLabel.logout),
-        ),
+        if (id == null)
+          isLoggedIn
+              ? _createMenuItem(
+                  isDarkMode,
+                  icon: FontAwesomeIcons.rightFromBracket,
+                  text: "Logout",
+                  onTap: () => onClickMenuItem(MenuLabel.logout),
+                )
+              : _createMenuItem(
+                  isDarkMode,
+                  icon: FontAwesomeIcons.userLarge,
+                  text: "Login",
+                  onTap: () => onClickMenuItem(MenuLabel.login),
+                ),
       ],
     );
   }

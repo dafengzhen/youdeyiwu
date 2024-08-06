@@ -1,18 +1,22 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_quill_extensions/models/config/shared_configurations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../apis/post_api.dart';
+import '../apis/section_api.dart';
+import '../enums/load_data_type_enum.dart';
+import '../models/post.dart';
+import '../models/section.dart';
+import '../models/tag.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
-import '../utils/my_quill_editor.dart';
-import '../utils/my_quill_toolbar.dart';
+import '../utils/bottom_sheet_utils.dart';
+import '../widgets/common.dart';
 
 class ArticleEditPage extends StatefulWidget {
   final String? id;
@@ -25,31 +29,104 @@ class ArticleEditPage extends StatefulWidget {
 
 class _ArticleEditPageState extends State<ArticleEditPage> {
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _overviewController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
   final List<XFile> _images = [];
 
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _images.addAll(pickedFiles);
-      });
-    }
-  }
+  List<Section> _sections = [];
+  Post? _post;
+  bool _isLoadingInit = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _loadData();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
+    _overviewController.dispose();
     _contentController.dispose();
     _tagsController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadData({
+    LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
+  }) async {
+    setState(() {
+      _isLoading = true;
+      if (type == LoadDataTypeEnum.initialize) {
+        _isLoadingInit = true;
+      }
+    });
+
+    try {
+      var id = widget.id;
+      var postApi = context.read<PostApi>();
+      var sectionApi = context.read<SectionApi>();
+
+      Post? post;
+      if (id != null) {
+        post = await postApi.queryDetails(id);
+      }
+
+      var sections = await sectionApi.querySections();
+      setState(() {
+        if (post != null) {
+          _post = post;
+        }
+
+        _sections = sections;
+      });
+    } catch (e) {
+      if (mounted) {
+        _showErrorPrompt(e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+        if (type == LoadDataTypeEnum.initialize) {
+          _isLoadingInit = false;
+        }
+      });
+    }
+  }
+
+  void _showErrorPrompt(dynamic e) {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      exception: e,
+    );
+  }
+
+  Future<void> _pickImage() async {
+    showSystemPromptBottomSheet(
+      context.read<AppThemeMode>().isDarkMode,
+      context,
+      promptType: PromptType.info,
+      description:
+          "This feature is pending implementation (the current plan is to first complete a browsable app version, rather than focusing on a management-oriented app version).",
+    );
+
+    return;
+
+    try {
+      final ImagePicker picker = ImagePicker();
+      final List<XFile> pickedFiles = await picker.pickMultiImage();
+      setState(() {
+        _images.addAll(pickedFiles);
+      });
+    } catch (e) {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to pick images: $e')),
+      );
+    }
   }
 
   @override
@@ -59,6 +136,26 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     final Color barBackgroundColor = isDarkMode
         ? AppThemeData.darkTheme.colorScheme.surfaceContainer
         : AppThemeData.lightTheme.colorScheme.surfaceContainer;
+    final bool isLoggedIn =
+        context.select((LoginInfo value) => value.isLoggedIn);
+
+    final Post? item = _post;
+
+    int? id;
+    String? name;
+    String? overview;
+    String? plainTextContent;
+    Set<Tag> tags = {};
+
+    if (item != null) {
+      id = item.id;
+      name = item.name;
+      plainTextContent = item.plainTextContent;
+      overview = item.overview;
+      tags = item.tags ?? {};
+    }
+
+    void onClickPublish() {}
 
     return Scaffold(
       backgroundColor:
@@ -71,9 +168,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
             FontAwesomeIcons.arrowLeft,
             size: 20,
           ),
-          onPressed: () {
-            context.pop();
-          },
+          onPressed: () => context.pop(),
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -94,194 +189,234 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
         ),
         label: const Text(
           "Publish",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        onPressed: () {},
+        onPressed: onClickPublish,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-        ),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            TextField(
-              controller: _titleController,
-              minLines: 1,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 11,
-                ),
+      body: _isLoadingInit
+          ? buildCenteredLoadingIndicator()
+          : SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                children: [
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    _titleController,
+                    'Name',
+                    1,
+                    3,
+                    initialValue: name,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    _overviewController,
+                    'Overview (Optional)',
+                    1,
+                    3,
+                    initialValue: overview,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    _contentController,
+                    'Plain text content (Optional)',
+                    7,
+                    9,
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const FaIcon(
+                            FontAwesomeIcons.circleInfo,
+                            size: 17,
+                          ),
+                          onPressed: () {
+                            showSystemPromptBottomSheet(isDarkMode, context,
+                                description:
+                                    "There are significant differences between the mobile and web versions. Therefore, if you need to modify HTML rich text content, please update it on the web version. You can understand it as the app and web versions storing different editor content separately, which will not be overwritten.");
+                          },
+                        ),
+                        IconButton(
+                          icon: const FaIcon(
+                            FontAwesomeIcons.solidPenToSquare,
+                            size: 17,
+                          ),
+                          onPressed: () {
+                            if (id == null) {
+                              context.pushNamed("articleEditor");
+                            } else {
+                              context
+                                  .pushNamed("articleEditor", queryParameters: {
+                                'id': id.toString(),
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    initialValue: plainTextContent,
+                  ),
+                  const SizedBox(height: 15),
+                  _buildTextField(
+                    _tagsController,
+                    'Tags (separated by commas)',
+                    1,
+                    3,
+                    initialValue: tags.map(
+                      (e) {
+                        return e.name;
+                      },
+                    ).join(', '),
+                  ),
+                  const SizedBox(height: 15),
+                  if (_sections.isNotEmpty) ...[
+                    _buildDropdownMenu(),
+                    const SizedBox(height: 15),
+                  ],
+                  _buildImageUploadSection(isDarkMode),
+                  const SizedBox(height: 75),
+                ],
               ),
             ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _contentController,
-              minLines: 7,
-              maxLines: 9,
-              decoration: InputDecoration(
-                hintText: 'Content',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(11),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hintText,
+    int minLines,
+    int maxLines, {
+    Widget? suffixIcon,
+    String? initialValue,
+  }) {
+    if (initialValue != null && initialValue.isNotEmpty) {
+      controller.text = initialValue;
+    }
+
+    return TextField(
+      controller: controller,
+      minLines: minLines,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
+        suffixIcon: suffixIcon,
+      ),
+    );
+  }
+
+  Widget _buildDropdownMenu() {
+    return SizedBox(
+      height: 50,
+      child: DropdownMenu(
+        onSelected: (value) => FocusManager.instance.primaryFocus?.unfocus(),
+        dropdownMenuEntries: _sections.map(
+          (item) {
+            return DropdownMenuEntry(value: item.id, label: item.name);
+          },
+        ).toList(),
+        hintText: "Please select content",
+        enableFilter: true,
+        enableSearch: true,
+        requestFocusOnTap: true,
+        menuHeight: 330,
+        expandedInsets: const EdgeInsets.all(0),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageUploadSection(bool isDarkMode) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Upload images',
+              style: TextStyle(
+                color: isDarkMode
+                    ? AppThemeColors.baseColorDark
+                    : AppThemeColors.baseColorLight,
+              ),
+            ),
+            TextButton.icon(
+              onPressed: _pickImage,
+              label: Text(
+                "Upload",
+                style: TextStyle(
+                  color: isDarkMode
+                      ? AppThemeColors.baseColorDark
+                      : AppThemeColors.baseColorLight,
+                  fontWeight: FontWeight.bold,
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 11,
-                ),
-                suffixIcon: IconButton(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.solidPenToSquare,
-                    size: 17,
+              ),
+              icon: FaIcon(
+                FontAwesomeIcons.upload,
+                size: 17,
+                color: isDarkMode
+                    ? AppThemeColors.baseColorDark
+                    : AppThemeColors.baseColorLight,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 15),
+        _images.isNotEmpty
+            ? SizedBox(
+                height: 190,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 9,
+                    mainAxisSpacing: 9,
                   ),
-                  onPressed: () {
-                    context.pushNamed(
-                      "articleEditor",
-                      pathParameters: {'id': "4"},
+                  itemCount: _images.length,
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(11),
+                          child: Image.file(
+                            File(_images[index].path),
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _images.removeAt(index);
+                              });
+                            },
+                            child: FaIcon(
+                              FontAwesomeIcons.solidCircleXmark,
+                              size: 21,
+                              color: isDarkMode
+                                  ? AppThemeColors.baseBgDangerColorDark
+                                  : AppThemeColors.baseBgDangerColorLight,
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _tagsController,
-              minLines: 1,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Tags (separated by commas)',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 11,
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            SizedBox(
-              height: 50,
-              child: DropdownMenu(
-                onSelected: (value) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                dropdownMenuEntries: const [
-                  DropdownMenuEntry(value: Colors.red, label: "Red"),
-                  DropdownMenuEntry(value: Colors.blue, label: "Blue"),
-                  DropdownMenuEntry(value: Colors.grey, label: "Grey"),
-                  DropdownMenuEntry(value: Colors.green, label: "Green"),
-                ],
-                hintText: "Please select content",
-                enableFilter: true,
-                enableSearch: true,
-                requestFocusOnTap: true,
-                menuHeight: 330,
-                expandedInsets: const EdgeInsets.all(0),
-                inputDecorationTheme: InputDecorationTheme(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Upload images',
-                  style: TextStyle(
-                    color: isDarkMode
-                        ? AppThemeColors.baseColorDark
-                        : AppThemeColors.baseColorLight,
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: _pickImage,
-                  label: Text(
-                    "Upload",
-                    style: TextStyle(
-                      color: isDarkMode
-                          ? AppThemeColors.baseColorDark
-                          : AppThemeColors.baseColorLight,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  icon: FaIcon(
-                    FontAwesomeIcons.upload,
-                    size: 17,
-                    color: isDarkMode
-                        ? AppThemeColors.baseColorDark
-                        : AppThemeColors.baseColorLight,
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 15),
-            _images.isNotEmpty
-                ? SizedBox(
-                    height: 190,
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 9,
-                        mainAxisSpacing: 9,
-                      ),
-                      itemCount: _images.length,
-                      itemBuilder: (context, index) {
-                        return Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(11),
-                              child: Image.file(
-                                File(_images[index].path),
-                                width: double.infinity,
-                                height: double.infinity,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _images.removeAt(index);
-                                  });
-                                },
-                                child: FaIcon(
-                                  FontAwesomeIcons.solidCircleXmark,
-                                  size: 21,
-                                  color: isDarkMode
-                                      ? AppThemeColors.baseBgDangerColorDark
-                                      : AppThemeColors.baseBgDangerColorLight,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  )
-                : const SizedBox(
-                    height: 190,
-                  ),
-            const SizedBox(height: 75),
-          ],
-        ),
-      ),
+              )
+            : const SizedBox(height: 190),
+      ],
     );
   }
 }

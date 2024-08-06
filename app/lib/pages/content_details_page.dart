@@ -382,7 +382,14 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
                           children: [
                             ..._buildAdmins(isDarkMode, admins: admins),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showSystemPromptBottomSheet(
+                                  isDarkMode,
+                                  context,
+                                  description:
+                                      "The current row displays the administrator of the current section.",
+                                );
+                              },
                               icon: FaIcon(
                                 FontAwesomeIcons.circleInfo,
                                 size: 13,
@@ -582,7 +589,11 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
       var username = getUsernameOrAnonymous(admin.username);
 
       list.add(TextButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed("userDetails", pathParameters: {
+            'id': admin.id.toString(),
+          });
+        },
         style: OutlinedButton.styleFrom(
           side: BorderSide(
             color: isDarkMode

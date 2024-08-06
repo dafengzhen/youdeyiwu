@@ -40,6 +40,15 @@ class Post extends Base {
   /// content
   final String? content;
 
+  /// plainTextContent
+  final String? plainTextContent;
+
+  /// markdownContent
+  final String? markdownContent;
+
+  /// deltaContent
+  final String? deltaContent;
+
   /// content link
   final String? contentLink;
 
@@ -146,6 +155,9 @@ class Post extends Base {
     this.coverImageType,
     this.overview,
     this.content,
+    this.plainTextContent,
+    this.markdownContent,
+    this.deltaContent,
     this.contentLink,
     this.accessKey,
     this.styles,

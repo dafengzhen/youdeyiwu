@@ -1,12 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../apis/post_api.dart';
-import '../configs/configs.dart';
 import '../dtos/query_parameters_dto.dart';
 import '../enums/load_data_type_enum.dart';
 import '../models/pageable.dart';
@@ -19,14 +16,18 @@ import '../utils/bottom_sheet_utils.dart';
 import '../widgets/common.dart';
 import '../widgets/post.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class UserViewArticlesPage extends StatefulWidget {
+  final String? sectionId;
+
+  final String? tagId;
+
+  const UserViewArticlesPage({this.sectionId, this.tagId, super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<UserViewArticlesPage> createState() => _UserViewArticlesPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _UserViewArticlesPageState extends State<UserViewArticlesPage> {
   final ScrollController _scrollController = ScrollController();
 
   List<Post> _list = [];
@@ -40,29 +41,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadData();
-    _setupLoginInfoListener();
     _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
-    _removeLoginInfoListener();
     super.dispose();
-  }
-
-  void _setupLoginInfoListener() {
-    var loginInfo = context.read<LoginInfo>();
-    loginInfo.addListener(_handleInitStateChange);
-  }
-
-  void _removeLoginInfoListener() {
-    var loginInfo = context.read<LoginInfo>();
-    loginInfo.removeListener(_handleInitStateChange);
-  }
-
-  void _handleInitStateChange() {
-    _loadData();
   }
 
   Future<void> _refresh() async {
@@ -77,6 +62,13 @@ class _HomePageState extends State<HomePage> {
     LoadDataTypeEnum type = LoadDataTypeEnum.initialize,
     QueryParametersDto? dto,
   }) async {
+    var sectionId = widget.sectionId;
+    var tagId = widget.tagId;
+
+    if (sectionId == null && tagId == null) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       if (type == LoadDataTypeEnum.initialize) {
@@ -87,7 +79,10 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
-      Map<String, String> parameters = {};
+      Map<String, String> parameters = {
+        "sectionId": sectionId ?? '',
+        "tagId": tagId ?? ''
+      };
       if (type == LoadDataTypeEnum.loadMore && _pageable?.next == true) {
         parameters['page'] =
             min(_pageable!.page + 1, _pageable!.pages).toString();
@@ -152,45 +147,46 @@ class _HomePageState extends State<HomePage> {
     final bool isLoggedIn =
         context.select((LoginInfo value) => value.isLoggedIn);
 
-    return Stack(
-      children: [
-        Container(
-          color: barBackgroundColor,
-          child: Container(
-            padding: const EdgeInsets.all(15),
-            margin: const EdgeInsets.symmetric(horizontal: 3),
-            decoration: BoxDecoration(
-              color: isDarkMode
-                  ? AppThemeColors.baseBgDark
-                  : AppThemeColors.baseBgLight,
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(17),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            color: barBackgroundColor,
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              decoration: BoxDecoration(
+                color: isDarkMode
+                    ? AppThemeColors.baseBgDark
+                    : AppThemeColors.baseBgLight,
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(17),
+                ),
               ),
             ),
           ),
-        ),
-        RefreshIndicator(
-          onRefresh: _refresh,
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              _buildSliverAppBar(isDarkMode, barBackgroundColor, isLoggedIn),
-              _buildNewArticleTip(isDarkMode),
-              if (_isLoadingInit)
-                SliverFillRemaining(child: buildCenteredLoadingIndicator()),
-              _buildList(isDarkMode),
-              if (_isLoadingMore) _buildLoadingIndicator(),
-              if (_list.isNotEmpty && !_hasMore)
-                _buildNoMoreDataMessage(isDarkMode),
-              if (!_isLoadingInit && _list.isEmpty)
-                SliverFillRemaining(
-                  child: buildCenteredNoMoreDataMessage(isDarkMode),
-                ),
-              const SliverToBoxAdapter(child: SizedBox(height: 35)),
-            ],
+          RefreshIndicator(
+            onRefresh: _refresh,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                _buildSliverAppBar(isDarkMode, barBackgroundColor, isLoggedIn),
+                if (_isLoadingInit)
+                  SliverFillRemaining(child: buildCenteredLoadingIndicator()),
+                _buildList(isDarkMode),
+                if (_isLoadingMore) _buildLoadingIndicator(),
+                if (_list.isNotEmpty && !_hasMore)
+                  _buildNoMoreDataMessage(isDarkMode),
+                if (!_isLoadingInit && _list.isEmpty)
+                  SliverFillRemaining(
+                    child: buildCenteredNoMoreDataMessage(isDarkMode),
+                  ),
+                const SliverToBoxAdapter(child: SizedBox(height: 35)),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -203,16 +199,8 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: barBackgroundColor,
       surfaceTintColor: barBackgroundColor,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text(
-            isLoggedIn ? "Welcome" : appTitle,
-            style: TextStyle(
-              color: isDarkMode
-                  ? AppThemeColors.baseColorDark
-                  : AppThemeColors.baseColorLight,
-            ),
-          ),
           Switch(
             value: isDarkMode,
             onChanged: (bool value) {
@@ -222,49 +210,6 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floating: true,
-    );
-  }
-
-  Widget _buildNewArticleTip(bool isDarkMode) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 15,
-        ),
-        child: Container(
-          height: 60,
-          padding: const EdgeInsets.only(left: 12, right: 0),
-          decoration: BoxDecoration(
-            color: isDarkMode
-                ? AppThemeColors.tertiaryBgDark
-                : AppThemeColors.tertiaryBgLight,
-            borderRadius: BorderRadius.circular(17),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Create a new article.",
-                style: TextStyle(
-                  color: isDarkMode
-                      ? AppThemeColors.secondaryColorDark
-                      : AppThemeColors.secondaryColorLight,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  context.pushNamed("articleEdit");
-                },
-                icon: const FaIcon(
-                  FontAwesomeIcons.solidSquarePlus,
-                  color: AppThemeColors.info,
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
     );
   }
 
