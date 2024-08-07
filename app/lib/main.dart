@@ -8,8 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'apis/comment_api.dart';
 import 'apis/message_api.dart';
 import 'apis/post_api.dart';
+import 'apis/reply_api.dart';
 import 'apis/section_api.dart';
 import 'apis/user_api.dart';
 import 'configs/configs.dart';
@@ -29,6 +31,7 @@ import 'pages/user_statistics_page.dart';
 import 'pages/user_tags_page.dart';
 import 'pages/user_view_articles_page.dart';
 import 'providers/app_theme_mode.dart';
+import 'providers/article_editor.dart';
 import 'providers/login_info.dart';
 import 'utils/api_client.dart';
 import 'utils/app_theme_data.dart';
@@ -54,6 +57,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider<AppThemeMode>(create: (_) => AppThemeMode()),
         ChangeNotifierProvider<LoginInfo>(create: (_) => LoginInfo()),
+        ChangeNotifierProvider<ArticleEditor>(create: (_) => ArticleEditor()),
         Provider<SharedPreferences>(create: (_) => sharedPreferences),
         Provider<ApiClient>(create: (_) => apiClient),
         Provider<UserApi>(
@@ -62,15 +66,11 @@ void main() async {
             sharedPreferences: sharedPreferences,
           ),
         ),
-        Provider<PostApi>(
-          create: (_) => PostApi(apiClient: apiClient),
-        ),
-        Provider<SectionApi>(
-          create: (_) => SectionApi(apiClient: apiClient),
-        ),
-        Provider<MessageApi>(
-          create: (_) => MessageApi(apiClient: apiClient),
-        ),
+        Provider<PostApi>(create: (_) => PostApi(apiClient: apiClient)),
+        Provider<SectionApi>(create: (_) => SectionApi(apiClient: apiClient)),
+        Provider<MessageApi>(create: (_) => MessageApi(apiClient: apiClient)),
+        Provider<CommentApi>(create: (_) => CommentApi(apiClient: apiClient)),
+        Provider<ReplyApi>(create: (_) => ReplyApi(apiClient: apiClient)),
       ],
       child: const MyApp(),
     ),

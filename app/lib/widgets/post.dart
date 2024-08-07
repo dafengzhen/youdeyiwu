@@ -1,10 +1,16 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:youdeyiwu_app/providers/login_info.dart';
 
+import '../apis/post_api.dart';
 import '../models/post.dart';
 import '../utils/app_theme_colors.dart';
+import '../utils/bottom_sheet_utils.dart';
 import '../utils/tools.dart';
 
 /// buildArticleCard
@@ -12,9 +18,13 @@ Widget buildArticleCard(
   bool isDarkMode,
   BuildContext context, {
   required Post item,
+  void Function(void Function(int index, List<Post> list) updateData)? reload,
 }) {
   final baseColor =
       isDarkMode ? AppThemeColors.baseColorDark : AppThemeColors.baseColorLight;
+  final highlightedBaseColor = isDarkMode
+      ? AppThemeColors.infoColor[300]
+      : AppThemeColors.infoColor[500];
   final secondaryColor = isDarkMode
       ? AppThemeColors.secondaryColorDark
       : AppThemeColors.secondaryColorLight;
@@ -26,8 +36,8 @@ Widget buildArticleCard(
       : AppThemeColors.tertiaryBgLight;
 
   final id = item.id;
-  final isLike = item.liked ?? false;
-  final likesCount = formatCount(item.likesCount);
+  bool isLike = item.liked ?? false;
+  String likesCount = formatCount(item.likesCount);
   final commentsCount = formatCount(item.commentsCount);
   final createdOn =
       item.createdOn != null ? formatRelativeTime(item.createdOn) : null;
@@ -49,7 +59,61 @@ Widget buildArticleCard(
     }
   }
 
-  void onClickLike() {}
+  void showSuccessPrompt() {
+    showSystemPromptBottomSheet(
+      isDarkMode,
+      context,
+      promptType: PromptType.success,
+      description: "Awesome!",
+    );
+  }
+
+  void showErrorPrompt(Object e) {
+    showSystemPromptBottomSheet(
+      isDarkMode,
+      context,
+      exception: e,
+    );
+  }
+
+  void updateLikeStatus(int index, List list) {
+    list[index] = item.copyWith(
+      liked: !isLike,
+      likesCount: isLike ? max(item.likesCount - 1, 0) : item.likesCount + 1,
+    );
+  }
+
+  void onClickLike() async {
+    var loginInfo = context.read<LoginInfo>();
+    var isLoggedIn = loginInfo.isLoggedIn;
+
+    if (!isLoggedIn) {
+      showSystemPromptBottomSheet(
+        isDarkMode,
+        context,
+        promptType: PromptType.warning,
+        description: "Please log in to operate!",
+      );
+      return;
+    }
+
+    try {
+      var postApi = context.read<PostApi>();
+      await postApi.like(id.toString());
+
+      if (!isLike) {
+        showSuccessPrompt();
+      }
+
+      if (reload != null) {
+        reload((index, list) {
+          updateLikeStatus(index, list);
+        });
+      }
+    } catch (e) {
+      showErrorPrompt(e);
+    }
+  }
 
   return Container(
     padding: EdgeInsets.only(
@@ -120,7 +184,7 @@ Widget buildArticleCard(
                           ? FontAwesomeIcons.solidThumbsUp
                           : FontAwesomeIcons.thumbsUp,
                       size: 20,
-                      color: baseColor,
+                      color: isLike ? highlightedBaseColor : baseColor,
                     ),
                   ),
                 ),
@@ -136,15 +200,18 @@ Widget buildArticleCard(
                       padding: const EdgeInsets.symmetric(vertical: 9),
                       child: Center(
                         child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
+                          value: downloadProgress.progress,
+                        ),
                       ),
                     ),
                     errorWidget: (context, url, error) => Row(
                       children: [
                         Icon(Icons.error, color: dangerColor),
                         const SizedBox(width: 3),
-                        Text("Failed to load image",
-                            style: TextStyle(color: dangerColor)),
+                        Text(
+                          "Failed to load image",
+                          style: TextStyle(color: dangerColor),
+                        ),
                       ],
                     ),
                   ),
@@ -170,7 +237,7 @@ Widget buildArticleCard(
                             ? FontAwesomeIcons.solidThumbsUp
                             : FontAwesomeIcons.thumbsUp,
                         size: 20,
-                        color: baseColor,
+                        color: isLike ? highlightedBaseColor : baseColor,
                       ),
                     ),
                   ),

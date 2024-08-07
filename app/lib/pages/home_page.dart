@@ -285,7 +285,16 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
           ),
-          child: buildArticleCard(isDarkMode, context, item: _list[index]),
+          child: buildArticleCard(
+            isDarkMode,
+            context,
+            item: _list[index],
+            reload: (updateData) {
+              setState(() {
+                updateData(index, _list);
+              });
+            },
+          ),
         );
       },
       separatorBuilder: (context, index) => const SizedBox(height: 13),

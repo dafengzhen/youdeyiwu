@@ -1,14 +1,23 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:youdeyiwu_app/models/comment_reply.dart';
+import 'package:youdeyiwu_app/dtos/create_comment_dto.dart';
 
+import '../apis/comment_api.dart';
 import '../apis/post_api.dart';
+import '../apis/reply_api.dart';
 import '../enums/load_data_type_enum.dart';
+import '../models/comment.dart';
+import '../models/comment_reply.dart';
 import '../models/post.dart';
 import '../models/page.dart' as page_model;
+import '../models/quote_reply.dart';
 import '../models/tag.dart';
 import '../providers/app_theme_mode.dart';
 import '../providers/login_info.dart';
@@ -104,6 +113,9 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     final bool isLoggedIn =
         context.select((LoginInfo value) => value.isLoggedIn);
     final int? loginId = context.select((LoginInfo value) => value.loginId);
+    final highlightedBaseColor = isDarkMode
+        ? AppThemeColors.infoColor[300]
+        : AppThemeColors.infoColor[500];
 
     final item = _post;
     String? cover;
@@ -113,6 +125,8 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     page_model.Page<CommentReply>? comments;
     String? id;
     bool yourself = false;
+    bool isLike = false;
+    String? likesCount;
 
     if (item != null) {
       id = item.id.toString();
@@ -122,11 +136,73 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
       content = item.content;
       comments = item.comments;
       yourself = isLoggedIn && loginId == item.user?.id;
+      isLike = item.liked ?? false;
+      likesCount = formatCount(item.likesCount);
     }
 
-    void onClickLike() {}
+    void onClickLike() async {
+      if (!isLoggedIn) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          promptType: PromptType.warning,
+          description: "Please log in to operate!",
+        );
+        return;
+      }
 
-    void onClickShare() {}
+      try {
+        var postApi = context.read<PostApi>();
+        await postApi.like(id.toString());
+
+        setState(() {
+          _post = item!.copyWith(
+            liked: !isLike,
+            likesCount:
+                isLike ? max(item.likesCount - 1, 0) : item.likesCount + 1,
+          );
+
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            promptType: PromptType.success,
+            description: "Awesome!",
+          );
+        });
+      } catch (e) {
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            exception: e,
+          );
+        }
+      }
+    }
+
+    void onClickShare() async {
+      try {
+        var textToCopy = '[${item!.name}](/posts/$id)';
+        await Clipboard.setData(ClipboardData(text: textToCopy));
+
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            promptType: PromptType.success,
+            description: "Successfully copied to clipboard",
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            exception: e,
+          );
+        }
+      }
+    }
 
     void onClickReply() {
       if (_focusNode.hasFocus) {
@@ -136,7 +212,39 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
       }
     }
 
-    void onClickSend() {}
+    void onClickSend() async {
+      final text = _controller.text;
+      if (text.isEmpty) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          promptType: PromptType.warning,
+          description: "Reply content cannot be empty",
+        );
+        return;
+      }
+
+      try {
+        var commentApi = context.read<CommentApi>();
+        await commentApi.create(
+          CreateCommentDto(
+            content: text,
+            postId: id!,
+          ),
+        );
+
+        _controller.clear();
+        _loadData();
+      } catch (e) {
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            exception: e,
+          );
+        }
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -193,153 +301,168 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                     horizontal: 15,
                     vertical: 15,
                   ),
-                  child: GestureDetector(
-                    onTap: onClickReply,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildArticleHeader(isDarkMode, item: item),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildArticleHeader(isDarkMode, item: item),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      _buildArticleTitle(isDarkMode, item: item),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      if (cover != null) ...[
+                        _buildArticleImages(cover: cover),
                         const SizedBox(
                           height: 15,
-                        ),
-                        _buildArticleTitle(isDarkMode, item: item),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        if (cover != null) ...[
-                          _buildArticleImages(cover: cover),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                        ],
-                        if (tags.isNotEmpty) ...[
-                          _buildArticleTags(isDarkMode, item: item),
-                          const SizedBox(
-                            height: 19,
-                          ),
-                        ],
-                        if (declaration != null) ...[
-                          _buildArticleDeclaration(isDarkMode),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                        ],
-                        if (content != null && content.isNotEmpty) ...[
-                          _buildArticleContent(isDarkMode, content: content),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                        ],
-                        SizedBox(
-                          height: 27,
-                          child: Center(
-                            child: Container(
-                              width: 50,
-                              height: 1,
-                              color: isDarkMode
-                                  ? AppThemeColors.secondaryColor[700]!
-                                  : AppThemeColors.secondaryColor[150]!,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton.icon(
-                              icon: const FaIcon(
-                                FontAwesomeIcons.thumbsUp,
-                                size: 17,
-                              ),
-                              label: const Text(
-                                "Like",
-                              ),
-                              onPressed: onClickLike,
-                            ),
-                            ElevatedButton.icon(
-                              icon: const FaIcon(
-                                FontAwesomeIcons.shareNodes,
-                                size: 17,
-                              ),
-                              label: const Text("Share"),
-                              onPressed: onClickShare,
-                            ),
-                            ElevatedButton.icon(
-                              icon: const FaIcon(
-                                FontAwesomeIcons.reply,
-                                size: 17,
-                              ),
-                              label: const Text("Reply"),
-                              onPressed: onClickReply,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        SizedBox(
-                          height: 27,
-                          child: Center(
-                            child: Container(
-                              width: 50,
-                              height: 1,
-                              color: isDarkMode
-                                  ? AppThemeColors.secondaryColor[700]!
-                                  : AppThemeColors.secondaryColor[150]!,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        if (comments != null &&
-                            comments.content.isNotEmpty) ...[
-                          if (comments.content.length > 1) ...[
-                            _buildArticleCommentItem(
-                              isDarkMode,
-                              post: item,
-                              item: comments.content[0],
-                              index: 0,
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                          ],
-                          if (comments.content.length >= 2) ...[
-                            _buildArticleCommentItem(
-                              isDarkMode,
-                              post: item,
-                              item: comments.content[1],
-                              index: 1,
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                          ],
-                          if (comments.content.length >= 3) ...[
-                            _createMenuItem(
-                              isDarkMode,
-                              icon: FontAwesomeIcons.solidCommentDots,
-                              text: "View more comments",
-                              onTap: () {
-                                context.pushNamed(
-                                  "articleComment",
-                                  pathParameters: {'id': item.id.toString()},
-                                );
-                              },
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                          ],
-                        ],
-                        const SizedBox(
-                          height: 90,
                         ),
                       ],
-                    ),
+                      if (tags.isNotEmpty) ...[
+                        _buildArticleTags(isDarkMode, item: item),
+                        const SizedBox(
+                          height: 19,
+                        ),
+                      ],
+                      if (declaration != null) ...[
+                        _buildArticleDeclaration(isDarkMode),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                      ],
+                      if (content != null && content.isNotEmpty) ...[
+                        _buildArticleContent(isDarkMode, content: content),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                      SizedBox(
+                        height: 27,
+                        child: Center(
+                          child: Container(
+                            width: 50,
+                            height: 1,
+                            color: isDarkMode
+                                ? AppThemeColors.secondaryColor[700]!
+                                : AppThemeColors.secondaryColor[150]!,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Stack(
+                            children: [
+                              ElevatedButton.icon(
+                                icon: FaIcon(
+                                  isLike
+                                      ? FontAwesomeIcons.solidThumbsUp
+                                      : FontAwesomeIcons.thumbsUp,
+                                  size: 17,
+                                  color: isLike ? highlightedBaseColor : null,
+                                ),
+                                label: const Text(
+                                  "Like",
+                                ),
+                                onPressed: onClickLike,
+                              ),
+                              if (likesCount != '0')
+                                Positioned(
+                                  right: 0,
+                                  child: Text(
+                                    '$likesCount',
+                                    style: TextStyle(
+                                      color: isDarkMode
+                                          ? AppThemeColors.baseColorDark
+                                          : AppThemeColors.baseColorLight,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          ElevatedButton.icon(
+                            icon: const FaIcon(
+                              FontAwesomeIcons.shareNodes,
+                              size: 17,
+                            ),
+                            label: const Text("Share"),
+                            onPressed: onClickShare,
+                          ),
+                          ElevatedButton.icon(
+                            icon: const FaIcon(
+                              FontAwesomeIcons.reply,
+                              size: 17,
+                            ),
+                            label: const Text("Reply"),
+                            onPressed: onClickReply,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      SizedBox(
+                        height: 27,
+                        child: Center(
+                          child: Container(
+                            width: 50,
+                            height: 1,
+                            color: isDarkMode
+                                ? AppThemeColors.secondaryColor[700]!
+                                : AppThemeColors.secondaryColor[150]!,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      if (comments != null && comments.content.isNotEmpty) ...[
+                        if (comments.content.length > 1) ...[
+                          _buildArticleCommentItem(
+                            isDarkMode,
+                            post: item,
+                            item: comments.content[0],
+                            index: 0,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                        if (comments.content.length >= 2) ...[
+                          _buildArticleCommentItem(
+                            isDarkMode,
+                            post: item,
+                            item: comments.content[1],
+                            index: 1,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                        if (comments.content.length >= 3) ...[
+                          _createMenuItem(
+                            isDarkMode,
+                            icon: FontAwesomeIcons.solidCommentDots,
+                            text: "View more comments",
+                            onTap: () {
+                              context.pushNamed(
+                                "articleComment",
+                                pathParameters: {'id': item.id.toString()},
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                      ],
+                      const SizedBox(
+                        height: 90,
+                      ),
+                    ],
                   ),
                 ),
                 Positioned(
@@ -613,6 +736,9 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     required CommentReply item,
     required int index,
   }) {
+    final highlightedBaseColor = isDarkMode
+        ? AppThemeColors.infoColor[300]
+        : AppThemeColors.infoColor[500];
     final item0 = (item.comment ?? item.reply) as dynamic;
     final createdOn =
         item0.createdOn != null ? formatRelativeTime(item0.createdOn) : null;
@@ -621,6 +747,8 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
     final avatar = getAvatarOrDefault(item0.user?.avatar);
     final content = item0.content;
     final index0 = index + 1;
+    bool isLike = item0.liked ?? false;
+    String? likesCount = formatCount(item0.likesCount ?? 0);
 
     void onClickUsername() {
       if (userId != null) {
@@ -716,15 +844,103 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
           const SizedBox(height: 15),
           Row(
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: const FaIcon(
-                  FontAwesomeIcons.thumbsUp,
-                  size: 17,
-                ),
+              Stack(
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      var loginInfo = context.read<LoginInfo>();
+                      var isLoggedIn = loginInfo.isLoggedIn;
+
+                      if (!isLoggedIn) {
+                        showSystemPromptBottomSheet(
+                          isDarkMode,
+                          context,
+                          promptType: PromptType.warning,
+                          description: "Please log in to operate!",
+                        );
+                        return;
+                      }
+
+                      try {
+                        var commentApi = context.read<CommentApi>();
+                        var replyApi = context.read<ReplyApi>();
+                        var likesCount0 = item0.likesCount ?? 0;
+
+                        if (item.comment != null) {
+                          await commentApi.like(item0.id.toString());
+                        } else if (item.reply != null) {
+                          await replyApi.like(item0.id.toString());
+                        }
+
+                        setState(() {
+                          if (item.comment != null) {
+                            _post!.comments!.content[index] = item.copyWith(
+                                comment: item.comment!.copyWith(
+                              liked: !isLike,
+                              likesCount: isLike
+                                  ? max(likesCount0 - 1, 0)
+                                  : likesCount0 + 1,
+                            ));
+                          } else if (item.reply != null) {
+                            _post!.comments!.content[index] = item.copyWith(
+                                reply: item.reply!.copyWith(
+                              liked: !isLike,
+                              likesCount: isLike
+                                  ? max(likesCount0 - 1, 0)
+                                  : likesCount0 + 1,
+                            ));
+                          }
+                        });
+
+                        if (!isLike) {
+                          if (context.mounted) {
+                            showSystemPromptBottomSheet(
+                              isDarkMode,
+                              context,
+                              promptType: PromptType.success,
+                              description: "Awesome!",
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          showSystemPromptBottomSheet(
+                            isDarkMode,
+                            context,
+                            exception: e,
+                          );
+                        }
+                      }
+                    },
+                    icon: FaIcon(
+                      isLike
+                          ? FontAwesomeIcons.solidThumbsUp
+                          : FontAwesomeIcons.thumbsUp,
+                      size: 17,
+                      color: isLike ? highlightedBaseColor : null,
+                    ),
+                  ),
+                  if (likesCount != '0')
+                    Positioned(
+                      right: 0,
+                      child: Text(
+                        likesCount,
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? AppThemeColors.baseColorDark
+                              : AppThemeColors.baseColorLight,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.pushNamed(
+                    "articleComment",
+                    pathParameters: {'id': post.id.toString()},
+                  );
+                },
                 icon: const FaIcon(
                   FontAwesomeIcons.reply,
                   size: 17,

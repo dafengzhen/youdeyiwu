@@ -522,8 +522,14 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
                   bottom: 15,
                 ),
                 itemBuilder: (context, index) {
-                  return buildArticleCard(isDarkMode, context,
-                      item: value.list[index]);
+                  return buildArticleCard(
+                    isDarkMode,
+                    context,
+                    item: value.list[index],
+                    reload: (updateData) {
+                      updateData(index, value.list);
+                    },
+                  );
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(
@@ -561,6 +567,9 @@ class _ContentDetailsPageState extends State<ContentDetailsPage>
                     isDarkMode,
                     context,
                     item: item!.list[index],
+                    reload: (updateData) {
+                      updateData(index, item.list);
+                    },
                   );
                 },
                 separatorBuilder: (context, index) {

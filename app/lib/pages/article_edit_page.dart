@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -12,10 +13,12 @@ import '../models/post.dart';
 import '../models/section.dart';
 import '../models/tag.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/article_editor.dart';
 import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
+import '../utils/tools.dart';
 import '../widgets/common.dart';
 
 class ArticleEditPage extends StatefulWidget {
@@ -145,12 +148,14 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     String? name;
     String? overview;
     String? plainTextContent;
+    String? deltaContent;
     Set<Tag> tags = {};
 
     if (item != null) {
       id = item.id;
       name = item.name;
       plainTextContent = item.plainTextContent;
+      deltaContent = item.deltaContent;
       overview = item.overview;
       tags = item.tags ?? {};
     }
@@ -241,6 +246,11 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                             size: 17,
                           ),
                           onPressed: () {
+                            var articleEditor = context.read<ArticleEditor>();
+                            if (articleEditor.deltaContent == null) {
+                              articleEditor.setDeltaContent(deltaContent ?? plainTextContent);
+                            }
+
                             if (id == null) {
                               context.pushNamed("articleEditor");
                             } else {

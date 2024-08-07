@@ -230,7 +230,14 @@ class _UserViewArticlesPageState extends State<UserViewArticlesPage> {
           padding: const EdgeInsets.symmetric(
             horizontal: 15,
           ),
-          child: buildArticleCard(isDarkMode, context, item: _list[index]),
+          child: buildArticleCard(
+            isDarkMode,
+            context,
+            item: _list[index],
+            reload: (updateData) {
+              updateData(index, _list);
+            },
+          ),
         );
       },
       separatorBuilder: (context, index) => const SizedBox(height: 13),

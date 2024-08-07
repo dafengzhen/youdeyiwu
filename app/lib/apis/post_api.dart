@@ -27,6 +27,22 @@ class PostApi {
     return post;
   }
 
+  Future<void> like(String id) async {
+    await _apiClient.put(Uri.parse('/posts/$id/like'));
+  }
+
+  Future<void> save(
+    String? id, {
+    required QueryParametersDto dto,
+    bool? isCreate = true,
+  }) async {
+    if (isCreate == true) {
+      await _apiClient.post(Uri.parse('/posts'), body: dto);
+    } else {
+      await _apiClient.put(Uri.parse('/posts/$id'), body: dto);
+    }
+  }
+
   PostApi({
     required ApiClient apiClient,
   }) : _apiClient = apiClient;

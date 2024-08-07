@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,6 +12,7 @@ import 'user.dart';
 part 'quote_reply.g.dart';
 
 /// QuoteReply
+@CopyWith()
 @JsonSerializable()
 class QuoteReply extends Base {
   /// content

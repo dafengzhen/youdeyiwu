@@ -1,13 +1,22 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../apis/comment_api.dart';
 import '../apis/post_api.dart';
+import '../apis/reply_api.dart';
+import '../dtos/create_comment_dto.dart';
+import '../dtos/create_reply_dto.dart';
 import '../enums/load_data_type_enum.dart';
+import '../models/comment.dart';
 import '../models/comment_reply.dart';
 import '../models/post.dart';
+import '../models/quote_reply.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
@@ -29,6 +38,8 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
   Post? _post;
   bool _isLoadingInit = true;
   bool _isLoading = false;
+
+  dynamic _replyObject;
 
   @override
   void initState() {
@@ -186,6 +197,66 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
   }
 
   Widget _buildBottomCommentBar(bool isDarkMode) {
+    final replyObjectUsername =
+        getUsernameOrAnonymous(_replyObject?.user?.username);
+
+    onClickSend() async {
+      final text = _controller.text;
+      if (text.isEmpty) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          promptType: PromptType.warning,
+          description: "Reply content cannot be empty",
+        );
+        return;
+      }
+
+      try {
+        var commentApi = context.read<CommentApi>();
+        var replyApi = context.read<ReplyApi>();
+        var id = widget.id;
+
+        if (_replyObject == null) {
+          await commentApi.create(
+            CreateCommentDto(
+              content: text,
+              postId: id,
+            ),
+          );
+        } else {
+          if (_replyObject is Comment) {
+            await replyApi.create(
+              CreateReplyDto(
+                content: text,
+                postId: id,
+                commentId: _replyObject.id.toString(),
+              ),
+            );
+          } else if (_replyObject is QuoteReply) {
+            await replyApi.create(
+              CreateReplyDto(
+                content: text,
+                postId: id,
+                replyId: _replyObject.id.toString(),
+              ),
+            );
+          }
+        }
+
+        _controller.clear();
+        _loadData();
+      } catch (e) {
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            exception: e,
+          );
+        }
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       decoration: BoxDecoration(
@@ -196,29 +267,34 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              TextButton.icon(
-                onPressed: () {},
-                label: Text(
-                  "Cancel reply",
-                  style: TextStyle(
+          if (_replyObject != null)
+            Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _replyObject = null;
+                    });
+                  },
+                  label: Text(
+                    replyObjectUsername,
+                    style: TextStyle(
+                      color: isDarkMode
+                          ? AppThemeColors.secondaryColorDark
+                          : AppThemeColors.secondaryColorLight,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  icon: FaIcon(
+                    FontAwesomeIcons.xmark,
+                    size: 17,
                     color: isDarkMode
                         ? AppThemeColors.secondaryColorDark
                         : AppThemeColors.secondaryColorLight,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                icon: FaIcon(
-                  FontAwesomeIcons.xmark,
-                  size: 17,
-                  color: isDarkMode
-                      ? AppThemeColors.secondaryColorDark
-                      : AppThemeColors.secondaryColorLight,
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
           const SizedBox(height: 7),
           TextField(
             controller: _controller,
@@ -231,12 +307,14 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
               ),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
-              prefixIcon: IconButton(
-                onPressed: () {},
-                icon: const FaIcon(FontAwesomeIcons.at, size: 19),
-              ),
+              prefixIcon: _replyObject != null
+                  ? IconButton(
+                      onPressed: () {},
+                      icon: const FaIcon(FontAwesomeIcons.at, size: 19),
+                    )
+                  : null,
               suffixIcon: IconButton(
-                onPressed: () {},
+                onPressed: onClickSend,
                 icon: const FaIcon(FontAwesomeIcons.solidPaperPlane, size: 19),
               ),
             ),
@@ -252,6 +330,9 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
     required CommentReply item,
     required int index,
   }) {
+    final highlightedBaseColor = isDarkMode
+        ? AppThemeColors.infoColor[300]
+        : AppThemeColors.infoColor[500];
     final item0 = (item.comment ?? item.reply) as dynamic;
     final createdOn =
         item0.createdOn != null ? formatRelativeTime(item0.createdOn) : null;
@@ -260,6 +341,8 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
     final avatar = getAvatarOrDefault(item0.user?.avatar);
     final content = item0.content;
     final index0 = index + 1;
+    bool isLike = item0.liked ?? false;
+    String? likesCount = formatCount(item0.likesCount ?? 0);
 
     void onClickUsername() {
       if (userId != null) {
@@ -355,18 +438,112 @@ class _ArticleCommentPageState extends State<ArticleCommentPage> {
           const SizedBox(height: 15),
           Row(
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: const FaIcon(
-                  FontAwesomeIcons.thumbsUp,
-                  size: 17,
-                ),
+              Stack(
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      var loginInfo = context.read<LoginInfo>();
+                      var isLoggedIn = loginInfo.isLoggedIn;
+
+                      if (!isLoggedIn) {
+                        showSystemPromptBottomSheet(
+                          isDarkMode,
+                          context,
+                          promptType: PromptType.warning,
+                          description: "Please log in to operate!",
+                        );
+                        return;
+                      }
+
+                      try {
+                        var commentApi = context.read<CommentApi>();
+                        var replyApi = context.read<ReplyApi>();
+                        var likesCount0 = item0.likesCount ?? 0;
+
+                        if (item.comment != null) {
+                          await commentApi.like(item0.id.toString());
+                        } else if (item.reply != null) {
+                          await replyApi.like(item0.id.toString());
+                        }
+
+                        setState(() {
+                          if (item.comment != null) {
+                            _post!.comments!.content[index] = item.copyWith(
+                                comment: item.comment!.copyWith(
+                              liked: !isLike,
+                              likesCount: isLike
+                                  ? max(likesCount0 - 1, 0)
+                                  : likesCount0 + 1,
+                            ));
+                          } else if (item.reply != null) {
+                            _post!.comments!.content[index] = item.copyWith(
+                                reply: item.reply!.copyWith(
+                              liked: !isLike,
+                              likesCount: isLike
+                                  ? max(likesCount0 - 1, 0)
+                                  : likesCount0 + 1,
+                            ));
+                          }
+                        });
+
+                        if (!isLike) {
+                          if (context.mounted) {
+                            showSystemPromptBottomSheet(
+                              isDarkMode,
+                              context,
+                              promptType: PromptType.success,
+                              description: "Awesome!",
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          showSystemPromptBottomSheet(
+                            isDarkMode,
+                            context,
+                            exception: e,
+                          );
+                        }
+                      }
+                    },
+                    icon: FaIcon(
+                      isLike
+                          ? FontAwesomeIcons.solidThumbsUp
+                          : FontAwesomeIcons.thumbsUp,
+                      size: 17,
+                      color: isLike ? highlightedBaseColor : null,
+                    ),
+                  ),
+                  if (likesCount != '0')
+                    Positioned(
+                      right: 0,
+                      child: Text(
+                        likesCount,
+                        style: TextStyle(
+                          color: isDarkMode
+                              ? AppThemeColors.baseColorDark
+                              : AppThemeColors.baseColorLight,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               IconButton(
-                onPressed: () {},
-                icon: const FaIcon(
+                onPressed: () {
+                  setState(() {
+                    if (_replyObject == item0) {
+                      _replyObject = null;
+                    } else {
+                      _replyObject = item0;
+                    }
+                  });
+                },
+                icon: FaIcon(
                   FontAwesomeIcons.reply,
                   size: 17,
+                  color: _replyObject != null && _replyObject == item0
+                      ? highlightedBaseColor
+                      : null,
                 ),
               )
             ],

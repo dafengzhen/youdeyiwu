@@ -135,7 +135,14 @@ class _UserArticlesPageState extends State<UserArticlesPage> {
     return ListView.separated(
       itemCount: list.length,
       itemBuilder: (context, index) {
-        return buildArticleCard(isDarkMode, context, item: list[index]);
+        return buildArticleCard(
+          isDarkMode,
+          context,
+          item: list[index],
+          reload: (updateData) {
+            updateData(index, list);
+          },
+        );
       },
       separatorBuilder: (context, index) => const SizedBox(height: 15),
     );

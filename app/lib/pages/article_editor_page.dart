@@ -6,11 +6,13 @@ import 'package:flutter_quill_extensions/models/config/shared_configurations.dar
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:youdeyiwu_app/utils/tools.dart';
 
 import '../apis/post_api.dart';
 import '../enums/load_data_type_enum.dart';
 import '../models/post.dart';
 import '../providers/app_theme_mode.dart';
+import '../providers/article_editor.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
@@ -42,7 +44,8 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
     _controller = QuillController.basic();
     _editorFocusNode = FocusNode();
     _editorScrollController = ScrollController();
-    _loadData();
+    _loadContent();
+    // _loadData();
   }
 
   @override
@@ -51,6 +54,15 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
     _editorFocusNode.dispose();
     _editorScrollController.dispose();
     super.dispose();
+  }
+
+  void _loadContent() {
+    var articleEditor = context.read<ArticleEditor>();
+    var deltaContent = articleEditor.deltaContent;
+
+    if (deltaContent != null && deltaContent.isNotEmpty) {
+      _controller.document = Document.fromJson(jsonDecode(deltaContent));
+    }
   }
 
   Future<void> _loadData({
@@ -76,7 +88,8 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
           //   content,
           //   TextSelection.collapsed(offset: content.length),
           // );
-          _controller.document = Document.fromDelta(jsonDecode(deltaContent));
+
+          _controller.document = Document.fromJson(jsonDecode(deltaContent));
         }
 
         setState(() {
@@ -124,71 +137,81 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
 
     _controller.readOnly = _isReadOnly;
 
-    return Scaffold(
-      backgroundColor:
-          isDarkMode ? AppThemeColors.baseBgDark : AppThemeColors.baseBgLight,
-      appBar: AppBar(
-        backgroundColor: barBackgroundColor,
-        surfaceTintColor: barBackgroundColor,
-        leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft, size: 20),
-          onPressed: () => context.pop(),
+    return PopScope(
+      onPopInvoked: (didPop) {
+        final content = jsonEncode(_controller.document.toDelta().toJson());
+        var articleEditor = context.read<ArticleEditor>();
+        articleEditor.setDeltaContent(content);
+      },
+      child: Scaffold(
+        backgroundColor:
+            isDarkMode ? AppThemeColors.baseBgDark : AppThemeColors.baseBgLight,
+        appBar: AppBar(
+          backgroundColor: barBackgroundColor,
+          surfaceTintColor: barBackgroundColor,
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowLeft, size: 20),
+            onPressed: () => context.pop(),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Switch(
+                value: isDarkMode,
+                onChanged: (bool value) {
+                  Provider.of<AppThemeMode>(context, listen: false)
+                      .toggleTheme();
+                },
+              ),
+            ],
+          ),
         ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        floatingActionButton: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Switch(
-              value: isDarkMode,
-              onChanged: (bool value) {
-                Provider.of<AppThemeMode>(context, listen: false).toggleTheme();
-              },
+            FloatingActionButton.small(
+              heroTag: "setEditorToReadOnly",
+              child: FaIcon(
+                _isReadOnly
+                    ? FontAwesomeIcons.lock
+                    : FontAwesomeIcons.solidPenToSquare,
+                size: 17,
+              ),
+              onPressed: () => setState(() => _isReadOnly = !_isReadOnly),
+            ),
+            // FloatingActionButton.small(
+            //   heroTag: "saveEditorDeltaContent",
+            //   child: const FaIcon(
+            //     FontAwesomeIcons.solidFloppyDisk,
+            //     size: 17,
+            //   ),
+            //   onPressed: () {},
+            // ),
+          ],
+        ),
+        body: Column(
+          children: [
+            if (!_isReadOnly)
+              MyQuillToolbar(
+                controller: _controller,
+                focusNode: _editorFocusNode,
+              ),
+            const SizedBox(height: 15),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: MyQuillEditor(
+                  configurations: QuillEditorConfigurations(
+                    sharedConfigurations: _sharedConfigurations,
+                    controller: _controller,
+                  ),
+                  scrollController: _editorScrollController,
+                  focusNode: _editorFocusNode,
+                ),
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          FloatingActionButton.small(
-            child: FaIcon(
-              _isReadOnly
-                  ? FontAwesomeIcons.lock
-                  : FontAwesomeIcons.solidPenToSquare,
-              size: 17,
-            ),
-            onPressed: () => setState(() => _isReadOnly = !_isReadOnly),
-          ),
-          FloatingActionButton.small(
-            child: const FaIcon(
-              FontAwesomeIcons.solidFloppyDisk,
-              size: 17,
-            ),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          if (!_isReadOnly)
-            MyQuillToolbar(
-              controller: _controller,
-              focusNode: _editorFocusNode,
-            ),
-          const SizedBox(height: 15),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: MyQuillEditor(
-                configurations: QuillEditorConfigurations(
-                  sharedConfigurations: _sharedConfigurations,
-                  controller: _controller,
-                ),
-                scrollController: _editorScrollController,
-                focusNode: _editorFocusNode,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
