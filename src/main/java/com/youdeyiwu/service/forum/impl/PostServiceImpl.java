@@ -493,6 +493,7 @@ public class PostServiceImpl implements PostService {
               setAdditionalData(vo, postEntity);
               setUser(vo, postEntity);
               setComments(vo, postEntity);
+              setSocialInteraction(vo, postEntity);
               return vo;
             }
         )
