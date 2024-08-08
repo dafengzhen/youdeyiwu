@@ -7,11 +7,11 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:youdeyiwu_app/dtos/create_comment_dto.dart';
 
 import '../apis/comment_api.dart';
 import '../apis/post_api.dart';
 import '../apis/reply_api.dart';
+import '../dtos/create_comment_dto.dart';
 import '../enums/load_data_type_enum.dart';
 import '../models/comment.dart';
 import '../models/comment_reply.dart';
@@ -285,6 +285,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
         ),
       ),
       body: Container(
+        height: double.infinity,
         color: barBackgroundColor,
         child: Container(
           color: isDarkMode

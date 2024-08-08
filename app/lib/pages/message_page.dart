@@ -9,6 +9,7 @@ import '../apis/message_api.dart';
 import '../configs/configs.dart';
 import '../dtos/query_parameters_dto.dart';
 import '../enums/load_data_type_enum.dart';
+import '../enums/message_range_enum.dart';
 import '../enums/message_state_enum.dart';
 import '../models/message.dart';
 import '../models/pageable.dart';
@@ -232,7 +233,11 @@ class _MessagePageState extends State<MessagePage> {
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: _createMessageCard(isDarkMode, item: _list[index]),
+          child: _createMessageCard(
+            isDarkMode,
+            item: _list[index],
+            index: index,
+          ),
         );
       },
       separatorBuilder: (context, index) => const SizedBox(height: 19),
@@ -257,12 +262,17 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  Widget _createMessageCard(bool isDarkMode, {required Message item}) {
+  Widget _createMessageCard(
+    bool isDarkMode, {
+    required Message item,
+    required int index,
+  }) {
     final name = item.name;
     final overview = item.overview;
     final createdOn =
         item.createdOn != null ? formatRelativeTime(item.createdOn) : null;
     final state = item.state;
+    final range = item.messageRange;
     final link = item.link;
     final senderUserId = item.sender?.id;
     final senderAvatar = getAvatarOrDefault(item.sender?.avatar);
@@ -349,26 +359,27 @@ class _MessagePageState extends State<MessagePage> {
               ElevatedButton.icon(
                 icon: const FaIcon(FontAwesomeIcons.solidCircleCheck, size: 17),
                 label: const Text("Read"),
-                onPressed: () => _handleReadClick(item),
+                onPressed: () => _handleReadClick(isDarkMode, item, index),
               ),
-            ElevatedButton.icon(
-              icon: FaIcon(
-                FontAwesomeIcons.trashCan,
-                size: 17,
-                color: isDarkMode
-                    ? AppThemeColors.baseBgDangerColorDark
-                    : AppThemeColors.baseBgDangerColorLight,
-              ),
-              label: Text(
-                "Delete",
-                style: TextStyle(
+            if (range == MessageRangeEnum.user)
+              ElevatedButton.icon(
+                icon: FaIcon(
+                  FontAwesomeIcons.trashCan,
+                  size: 17,
                   color: isDarkMode
                       ? AppThemeColors.baseBgDangerColorDark
                       : AppThemeColors.baseBgDangerColorLight,
                 ),
+                label: Text(
+                  "Delete",
+                  style: TextStyle(
+                    color: isDarkMode
+                        ? AppThemeColors.baseBgDangerColorDark
+                        : AppThemeColors.baseBgDangerColorLight,
+                  ),
+                ),
+                onPressed: () => _handleDeleteClick(isDarkMode, item, index),
               ),
-              onPressed: () => _handleDeleteClick(item),
-            ),
           ],
         ),
       ],
@@ -389,11 +400,61 @@ class _MessagePageState extends State<MessagePage> {
     }
   }
 
-  void _handleReadClick(Message item) {
-    // Add your read click handling logic here
+  void _handleReadClick(bool isDarkMode, Message item, int index) async {
+    try {
+      var messageApi = context.read<MessageApi>();
+      await messageApi.read(item.id.toString(), item.messageRange);
+
+      if (mounted) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          promptType: PromptType.success,
+          description: "Update Successful",
+        );
+      }
+
+      setState(() {
+        _list[index] = item.copyWith(
+          state: MessageStateEnum.read,
+        );
+      });
+    } catch (e) {
+      if (mounted) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          exception: e,
+        );
+      }
+    }
   }
 
-  void _handleDeleteClick(Message item) {
-    // Add your delete click handling logic here
+  void _handleDeleteClick(bool isDarkMode, Message item, int index) async {
+    try {
+      var messageApi = context.read<MessageApi>();
+      await messageApi.delete(item.id.toString(), item.messageRange);
+
+      if (mounted) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          promptType: PromptType.success,
+          description: "Delete Successful",
+        );
+      }
+
+      setState(() {
+        _list.removeAt(index);
+      });
+    } catch (e) {
+      if (mounted) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          exception: e,
+        );
+      }
+    }
   }
 }

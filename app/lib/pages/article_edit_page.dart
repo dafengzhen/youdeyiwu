@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../apis/post_api.dart';
 import '../apis/section_api.dart';
+import '../dtos/save_post_dto.dart';
 import '../enums/load_data_type_enum.dart';
 import '../models/post.dart';
 import '../models/section.dart';
@@ -18,6 +19,7 @@ import '../providers/login_info.dart';
 import '../utils/app_theme_colors.dart';
 import '../utils/app_theme_data.dart';
 import '../utils/bottom_sheet_utils.dart';
+import '../utils/constants.dart';
 import '../utils/tools.dart';
 import '../widgets/common.dart';
 
@@ -31,7 +33,7 @@ class ArticleEditPage extends StatefulWidget {
 }
 
 class _ArticleEditPageState extends State<ArticleEditPage> {
-  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _overviewController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
@@ -42,6 +44,8 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
   bool _isLoadingInit = true;
   bool _isLoading = false;
 
+  int? _selectedSectionId;
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +54,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
 
   @override
   void dispose() {
-    _titleController.dispose();
+    _nameController.dispose();
     _overviewController.dispose();
     _contentController.dispose();
     _tagsController.dispose();
@@ -160,7 +164,87 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
       tags = item.tags ?? {};
     }
 
-    void onClickPublish() {}
+    void onClickPublish() async {
+      final name0 = _nameController.text;
+      final overview0 = _overviewController.text;
+      final plainTextContent0 = _contentController.text;
+      final tags0 = _tagsController.text;
+
+      if (name0.isEmpty) {
+        showSystemPromptBottomSheet(
+          isDarkMode,
+          context,
+          promptType: PromptType.warning,
+          description: "Name cannot be empty",
+        );
+        return;
+      }
+
+      try {
+        var id = widget.id;
+        var postApi = context.read<PostApi>();
+        var articleEditor = context.read<ArticleEditor>();
+        var deltaContent0 = articleEditor.deltaContent;
+        var sectionId0 = _selectedSectionId;
+
+        var response = await postApi.save(
+          id,
+          dto: SavePostDto(
+            name: name0,
+            overview: overview0,
+            plainTextContent: plainTextContent0,
+            deltaContent: deltaContent0,
+            tags: tags0.split(',').map((e) => e.trim()).toList(),
+            sectionId: sectionId0,
+            removeSection: sectionId0 == null,
+          ),
+          isCreate: id == null,
+        );
+
+        onClosePressed() {
+          logDebug(response.headers);
+          var location = response.headers[locationHeader.toLowerCase()];
+          if (location != null) {
+            var split = location.split('/');
+            var newId = split[split.length - 1];
+            context.replaceNamed("articleDetails", pathParameters: {'id': newId});
+          }
+        }
+
+        if (id == null) {
+          if (context.mounted) {
+            showSystemPromptBottomSheet(
+              isDarkMode,
+              context,
+              promptType: PromptType.success,
+              description: "Create Successful",
+              onBottomSheetClosed: onClosePressed,
+              onClosePressed: onClosePressed,
+              onButtonPressed: onClosePressed,
+            );
+          } else {
+            onClosePressed();
+          }
+        } else {
+          if (context.mounted) {
+            showSystemPromptBottomSheet(
+              isDarkMode,
+              context,
+              promptType: PromptType.success,
+              description: "Update Successful",
+            );
+          }
+        }
+      } catch (e) {
+        if (context.mounted) {
+          showSystemPromptBottomSheet(
+            isDarkMode,
+            context,
+            exception: e,
+          );
+        }
+      }
+    }
 
     return Scaffold(
       backgroundColor:
@@ -206,7 +290,7 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                 children: [
                   const SizedBox(height: 15),
                   _buildTextField(
-                    _titleController,
+                    _nameController,
                     'Name',
                     1,
                     3,
@@ -248,7 +332,8 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
                           onPressed: () {
                             var articleEditor = context.read<ArticleEditor>();
                             if (articleEditor.deltaContent == null) {
-                              articleEditor.setDeltaContent(deltaContent ?? plainTextContent);
+                              articleEditor.setDeltaContent(
+                                  deltaContent ?? plainTextContent);
                             }
 
                             if (id == null) {
@@ -322,7 +407,12 @@ class _ArticleEditPageState extends State<ArticleEditPage> {
     return SizedBox(
       height: 50,
       child: DropdownMenu(
-        onSelected: (value) => FocusManager.instance.primaryFocus?.unfocus(),
+        onSelected: (value) {
+          FocusManager.instance.primaryFocus?.unfocus();
+          setState(() {
+            _selectedSectionId = value;
+          });
+        },
         dropdownMenuEntries: _sections.map(
           (item) {
             return DropdownMenuEntry(value: item.id, label: item.name);

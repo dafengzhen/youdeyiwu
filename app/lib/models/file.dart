@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,6 +14,7 @@ import 'user.dart';
 part 'file.g.dart';
 
 /// File
+@CopyWith()
 @JsonSerializable()
 class File extends Base {
   /// url

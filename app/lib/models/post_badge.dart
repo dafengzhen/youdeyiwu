@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,6 +9,7 @@ import 'base.dart';
 part 'post_badge.g.dart';
 
 /// PostBadge
+@CopyWith()
 @JsonSerializable()
 class PostBadge extends Base {
   /// name

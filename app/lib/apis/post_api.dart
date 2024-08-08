@@ -1,4 +1,7 @@
+import 'package:http/src/response.dart';
+
 import '../dtos/query_parameters_dto.dart';
+import '../dtos/save_post_dto.dart';
 import '../models/page.dart';
 import '../models/post.dart';
 import '../utils/api_client.dart';
@@ -31,15 +34,15 @@ class PostApi {
     await _apiClient.put(Uri.parse('/posts/$id/like'));
   }
 
-  Future<void> save(
+  Future<Response> save(
     String? id, {
-    required QueryParametersDto dto,
+    required SavePostDto dto,
     bool? isCreate = true,
   }) async {
     if (isCreate == true) {
-      await _apiClient.post(Uri.parse('/posts'), body: dto);
+      return await _apiClient.post(Uri.parse('/posts'), body: dto);
     } else {
-      await _apiClient.put(Uri.parse('/posts/$id'), body: dto);
+      return await _apiClient.put(Uri.parse('/posts/$id'), body: dto);
     }
   }
 

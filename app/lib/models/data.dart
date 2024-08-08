@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/tools.dart';
@@ -7,6 +8,7 @@ import '../utils/tools.dart';
 part 'data.g.dart';
 
 /// Data
+@CopyWith()
 @JsonSerializable()
 class Data {
   /// code

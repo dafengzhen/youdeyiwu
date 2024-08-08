@@ -153,7 +153,12 @@ void showSystemPromptBottomSheet(
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: onButtonPressed ?? defaultPopAction,
+                      onPressed: onButtonPressed != null
+                          ? () {
+                              onButtonPressed();
+                              defaultPopAction();
+                            }
+                          : defaultPopAction,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: getButtonColor(),
                         padding: const EdgeInsets.symmetric(vertical: 13),
@@ -177,7 +182,12 @@ void showSystemPromptBottomSheet(
                   FontAwesomeIcons.xmark,
                   color: getTextColor(),
                 ),
-                onPressed: onClosePressed ?? defaultPopAction,
+                onPressed: onClosePressed != null
+                    ? () {
+                        onClosePressed();
+                        defaultPopAction();
+                      }
+                    : defaultPopAction,
               ),
             ),
           ],
@@ -187,6 +197,7 @@ void showSystemPromptBottomSheet(
   ).whenComplete(() {
     if (onBottomSheetClosed != null) {
       onBottomSheetClosed();
+      defaultPopAction();
     }
   });
 }

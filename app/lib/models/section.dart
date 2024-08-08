@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:youdeyiwu_app/utils/tools.dart';
@@ -15,6 +16,7 @@ import 'user.dart';
 part 'section.g.dart';
 
 /// Section
+@CopyWith()
 @JsonSerializable()
 class Section extends Base {
   /// name

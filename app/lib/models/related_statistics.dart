@@ -1,14 +1,12 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'base.dart';
-import 'permission.dart';
 
 part 'related_statistics.g.dart';
 
 /// RelatedStatistics
+@CopyWith()
 @JsonSerializable()
 class RelatedStatistics {
   /// sections
