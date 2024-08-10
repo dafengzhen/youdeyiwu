@@ -39,4 +39,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: youdeyiwu-app-android.zip
-          path: build/app/outputs/apk/release/*.apk
+          path: app/build/app/outputs/flutter-apk/*.apk
