@@ -1,0 +1,41 @@
+name: Build the youdeyiwu-app Android application
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'app/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'app/**'
+  workflow_dispatch:
+
+concurrency:
+  group: app
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      # - run: flutter test
+      - run: flutter build apk
+      - run: flutter build appbundle
+      - uses: actions/upload-artifact@v4
+        with:
+          name: youdeyiwu-app-android.zip
+          path: build/app/outputs/flutter-apk/*.apk
