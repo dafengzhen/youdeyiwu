@@ -4,4 +4,4 @@ The interface definition uses the OpenAPI specification, which can be found at t
 
 You can import this file into API testing tools that support this specification, such as: [Insomnia](https://insomnia.rest), [Apifox](https://apifox.com), etc.
 
-The document also includes API definitions for reference, which can be used in conjunction with the OpenAPI specification.
+If you don't know which APIs to use, you can refer to the API calls on the web side.

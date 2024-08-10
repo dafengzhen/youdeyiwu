@@ -78,6 +78,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Frontend', link: 'frontend-development' },
         { text: 'Backend', link: 'backend-development' },
         { text: 'Desktop', link: 'desktop-development' },
+        { text: 'Android', link: 'android-development' },
       ],
     },
     {
@@ -96,11 +97,6 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
         {
           text: 'Overview',
           link: 'overview',
-        },
-        {
-          text: 'Apis',
-          base: '/reference/api-',
-          items: [{ text: 'Login', link: 'login' }],
         },
       ],
     },

@@ -25,11 +25,3 @@ In addition to basic functionality and backend management, it also has the follo
 Youdeyiwu consists of both frontend and backend components.
 
 The backend is developed using [Spring Boot 3](https://spring.io/projects/spring-boot), the frontend is developed using [Next.js 14](https://nextjs.org), and the database used is [MySQL 8](https://www.mysql.com).
-
-::: info Side Note
-
-If there is spare time in the future, desktop and app development may be considered. The idea is to expand on the backend API utilization and frontend browsing.
-
-However, developing other platforms is not the main focus. The main focus is still on frontend and backend development.
-
-:::

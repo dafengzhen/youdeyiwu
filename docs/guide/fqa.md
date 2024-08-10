@@ -6,8 +6,12 @@ Documenting common questions in the hope that they may be of assistance to you.
 
 By default, you can use the pre-built Docker image to experience or deploy the project.
 
-If you want to add more features, you will need to develop the project further through customization.
+If you want to add custom features or implement functionality that suits your business logic, it is recommended to use secondary development methods.
 
-## Is the project currently under development?
+## Is there an online demo available for the project?
 
-Yes, the project is currently under development, and efforts are being made to continuously improve it.
+Due to various reasons, we are unable to provide an online demo.
+
+However, you can follow the steps in the [Quick Start](./getting-started.md#installation-steps) guide to deploy and experience it in one click.
+
+Alternatively, you can browse the example images on the [Documentation Home](../index.md) page for a basic understanding.

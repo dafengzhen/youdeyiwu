@@ -92,6 +92,14 @@ npm run build
 
 The files will be output in the ```out``` directory of the project.
 
+## Other
+
+**What if I want to build for Apple desktop?**
+
+Due to the lack of relevant devices, I am unable to test the build on Apple desktop.
+
+You may need to adapt certain parts of the project for the desktop version.
+
 ## Completion
 
 Through custom development, you can add various functionalities to the application as needed.

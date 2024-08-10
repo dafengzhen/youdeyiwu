@@ -92,6 +92,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: '前端开发', link: 'frontend-development' },
         { text: '后端开发', link: 'backend-development' },
         { text: '桌面端开发', link: 'desktop-development' },
+        { text: '安卓端开发', link: 'android-development' },
       ],
     },
     {
@@ -110,11 +111,6 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
         {
           text: '概述',
           link: 'overview',
-        },
-        {
-          text: 'Apis',
-          base: '/zh/reference/api-',
-          items: [{ text: '登录', link: 'login' }],
         },
       ],
     },
