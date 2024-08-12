@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  createErrorResponse,
   createRequest,
   createRequestUrl,
 } from '@/app/[locale]/common/response';
@@ -21,9 +20,25 @@ export async function POST(request: NextRequest) {
   });
 
   const data = (await response.json()) as IFileUrls | IError;
+
   if (!response.ok) {
-    return NextResponse.json(createErrorResponse(data));
+    return NextResponse.json(data);
   }
 
-  return NextResponse.json(data);
+  const newData = data as IFileUrls;
+  newData.url = processUrl(newData.url);
+
+  const urls = newData.urls;
+  if (urls && urls.default) {
+    urls.default = <string>processUrl(urls.default);
+  }
+
+  return NextResponse.json(newData);
 }
+
+const processUrl = (url: string | undefined) => {
+  if (url && !(url.startsWith('http') || url.startsWith('https'))) {
+    return process.env.URL + url;
+  }
+  return url;
+};

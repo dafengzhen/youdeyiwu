@@ -33,7 +33,7 @@ export default function Content({
 
     const lightbox = new PhotoSwipeLightbox({
       gallery: element,
-      children: 'a',
+      children: 'figure > a',
       pswpModule: () => import('photoswipe'),
     });
     lightbox.init();
