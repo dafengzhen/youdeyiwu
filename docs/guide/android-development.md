@@ -28,7 +28,17 @@ Install the dependencies.
 flutter pub get
 ```
 
-**2. Configure the API Service**
+**3. Change the Icon**
+
+Replace the resource at the path ```assets/images/icon.png```.
+
+Then, run the following command to update:
+
+```sh
+flutter pub run flutter_launcher_icons
+```
+
+**3. Configure the API Service**
 
 Open the file ```lib/configs/configs.dart```.
 
@@ -38,7 +48,7 @@ Modify the backend request URL accordingly.
 const appApiServer = 'http://10.0.2.2:8080';
 ```
 
-**3. Launch the Application**
+**4. Launch the Application**
 
 Using Android Studio as an example, start an Android emulator (Device Manager) and run the application (Run 'main.dart').
 
@@ -65,7 +75,7 @@ Please refer to the [official documentation](https://docs.flutter.dev/deployment
 **1. Run the Command**
 
 ```sh
-flutter build apk
+flutter build apk --release
 ```
 
 **2. Check the Output**

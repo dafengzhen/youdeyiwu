@@ -28,7 +28,17 @@ git clone https://github.com/dafengzhen/youdeyiwu
 flutter pub get
 ```
 
-**2. 配置 Api 服务**
+**2. 修改图标**
+
+替换资源路径 ```assets/images/icon.png```
+
+然后运行如下命令更新：
+
+```sh
+flutter pub run flutter_launcher_icons
+```
+
+**3. 配置 Api 服务**
 
 打开 ```lib/configs/configs.dart``` 文件
 
@@ -38,7 +48,7 @@ flutter pub get
 const appApiServer = 'http://10.0.2.2:8080';
 ```
 
-**3. 启动应用**
+**4. 启动应用**
 
 以 Android Studio 编辑器为例，启动一个安卓模拟器（Device Manager），并运行（Run 'main.dart'）
 
@@ -65,7 +75,7 @@ keytool -genkey -v -keystore $env:USERPROFILE\upload-keystore.jks -storetype JKS
 **1. 运行命令**
 
 ```sh
-flutter build apk
+flutter build apk --release
 ```
 
 **2. 查看输出**
