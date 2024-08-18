@@ -92,15 +92,17 @@ const Items = ({ sections }: { sections: ISection[] }) => {
                     </Link>
                   </div>
                 ) : (
-                  section.overview && (
-                    <Link
-                      className="line-clamp-3 card-text text-reset text-decoration-none p-3"
-                      href={`/sections/${section.id}`}
-                      scroll={false}
-                    >
-                      {section.overview}
-                    </Link>
-                  )
+                  <div className="p-3">
+                    {section.overview && (
+                      <Link
+                        className="line-clamp-3 card-text text-reset text-decoration-none"
+                        href={`/sections/${section.id}`}
+                        scroll={false}
+                      >
+                        {section.overview}
+                      </Link>
+                    )}
+                  </div>
                 )}
 
                 {!!section.admins.length && (

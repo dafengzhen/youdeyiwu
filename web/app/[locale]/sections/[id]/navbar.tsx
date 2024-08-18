@@ -1,33 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import type { ISectionDetails } from '@/app/[locale]/interfaces/sections';
-import { getUserAlias, isHttpOrHttps } from '@/app/[locale]/common/client';
+import { isHttpOrHttps } from '@/app/[locale]/common/client';
 import Content from '@/app/[locale]/components/content/content';
 import { useTranslations } from 'next-intl';
-import { GlobalContext } from '@/app/[locale]/contexts';
 
 export default function Navbar({ details }: { details: ISectionDetails }) {
   const content = details.content ?? '';
   const [continueReading, setContinueReading] = useState(false);
   const t = useTranslations();
-  const { bs } = useContext(GlobalContext);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const current = bs.current;
-      if (current) {
-        [...document.querySelectorAll('[data-bs-toggle="tooltip"]')].map(
-          (element) => current.Tooltip.getOrCreateInstance(element),
-        );
-      }
-    }, 1500);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
 
   function onClickContinueReading() {
     setContinueReading(!continueReading);
@@ -53,12 +36,7 @@ export default function Navbar({ details }: { details: ISectionDetails }) {
                       : '/assets/avatar.png';
 
                     return (
-                      <Link
-                        key={item.id}
-                        href={`/users${item.id}`}
-                        data-bs-toggle="tooltip"
-                        data-bs-title={getUserAlias(item)}
-                      >
+                      <Link key={item.id} href={`/users/${item.id}`}>
                         <Image
                           className="rounded-circle object-fit-contain image-hover"
                           src={avatar}

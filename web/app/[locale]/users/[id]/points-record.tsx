@@ -25,7 +25,7 @@ export default function PointsRecord({
   const [content, setContent] = useState<IPointHistory[]>([]);
 
   const queryAllByUserPointHistoryActionQuery = useInfiniteQuery({
-    queryKey: [`/points/histories/users${userId}`, 'infinite'],
+    queryKey: [`/points/histories/users/${userId}`, 'infinite'],
     queryFn: async (context) => {
       const response = await QueryAllByUserPointHistoryAction({
         userId,
