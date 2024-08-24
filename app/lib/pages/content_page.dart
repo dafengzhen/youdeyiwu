@@ -312,7 +312,9 @@ class _ContentPageState extends State<ContentPage> {
                     ),
                     const SizedBox(height: 5),
                   ],
-                  Row(
+                  Wrap(
+                    spacing: 3,
+                    runSpacing: 3,
                     children: [
                       for (int index = 0; index < tags.length; index++) ...[
                         Container(
@@ -330,7 +332,6 @@ class _ContentPageState extends State<ContentPage> {
                             ),
                           ),
                         ),
-                        if (index < tags.length - 1) const SizedBox(width: 3),
                       ],
                     ],
                   ),
