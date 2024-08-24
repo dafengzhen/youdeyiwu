@@ -14,6 +14,10 @@
   color: #fff;
 }
 
+.ck-sticky-panel__content_sticky {
+  top: 4.2rem !important;
+}
+
 /* This selector targets the editable element (excluding comments). */
 //.ck-editor__editable_inline:not(.ck-comment__input *) {
 //  min-height: 21rem;

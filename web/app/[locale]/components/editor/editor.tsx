@@ -125,7 +125,7 @@ const editorConfiguration = {
       'findAndReplace',
       'removeFormat',
     ],
-    shouldNotGroupWhenFull: true,
+    shouldNotGroupWhenFull: false,
   },
   plugins: [
     // AccessibilityHelp,
@@ -206,6 +206,7 @@ const editorConfiguration = {
     'outdent',
     'indent',
   ],
+  // balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
   htmlSupport: {
     allow: [
       {
