@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_quill_extensions/models/config/shared_configurations.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart'
+    show QuillSharedExtensionsConfigurations;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:youdeyiwu_app/utils/tools.dart';
 
 import '../apis/post_api.dart';
 import '../enums/load_data_type_enum.dart';
@@ -138,7 +138,7 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
     _controller.readOnly = _isReadOnly;
 
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         final content = jsonEncode(_controller.document.toDelta().toJson());
         var articleEditor = context.read<ArticleEditor>();
         articleEditor.setDeltaContent(content);
@@ -201,9 +201,9 @@ class _ArticleEditorPageState extends State<ArticleEditorPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: MyQuillEditor(
+                  controller: _controller,
                   configurations: QuillEditorConfigurations(
                     sharedConfigurations: _sharedConfigurations,
-                    controller: _controller,
                   ),
                   scrollController: _editorScrollController,
                   focusNode: _editorFocusNode,
